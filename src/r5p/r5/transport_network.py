@@ -2,11 +2,14 @@
 
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
-import tempfile
+from ..util import config  # noqa: F401
 
 import jpype
+import jpype.types
 
 import com.conveyal.r5
+import java.lang
+import java.util.ArrayList
 
 
 __all__ = ["TransportNetwork"]
@@ -25,22 +28,24 @@ class TransportNetwork:
         gtfs : list[str]
             paths to public transport schedule information in GTFS format
         """
-        with tempfile.NamedTemporaryFile(suffix=".json") as build_config:
-            # TODO: actually configure build-config.json
-            build_config.write(
-                str(
-                    com.conveyal.r5.point_to_point.builder
-                        .TNBuilderConfig.defaultConfig()
-                )
+        # TODO: actually configure build-config.json
+        build_config = com.conveyal.r5.point_to_point.builder.TNBuilderConfig.defaultConfig()
+        self._transport_network = (
+            com.conveyal.r5.transit.TransportNetwork.fromFiles(
+                java.lang.String(osm_pbf),
+                java.util.ArrayList.of(gtfs),
+                build_config
             )
-            self._transport_network = (
-                com.conveyal.r5.transit.TransportNetwork.fromFiles(
-                    osm_pbf,
-                    gtfs,
-                    build_config.name
-                )
-            )
+        )
         self._transport_network.transitLayer.buildDistanceTables(None)
+
+    @property
+    def linkage_cache(self):
+        return self._transport_network.linkageCache
+
+    @property
+    def street_layer(self):
+        return self._transport_network.streetLayer
 
     @property
     def timezone(self):

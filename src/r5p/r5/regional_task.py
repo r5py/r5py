@@ -7,7 +7,10 @@ import datetime
 import jpype
 
 from ..util import config  # noqa: F401
-from . import LegMode, Scenario, StreetMode, TransitMode
+from .leg_mode import LegMode
+from .scenario import Scenario
+from .street_mode import StreetMode
+from .transit_mode import TransitMode
 
 import java.io
 import java.time
@@ -110,12 +113,12 @@ class RegionalTask:
         self.departure = departure
         self.departure_time_window = departure_time_window
 
-        self.transport_modes = transport_modes
         self.access_modes = access_modes
         if egress_modes:
             self.egress_modes = egress_modes
         else:
             self.egress_modes = access_modes
+        self.transport_modes = transport_modes  # last, because extra logic that depends on the others
 
         self.max_time = max_time
         self.max_time_walking = max_time_walking
@@ -128,12 +131,20 @@ class RegionalTask:
         self.max_public_transport_rides = max_public_transport_rides
         self.max_bicycle_traffic_stress = max_bicycle_traffic_stress
 
+        # a few settings we don’t expose (yet?)
+        self._regional_task.makeTauiSite = False
+        self._regional_task.monteCarloDraws = 60
+        self._regional_task.percentiles = [50]
+        self._regional_task.recordAccessibility = False
+        self._regional_task.recordTimes = True
+
     @property
     def access_modes(self):
         return self._access_modes
 
     @access_modes.setter
     def access_modes(self, access_modes):
+        access_modes = set(access_modes)
         self._access_modes = access_modes
         self._regional_task.accessModes = RegionalTask._enum_set(
             access_modes,
@@ -158,7 +169,7 @@ class RegionalTask:
             ).total_seconds()
         )
         try:
-            self._regional_task.toTime = (
+            self._regional_task.toTime = int(
                 self._regional_task.fromTime
                 + self.departure_time_window.total_seconds()
             )
@@ -172,7 +183,7 @@ class RegionalTask:
     @departure_time_window.setter
     def departure_time_window(self, departure_time_window):
         self._departure_time_window = departure_time_window
-        self._regional_task.toTime = (
+        self._regional_task.toTime = int(
             self._regional_task.fromTime
             + departure_time_window.total_seconds()
         )
@@ -224,6 +235,7 @@ class RegionalTask:
 
     @egress_modes.setter
     def egress_modes(self, egress_modes):
+        egress_modes = set(egress_modes)
         self._egress_modes = egress_modes
         self._regional_task.egressModes = RegionalTask._enum_set(
             egress_modes,
@@ -308,7 +320,7 @@ class RegionalTask:
         """
         self._origin = origin
         self._regional_task.fromLat = origin.y
-        self._regional_task.FromLon = origin.x
+        self._regional_task.fromLon = origin.x
 
     @property
     def scenario(self):
@@ -343,34 +355,63 @@ class RegionalTask:
 
     @transport_modes.setter
     def transport_modes(self, transport_modes):
+        transport_modes = set(transport_modes)
         self._transport_modes = transport_modes
+
+        # split them up into direct and transit modes
         transit_modes = [
             mode
             for mode in transport_modes
             if isinstance(mode, TransitMode)
         ]
-        self._regional_task.transitModes(
-            transit_modes,
-            com.conveyal.r5.api.util.LegMode
-        )
         direct_modes = [
             mode
             for mode in transport_modes
             if isinstance(mode, StreetMode)
         ]
+
+        # the different modes underlie certain rules
+        # e.g., some direct modes require certain access modes
+        # see https://github.com/ipeaGIT/r5r/blob/2e8b9acfd81834f185d95ce53dc5c34beb1315f2/r-package/R/utils.R#L86
+        if transit_modes:  # public transport:
+            egress_modes = self.egress_modes
+            if TransitMode.TRANSIT in transport_modes:
+                transit_modes = list(TransitMode)  # all of them
+            if not direct_modes:  # only public transport modes passed in,
+                # let people walk to and from the stops
+                access_modes = direct_modes = [LegMode.WALK]
+            else:
+                access_modes = direct_modes
+        else:  # not public transport
+            egress_modes = []  # ignore egress (why?)
+            if StreetMode.CAR in transport_modes:
+                access_modes = direct_modes = [LegMode.CAR]
+            elif StreetMode.WALK in transport_modes:
+                access_modes = direct_modes = [LegMode.WALK]
+            elif StreetMode.BICYCLE in transport_modes:
+                access_modes = direct_modes = [LegMode.BICYCLE]
+
+        # assign the calculated modes
+        self.access_modes = access_modes
+        self.egress_modes = egress_modes
+        self._regional_task.transitModes = RegionalTask._enum_set(
+            transit_modes,
+            com.conveyal.r5.api.util.TransitModes
+        )
         self._regional_task.directModes = RegionalTask._enum_set(
             direct_modes,
-            com.conveyal.r5.api.util.LegMode  # (!) on purpose (see below)
+            com.conveyal.r5.api.util.LegMode  # (!) on purpose:
+            # StreetMode is a subset of LegMode.
+            # com.conveyal.r5.analyst.TravelTimeComputer expects LegModes
         )
-        # StreetMode is a subset of LegMode.
-        # com.conveyal.r5.analyst.TravelTimeComputer expects LegModes
 
+        # pre-compute closest road segments/public transport stops to destination points
         for mode in direct_modes:
             for destination_point_set in self._regional_task.destinationPointSets:
-                self._transport_network.linkageCache.getLinkage(
+                self.transport_network.linkage_cache.getLinkage(
                     destination_point_set,
-                    self._transport_network.streetLayer,
-                    mode.value
+                    self.transport_network.street_layer,
+                    StreetMode[mode.name].value
                 )
 
     @staticmethod
@@ -381,6 +422,10 @@ class RegionalTask:
         return enum_set
 
 
+@jpype._jcustomizer.JConversion(
+    "com.conveyal.r5.analyst.cluster.AnalysisWorkerTask",
+    exact=RegionalTask
+)
 @jpype._jcustomizer.JConversion(
     "com.conveyal.r5.analyst.cluster.RegionalTask",
     exact=RegionalTask

@@ -33,5 +33,5 @@ if not arguments.verbose:
             "com.conveyal.r5.profile.FastRaptorWorker",
     ):
         logger_context.getLogger(log_target).setLevel(
-            ch.qos.logback.classic.Level.valueOf("ERROR")
+            ch.qos.logback.classic.Level.valueOf("OFF")
         )

@@ -4,6 +4,8 @@
 
 import jpype
 
+from ..util import config  # noqa: F401
+
 import com.conveyal.r5
 
 
@@ -14,7 +16,7 @@ class Scenario:
     """Wrap a com.conveyal.r5.analyst.scenario.Scenario."""
     def __init__(self):
         """Initialise a most simple Scenario."""
-        scenario = com.conveal.r5.analyst.scenario.Scenario()
+        scenario = com.conveyal.r5.analyst.scenario.Scenario()
         scenario.id = "id"
         self._scenario = scenario
 

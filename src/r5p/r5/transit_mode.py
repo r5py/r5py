@@ -4,6 +4,8 @@
 
 import enum
 
+from ..util import config  # noqa: F401
+
 import com.conveyal.r5
 
 

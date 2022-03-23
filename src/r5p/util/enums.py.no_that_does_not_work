@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+
+"""Cast Python enums to Java EnumSets."""
+
+import enum
+
+import jpype
+
+from . import config, jvm  # noqa: F401
+
+
+__all__ = []
+
+
+@jpype._jcustomizer.JConversion(
+    "java.util.EnumSet",
+    instanceof=enum.EnumMeta
+)
+def _cast_EnumMeta(java_class, object_):
+    try:
+        return jpype._jclass.JClass(object_._java_class)
+    except AttributeError:
+        raise TypeError(
+            "Could not cast enum {} to java.util.EnumSet".format(
+                object_.__class__.__name__
+            )
+        )

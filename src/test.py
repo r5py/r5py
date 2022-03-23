@@ -1,6 +1,6 @@
-import pandas
 import geopandas
 import numpy
+import shapely
 import r5p
 import com.conveyal.r5
 
@@ -38,7 +38,7 @@ for from_id in origins.id:
     print(count, end="\r", flush=True)
     request = r5p.RegionalTask(
         transport_network,
-        origin=origins.at[origins.id == from_id].geometry,
+        origin=origins[origins.id == from_id].geometry,
         destinations=destinations,
         transport_modes=[r5p.TransitMode.TRANSIT],
     )
@@ -54,6 +54,9 @@ for from_id in origins.id:
         )
     )
 
-od_matrix[od_matrix.travel_time == MAX_INT32, "travel_time"] = numpy.nan
+od_matrix[od_matrix.travel_time == MAX_INT32] = (
+    od_matrix[od_matrix.travel_time == MAX_INT32].assign(travel_time=numpy.nan)
+)
 
-od_matrix.to_file("od_matrix.gpkg")
+od_matrix["geometry"] = od_matrix[["from_geometry", "to_geometry"]].apply(lambda x: shapely.geometry.LineString([(x.from_geometry.x, x.from_geometry.y), (x.to_geometry.x, x.to_geometry.y)]), axis=1)
+geopandas.GeoDataFrame(od_matrix[["from_id", "to_id", "travel_time", "geometry"]]).to_file("od_matrix.gpkg")

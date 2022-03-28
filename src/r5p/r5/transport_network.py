@@ -3,6 +3,7 @@
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
 from ..util import config  # noqa: F401
+from .transport_network_builder_config import TransportNetworkBuilderConfig
 
 import jpype
 import jpype.types
@@ -17,7 +18,7 @@ __all__ = ["TransportNetwork"]
 
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
-    def __init__(self, osm_pbf, gtfs=[]):
+    def __init__(self, osm_pbf, gtfs=[], build_config={}):
         """
         Load a transport network.
 
@@ -27,9 +28,10 @@ class TransportNetwork:
             file path of an OpenStreetMap extract in PBF format
         gtfs : list[str]
             paths to public transport schedule information in GTFS format
+        build_json : dict
+            options accepted by TNBuilderConfig
         """
-        # TODO: actually configure build-config.json
-        build_config = com.conveyal.r5.point_to_point.builder.TNBuilderConfig.defaultConfig()
+        build_config = TransportNetworkBuilderConfig(**build_config)
         self._transport_network = (
             com.conveyal.r5.transit.TransportNetwork.fromFiles(
                 java.lang.String(osm_pbf),

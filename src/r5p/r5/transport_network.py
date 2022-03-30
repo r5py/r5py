@@ -3,7 +3,7 @@
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
 from ..util import config  # noqa: F401
-from .transport_network_builder_config import TransportNetworkBuilderConfig
+#from .transport_network_builder_config import TransportNetworkBuilderConfig
 
 import jpype
 import jpype.types
@@ -31,7 +31,8 @@ class TransportNetwork:
         build_json : dict
             options accepted by TNBuilderConfig
         """
-        build_config = TransportNetworkBuilderConfig(**build_config)
+        # build_config = TransportNetworkBuilderConfig(**build_config)
+        build_config = com.conveyal.r5.point_to_point.builder.TNBuilderConfig.defaultConfig()
         self._transport_network = (
             com.conveyal.r5.transit.TransportNetwork.fromFiles(
                 java.lang.String(osm_pbf),

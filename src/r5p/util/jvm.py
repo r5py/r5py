@@ -2,6 +2,8 @@
 
 """Set up a JVM and import basic java classes."""
 
+import sys
+
 import jpype
 import jpype.imports
 
@@ -20,8 +22,11 @@ config.argparser.add(
 )
 arguments = config.arguments()
 
+sys.modules['faulthandler'] = None
 
 jpype.startJVM(
     "-Xmx{:d}G".format(EIGHTY_PERCENT_OF_RAM),
+    "-Xcheck:jni",
+    "--illegal-access=permit",
     classpath=[arguments.r5_classpath]
 )

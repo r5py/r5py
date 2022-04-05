@@ -47,7 +47,7 @@ class RegionalTask:
             speed_cycling=12.0,
 
             max_public_transport_rides=8,
-            max_bicycle_traffic_stress=4,
+            max_bicycle_traffic_stress=3,
     ):
         """
         Create a RegionalTask.
@@ -433,6 +433,8 @@ class RegionalTask:
         )
 
         # pre-compute closest road segments/public transport stops to destination points
+        # (for fully-interconnected travel time matrices this also covers all origin points,
+        # but potentially this needs to be extended to run also for origins) //TODO
         for mode in direct_modes:
             for destination_point_set in self._regional_task.destinationPointSets:
                 self.transport_network.linkage_cache.getLinkage(
@@ -449,13 +451,7 @@ class RegionalTask:
         return enum_set
 
 
-@jpype._jcustomizer.JConversion(
-    "com.conveyal.r5.analyst.cluster.AnalysisWorkerTask",
-    exact=RegionalTask
-)
-@jpype._jcustomizer.JConversion(
-    "com.conveyal.r5.analyst.cluster.RegionalTask",
-    exact=RegionalTask
-)
+@jpype._jcustomizer.JConversion("com.conveyal.r5.analyst.cluster.AnalysisWorkerTask", exact=RegionalTask)
+@jpype._jcustomizer.JConversion("com.conveyal.r5.analyst.cluster.RegionalTask", exact=RegionalTask)
 def _cast_RegionalTask(java_class, object_):
-    return object_._regional_task
+    return object_._regional_task.clone()  # so we can reuse the Python instance (e.g., with next origin)

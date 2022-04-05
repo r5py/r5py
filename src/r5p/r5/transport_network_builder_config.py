@@ -2,15 +2,14 @@
 
 """Wraps a com.conveyal.r5.point_to_point.builder.TNBuilderConfig."""
 
-from .. import util  # noqa: F401
-
 import json
 
 import jpype
 
-import com.conveyal.r5
-
+from .. import util  # noqa: F401
 from .speed_config import SpeedConfig
+
+import com.conveyal.r5
 
 
 __all__ = ["TransportNetworkBuilderConfig"]

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
+
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
-from .. import util  # noqa: F401
-from .transport_network_builder_config import TransportNetworkBuilderConfig
 
 import jpype
 import jpype.types
+
+from .. import util  # noqa: F401
+from .transport_network_builder_config import TransportNetworkBuilderConfig
 
 import com.conveyal.r5
 import java.lang

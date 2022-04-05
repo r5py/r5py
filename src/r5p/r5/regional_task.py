@@ -22,6 +22,7 @@ __all__ = ["RegionalTask"]
 
 class RegionalTask:
     """Wrap a com.conveyal.r5.analyst.cluster.RegionalTask."""
+
     def __init__(
             self,
 
@@ -140,6 +141,7 @@ class RegionalTask:
 
     @property
     def access_modes(self):
+        """Route with these modes of transport to reach public transport."""
         return self._access_modes
 
     @access_modes.setter
@@ -153,6 +155,7 @@ class RegionalTask:
 
     @property
     def departure(self):
+        """Find public transport connections leaving within `departure_time_window` after `departure` (datetime.datetime)."""
         return self._departure
 
     @departure.setter
@@ -178,6 +181,7 @@ class RegionalTask:
 
     @property
     def departure_time_window(self):
+        """Find public transport connections leaving within `departure_time_window` after `departure` (datetime.timedelta)."""
         return self._departure_time_window
 
     @departure_time_window.setter
@@ -190,19 +194,16 @@ class RegionalTask:
 
     @property
     def destinations(self):
+        """
+        Points to route to.
+
+        A `geopandas.GeoDataFrame` with a point geometry, and at least
+        an `id` column (which R5 mangles to `str`).
+        """
         return self._destinations
 
     @destinations.setter
     def destinations(self, destinations):
-        """
-        Set destinations geometries.
-
-        Arguments:
-        ----------
-        destinations : geopandas.GeoDataFrame
-            Points to route to, has to have at least an `id` column
-            and a geometry
-        """
         self._destinations = destinations
 
         # wrap destinations in a few layers of streams (yeah, Java)
@@ -231,6 +232,7 @@ class RegionalTask:
 
     @property
     def egress_modes(self):
+        """Route with these modes of transport to reach the destination from public transport."""
         return self._egress_modes
 
     @egress_modes.setter
@@ -244,6 +246,11 @@ class RegionalTask:
 
     @property
     def max_bicycle_traffic_stress(self):
+        """
+        Find routes with this maximum stress level for cyclists.
+
+        Ranges from 1-4, see https://docs.conveyal.com/learn-more/traffic-stress
+        """
         return self._max_bicycle_traffic_stress
 
     @max_bicycle_traffic_stress.setter
@@ -253,6 +260,7 @@ class RegionalTask:
 
     @property
     def max_public_transport_rides(self):
+        """Include at most this many consecutive public transport rides."""
         return self._max_public_transport_rides
 
     @max_public_transport_rides.setter
@@ -262,6 +270,7 @@ class RegionalTask:
 
     @property
     def max_time(self):
+        """Restrict trip duration (datetime.timedelta)."""
         return self._max_time
 
     @max_time.setter
@@ -273,6 +282,12 @@ class RegionalTask:
 
     @property
     def max_time_cycling(self):
+        """
+        Restrict routes to at most this duration of cycling (datetime.timedelta).
+
+        Depending on the transport modes specified, this includes times
+        on the main leg of the trip, as well as during access and egress.
+        """
         return self._max_time_cycling
 
     @max_time_cycling.setter
@@ -284,6 +299,7 @@ class RegionalTask:
 
     @property
     def max_time_driving(self):
+        """Restrict routes to at most this duration of driving (datetime.timedelta)."""
         return self._max_time_driving
 
     @max_time_driving.setter
@@ -295,6 +311,12 @@ class RegionalTask:
 
     @property
     def max_time_walking(self):
+        """
+        Restrict routes to at most this duration of walking (datetime.timedelta).
+
+        Depending on the transport modes specified, this includes times
+        on the main leg of the trip, as well as during access and egress.
+        """
         return self._max_time_walking
 
     @max_time_walking.setter
@@ -306,6 +328,7 @@ class RegionalTask:
 
     @property
     def origin(self):
+        """Set the origin for the routing operation (shapely.geometry.Point)."""
         return self._origin
 
     @origin.setter
@@ -324,6 +347,7 @@ class RegionalTask:
 
     @property
     def scenario(self):
+        """Expose the `RegionalTask`’s `Scenario` to Python."""
         return self._regional_task.scenario
 
     @scenario.setter
@@ -333,6 +357,7 @@ class RegionalTask:
 
     @property
     def speed_cycling(self):
+        """Use this speed for routing for cyclists (km/h)."""
         return self._speed_cycling
 
     @speed_cycling.setter
@@ -342,6 +367,7 @@ class RegionalTask:
 
     @property
     def speed_walking(self):
+        """Use this speed for routing pedestrian movement (km/h)."""
         return self._speed_walking
 
     @speed_walking.setter
@@ -351,6 +377,7 @@ class RegionalTask:
 
     @property
     def transport_modes(self):
+        """Get/set the transport modes used to route the main leg of trips."""
         return self._transport_modes
 
     @transport_modes.setter

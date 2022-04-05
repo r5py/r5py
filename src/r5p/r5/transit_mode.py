@@ -13,6 +13,8 @@ __all__ = ["TransitMode"]
 
 
 class TransitMode(enum.Enum):
+    """Public transport modes."""
+
     AIR = com.conveyal.r5.api.util.TransitModes.valueOf("AIR")
     TRAM = com.conveyal.r5.api.util.TransitModes.valueOf("TRAM")
     SUBWAY = com.conveyal.r5.api.util.TransitModes.valueOf("SUBWAY")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Python wrapper for R5"""
+"""Python wrapper for R5."""
 
 from .r5 import (
     LegMode,

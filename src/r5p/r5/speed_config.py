@@ -4,8 +4,6 @@
 
 from ..util import config  # noqa: F401
 
-import json
-
 import jpype
 
 import com.conveyal.r5
@@ -15,7 +13,7 @@ __all__ = ["SpeedConfig"]
 
 
 def _snake_to_camel_case(snake_case):
-    "Convert `snake_case` to CamelCase spelling."""
+    """Convert `snake_case` to CamelCase spelling."""
     if "_" in snake_case:
         words = snake_case.split("_")
         words = [words[0].lower()] + [word.title() for word in words[1:]]

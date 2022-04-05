@@ -34,5 +34,6 @@ argparser = configargparse.get_argument_parser(
 
 
 def arguments():
+    """Parse arguments passed from command line or config file."""
     arguments = argparser.parse_known_args()[0]
     return arguments

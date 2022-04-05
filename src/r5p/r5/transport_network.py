@@ -18,6 +18,7 @@ __all__ = ["TransportNetwork"]
 
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
+
     def __init__(self, osm_pbf, gtfs=[], build_config={}):
         """
         Load a transport network.
@@ -43,14 +44,17 @@ class TransportNetwork:
 
     @property
     def linkage_cache(self):
+        """Expose the `TransportNetwork`’s `linkageCache` to Python."""
         return self._transport_network.linkageCache
 
     @property
     def street_layer(self):
+        """Expose the `TransportNetwork`’s `streetLayer` to Python."""
         return self._transport_network.streetLayer
 
     @property
     def timezone(self):
+        """Determine the timezone of the GTFS data."""
         return self._transport_network.getTimeZone()
 
 

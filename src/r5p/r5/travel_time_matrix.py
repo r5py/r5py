@@ -2,9 +2,12 @@
 
 """Calculate travel times between many origins and destinations."""
 
-import sys
+import math
+import multiprocessing
 
+import joblib
 import numpy
+import pandas
 
 from .. import util  # noqa: F401
 from .transport_network import TransportNetwork
@@ -16,7 +19,13 @@ import com.conveyal.r5
 __all__ = ["TravelTimeMatrix"]
 
 
-MAX_INT32 = (2 ** 31) - 1  # R5 fills cut-off values with MAX_INT32
+# R5 fills cut-off values with MAX_INT32
+MAX_INT32 = (2 ** 31) - 1
+
+# how many (Python) threads to start
+# (they still run many Java threads, so be careful what you wish for ;) )
+# TODO: benchmark the optimum
+NUM_THREADS = math.ceil(multiprocessing.cpu_count() / 2)
 
 
 class TravelTimeMatrix:
@@ -89,49 +98,46 @@ class TravelTimeMatrix:
         # efficient way, such as groupby().apply() or something, but this
         # is quick and straightforward for now
 
-        # have a few shortcuts to make the code below more readable:
-        origins = self.origins
-        transport_network = self.transport_network
-        request = self.request
-
-        od_matrix = self._prepare_output_origin_destination_matrix()
+        od_matrix = pandas.DataFrame({
+            "from_id": pandas.Series(dtype=str),
+            "to_id": pandas.Series(dtype=str),
+            "travel_time": pandas.Series(dtype=float)
+        })
 
         # loop over all origins, modify the request, and compute the times
         # to all destinations.
-        count = 0
-        for from_id in origins.id:
-            request.origin = origins[origins.id == from_id].geometry
-
-            travel_time_computer = com.conveyal.r5.analyst.TravelTimeComputer(
-                request, transport_network
-            )
-            results = travel_time_computer.computeTravelTimes()
-
-            od_matrix[od_matrix.from_id == from_id] = (
-                od_matrix[od_matrix.from_id == from_id].assign(
-                    travel_time=results.travelTimes.getValues()[0]
+        with joblib.Parallel(
+                prefer="threads",
+                verbose=(10 * self.verbose),
+                n_jobs=NUM_THREADS
+        ) as parallel:
+            od_matrix = pandas.concat(
+                parallel(
+                    joblib.delayed(self._travel_times_from_one_origin)(from_id)
+                    for from_id in self.origins.id
                 )
             )
-
-            count += 1
-            if self.verbose:
-                print(count, end="\r", file=sys.stderr, flush=True)
-
-        if self.verbose:
-            print(file=sys.stderr, flush=True)
 
         od_matrix = self.__class__._set_cutoff_travel_times_to_nan(od_matrix)
         return od_matrix
 
-    def _prepare_output_origin_destination_matrix(self):
-        od_matrix = (
-            self.origins.rename(columns={"id": "from_id"})[["from_id"]]
-            .join(
-                self.destinations.rename(columns={"id": "to_id"})[["to_id"]],
-                how="cross"
-            )
+    def _travel_times_from_one_origin(self, from_id):
+        self.request.origin = self.origins[self.origins.id == from_id].geometry
+
+        travel_time_computer = com.conveyal.r5.analyst.TravelTimeComputer(
+            self.request, self.transport_network
         )
-        od_matrix["travel_time"] = numpy.nan
+        travel_times = travel_time_computer.computeTravelTimes().travelTimes.getValues()[0]
+
+        od_matrix = pandas.DataFrame({
+            "from_id": pandas.Series(dtype=str),
+            "to_id": pandas.Series(dtype=str),
+            "travel_time": pandas.Series(dtype=float)
+        })
+        od_matrix["to_id"] = self.destinations.id
+        od_matrix["travel_time"] = travel_times
+        od_matrix["from_id"] = from_id
+
         return od_matrix
 
     @staticmethod

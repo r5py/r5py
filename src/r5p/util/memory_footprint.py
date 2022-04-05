@@ -2,6 +2,12 @@
 
 """Determine a reasonable memory footprint for the Java virtual machine."""
 
+# This is obviously a very naive approach: we simply assume that we can hog
+# up to 80% of RAM for Java alone, if that leaves a minimum of 2 GiB for
+# the operating system, the Python part (potentially huge dataframes!), and
+# everything else that happens to run on the same machine.
+# TODO: figure out something smarter ;)
+
 import math
 import psutil
 

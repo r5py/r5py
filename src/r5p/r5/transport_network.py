@@ -2,7 +2,7 @@
 
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
-from ..util import config  # noqa: F401
+from .. import util  # noqa: F401
 from .transport_network_builder_config import TransportNetworkBuilderConfig
 
 import jpype

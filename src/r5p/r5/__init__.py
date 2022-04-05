@@ -2,7 +2,7 @@
 
 """R5 classes."""
 
-from ..util import config, jvm  # noqa: F401
+from .. import util  # noqa: F401
 
 from .leg_mode import LegMode
 from .regional_task import RegionalTask

@@ -6,7 +6,7 @@ import datetime
 
 import jpype
 
-from ..util import config  # noqa: F401
+from .. import util  # noqa: F401
 from .leg_mode import LegMode
 from .scenario import Scenario
 from .street_mode import StreetMode

@@ -2,10 +2,9 @@
 
 """Wraps a com.conveyal.r5.point_to_point.builder.TNBuilderConfig."""
 
-from ..util import config  # noqa: F401
+from .. import util  # noqa: F401
 
 import json
-import re
 
 import jpype
 
@@ -15,25 +14,6 @@ from .speed_config import SpeedConfig
 
 
 __all__ = ["TransportNetworkBuilderConfig"]
-
-
-_IS_CONSTANT_NAME_RE = re.compile(r'[A-Z_]+')
-
-
-def _is_constant_name(name):
-    """Check if `name` sounds like the name of a constant."""
-    return bool(_IS_CONSTANT_NAME_RE.match(name))
-
-
-def _snake_to_camel_case(snake_case):
-    """Convert `snake_case` to CamelCase spelling."""
-    if "_" in snake_case:
-        words = snake_case.split("_")
-        words = [words[0].lower()] + [word.title() for word in words[1:]]
-        camel_case = "".join(words)
-    else:
-        camel_case = snake_case[0].lower() + snake_case[1:]
-    return camel_case
 
 
 class TransportNetworkBuilderConfig(dict):
@@ -73,7 +53,7 @@ class TransportNetworkBuilderConfig(dict):
         """
         super().__init__()
         kwargs = {
-            _snake_to_camel_case(key): value
+            util.snake_to_camel_case(key): value
             for key, value in kwargs
         }
         _config = self.DEFAULT_CONFIG

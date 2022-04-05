@@ -2,7 +2,7 @@
 
 """Wraps a com.conveyal.r5.point_to_point.builder.SpeedConfig."""
 
-from ..util import config  # noqa: F401
+from .. import util  # noqa: F401
 
 import jpype
 
@@ -10,17 +10,6 @@ import com.conveyal.r5
 
 
 __all__ = ["SpeedConfig"]
-
-
-def _snake_to_camel_case(snake_case):
-    """Convert `snake_case` to CamelCase spelling."""
-    if "_" in snake_case:
-        words = snake_case.split("_")
-        words = [words[0].lower()] + [word.title() for word in words[1:]]
-        camel_case = "".join(words)
-    else:
-        camel_case = snake_case[0].lower() + snake_case[1:]
-    return camel_case
 
 
 class SpeedConfig(dict):
@@ -56,7 +45,7 @@ class SpeedConfig(dict):
         """
         super().__init__()
         kwargs = {
-            _snake_to_camel_case(key): value
+            util.snake_to_camel_case(key): value
             for key, value in kwargs
         }
         _config = self.DEFAULT_CONFIG

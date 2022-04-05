@@ -10,6 +10,12 @@ import r5p
 
 
 def main():
+    """
+    Test r5p.
+
+    Loads some files I have laying around in my home folder,
+    then computes a travel time matrix out of them.
+    """
     osm_pbf = "/home/christoph/Dokumente/Helsingin Yliopisto/Papers/Current/2021-10 Slawek’s paper/r5/Helsinki/paakaupunkiseutu.pbf"
     gtfs = ["/home/christoph/Dokumente/Helsingin Yliopisto/Papers/Current/2021-10 Slawek’s paper/r5/Helsinki/GTFS.zip"]
 
@@ -18,8 +24,8 @@ def main():
         layer="YKR 250m Pääkaupunkiseutu centroids (EPSG:4326)",
     )
 
-    # for debugging, only every 25th row
-    ykr_centroids = ykr_centroids.iloc[::25, :]
+    # # for debugging, only every 25th row
+    # ykr_centroids = ykr_centroids.iloc[::25, :]
 
     origins_destinations = ykr_centroids[["id", "geometry"]]
 

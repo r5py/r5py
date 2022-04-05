@@ -29,10 +29,9 @@ class TransportNetwork:
         gtfs : list[str]
             paths to public transport schedule information in GTFS format
         build_json : dict
-            options accepted by TNBuilderConfig
+            options accepted by TNBuilderConfig (including SpeedConfig)
         """
         build_config = TransportNetworkBuilderConfig(**build_config)
-        # build_config = com.conveyal.r5.point_to_point.builder.TNBuilderConfig.defaultConfig()
         self._transport_network = (
             com.conveyal.r5.transit.TransportNetwork.fromFiles(
                 java.lang.String(osm_pbf),

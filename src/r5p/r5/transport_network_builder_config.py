@@ -76,7 +76,11 @@ class TransportNetworkBuilderConfig(dict):
             _snake_to_camel_case(key): value
             for key, value in kwargs
         }
-        _config = self.DEFAULT_CONFIG | kwargs
+        _config = self.DEFAULT_CONFIG
+        if "speeds" in kwargs:
+            _config["speeds"] = SpeedConfig(kwargs["speeds"])
+            del kwargs["speeds"]
+        _config.update(kwargs)
         for key, value in _config.items():
             self[key] = value
 

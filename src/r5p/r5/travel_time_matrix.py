@@ -24,12 +24,17 @@ MAX_INT32 = (2 ** 31) - 1
 
 # how many (Python) threads to start
 # (they still run many Java threads, so be careful what you wish for ;) )
-# TODO: benchmark the optimum
+# TODO: benchmark the optimal number of threads
 NUM_THREADS = math.ceil(multiprocessing.cpu_count() / 2)
 
 
 class TravelTimeMatrix:
     """Calculate travel times between many origins and destinations."""
+
+    # TODO:
+    #   - implement custom percentiles,
+    #   - breakdown of times,
+    #   - custom function for summarising broken down times
 
     def __init__(
             self,
@@ -50,18 +55,18 @@ class TravelTimeMatrix:
             extract in PBF format, a list of zero of more paths to GTFS transport
             schedule files, and a dict with `build_config` options.
         origins : geopandas.GeoDataFrame
-            Points to route _from_
+            Places to find a route _from_
             Has to have a point geometry, and at least an `id` column
         destinations : geopandas.GeoDataFrame (optional)
-            Points to route _to_
+            Places to find a route _to_
             Has to have a point geometry, and at least an `id` column
             If omitted, use same data set as for origins
         **kwargs : mixed
-            Any arguments than can be passed to `r5p.r5.RegionalTask`,
-            i.e., `departure`, `departure_time_window`, `transport_modes`,
+            Any arguments than can be passed to `r5p.r5.RegionalTask`:
+            `departure`, `departure_time_window`, `transport_modes`,
             `access_modes`, `egress_modes`, `max_time`, `max_time_walking`,
-            `max_time_cycling`, `max_time_driving`, `speed_walking`, `speed_cycling`,
-            `speed_walking`, `max_public_transport_rides`, `max_bicycle_traffic_stress`
+            `max_time_cycling`, `speed_cycling`, `speed_walking`,
+            `max_public_transport_rides`, `max_bicycle_traffic_stress`
         """
         if not isinstance(transport_network, TransportNetwork):
             transport_network = TransportNetwork(*transport_network)

@@ -82,13 +82,13 @@ class RegionalTask:
             Default: 2 hours
         max_time_walking : datetime.timedelta
             Maximum time spent walking, potentially including access and egress
-            Default: 2 hours
-        max_time_cycling
+            Default: max_time
+        max_time_cycling : datetime.timedelta
             Maximum time spent cycling, potentially including access and egress
-            Default: 2 hours
-        max_time_driving
-            Maximum time spent driving, potentially including access and egress
-            Default: 2 hours
+            Default: max_time
+        max_time_driving : datetime.timedelta
+            Maximum time spent driving
+            Default: max_time
         speed_walking : float
             Mean walking speed for routing, km/h.
             Default: 3.6 km/h
@@ -115,16 +115,14 @@ class RegionalTask:
         self.departure_time_window = departure_time_window
 
         self.access_modes = access_modes
-        if egress_modes:
-            self.egress_modes = egress_modes
-        else:
-            self.egress_modes = access_modes
-        self.transport_modes = transport_modes  # last, because extra logic that depends on the others
+        self.egress_modes = egress_modes if egress_modes is not None else access_modes
+        # last, because extra logic that depends on the others having been set
+        self.transport_modes = transport_modes
 
         self.max_time = max_time
-        self.max_time_walking = max_time_walking
-        self.max_time_cycling = max_time_cycling
-        self.max_time_driving = max_time_driving
+        self.max_time_walking = max_time_walking if max_time_walking is not None else max_time
+        self.max_time_cycling = max_time_cycling if max_time_cycling is not None else max_time
+        self.max_time_driving = max_time_driving if max_time_driving is not None else max_time
 
         self.speed_cycling = speed_cycling
         self.speed_walking = speed_walking
@@ -230,6 +228,11 @@ class RegionalTask:
 
         self._regional_task.destinationPointSets = [destinations_point_set]
 
+        # TODO: figure out whether we could cut this a bit shorter. We should be able
+        # to construct the ByteArray fed to java.io.ByteArrayInputStream as a Python `bytes`
+        # without the detour via two Java OutputStreams.
+        # (but not sure how to distinguish between the writeUTF/writeDouble/etc)
+
     @property
     def egress_modes(self):
         """Route with these modes of transport to reach the destination from public transport."""
@@ -276,9 +279,12 @@ class RegionalTask:
     @max_time.setter
     def max_time(self, max_time):
         self._max_time = max_time
-        self._regional_task.maxTripDurationMinutes = int(
+        max_time = int(
             max_time.total_seconds() / 60
         )
+        self._regional_task.streetTime = max_time
+        self._regional_task.maxTripDurationMinutes = max_time
+        self._regional_task.maxCarTime = max_time
 
     @property
     def max_time_cycling(self):
@@ -325,6 +331,11 @@ class RegionalTask:
         self._regional_task.maxWalkTime = int(
             max_time_walking.total_seconds() / 60
         )
+
+    # TODO: implement a proper balancing mechanism between the different per-mode
+    # maximum times, i.e., a sanity check that the different more specific max_times
+    # don’t exceed max_time, for instance, but probably also more complex interrelations
+    # (this needs some sitting down with pen and paper and a large cup of tea)
 
     @property
     def origin(self):
@@ -410,7 +421,7 @@ class RegionalTask:
             else:
                 access_modes = direct_modes
         else:  # not public transport
-            egress_modes = []  # ignore egress (why?)
+            egress_modes = []  # ignore egress (why? why not also access?)
             if StreetMode.CAR in transport_modes:
                 access_modes = direct_modes = [LegMode.CAR]
             elif StreetMode.WALK in transport_modes:
@@ -454,4 +465,5 @@ class RegionalTask:
 @jpype._jcustomizer.JConversion("com.conveyal.r5.analyst.cluster.AnalysisWorkerTask", exact=RegionalTask)
 @jpype._jcustomizer.JConversion("com.conveyal.r5.analyst.cluster.RegionalTask", exact=RegionalTask)
 def _cast_RegionalTask(java_class, object_):
-    return object_._regional_task.clone()  # so we can reuse the Python instance (e.g., with next origin)
+    return object_._regional_task.clone()
+    # cloned, so we can reuse the Python instance (e.g., with next origin)

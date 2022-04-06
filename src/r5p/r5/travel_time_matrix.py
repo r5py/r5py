@@ -35,6 +35,12 @@ class TravelTimeMatrix:
     #   - implement custom percentiles,
     #   - breakdown of times,
     #   - custom function for summarising broken down times
+    #
+    # for the trip breakdown: R5 has a hardcoded maximum number of destinations
+    # it returns detailed information for, and it’s set at 5000 by default.
+    # Not sure how easy it is to change it at runtime from here (it is a static
+    # property of com.conveyal.r5.analyst.cluster.PathResult; can static properties
+    # of Java classes be modified in a singleton kind of way?)
 
     def __init__(
             self,

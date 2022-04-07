@@ -3,6 +3,7 @@
 """Python wrapper for R5."""
 
 from .r5 import (
+    BreakdownStat,
     LegMode,
     RegionalTask,
     StreetMode,
@@ -12,6 +13,7 @@ from .r5 import (
 )
 
 __all__ = [
+    "BreakdownStat",
     "LegMode",
     "RegionalTask",
     "StreetMode",

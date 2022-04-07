@@ -4,14 +4,16 @@
 
 import math
 import multiprocessing
+import threading
 
 import joblib
 import numpy
 import pandas
 
 from .. import util  # noqa: F401
-from .transport_network import TransportNetwork
+from .breakdown_stat import BreakdownStat
 from .regional_task import RegionalTask
+from .transport_network import TransportNetwork
 
 import com.conveyal.r5
 
@@ -33,20 +35,19 @@ class TravelTimeMatrix:
 
     # TODO:
     #   - implement custom percentiles,
-    #   - breakdown of times,
-    #   - custom function for summarising broken down times
-    #
-    # for the trip breakdown: R5 has a hardcoded maximum number of destinations
-    # it returns detailed information for, and it’s set at 5000 by default.
-    # Not sure how easy it is to change it at runtime from here (it is a static
-    # property of com.conveyal.r5.analyst.cluster.PathResult; can static properties
-    # of Java classes be modified in a singleton kind of way?)
+    #   - how to best return the values for more than one percentile?
+    #       -> maybe column names travel_time_{percentile}
+    #           (lo and behold, that’s exactly how r5r does it!)
+    #   - breakdown of times, DONE
+    #   - custom function for summarising broken down times DONE
 
     def __init__(
             self,
             transport_network,
             origins,
             destinations=None,
+            breakdown=False,
+            breakdown_stat=BreakdownStat.MEAN,
             **kwargs
     ):
         """
@@ -67,6 +68,12 @@ class TravelTimeMatrix:
             Places to find a route _to_
             Has to have a point geometry, and at least an `id` column
             If omitted, use same data set as for origins
+        breakdown : bool
+            Return a more detailed breakdown of the routing results.
+            Default: False
+        breakdown_stat : r5p.BreakdownStat
+            Summarise the values of the detailed breakdown using this statistical function.
+            Default: r5p.BreakdownStat.MEAN
         **kwargs : mixed
             Any arguments than can be passed to `r5p.r5.RegionalTask`:
             `departure`, `departure_time_window`, `transport_modes`,
@@ -84,10 +91,23 @@ class TravelTimeMatrix:
             destinations = origins
         self.destinations = destinations
 
+        self.breakdown = breakdown
+        self.breakdown_stat = breakdown_stat
+
+        # R5 has a maximum number of destinations for which
+        # it returns detailed information, and it’s set
+        # at 5000 by default. The value is a static property
+        # of com.conveyal.r5.analyst.cluster.PathResult; can
+        # static properites of Java classes be modified in a
+        # singleton kind of way?)
+        if breakdown:
+            com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = len(destinations) + 1
+
         self.request = RegionalTask(
             transport_network,
             origins.iloc[0].geometry,  # just one origin to pass through __init__
             destinations,
+            breakdown=breakdown,
             **kwargs
         )
 
@@ -109,12 +129,6 @@ class TravelTimeMatrix:
         # efficient way, such as groupby().apply() or something, but this
         # is quick and straightforward for now
 
-        od_matrix = pandas.DataFrame({
-            "from_id": pandas.Series(dtype=str),
-            "to_id": pandas.Series(dtype=str),
-            "travel_time": pandas.Series(dtype=float)
-        })
-
         # loop over all origins, modify the request, and compute the times
         # to all destinations.
         with joblib.Parallel(
@@ -129,7 +143,70 @@ class TravelTimeMatrix:
                 )
             )
 
-        od_matrix = self.__class__._set_cutoff_travel_times_to_nan(od_matrix)
+        return od_matrix
+
+    def _parse_results_of_one_origin_details(self, from_id, results):
+        details_columns = {
+
+            # column types are not quite clear, maybe need to keep a hardcoded
+            # list of columns instead of this dynamic approach
+
+            # util.camel_to_snake_case(str(column_name)): pandas.Series(dtype=float)
+            util.camel_to_snake_case(str(column_name)): pandas.Series(dtype=str)
+            for column_name in results.paths.DATA_COLUMNS
+        }
+        od_matrix = pandas.DataFrame(
+            {
+                "from_id": pandas.Series(dtype=str),
+                "to_id": pandas.Series(dtype=str)
+            } | details_columns
+        )
+        # first the column with correct length (not a scalar)
+        od_matrix["to_id"] = self.destinations.id
+        od_matrix["from_id"] = from_id
+
+        # `details` is a ‘jagged’ Java array, i.e., can have incomplete/omitted/empty rows.
+        # That’s why simply transposing the row-indexed data into columns using
+        # `zip(*details)` does not work as expected
+        # On top of that, non-empty rows seem to be wrapped in yet another array dimension.
+
+        # Our strategy here is to first fill in empty rows with NULL values and
+        # cast values to Python `str`, and only then transposing
+
+        details = results.paths.summarizeIterations(self.breakdown_stat.value)
+
+        _EMPTY_ROW = [None] * len(details_columns)
+        details = [
+            [str(value) if value else None for record in row for value in record]
+            if row else _EMPTY_ROW
+            for row in details
+        ]
+
+        for (column_name, column_data) in zip(
+                details_columns.keys(),
+                zip(*details)  # transpose data (it’s row-indexed)
+        ):
+            od_matrix[column_name] = column_data
+
+        return od_matrix
+
+    def _parse_results_of_one_origin_travel_times(self, from_id, results):
+        # return travel times only
+        travel_times = results.travelTimes.getValues()[0]
+
+        od_matrix = pandas.DataFrame({
+            "from_id": pandas.Series(dtype=str),
+            "to_id": pandas.Series(dtype=str),
+            "travel_time": pandas.Series(dtype=float)
+        })
+        # first the columns with correct length (not the scalar from_id)
+        od_matrix["to_id"] = self.destinations.id
+        od_matrix["travel_time"] = travel_times
+        od_matrix["from_id"] = from_id
+
+        # R5’s NULL value is MAX_INT32
+        od_matrix.loc[od_matrix.travel_time == MAX_INT32, "travel_time"] = numpy.nan
+
         return od_matrix
 
     def _travel_times_from_one_origin(self, from_id):
@@ -138,22 +215,11 @@ class TravelTimeMatrix:
         travel_time_computer = com.conveyal.r5.analyst.TravelTimeComputer(
             self.request, self.transport_network
         )
-        travel_times = travel_time_computer.computeTravelTimes().travelTimes.getValues()[0]
+        results = travel_time_computer.computeTravelTimes()
 
-        od_matrix = pandas.DataFrame({
-            "from_id": pandas.Series(dtype=str),
-            "to_id": pandas.Series(dtype=str),
-            "travel_time": pandas.Series(dtype=float)
-        })
-        od_matrix["to_id"] = self.destinations.id
-        od_matrix["travel_time"] = travel_times
-        od_matrix["from_id"] = from_id
+        if self.breakdown:
+            od_matrix = self._parse_results_of_one_origin_details(from_id, results)
+        else:
+            od_matrix = self._parse_results_of_one_origin_travel_times(from_id, results)
 
-        return od_matrix
-
-    @staticmethod
-    def _set_cutoff_travel_times_to_nan(od_matrix):
-        od_matrix[od_matrix.travel_time == MAX_INT32] = (
-            od_matrix[od_matrix.travel_time == MAX_INT32].assign(travel_time=numpy.nan)
-        )
         return od_matrix

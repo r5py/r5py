@@ -18,6 +18,11 @@ import java.util.ArrayList
 __all__ = ["TransportNetwork"]
 
 
+# TODO: Figure out how to make R5 save the .mapdb elsewhere, and not next
+# to the input files (they could well be on a r/o filesystem, or in a dedicate
+# data folder that should not be littered with random cache files).
+
+
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
 

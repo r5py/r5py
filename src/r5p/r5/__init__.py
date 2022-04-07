@@ -4,6 +4,7 @@
 
 from .. import util  # noqa: F401
 
+from .breakdown_stat import BreakdownStat
 from .leg_mode import LegMode
 from .regional_task import RegionalTask
 from .scenario import Scenario
@@ -13,6 +14,7 @@ from .transport_network import TransportNetwork
 from .travel_time_matrix import TravelTimeMatrix
 
 __all__ = [
+    "BreakdownStat",
     "LegMode",
     "RegionalTask",
     "Scenario",

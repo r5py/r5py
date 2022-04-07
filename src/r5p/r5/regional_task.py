@@ -36,7 +36,7 @@ class RegionalTask:
 
             transport_modes=[TransitMode.TRANSIT],
             access_modes=[LegMode.WALK],
-            egress_modes=[],  # default: access_modes
+            egress_modes=None,  # default: access_modes
 
             max_time=datetime.timedelta(hours=2),
             max_time_walking=datetime.timedelta(hours=2),
@@ -48,6 +48,8 @@ class RegionalTask:
 
             max_public_transport_rides=8,
             max_bicycle_traffic_stress=3,
+
+            breakdown=False,
     ):
         """
         Create a RegionalTask.
@@ -102,6 +104,9 @@ class RegionalTask:
             Maximum stress level for cyclist routing, ranges from 1-4
             see https://docs.conveyal.com/learn-more/traffic-stress
             Default: 3
+        breakdown : bool
+            Compute a more detailed breakdown of the routes.
+            Default: False
         """
         self._regional_task = com.conveyal.r5.analyst.cluster.RegionalTask()
         self.scenario = Scenario()
@@ -129,6 +134,8 @@ class RegionalTask:
 
         self.max_public_transport_rides = max_public_transport_rides
         self.max_bicycle_traffic_stress = max_bicycle_traffic_stress
+
+        self._regional_task.includePathResults = breakdown
 
         # a few settings we don’t expose (yet?)
         self._regional_task.makeTauiSite = False
@@ -396,7 +403,7 @@ class RegionalTask:
         transport_modes = set(transport_modes)
         self._transport_modes = transport_modes
 
-        # split them up into direct and transit modes
+        # split them up into direct and transit modes,
         transit_modes = [
             mode
             for mode in transport_modes
@@ -405,8 +412,15 @@ class RegionalTask:
         direct_modes = [
             mode
             for mode in transport_modes
-            if isinstance(mode, StreetMode)
+            if isinstance(mode, LegMode)
         ]
+
+        print({
+            "transit_modes": transit_modes,
+            "direct_modes": direct_modes,
+            "access_modes": self.access_modes,
+            "egress_modes": self.egress_modes
+        })
 
         # the different modes underlie certain rules
         # e.g., some direct modes require certain access modes
@@ -421,13 +435,19 @@ class RegionalTask:
             else:
                 access_modes = direct_modes
         else:  # not public transport
-            egress_modes = []  # ignore egress (why? why not also access?)
-            if StreetMode.CAR in transport_modes:
-                access_modes = direct_modes = [LegMode.CAR]
-            elif StreetMode.WALK in transport_modes:
-                access_modes = direct_modes = [LegMode.WALK]
-            elif StreetMode.BICYCLE in transport_modes:
-                access_modes = direct_modes = [LegMode.BICYCLE]
+            egress_modes = []  # ignore egress (why?)
+
+        #     # this is weird: I reckon this is trying to keep the fastest mode only,
+        #     # and assumes that car is always faster that bike is always faster than walking
+        #     if LegMode.CAR in transport_modes:
+        #         access_modes = direct_modes = [LegMode.CAR]
+        #     elif LegMode.BICYCLE in transport_modes:
+        #         access_modes = direct_modes = [LegMode.BICYCLE]
+        #     elif LegMode.WALK in transport_modes:
+        #         access_modes = direct_modes = [LegMode.WALK]
+
+            # let’s do that differently (even if potentially more expensive, computationally)
+            access_modes = direct_modes
 
         # assign the calculated modes
         self.access_modes = access_modes
@@ -438,20 +458,21 @@ class RegionalTask:
         )
         self._regional_task.directModes = RegionalTask._enum_set(
             direct_modes,
-            com.conveyal.r5.api.util.LegMode  # (!) on purpose:
-            # StreetMode is a subset of LegMode.
-            # com.conveyal.r5.analyst.TravelTimeComputer expects LegModes
+            com.conveyal.r5.api.util.LegMode
         )
 
         # pre-compute closest road segments/public transport stops to destination points
         # (for fully-interconnected travel time matrices this also covers all origin points,
         # but potentially this needs to be extended to run also for origins) //TODO
+
         for mode in direct_modes:
             for destination_point_set in self._regional_task.destinationPointSets:
                 self.transport_network.linkage_cache.getLinkage(
                     destination_point_set,
                     self.transport_network.street_layer,
                     StreetMode[mode.name].value
+                    # check whether casting this in Java (LegMode.value.toStreetMode())
+                    # would be better
                 )
 
     @staticmethod

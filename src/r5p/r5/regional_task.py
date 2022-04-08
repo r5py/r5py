@@ -57,7 +57,7 @@ class RegionalTask:
 
         Arguments
         ---------
-        transport_network : r5p.r5.TransportNetwork
+        transport_network : r5py.r5.TransportNetwork
             The street + public transport network to route on
         origin : shapely.geometry.Point
             Point to route from
@@ -75,13 +75,13 @@ class RegionalTask:
             Return the travel time for this percentile of all computed trips,
             by travel time. By default, return the median travel time.
             Default: [50]
-        transport_modes : list[r5p.r5.TransitMode | r5p.r5.LegMode]
+        transport_modes : list[r5py.r5.TransitMode | r5py.r5.LegMode]
             The mode of transport to use for routing.
-            Default: [r5p.r5.TransitMode.TRANSIT] (all public transport)
-        access_modes : list[r5p.r5.LegMode]
+            Default: [r5py.r5.TransitMode.TRANSIT] (all public transport)
+        access_modes : list[r5py.r5.LegMode]
             Mode of transport to public transport stops.
-            Default: [r5p.r5.LegMode.WALK]
-        egress_modes : list[r5p.r5.LegMode]
+            Default: [r5py.r5.LegMode.WALK]
+        egress_modes : list[r5py.r5.LegMode]
             Mode of transport from public transport stops.
             Default: access_modes
         max_time : datetime.timedelta

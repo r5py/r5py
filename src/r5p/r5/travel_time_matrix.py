@@ -69,9 +69,9 @@ class TravelTimeMatrix:
 
         Arguments
         ---------
-        transport_network : r5p.r5.TransportNetwork | tuple(str, list(str), dict)
+        transport_network : r5py.r5.TransportNetwork | tuple(str, list(str), dict)
             The transport network to route on. This can either be a readily
-            initialised `r5p.r5.TransportNetwork` or a tuple of the parameters
+            initialised `r5py.r5.TransportNetwork` or a tuple of the parameters
             passed to `TransportNetwork.__init__()`: the path to an OpenStreetMap
             extract in PBF format, a list of zero of more paths to GTFS transport
             schedule files, and a dict with `build_config` options.
@@ -85,11 +85,11 @@ class TravelTimeMatrix:
         breakdown : bool
             Return a more detailed breakdown of the routing results.
             Default: False
-        breakdown_stat : r5p.BreakdownStat
+        breakdown_stat : r5py.BreakdownStat
             Summarise the values of the detailed breakdown using this statistical function.
-            Default: r5p.BreakdownStat.MEAN
+            Default: r5py.BreakdownStat.MEAN
         **kwargs : mixed
-            Any arguments than can be passed to `r5p.r5.RegionalTask`:
+            Any arguments than can be passed to `r5py.r5.RegionalTask`:
             `departure`, `departure_time_window`, `transport_modes`,
             `access_modes`, `egress_modes`, `max_time`, `max_time_walking`,
             `max_time_cycling`, `speed_cycling`, `speed_walking`,

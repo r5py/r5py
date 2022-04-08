@@ -13,7 +13,7 @@ __all__ = ["LegMode"]
 
 
 class LegMode(enum.Enum):
-    """Transport modes (a superset of `r5p.r5.StreetMode`)."""
+    """Transport modes (a superset of `r5py.r5.StreetMode`)."""
 
     WALK = com.conveyal.r5.api.util.LegMode.valueOf("WALK")
     BICYCLE = com.conveyal.r5.api.util.LegMode.valueOf("BICYCLE")

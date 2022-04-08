@@ -26,5 +26,6 @@ src/**/*.c
 src/**/*.o
 
 docs/_build/
-docs/data/*.mapdb{,.p}
+docs/data/*.mapdb
+docs/data/*.mapdb.p
 **/.ipynb_checkpoints

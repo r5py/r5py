@@ -15,9 +15,11 @@ sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
 
 ConfigArgParse
+contextily
 geopandas
 joblib
 jpype1
+matplotlib
 numpy
 pandas
 psutil

@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 
 
-"""Test r5p."""
+"""Test r5py."""
 
 
 import datetime
 import geopandas
-import r5p
+import r5py
 
 
 def main():
     """
-    Test r5p.
+    Test r5py.
 
     Loads some files I have laying around in my home folder,
     then computes a travel time matrix out of them.
@@ -29,11 +29,11 @@ def main():
 
     origins_destinations = ykr_centroids[["id", "geometry"]]
 
-    travel_time_matrix = r5p.TravelTimeMatrix(
+    travel_time_matrix = r5py.TravelTimeMatrix(
         (osm_pbf, gtfs, {}),
         origins_destinations,
         departure=datetime.datetime(year=2022, month=2, day=22, hour=8, minute=30),
-        transport_modes=[r5p.TransitMode.TRANSIT],
+        transport_modes=[r5py.TransitMode.TRANSIT],
         breakdown=True,
         percentiles=[25, 50, 75],
         # percentiles=[33],

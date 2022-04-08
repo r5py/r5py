@@ -162,16 +162,10 @@ class TravelTimeMatrix:
     def _parse_results_of_one_origin_details(self, from_id, results):
         od_matrix = pandas.DataFrame(
             {
-                "from_id": pandas.Series(dtype=str),
-                "to_id": pandas.Series(dtype=str)
-            } | {
                 column_name: pandas.Series(dtype=column_type)
                 for column_name, column_type in DATA_COLUMNS.items()
             }
         )
-        # first the column with correct length (not a scalar)
-        od_matrix["to_id"] = self.destinations.id
-        od_matrix["from_id"] = from_id
 
         # `details` is a ‘jagged’ Java array, i.e., can have incomplete/omitted/empty rows.
         # That’s why simply transposing the row-indexed data into columns using
@@ -264,9 +258,11 @@ class TravelTimeMatrix:
         )
         results = travel_time_computer.computeTravelTimes()
 
+        od_matrix = self._parse_results_of_one_origin_travel_times(from_id, results)
+
         if self.breakdown:
-            od_matrix = self._parse_results_of_one_origin_details(from_id, results)
-        else:
-            od_matrix = self._parse_results_of_one_origin_travel_times(from_id, results)
+            od_matrix = od_matrix.join(
+                self._parse_results_of_one_origin_details(from_id, results)
+            )
 
         return od_matrix

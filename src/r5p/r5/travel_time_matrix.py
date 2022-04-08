@@ -4,7 +4,6 @@
 
 import math
 import multiprocessing
-import threading
 
 import joblib
 import numpy
@@ -28,6 +27,21 @@ MAX_INT32 = (2 ** 31) - 1
 # (they still run many Java threads, so be careful what you wish for ;) )
 # TODO: benchmark the optimal number of threads
 NUM_THREADS = math.ceil(multiprocessing.cpu_count() / 2)
+
+# Which columns (and types) are returned by
+# com.conveyal.r5.analyst.cluster.PathResult.summarizeIterations?
+DATA_COLUMNS = {
+    "routes": pandas.SparseDtype(str),
+    "board_stops": pandas.SparseDtype(str),
+    "alight_stops": pandas.SparseDtype(str),
+    "ride_times": pandas.SparseDtype(float),
+    "access_time": float,
+    "egress_time": float,
+    "transfer_time": float,
+    "wait_times": pandas.SparseDtype(float),
+    "total_time": float,
+    "n_iterations": int
+}
 
 
 class TravelTimeMatrix:
@@ -146,20 +160,14 @@ class TravelTimeMatrix:
         return od_matrix
 
     def _parse_results_of_one_origin_details(self, from_id, results):
-        details_columns = {
-
-            # column types are not quite clear, maybe need to keep a hardcoded
-            # list of columns instead of this dynamic approach
-
-            # util.camel_to_snake_case(str(column_name)): pandas.Series(dtype=float)
-            util.camel_to_snake_case(str(column_name)): pandas.Series(dtype=str)
-            for column_name in results.paths.DATA_COLUMNS
-        }
         od_matrix = pandas.DataFrame(
             {
                 "from_id": pandas.Series(dtype=str),
                 "to_id": pandas.Series(dtype=str)
-            } | details_columns
+            } | {
+                column_name: pandas.Series(dtype=column_type)
+                for column_name, column_type in DATA_COLUMNS.items()
+            }
         )
         # first the column with correct length (not a scalar)
         od_matrix["to_id"] = self.destinations.id
@@ -175,17 +183,38 @@ class TravelTimeMatrix:
 
         details = results.paths.summarizeIterations(self.breakdown_stat.value)
 
-        _EMPTY_ROW = [None] * len(details_columns)
+        _EMPTY_ROW = [None] * len(DATA_COLUMNS)
         details = [
             [str(value) if value else None for record in row for value in record]
             if row else _EMPTY_ROW
             for row in details
         ]
 
-        for (column_name, column_data) in zip(
-                details_columns.keys(),
-                zip(*details)  # transpose data (it’s row-indexed)
+        for ((column_name, column_type), column_data) in zip(
+                DATA_COLUMNS.items(),
+                zip(*details)  # transpose data
         ):
+            # split the array columns (they are pipe-separated strings)
+            # also, cast to destination type
+
+            # note, that `pandas.SparseDtype(str).subtype` defaults to dtype('O')
+            # fortunately, we get str, which remains a character string when
+            # cast to dtype('O')
+
+            if isinstance(column_type, pandas.SparseDtype):
+                column_data = [
+                    [
+                        column_type.subtype.type(value)  # cast
+                        for value in row.split("|")
+                    ] if row is not None else []
+                    for row in column_data
+                ]
+            else:
+                column_data = [
+                    column_type(row) if row is not None else None  # cast
+                    for row in column_data
+                ]
+
             od_matrix[column_name] = column_data
 
         return od_matrix

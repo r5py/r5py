@@ -45,7 +45,9 @@ def main():
     travel_time_matrix.verbose = True
 
     results = travel_time_matrix.compute_travel_times()
-    results.to_csv("/tmp/ttm.csv")
+    results.to_pickle("/tmp/ttm.zstd")
+
+    return results
 
 
 if __name__ == "__main__":

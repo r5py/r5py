@@ -13,7 +13,14 @@ __all__ = ["TransitMode"]
 
 
 class TransitMode(enum.Enum):
-    """Public transport modes."""
+    """
+    Public transport modes.
+
+    AIR, TRAM, SUBWAY, RAIL, BUS, FERRY, CABLE_CAR,
+    GONDOLA, FUNICULAR, TRANSIT
+
+    TRANSIT is a shorthand of all of the others combined.
+    """
 
     AIR = com.conveyal.r5.api.util.TransitModes.valueOf("AIR")
     TRAM = com.conveyal.r5.api.util.TransitModes.valueOf("TRAM")

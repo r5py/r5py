@@ -8,7 +8,6 @@ from .r5 import (
     BreakdownStat,
     LegMode,
     RegionalTask,
-    StreetMode,
     TransitMode,
     TransportNetwork,
     TravelTimeMatrix
@@ -18,7 +17,6 @@ __all__ = [
     "BreakdownStat",
     "LegMode",
     "RegionalTask",
-    "StreetMode",
     "TransitMode",
     "TransportNetwork",
     "TravelTimeMatrix",

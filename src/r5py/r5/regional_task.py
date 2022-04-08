@@ -57,31 +57,31 @@ class RegionalTask:
 
         Arguments
         ---------
-        transport_network : r5py.r5.TransportNetwork
+        transport_network : r5py.TransportNetwork
             The street + public transport network to route on
         origin : shapely.geometry.Point
             Point to route from
         destinations : geopandas.GeoDataFrame
-            Points to route to, has to have at least an `id` column
+            Points to route to, has to have at least an ``id`` column
             and a geometry
         departure : datetime.datetime
             Find public transport connections leaving every minute within
-            `departure_time_window` after `departure`.
+            ``departure_time_window`` after ``departure``.
             Default: current date and time
         departure_time_window : datetime.timedelta
-            (see `departure`)
+            (see ``departure``)
             Default: 1 hour
         percentiles : list[int]
             Return the travel time for this percentile of all computed trips,
             by travel time. By default, return the median travel time.
             Default: [50]
-        transport_modes : list[r5py.r5.TransitMode | r5py.r5.LegMode]
+        transport_modes : list[r5py.TransitMode | r5py.LegMode]
             The mode of transport to use for routing.
-            Default: [r5py.r5.TransitMode.TRANSIT] (all public transport)
-        access_modes : list[r5py.r5.LegMode]
+            Default: [r5py.TransitMode.TRANSIT] (all public transport)
+        access_modes : list[r5py.LegMode]
             Mode of transport to public transport stops.
-            Default: [r5py.r5.LegMode.WALK]
-        egress_modes : list[r5py.r5.LegMode]
+            Default: [r5py.LegMode.WALK]
+        egress_modes : list[r5py.LegMode]
             Mode of transport from public transport stops.
             Default: access_modes
         max_time : datetime.timedelta
@@ -103,7 +103,7 @@ class RegionalTask:
             Mean cycling speed for routing, km/h.
             Default: 12.0 km/h
         max_public_transport_rides : int
-            Use at most `max_public_transport_rides` consecutive public transport
+            Use at most ``max_public_transport_rides`` consecutive public transport
             connections. Default: 8
         max_bicycle_traffic_stress : int
             Maximum stress level for cyclist routing, ranges from 1-4
@@ -165,7 +165,7 @@ class RegionalTask:
 
     @property
     def departure(self):
-        """Find public transport connections leaving within `departure_time_window` after `departure` (datetime.datetime)."""
+        """Find public transport connections leaving within ``departure_time_window`` after ``departure`` (datetime.datetime)."""
         return self._departure
 
     @departure.setter
@@ -191,7 +191,7 @@ class RegionalTask:
 
     @property
     def departure_time_window(self):
-        """Find public transport connections leaving within `departure_time_window` after `departure` (datetime.timedelta)."""
+        """Find public transport connections leaving within ``departure_time_window`` after ``departure`` (datetime.timedelta)."""
         return self._departure_time_window
 
     @departure_time_window.setter
@@ -207,8 +207,8 @@ class RegionalTask:
         """
         Points to route to.
 
-        A `geopandas.GeoDataFrame` with a point geometry, and at least
-        an `id` column (which R5 mangles to `str`).
+        A ``geopandas.GeoDataFrame`` with a point geometry, and at least
+        an ``id`` column (which R5 mangles to ``str``).
         """
         return self._destinations
 
@@ -379,7 +379,7 @@ class RegionalTask:
 
     @property
     def scenario(self):
-        """Expose the `RegionalTask`’s `Scenario` to Python."""
+        """Expose the ``RegionalTask``’s ``Scenario`` to Python."""
         return self._regional_task.scenario
 
     @scenario.setter

@@ -69,12 +69,12 @@ class TravelTimeMatrix:
 
         Arguments
         ---------
-        transport_network : r5py.r5.TransportNetwork | tuple(str, list(str), dict)
+        transport_network : r5py.TransportNetwork | tuple(str, list(str), dict)
             The transport network to route on. This can either be a readily
-            initialised `r5py.r5.TransportNetwork` or a tuple of the parameters
-            passed to `TransportNetwork.__init__()`: the path to an OpenStreetMap
+            initialised r5py.TransportNetwork or a tuple of the parameters
+            passed to ``TransportNetwork.__init__()``: the path to an OpenStreetMap
             extract in PBF format, a list of zero of more paths to GTFS transport
-            schedule files, and a dict with `build_config` options.
+            schedule files, and a dict with ``build_config`` options.
         origins : geopandas.GeoDataFrame
             Places to find a route _from_
             Has to have a point geometry, and at least an `id` column
@@ -89,11 +89,11 @@ class TravelTimeMatrix:
             Summarise the values of the detailed breakdown using this statistical function.
             Default: r5py.BreakdownStat.MEAN
         **kwargs : mixed
-            Any arguments than can be passed to `r5py.r5.RegionalTask`:
-            `departure`, `departure_time_window`, `transport_modes`,
-            `access_modes`, `egress_modes`, `max_time`, `max_time_walking`,
-            `max_time_cycling`, `speed_cycling`, `speed_walking`,
-            `max_public_transport_rides`, `max_bicycle_traffic_stress`
+            Any arguments than can be passed to r5py.RegionalTask:
+            ``departure``, ``departure_time_window``, ``percentiles``, ``transport_modes``,
+            ``access_modes``, ``egress_modes``, ``max_time``, ``max_time_walking``,
+            ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
+            ``max_public_transport_rides``, ``max_bicycle_traffic_stress``, ``breakdown``
         """
         if not isinstance(transport_network, TransportNetwork):
             transport_network = TransportNetwork(*transport_network)
@@ -134,9 +134,9 @@ class TravelTimeMatrix:
         Returns
         -------
         pandas.DataFrame
-            A data frame containing the columns `from_id`, `to_id`, and `travel_time`,
-            where `travel_time` is the calculated travel time between `from_id` and
-            `to_id` or `numpy.nan` if no connection with the given parameters (max_time!)
+            A data frame containing the columns ``from_id``, ``to_id``, and ``travel_time``,
+            where ``travel_time`` is the calculated travel time between ``from_id`` and
+            ``to_id`` or ``numpy.nan`` if no connection with the given parameters (max_time!)
             was found.
         """
         # for this following section, there must exist a more elegant and

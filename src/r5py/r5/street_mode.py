@@ -13,7 +13,11 @@ __all__ = ["StreetMode"]
 
 
 class StreetMode(enum.Enum):
-    """Transport modes (a subset of `r5py.r5.LegMode`)."""
+    """
+    Transport modes (a subset of ``r5py.LegMode``).
+
+    WALK, BICYCLE, CAR
+    """
 
     WALK = com.conveyal.r5.profile.StreetMode.valueOf("WALK")
     BICYCLE = com.conveyal.r5.profile.StreetMode.valueOf("BICYCLE")

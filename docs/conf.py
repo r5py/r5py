@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'r5p'
-copyright = '2022, Christoph Fink and r5p contributers'
-author = 'Christoph Fink and r5p contributers'
+project = 'r5py'
+copyright = '2022, r5py contributers'
+author = 'r5py contributers'
 
 
 # -- General configuration ---------------------------------------------------

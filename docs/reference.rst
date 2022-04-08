@@ -3,5 +3,5 @@
 Reference
 =========
 
-.. automodule:: r5p
+.. automodule:: r5py
     :members:

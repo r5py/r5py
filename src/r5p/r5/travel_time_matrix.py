@@ -221,20 +221,38 @@ class TravelTimeMatrix:
 
     def _parse_results_of_one_origin_travel_times(self, from_id, results):
         # return travel times only
-        travel_times = results.travelTimes.getValues()[0]
 
-        od_matrix = pandas.DataFrame({
-            "from_id": pandas.Series(dtype=str),
-            "to_id": pandas.Series(dtype=str),
-            "travel_time": pandas.Series(dtype=float)
-        })
-        # first the columns with correct length (not the scalar from_id)
+        # create the columns in order to force dtypes
+        if self.request.percentiles == [50]:
+            # if we want only one percentile, and its the median (default value)
+            travel_time_columns = {"travel_time": pandas.Series(dtype=float)}
+        else:
+            travel_time_columns = {
+                "travel_time_p{:d}".format(percentile): pandas.Series(dtype=float)
+                for percentile in self.request.percentiles
+            }
+        od_matrix = pandas.DataFrame(
+            {
+                "from_id": pandas.Series(dtype=str),
+                "to_id": pandas.Series(dtype=str),
+            } | travel_time_columns
+        )
+
+        # first assign columns with correct length (not the scalar `from_id`)
         od_matrix["to_id"] = self.destinations.id
-        od_matrix["travel_time"] = travel_times
         od_matrix["from_id"] = from_id
 
+        if self.request.percentiles == [50]:
+            # we name the column differently when it’s exactly the median
+            travel_times = results.travelTimes.getValues()[0]
+            od_matrix["travel_time"] = travel_times
+        else:
+            for (p, percentile) in enumerate(self.request.percentiles):
+                travel_times = results.travelTimes.getValues()[p]
+                od_matrix["travel_time_p{:d}".format(percentile)] = travel_times
+
         # R5’s NULL value is MAX_INT32
-        od_matrix.loc[od_matrix.travel_time == MAX_INT32, "travel_time"] = numpy.nan
+        od_matrix = od_matrix.applymap(lambda x: numpy.nan if x == MAX_INT32 else x)
 
         return od_matrix
 

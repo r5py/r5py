@@ -34,7 +34,9 @@ def main():
         origins_destinations,
         departure=datetime.datetime(year=2022, month=2, day=22, hour=8, minute=30),
         transport_modes=[r5p.TransitMode.TRANSIT],
-        breakdown=True,
+        # breakdown=True,
+        percentiles=[25, 50, 75],
+        # percentiles=[33],
         max_time=datetime.timedelta(hours=24)
     )
 

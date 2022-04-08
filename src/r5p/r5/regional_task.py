@@ -33,6 +33,7 @@ class RegionalTask:
 
             departure=datetime.datetime.now(),
             departure_time_window=datetime.timedelta(hours=1),
+            percentiles=[50],
 
             transport_modes=[TransitMode.TRANSIT],
             access_modes=[LegMode.WALK],
@@ -64,12 +65,16 @@ class RegionalTask:
             Points to route to, has to have at least an `id` column
             and a geometry
         departure : datetime.datetime
-            Find public transport connections leaving within
-            `departure_time_window` after departure.
+            Find public transport connections leaving every minute within
+            `departure_time_window` after `departure`.
             Default: current date and time
         departure_time_window : datetime.timedelta
             (see `departure`)
             Default: 1 hour
+        percentiles : list[int]
+            Return the travel time for this percentile of all computed trips,
+            by travel time. By default, return the median travel time.
+            Default: [50]
         transport_modes : list[r5p.r5.TransitMode | r5p.r5.LegMode]
             The mode of transport to use for routing.
             Default: [r5p.r5.TransitMode.TRANSIT] (all public transport)
@@ -118,6 +123,7 @@ class RegionalTask:
 
         self.departure = departure
         self.departure_time_window = departure_time_window
+        self.percentiles = percentiles
 
         self.access_modes = access_modes
         self.egress_modes = egress_modes if egress_modes is not None else access_modes
@@ -140,7 +146,6 @@ class RegionalTask:
         # a few settings we don’t expose (yet?)
         self._regional_task.makeTauiSite = False
         self._regional_task.monteCarloDraws = 60
-        self._regional_task.percentiles = [50]
         self._regional_task.recordAccessibility = False
         self._regional_task.recordTimes = True
 
@@ -338,6 +343,15 @@ class RegionalTask:
         self._regional_task.maxWalkTime = int(
             max_time_walking.total_seconds() / 60
         )
+
+    @property
+    def percentiles(self):
+        return self._percentiles
+
+    @percentiles.setter
+    def percentiles(self, percentiles):
+        self._percentiles = percentiles
+        self._regional_task.percentiles = percentiles
 
     # TODO: implement a proper balancing mechanism between the different per-mode
     # maximum times, i.e., a sanity check that the different more specific max_times

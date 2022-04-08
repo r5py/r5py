@@ -2,6 +2,8 @@
 
 """Python wrapper for R5."""
 
+__version__ = "0.0.1"
+
 from .r5 import (
     BreakdownStat,
     LegMode,
@@ -19,5 +21,6 @@ __all__ = [
     "StreetMode",
     "TransitMode",
     "TransportNetwork",
-    "TravelTimeMatrix"
+    "TravelTimeMatrix",
+    "__version__"
 ]

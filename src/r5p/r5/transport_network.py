@@ -4,6 +4,8 @@
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
 
+import os.path
+
 import jpype
 import jpype.types
 
@@ -39,6 +41,8 @@ class TransportNetwork:
         build_json : dict
             options accepted by TNBuilderConfig (including SpeedConfig)
         """
+        osm_pbf = os.path.abspath(osm_pbf)
+        gtfs = [os.path.abspath(path) for path in gtfs]
         build_config = TransportNetworkBuilderConfig(**build_config)
         self._transport_network = (
             com.conveyal.r5.transit.TransportNetwork.fromFiles(

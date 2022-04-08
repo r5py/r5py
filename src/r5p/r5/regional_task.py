@@ -429,13 +429,6 @@ class RegionalTask:
             if isinstance(mode, LegMode)
         ]
 
-        print({
-            "transit_modes": transit_modes,
-            "direct_modes": direct_modes,
-            "access_modes": self.access_modes,
-            "egress_modes": self.egress_modes
-        })
-
         # the different modes underlie certain rules
         # e.g., some direct modes require certain access modes
         # see https://github.com/ipeaGIT/r5r/blob/2e8b9acfd81834f185d95ce53dc5c34beb1315f2/r-package/R/utils.R#L86

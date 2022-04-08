@@ -30,6 +30,7 @@ NUM_THREADS = math.ceil(multiprocessing.cpu_count() / 2)
 
 # Which columns (and types) are returned by
 # com.conveyal.r5.analyst.cluster.PathResult.summarizeIterations?
+# Note that these are already camel_case names and pandas/numpy (d)types.
 DATA_COLUMNS = {
     "routes": pandas.SparseDtype(str),
     "board_stops": pandas.SparseDtype(str),
@@ -46,14 +47,6 @@ DATA_COLUMNS = {
 
 class TravelTimeMatrix:
     """Calculate travel times between many origins and destinations."""
-
-    # TODO:
-    #   - implement custom percentiles,
-    #   - how to best return the values for more than one percentile?
-    #       -> maybe column names travel_time_{percentile}
-    #           (lo and behold, that’s exactly how r5r does it!)
-    #   - breakdown of times, DONE
-    #   - custom function for summarising broken down times DONE
 
     def __init__(
             self,

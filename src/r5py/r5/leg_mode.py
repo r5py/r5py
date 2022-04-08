@@ -16,7 +16,8 @@ class LegMode(enum.Enum):
     """
     Transport modes (a superset of ``r5py.StreetMode``).i
 
-    WALK, BICYCLE, CAR, BICYCLE_RENT, CAR_PARK
+    LegMode.WALK, LegMode.BICYCLE, LegMode.CAR,
+    LegMode.BICYCLE_RENT, LegMode.CAR_PARK
     """
 
     WALK = com.conveyal.r5.api.util.LegMode.valueOf("WALK")

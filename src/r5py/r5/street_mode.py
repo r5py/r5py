@@ -16,7 +16,7 @@ class StreetMode(enum.Enum):
     """
     Transport modes (a subset of ``r5py.LegMode``).
 
-    WALK, BICYCLE, CAR
+    StreetMode.WALK, StreetMode.BICYCLE, StreetMode.CAR
     """
 
     WALK = com.conveyal.r5.profile.StreetMode.valueOf("WALK")

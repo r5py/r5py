@@ -16,10 +16,11 @@ class TransitMode(enum.Enum):
     """
     Public transport modes.
 
-    AIR, TRAM, SUBWAY, RAIL, BUS, FERRY, CABLE_CAR,
-    GONDOLA, FUNICULAR, TRANSIT
+    LegMode.AIR, LegMode.TRAM, LegMode.SUBWAY, LegMode.RAIL,
+    LegMode.BUS, LegMode.FERRY, LegMode.CABLE_CAR, LegMode.GONDOLA,
+    LegMode.FUNICULAR, LegMode.TRANSIT
 
-    TRANSIT is a shorthand of all of the others combined.
+    LegMode.TRANSIT is a shorthand of all of the others combined.
     """
 
     AIR = com.conveyal.r5.api.util.TransitModes.valueOf("AIR")

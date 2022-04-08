@@ -72,7 +72,7 @@ class RegionalTask:
             (see ``departure``)
             Default: 1 hour
         percentiles : list[int]
-            Return the travel time for this percentile of all computed trips,
+            Return the travel time for these percentiles of all computed trips,
             by travel time. By default, return the median travel time.
             Default: [50]
         transport_modes : list[r5py.TransitMode | r5py.LegMode]
@@ -151,7 +151,7 @@ class RegionalTask:
 
     @property
     def access_modes(self):
-        """Route with these modes of transport to reach public transport."""
+        """Route with these modes of transport to reach public transport (r5py.LegMode)."""
         return self._access_modes
 
     @access_modes.setter
@@ -247,7 +247,7 @@ class RegionalTask:
 
     @property
     def egress_modes(self):
-        """Route with these modes of transport to reach the destination from public transport."""
+        """Route with these modes of transport to reach the destination from public transport (r5py.LegMode)."""
         return self._egress_modes
 
     @egress_modes.setter
@@ -264,7 +264,7 @@ class RegionalTask:
         """
         Find routes with this maximum stress level for cyclists.
 
-        Ranges from 1-4, see https://docs.conveyal.com/learn-more/traffic-stress
+        Int, in the range 1-4, see https://docs.conveyal.com/learn-more/traffic-stress
         """
         return self._max_bicycle_traffic_stress
 
@@ -275,7 +275,7 @@ class RegionalTask:
 
     @property
     def max_public_transport_rides(self):
-        """Include at most this many consecutive public transport rides."""
+        """Include at most this many consecutive public transport rides (int)."""
         return self._max_public_transport_rides
 
     @max_public_transport_rides.setter
@@ -346,6 +346,12 @@ class RegionalTask:
 
     @property
     def percentiles(self):
+        """
+        Return the travel time for these percentiles of all computed trips, by travel time.
+
+        By default, return the median travel time.
+        (list[int])
+        """
         return self._percentiles
 
     @percentiles.setter
@@ -389,7 +395,7 @@ class RegionalTask:
 
     @property
     def speed_cycling(self):
-        """Use this speed for routing for cyclists (km/h)."""
+        """Use this speed for routing for cyclists (km/h, float)."""
         return self._speed_cycling
 
     @speed_cycling.setter
@@ -399,7 +405,7 @@ class RegionalTask:
 
     @property
     def speed_walking(self):
-        """Use this speed for routing pedestrian movement (km/h)."""
+        """Use this speed for routing pedestrian movement (km/h, float)."""
         return self._speed_walking
 
     @speed_walking.setter
@@ -409,7 +415,11 @@ class RegionalTask:
 
     @property
     def transport_modes(self):
-        """Get/set the transport modes used to route the main leg of trips."""
+        """
+        Get/set the transport modes used to route the main leg of trips.
+
+        (list[r5py.TransitMode | r5py.LegMode])
+        """
         return self._transport_modes
 
     @transport_modes.setter
@@ -484,6 +494,7 @@ class RegionalTask:
 
     @staticmethod
     def _enum_set(values, java_class):
+        # helper function to construct a Java EnumSet out of a list of enum.Enum
         enum_set = java.util.EnumSet.noneOf(java_class)
         for mode in values:
             enum_set.add(mode.value)

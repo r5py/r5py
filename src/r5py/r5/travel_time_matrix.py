@@ -127,10 +127,18 @@ class TravelTimeMatrix:
         Returns
         -------
         pandas.DataFrame
-            A data frame containing the columns ``from_id``, ``to_id``, and ``travel_time``,
-            where ``travel_time`` is the calculated travel time between ``from_id`` and
-            ``to_id`` or ``numpy.nan`` if no connection with the given parameters (max_time!)
-            was found.
+            A data frame containing the columns ``from_id``, ``to_id``, and
+            ``travel_time``, where ``travel_time`` is the median calculated
+            travel time between ``from_id`` and ``to_id`` or ``numpy.nan``
+            if no connection with the given parameters was found.
+            If non-default ``percentiles`` were requested: one or more columns
+            ``travel_time_p{:02d}`` representing the particular percentile of
+            travel time.
+            If ``breakdown=True``: in addition to the columns above
+            ``routes``, ``board_stops``, ``alight_stops``, ``ride_times``,
+            ``access_time``, ``egress_time``, ``transfer_time``, ``wait_times``,
+            ``total_time``, ``n_iterations``.
+
         """
         # for this following section, there must exist a more elegant and
         # efficient way, such as groupby().apply() or something, but this

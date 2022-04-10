@@ -14,7 +14,7 @@ __all__ = ["LegMode"]
 
 class LegMode(enum.Enum):
     """
-    Transport modes (a superset of ``r5py.StreetMode``).i
+    Transport modes (a superset of ``r5py.StreetMode``).
 
     LegMode.WALK, LegMode.BICYCLE, LegMode.CAR,
     LegMode.BICYCLE_RENT, LegMode.CAR_PARK

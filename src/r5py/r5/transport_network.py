@@ -24,6 +24,18 @@ __all__ = ["TransportNetwork"]
 # to the input files (they could well be on a r/o filesystem, or in a dedicate
 # data folder that should not be littered with random cache files).
 
+# There are (at least) the following three options of doing that:
+#   1) Use a java agent/instrumentation api to monkey-patch
+#      com.conveyal.r5.transit.TransportNetwork.fromFiles where the path to the
+#      .mapdb file is hardcoded. Not sure how easy that is, and whether jpype
+#      (properly) supports it.
+#   2) Have a patched com.conveyal.r5.transit.TransportNetwork (or com.conveyal.osmlib.OSM)
+#      in the class path _before_ the r5-all.jar. Easy, but messy, potential maintenance hell.
+#   3) Copy the input file(s) to a temporary directory before reading them.
+#      By far the cleanest option, but have to check /tmp disk space (if it’s a ramdisk - the
+#      default on most current linux installations - we cut into memory; might have to check how
+#      long R5 wants to be able to access input files)
+
 
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
@@ -41,6 +53,7 @@ class TransportNetwork:
         build_json : dict
             options accepted by TNBuilderConfig (including SpeedConfig)
         """
+        # TODO: Add TNBuilderConfig and SpeedConfig options to docstring
         osm_pbf = os.path.abspath(osm_pbf)
         gtfs = [os.path.abspath(path) for path in gtfs]
         build_config = TransportNetworkBuilderConfig(**build_config)

@@ -2,9 +2,13 @@
 
 """Import the relevant Java classes to access R5."""
 
+import os
+
 from . import config, jvm  # noqa: F401
 
 import ch.qos.logback.classic
+import java.io
+import java.lang
 import org.slf4j.LoggerFactory
 
 
@@ -22,16 +26,23 @@ arguments = config.arguments()
 if not arguments.verbose:
     logger_context = org.slf4j.LoggerFactory.getILoggerFactory()
     for log_target in (
-            "com.conveyal.r5",
-            "com.conveyal.osmlib",
             "com.conveyal.gtfs",
+            "com.conveyal.osmlib",
+            "com.conveyal.r5",
             "com.conveyal.r5.profile.ExecutionTimer",
-            "graphql.GraphQL",
-            "org.mongodb.driver.connection",
-            "org.eclipse.jetty",
-            "org.eclipse.jetty",
             "com.conveyal.r5.profile.FastRaptorWorker",
+            "graphql.GraphQL",
+            "org.eclipse.jetty",
+            "org.hsqldb.persist.Logger"
+            "org.mongodb.driver.connection",
     ):
         logger_context.getLogger(log_target).setLevel(
-            ch.qos.logback.classic.Level.valueOf("ERROR")
+            ch.qos.logback.classic.Level.valueOf("OFF")
         )
+
+    if os.name == "nt":  # Windows
+        null_stream = java.io.PrintStream("NUL")
+    else:
+        null_stream = java.io.PrintStream("/dev/null")
+    java.lang.System.setErr(null_stream)
+    java.lang.System.setOut(null_stream)

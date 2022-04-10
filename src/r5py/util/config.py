@@ -20,19 +20,20 @@ argparser = configargparse.get_argument_parser(
     prog=PACKAGE,
     description=sys.modules[PACKAGE].__doc__,
     default_config_files=[
-        "/etc/{:s}.yml".format(__package__),
+        "/etc/{:s}.yml".format(PACKAGE),
         os.path.join(
             (
                 os.environ.get("APPDATA")
                 or os.environ.get("XDG_CONFIG_HOME")
                 or os.path.join(os.environ["HOME"], ".config")
             ),
-            "{:s}.yml".format(__package__)
+            "{:s}.yml".format(PACKAGE)
         )
     ]
 )
 
 
 def arguments():
+    """Parse arguments passed from command line or config file."""
     arguments = argparser.parse_known_args()[0]
     return arguments

@@ -4,6 +4,8 @@
 
 import enum
 
+from .. import util  # noqa: F401
+
 import com.conveyal.r5
 
 
@@ -11,6 +13,13 @@ __all__ = ["LegMode"]
 
 
 class LegMode(enum.Enum):
+    """
+    Transport modes (a superset of ``r5py.StreetMode``).
+
+    LegMode.WALK, LegMode.BICYCLE, LegMode.CAR,
+    LegMode.BICYCLE_RENT, LegMode.CAR_PARK
+    """
+
     WALK = com.conveyal.r5.api.util.LegMode.valueOf("WALK")
     BICYCLE = com.conveyal.r5.api.util.LegMode.valueOf("BICYCLE")
     CAR = com.conveyal.r5.api.util.LegMode.valueOf("CAR")

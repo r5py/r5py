@@ -2,4 +2,4 @@ include:
     - remote: 'https://gitlab.com/christoph.fink/ci-cd-toolbox/raw/master/python/gitlab-ci-pyproject.yaml?ref=master&private_token=$CI_JOB_TOKEN&.yaml'
 
 variables:
-    PACKAGE_NAME: pbfclipper
+    PACKAGE_NAME: r5py

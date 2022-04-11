@@ -61,5 +61,11 @@ autoclass_content = 'init'
 # do not re-run the jupyter notebooks (needs api credentials)
 nbsphinx_execute = 'never'
 
+import os.path
 import sys
-sys.path.append("../src/")
+sys.path.append(
+    os.path.join(
+        os.path.abspath(__file__),
+        "../src/"
+    )
+)

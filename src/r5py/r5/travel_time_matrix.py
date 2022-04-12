@@ -148,7 +148,7 @@ class TravelTimeMatrix:
         # to all destinations.
         with joblib.Parallel(
                 prefer="threads",
-                verbose=(10 * self.verbose),
+                verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
                 n_jobs=NUM_THREADS
         ) as parallel:
             od_matrix = pandas.concat(

@@ -16,7 +16,7 @@ def main():
     Loads some files I have laying around in my home folder,
     then computes a travel time matrix out of them.
     """
-    osm_pbf = "../docs/data/paakaupunkiseutu.pbf"
+    osm_pbf = "../docs/data/kantakaupunki.osm.pbf"
     gtfs = ["../docs/data/GTFS.zip"]
 
     ykr_centroids = geopandas.read_file(

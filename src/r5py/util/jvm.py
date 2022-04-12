@@ -31,7 +31,7 @@ sys.modules['faulthandler'] = None
 jpype.startJVM(
     "-Xmx{:d}G".format(EIGHTY_PERCENT_OF_RAM),
     "-Xcheck:jni",
-    "--illegal-access=permit",
+    # "--illegal-access=permit",
     # "--add-opens=java.lang/java.nio.DirectByteBuffer=ALL-UNNAMED",
     classpath=[arguments.r5_classpath]
 )

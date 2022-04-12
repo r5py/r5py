@@ -219,7 +219,7 @@ class TravelTimeMatrix:
 
         # create the columns in order to force dtypes
         if self.request.percentiles == [50]:
-            # if we want only one percentile, and its the median (default value)
+            # if we’re only interested in the default (the median)
             travel_time_columns = {"travel_time": pandas.Series(dtype=float)}
         else:
             travel_time_columns = {
@@ -249,7 +249,7 @@ class TravelTimeMatrix:
         # R5’s NULL value is MAX_INT32
         od_matrix = od_matrix.applymap(lambda x: numpy.nan if x == MAX_INT32 else x)
 
-        return od_matrix
+        return od_matrix.reset_index()
 
     def _travel_times_from_one_origin(self, from_id):
         self.request.origin = self.origins[self.origins.id == from_id].geometry

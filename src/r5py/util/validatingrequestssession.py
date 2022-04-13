@@ -33,19 +33,40 @@ class ValidatingRequestsSession(requests.Session):
         *args, **kwargs
             any argument accepted by `requests.Session`
         """
-        super().__init__(*args, checksum_algorithm=hashlib.sha256, **kwargs)
+        super().__init__(*args, **kwargs)
         self._algorithm = checksum_algorithm
 
-    def request(self, method, url, checksum, *args, **kwargs):
+    def get(self, url, checksum, **kwargs):
+        """Sends a GET request, tests checksum."""
+        kwargs.setdefault("allow_redirects", True)
+        return self.request("GET", url, checksum, **kwargs)
+
+    def post(self, url, checksum, **kwargs):
+        """Sends a POST request, tests checksum."""
+        return self.request("POST", url, checksum, **kwargs)
+
+    # delete, put, head don’t return data,
+    # testing checksums does not apply
+
+    def request(self, method, url, checksum, **kwargs):
         """
         Retrieve file from cache or proxy requests.request.
 
         Raise `ChecksumFailed` if the file’s digest and `checksum` differ.
         """
-        response = super().request(method, url, *args, **kwargs)
-        digest = self._algorithm(response.content)
+        response = super().request(method, url, **kwargs)
+        digest = self._algorithm(response.content).hexdigest()
 
         if digest != checksum:
-            raise ChecksumFailed("Checksum failed for {}.".format(url))
+            raise ChecksumFailed(
+                (
+                    "Checksum failed for {}"
+                    + "expected {}, got {}"
+                ).format(
+                    url,
+                    checksum,
+                    digest
+                )
+            )
 
         return response

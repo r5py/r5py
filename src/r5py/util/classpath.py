@@ -7,7 +7,6 @@ import os.path
 import sys
 
 from . import config
-from . import verbosity  # noqa: F401
 from .validatingrequestssession import ValidatingRequestsSession
 
 
@@ -38,12 +37,13 @@ else:
         with open(R5_CLASSPATH, "rb") as jar:
             assert hashlib.sha256(jar.read()).hexdigest == R5_JAR_SHA256
     except (AssertionError, FileNotFoundError):
-        if arguments.verbose:
-            print(
-                "Could not find R5 jar, trying to download it from upstream",
-                file=sys.stderr,
-                flush=True,
-            )
+        # TODO: print this only when --verbose is specified,
+        # (problem: verbosity.py already wants a jvm running)
+        print(
+            "Could not find R5 jar, trying to download it from upstream",
+            file=sys.stderr,
+            flush=True,
+        )
         with ValidatingRequestsSession as session, session.get(
             R5_JAR_URL, R5_JAR_SHA256
         ) as response, open(R5_CLASSPATH, "wb") as jar:

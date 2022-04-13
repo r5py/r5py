@@ -13,7 +13,7 @@ class ChecksumFailed(requests.RequestException):
     """Requested resource did not pass checksum test."""
 
 
-class ValidatingRequestsSession(requests.session):
+class ValidatingRequestsSession(requests.Session):
     """Download a file and test whether it matches a checksum."""
 
     def __init__(

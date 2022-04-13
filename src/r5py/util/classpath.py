@@ -6,10 +6,9 @@ import hashlib
 import os.path
 import sys
 
-import xdg.BaseDirectory
-
 from . import config
 from .validatingrequestssession import ValidatingRequestsSession
+
 
 # update these to use a newer R5 version
 R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.6/r5-v6.6-all.jar"
@@ -18,9 +17,6 @@ R5_JAR_SHA256 = "9e4ceb85a09e750f146f95d98013eb164afac2dfc900a9e68e37ae925b1ec70
 
 
 __all__ = ["R5_CLASSPATH"]
-
-
-CACHE_DIR = xdg.BaseDirectory.save_cache_path(__package__.split(".")[0])
 
 
 config.argparser.add(
@@ -36,7 +32,7 @@ if os.path.exists(arguments.r5_classpath):
     # do not test local files’ checksums, as they might be customly compiled
     R5_CLASSPATH = arguments.r5_classpath
 else:
-    R5_CLASSPATH = os.path.join(CACHE_DIR, os.path.basename(R5_JAR_URL))
+    R5_CLASSPATH = os.path.join(config.CACHE_DIR, os.path.basename(R5_JAR_URL))
     try:
         with open(R5_CLASSPATH, "rb") as jar:
             assert hashlib.sha256(jar.read()).hexdigest == R5_JAR_SHA256

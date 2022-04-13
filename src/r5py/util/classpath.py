@@ -7,10 +7,11 @@ import os.path
 import sys
 
 from . import config
+from . import verbosity  # noqa: F401
 from .validatingrequestssession import ValidatingRequestsSession
 
 
-# update these to use a newer R5 version
+# update these to use a newer R5 version if no R5 available locally
 R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.6/r5-v6.6-all.jar"
 R5_JAR_SHA256 = "9e4ceb85a09e750f146f95d98013eb164afac2dfc900a9e68e37ae925b1ec702"
 # ---

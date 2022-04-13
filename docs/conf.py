@@ -62,7 +62,7 @@ import os.path
 import sys
 sys.path.append(
     os.path.join(
-        os.path.dirname(__file__),
+        os.path.abspath(""),  # directory of __file__
         "../src/"
     )
 )

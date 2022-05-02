@@ -29,3 +29,5 @@ docs/_build/
 docs/data/*.mapdb
 docs/data/*.mapdb.p
 **/.ipynb_checkpoints
+
+.tox

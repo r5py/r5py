@@ -26,7 +26,7 @@ MAX_INT32 = (2 ** 31) - 1
 # how many (Python) threads to start
 # (they still run many Java threads, so be careful what you wish for ;) )
 # TODO: benchmark the optimal number of threads
-NUM_THREADS = math.ceil(multiprocessing.cpu_count() / 2)
+NUM_THREADS = math.ceil(multiprocessing.cpu_count() * .75)
 
 # Which columns (and types) are returned by
 # com.conveyal.r5.analyst.cluster.PathResult.summarizeIterations?
@@ -249,7 +249,10 @@ class TravelTimeMatrix:
         # R5’s NULL value is MAX_INT32
         od_matrix = od_matrix.applymap(lambda x: numpy.nan if x == MAX_INT32 else x)
 
-        return od_matrix.reset_index()
+        # re-index (and don’t keep the old index as a new column)
+        od_matrix = od_matrix.reset_index(drop=True)
+
+        return od_matrix
 
     def _travel_times_from_one_origin(self, from_id):
         self.request.origin = self.origins[self.origins.id == from_id].geometry

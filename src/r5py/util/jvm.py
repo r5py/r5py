@@ -2,8 +2,6 @@
 
 """Set up a JVM and import basic java classes."""
 
-import sys
-
 import jpype
 import jpype.imports
 
@@ -13,8 +11,6 @@ from .memory_footprint import MAX_JVM_MEMORY
 
 __all__ = []
 
-
-# sys.modules['faulthandler'] = None
 
 jpype.startJVM(
     "-Xmx{:d}M".format(MAX_JVM_MEMORY),

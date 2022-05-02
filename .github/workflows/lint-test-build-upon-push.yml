@@ -44,4 +44,6 @@ jobs:
       - name: Install local package
         run: pip install .
       - name: Run tests
-        run: pytest
+        run: |
+          cd src
+          python -m pytest ../tests

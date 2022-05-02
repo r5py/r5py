@@ -19,6 +19,10 @@ __all__ = [
 
 
 PACKAGE = __package__.split(".")[0]
+
+if "HOME" not in os.environ:  # e.g., testing env
+    os.environ["HOME"] = "."
+
 CACHE_DIR = os.path.join(
     (
         os.environ.get("LOCALAPPDATA")

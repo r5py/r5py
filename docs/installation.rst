@@ -20,13 +20,13 @@ In the future (TODO!) r5py will be available from PyPi, and can be installed usi
 
     pip install r5py
 
-For the time being, please manually download the latest release tar or wheel from the package registry associated with r5py’s git repository: https://gitlab.com/christoph.fink/r5py/-/packages and install it using ``pip``::
+For the time being, please manually download the latest release tar or wheel from the package registry associated with r5py’s git repository: https://github.com/r5py/r5py/releases and install it using ``pip``::
 
     pip install r5py-0.0.1.tar.gz
 
 Alternatively, it can be installed from source by cloning its repository and running pip in the checked-out directory::
 
-    git clone https://gitlab.com/christoph.fink/r5py/
+    git clone https://github.com/r5py/r5py/
     cd r5py
     pip install .
 

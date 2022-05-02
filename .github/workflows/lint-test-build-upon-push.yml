@@ -38,7 +38,7 @@ jobs:
       - name: Install JVM
         run: |
           apt-get update -qq
-          apt-get install openjdk-11-jdk-headless openjdk-11-jre-headless
+          apt-get install -qq openjdk-11-jdk-headless openjdk-11-jre-headless
       - name: find jvm
         run: |
           find / -type f -name libjvm.so

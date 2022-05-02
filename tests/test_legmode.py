@@ -7,7 +7,8 @@ import r5py
 import com.conveyal.r5
 
 
-def test_legmode():
-    walking = r5py.LegMode.WALK
-    assert walking.name == "WALK"
-    assert isinstance(walking.value, com.conveyal.r5.api.util.LegMode)
+class TestLegMode:
+    def test_legmode(self):
+        walking = r5py.LegMode.WALK
+        assert walking.name == "WALK"
+        assert isinstance(walking.value, com.conveyal.r5.api.util.LegMode)

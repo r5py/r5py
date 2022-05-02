@@ -9,6 +9,7 @@ on:
 jobs:
   lint:
     name: Linting code
+    runs-on: ubuntu-latest
     image: python:3
     steps:
       - name: Checkout repository

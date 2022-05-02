@@ -2,7 +2,6 @@
 
 
 import pytest  # noqa: F401
-import faulthandler
 
 import r5py
 import com.conveyal.r5

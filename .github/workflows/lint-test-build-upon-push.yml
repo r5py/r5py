@@ -6,11 +6,12 @@ on:
     paths:
       - "*.py"
       - "**/*.py"
+      - ".github/workflows/lint-build-test-upon-push.yml"
 jobs:
   lint:
     name: Linting code
-    runs-on: ubuntu-latest
-    image: python:3
+    #runs-on: ubuntu-latest
+    container: python:3
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3

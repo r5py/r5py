@@ -51,5 +51,9 @@ def main():
 
     return results
 
+
+# linting trigger foobar
+
+
 if __name__ == "__main__":
     main()

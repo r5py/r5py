@@ -26,7 +26,7 @@ MAX_INT32 = (2 ** 31) - 1
 # how many (Python) threads to start
 # (they still run many Java threads, so be careful what you wish for ;) )
 # TODO: benchmark the optimal number of threads
-NUM_THREADS = math.ceil(multiprocessing.cpu_count() / 2)
+NUM_THREADS = math.ceil(multiprocessing.cpu_count() * .75)
 
 # Which columns (and types) are returned by
 # com.conveyal.r5.analyst.cluster.PathResult.summarizeIterations?
@@ -148,7 +148,7 @@ class TravelTimeMatrix:
         # to all destinations.
         with joblib.Parallel(
                 prefer="threads",
-                verbose=(10 * self.verbose),
+                verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
                 n_jobs=NUM_THREADS
         ) as parallel:
             od_matrix = pandas.concat(
@@ -219,7 +219,7 @@ class TravelTimeMatrix:
 
         # create the columns in order to force dtypes
         if self.request.percentiles == [50]:
-            # if we want only one percentile, and its the median (default value)
+            # if we’re only interested in the default (the median)
             travel_time_columns = {"travel_time": pandas.Series(dtype=float)}
         else:
             travel_time_columns = {
@@ -248,6 +248,9 @@ class TravelTimeMatrix:
 
         # R5’s NULL value is MAX_INT32
         od_matrix = od_matrix.applymap(lambda x: numpy.nan if x == MAX_INT32 else x)
+
+        # re-index (and don’t keep the old index as a new column)
+        od_matrix = od_matrix.reset_index(drop=True)
 
         return od_matrix
 

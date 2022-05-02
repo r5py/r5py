@@ -141,13 +141,16 @@ class RegionalTask:
         self.max_public_transport_rides = max_public_transport_rides
         self.max_bicycle_traffic_stress = max_bicycle_traffic_stress
 
+        # always record travel times
+        self._regional_task.recordTimes = True
+        # also report paths, if `breakdown`
         self._regional_task.includePathResults = breakdown
 
         # a few settings we don’t expose (yet?)
         self._regional_task.makeTauiSite = False
+        self._regional_task.oneToOne = False
         self._regional_task.monteCarloDraws = 60
         self._regional_task.recordAccessibility = False
-        self._regional_task.recordTimes = True
 
     @property
     def access_modes(self):

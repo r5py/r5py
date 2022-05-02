@@ -1,0 +1,3 @@
+- **0.0.1** (2022-04-11):
+    - very first release
+    - feature-parity to r5r concerning the travel time matrix, only

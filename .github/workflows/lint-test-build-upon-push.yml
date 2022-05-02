@@ -6,7 +6,6 @@ on:
     paths:
       - "*.py"
       - "**/*.py"
-      - ".github/workflows/lint-build-test-upon-push.yml"
 jobs:
   lint:
     name: Linting code

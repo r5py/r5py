@@ -30,25 +30,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      #- name: Install JVM
-      #  uses: actions/setup-java@v3
-      #  with:
-      #    distribution: "temurin"
-      #    java-version: "11"
       - name: Install JVM
         run: |
           apt-get update -qq
           apt-get install -qq openjdk-11-jdk-headless openjdk-11-jre-headless
-      - name: find jvm
-        run: |
-          find / -type f -name libjvm.so
       - name: Install Python
         uses: actions/setup-python@v3
         with:
           python-version: "3.10"
       - name: Install tox
         run: pip install tox
-      - name: Install local package
-        run: pip install .
       - name: Run tests
         run: tox

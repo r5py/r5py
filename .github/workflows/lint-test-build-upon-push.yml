@@ -35,6 +35,9 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "11"
+      - name: find jvm
+        run: |
+          find / -type f -name libjvm.so
       - name: Install Python
         uses: actions/setup-python@v3
         with:

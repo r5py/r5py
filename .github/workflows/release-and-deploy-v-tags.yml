@@ -17,6 +17,8 @@ jobs:
     name: Create a new release
     runs-on: ubuntu-latest
     needs: [build]
+    permissions:
+      contents: write
     steps:
       - name: Download built artifacts
         uses: actions/download-artifact@v3

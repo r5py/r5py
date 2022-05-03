@@ -6,6 +6,7 @@ on:
     paths:
       - "*.py"
       - "**/*.py"
+  workflow_call:
 
 jobs:
   lint:

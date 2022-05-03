@@ -1,0 +1,34 @@
+# vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
+
+name: Create a release and deploy to PyPi whenever a protected tag (v0.0.0) is created
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  release:
+    name: Create a new release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build package
+        uses: ./.github/workflows/build-merged-pull-requests.yml
+      - name: Create release and upload package
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+
+  deploy:
+    name: Upload built package to PyPi
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build package
+        uses: ./.github/workflows/build-merged-pull-requests.yml
+      - name: Upload package to PyPi
+        uses: pypa/gh-action-pypi-publish@release/v1.5
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+          skip_existing: true

@@ -6,6 +6,7 @@ on:
     paths:
       - "*.py"
       - "**/*.py"
+
 jobs:
   lint:
     name: Linting code
@@ -41,9 +42,4 @@ jobs:
       - name: Install tox
         run: python -m pip install tox
       - name: Run tests
-        run: tox --result-json=test-results.json
-      - name: Upload test results as an artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: test
-          path: test-results.json
+        run: tox

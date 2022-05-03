@@ -22,6 +22,7 @@ jobs:
         run: pip install flake8
       - name: Lint code
         run: flake8
+
   test:
     name: Run tests
     runs-on: ubuntu-latest
@@ -40,4 +41,31 @@ jobs:
       - name: Install tox
         run: pip install tox
       - name: Run tests
-        run: tox
+        run: tox --result-json=test-results.json
+      - name: Upload test results as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test
+          path: test-results.json
+      
+
+    build:
+      name: Build wheel(s) and packages
+      runs-on: ubuntu-latest
+      container: python:3
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
+        - name: Install Python
+          users: actions/setup-python@v3
+          with:
+            python-version: "3.10"
+        - name: Install build tools
+          run: pip install build
+        - name: Build wheel(s) and packages
+          run: python -m build .
+        - name: Upload built packages
+          uses: actions/upload-artifact@v3
+          with:
+            name: package
+            path: dist/

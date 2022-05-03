@@ -52,7 +52,7 @@ def main():
     return results
 
 
-# linting trigger foobar bar
+# linting trigger foobar
 
 
 if __name__ == "__main__":

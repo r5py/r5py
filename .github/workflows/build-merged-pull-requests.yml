@@ -9,15 +9,18 @@ on:
   workflow_call:
 
 jobs:
+  lint and test:
+    name: Lint and test
+    uses: ./.github/workflows/lint-test-upon-push.yml
+    secrets: inherit
   build:
     name: Build wheel(s) and packages
     runs-on: ubuntu-latest
     container: python:3
+    needs: [lint and test]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Lint and test
-        uses: ./.github/workflows/lint-test-upon-push.yml
       - name: Install Python
         uses: actions/setup-python@v3
         with:

@@ -8,12 +8,16 @@ on:
       - "v*.*.*"
 
 jobs:
+  build:
+    name: Build package
+    uses: ./.github/workflows/build-merged-pull-requests.yml
+    secrets: inherit
+
   release:
     name: Create a new release
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
-      - name: Build package
-        uses: ./.github/workflows/build-merged-pull-requests.yml
       - name: Create release and upload package
         uses: softprops/action-gh-release@v1
         with:
@@ -22,9 +26,8 @@ jobs:
   deploy:
     name: Upload built package to PyPi
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
-      - name: Build package
-        uses: ./.github/workflows/build-merged-pull-requests.yml
       - name: Upload package to PyPi
         uses: pypa/gh-action-pypi-publish@release/v1.5
         with:

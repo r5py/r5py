@@ -13,7 +13,6 @@ jobs:
     name: Build wheel(s) and packages
     runs-on: ubuntu-latest
     container: python:3
-    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3

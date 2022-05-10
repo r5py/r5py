@@ -14,8 +14,6 @@ Similar to [r5r](https://ipeagit.github.io/r5r/), **r5py** represents a simple
 way to run [R5](https://github.com/conveyal/r5) locally. It allows users to
 generate detailed routing analyses or calculate travel time matrices using
 parallel computing, and integrates seamlessly with Python/Geopandas workflows.
-You can find detailed installation instructions, example code, documentation and
-API reference on [r5py.readthedocs.io](https://r5py.readthedocs.io).
 
 
 ## Installation
@@ -29,6 +27,12 @@ pip install r5py
 You also need to install a *Java Development Kit*, for instance,
 [OpenJDK](http://jdk.java.net/java-se-ri/11), in version 11. If you are on
 Linux, please use the jdk provided by your operating system’s package manager.
+
+
+## Usage
+
+You can find detailed installation instructions, example code, documentation and
+API reference on [r5py.readthedocs.io](https://r5py.readthedocs.io).
 
 
 ## Acknowledgements

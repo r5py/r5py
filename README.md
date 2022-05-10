@@ -17,18 +17,18 @@ parallel computing, and integrates seamlessly with Python/Geopandas workflows.
 You can find detailed installation instructions, example code, documentation and
 API reference on [r5py.readthedocs.io](https://r5py.readthedocs.io).
 
+
 ## Installation
 
 Install r5py from PyPi, e.g., using `pip`:
 
-``` pip install r5py ```
+```
+pip install r5py
+```
 
 You also need to install a *Java Development Kit*, for instance,
 [OpenJDK](http://jdk.java.net/java-se-ri/11), in version 11. If you are on
 Linux, please use the jdk provided by your operating system’s package manager.
-
-
---------
 
 
 ## Acknowledgements

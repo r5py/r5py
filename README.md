@@ -2,8 +2,8 @@
 
 [![Documentation Status](https://readthedocs.org/projects/r5py/badge/?version=stable)](https://r5py.readthedocs.io/en/stable/?badge=stable)
 [![Trunk build status](https://github.com/r5py/r5py/actions/workflows/build-merged-pull-requests.yml/badge.svg)](https://github.com/r5py/r5py/actions/workflows/build-merged-pull-requests.yml)
-[![Python version](https://img.shields.io/pypi/pyversions/streetviewdownloader)](https://pypi.org/project/r5py)
-[![PyPi package version](https://img.shields.io/pypi/v/streetviewdownloader)](https://pypi.org/project/r5py)
+[![Python version](https://img.shields.io/pypi/pyversions/r5py)](https://pypi.org/project/r5py)
+[![PyPi package version](https://img.shields.io/pypi/v/r5py)](https://pypi.org/project/r5py)
 
 **R5py** is a Python wrapper for the [R5 routing analysis
 engine](https://github.com/conveyal/r5). It’s inspired by [r5r, a wrapper for

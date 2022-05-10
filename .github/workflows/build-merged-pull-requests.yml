@@ -1,6 +1,6 @@
 # vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
 
-name: Build after every successfully merged pull request to main
+name: Build main branch
 
 on:
   pull_request:

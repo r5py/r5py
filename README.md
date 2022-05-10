@@ -32,7 +32,7 @@ Linux, please use the jdk provided by your operating system’s package manager.
 ## Usage
 
 You can find detailed installation instructions, example code, documentation and
-API reference on [r5py.readthedocs.io](https://r5py.readthedocs.io).
+API reference at [r5py.readthedocs.io](https://r5py.readthedocs.io).
 
 
 ## Acknowledgements

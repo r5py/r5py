@@ -102,12 +102,11 @@ This should install all necessary dependencies including optional and packages f
 ### 4. Making a development build
 
 Once dependencies are in place, make an in-place build by navigating to the git
-clone of the *r5py* repository and running::
+clone of the *r5py* repository and running:
 
-    python setup.py develop
+    pip install .
 
-This will install r5py into your environment but allows any further changes
-without the need of reinstalling new version.
+This will install r5py from the source into your environment.
 
 ### 5. Making changes and writing tests
 
@@ -172,7 +171,7 @@ CI will run `black --check` and fails if there are files which would be
 auto-formatted by `black`. Therefore, it is helpful before submitting code to
 auto-format your code::
 
-    black r5py
+    black src
 
 Additionally, many editors have plugins that will apply `black` as you edit files.
 If you don't have black, you can install it using pip:

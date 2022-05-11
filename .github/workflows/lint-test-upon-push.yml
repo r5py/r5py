@@ -72,10 +72,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+#       - name: Install JVM
+#         run: |
+#           sudo apt-get update -qq
+#           sudo apt-get install -qq openjdk-11-jdk-headless openjdk-11-jre-headless
+
       - name: Install JVM
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -qq openjdk-11-jdk-headless openjdk-11-jre-headless
+        uses: actions/setup-java@v3
+        with: 
+          distribution: temurin
+          java-version: 11
 
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2.1.1

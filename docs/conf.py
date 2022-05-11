@@ -81,13 +81,6 @@ sys.path.append(
     )
 )
 
-
-# File extension mapping
-source_suffix = {
-    '.rst': 'restructuredtext',
-    '.md': 'markdown',
-}
-
 # Do not execute cells
 # (comment out following if you want to exclude executing notebooks during docs building)
 # jupyter_execute_notebooks = "off"

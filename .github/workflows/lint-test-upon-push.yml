@@ -3,9 +3,6 @@
 name: Lint-and-test-after-every-push-or-pull-request
 on:
   push:
-    paths:
-      - "*.py"
-      - "**/*.py"
   pull_request:
   workflow_call:
   workflow_dispatch:

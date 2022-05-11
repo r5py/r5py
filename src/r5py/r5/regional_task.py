@@ -24,33 +24,25 @@ class RegionalTask:
     """Wrap a com.conveyal.r5.analyst.cluster.RegionalTask."""
 
     def __init__(
-            self,
-
-            transport_network,
-
-            origin,
-            destinations,
-
-            departure=datetime.datetime.now(),
-            departure_time_window=datetime.timedelta(hours=1),
-            percentiles=[50],
-
-            transport_modes=[TransitMode.TRANSIT],
-            access_modes=[LegMode.WALK],
-            egress_modes=None,  # default: access_modes
-
-            max_time=datetime.timedelta(hours=2),
-            max_time_walking=datetime.timedelta(hours=2),
-            max_time_cycling=datetime.timedelta(hours=2),
-            max_time_driving=datetime.timedelta(hours=2),
-
-            speed_walking=3.6,
-            speed_cycling=12.0,
-
-            max_public_transport_rides=8,
-            max_bicycle_traffic_stress=3,
-
-            breakdown=False,
+        self,
+        transport_network,
+        origin,
+        destinations,
+        departure=datetime.datetime.now(),
+        departure_time_window=datetime.timedelta(hours=1),
+        percentiles=[50],
+        transport_modes=[TransitMode.TRANSIT],
+        access_modes=[LegMode.WALK],
+        egress_modes=None,  # default: access_modes
+        max_time=datetime.timedelta(hours=2),
+        max_time_walking=datetime.timedelta(hours=2),
+        max_time_cycling=datetime.timedelta(hours=2),
+        max_time_driving=datetime.timedelta(hours=2),
+        speed_walking=3.6,
+        speed_cycling=12.0,
+        max_public_transport_rides=8,
+        max_bicycle_traffic_stress=3,
+        breakdown=False,
     ):
         """
         Create a RegionalTask.
@@ -131,9 +123,15 @@ class RegionalTask:
         self.transport_modes = transport_modes
 
         self.max_time = max_time
-        self.max_time_walking = max_time_walking if max_time_walking is not None else max_time
-        self.max_time_cycling = max_time_cycling if max_time_cycling is not None else max_time
-        self.max_time_driving = max_time_driving if max_time_driving is not None else max_time
+        self.max_time_walking = (
+            max_time_walking if max_time_walking is not None else max_time
+        )
+        self.max_time_cycling = (
+            max_time_cycling if max_time_cycling is not None else max_time
+        )
+        self.max_time_driving = (
+            max_time_driving if max_time_driving is not None else max_time
+        )
 
         self.speed_cycling = speed_cycling
         self.speed_walking = speed_walking
@@ -162,8 +160,7 @@ class RegionalTask:
         access_modes = set(access_modes)
         self._access_modes = access_modes
         self._regional_task.accessModes = RegionalTask._enum_set(
-            access_modes,
-            com.conveyal.r5.api.util.LegMode
+            access_modes, com.conveyal.r5.api.util.LegMode
         )
 
     @property
@@ -180,8 +177,7 @@ class RegionalTask:
         # seconds from midnight
         self._regional_task.fromTime = int(
             datetime.timedelta(
-                hours=departure.hour,
-                minutes=departure.minute
+                hours=departure.hour, minutes=departure.minute
             ).total_seconds()
         )
         try:
@@ -201,8 +197,7 @@ class RegionalTask:
     def departure_time_window(self, departure_time_window):
         self._departure_time_window = departure_time_window
         self._regional_task.toTime = int(
-            self._regional_task.fromTime
-            + departure_time_window.total_seconds()
+            self._regional_task.fromTime + departure_time_window.total_seconds()
         )
 
     @property
@@ -258,8 +253,7 @@ class RegionalTask:
         egress_modes = set(egress_modes)
         self._egress_modes = egress_modes
         self._regional_task.egressModes = RegionalTask._enum_set(
-            egress_modes,
-            com.conveyal.r5.api.util.LegMode
+            egress_modes, com.conveyal.r5.api.util.LegMode
         )
 
     @property
@@ -294,9 +288,7 @@ class RegionalTask:
     @max_time.setter
     def max_time(self, max_time):
         self._max_time = max_time
-        max_time = int(
-            max_time.total_seconds() / 60
-        )
+        max_time = int(max_time.total_seconds() / 60)
         self._regional_task.streetTime = max_time
         self._regional_task.maxTripDurationMinutes = max_time
         self._regional_task.maxCarTime = max_time
@@ -314,9 +306,7 @@ class RegionalTask:
     @max_time_cycling.setter
     def max_time_cycling(self, max_time_cycling):
         self._max_time_cycling = max_time_cycling
-        self._regional_task.maxBikeTime = int(
-            max_time_cycling.total_seconds() / 60
-        )
+        self._regional_task.maxBikeTime = int(max_time_cycling.total_seconds() / 60)
 
     @property
     def max_time_driving(self):
@@ -326,9 +316,7 @@ class RegionalTask:
     @max_time_driving.setter
     def max_time_driving(self, max_time_driving):
         self._max_time_driving = max_time_driving
-        self._regional_task.maxCarTime = int(
-            max_time_driving.total_seconds() / 60
-        )
+        self._regional_task.maxCarTime = int(max_time_driving.total_seconds() / 60)
 
     @property
     def max_time_walking(self):
@@ -343,9 +331,7 @@ class RegionalTask:
     @max_time_walking.setter
     def max_time_walking(self, max_time_walking):
         self._max_time_walking = max_time_walking
-        self._regional_task.maxWalkTime = int(
-            max_time_walking.total_seconds() / 60
-        )
+        self._regional_task.maxWalkTime = int(max_time_walking.total_seconds() / 60)
 
     @property
     def percentiles(self):
@@ -432,15 +418,9 @@ class RegionalTask:
 
         # split them up into direct and transit modes,
         transit_modes = [
-            mode
-            for mode in transport_modes
-            if isinstance(mode, TransitMode)
+            mode for mode in transport_modes if isinstance(mode, TransitMode)
         ]
-        direct_modes = [
-            mode
-            for mode in transport_modes
-            if isinstance(mode, LegMode)
-        ]
+        direct_modes = [mode for mode in transport_modes if isinstance(mode, LegMode)]
 
         # the different modes underlie certain rules
         # e.g., some direct modes require certain access modes
@@ -457,14 +437,14 @@ class RegionalTask:
         else:  # not public transport
             egress_modes = []  # ignore egress (why?)
 
-        #     # this is weird: I reckon this is trying to keep the fastest mode only,
-        #     # and assumes that car is always faster that bike is always faster than walking
-        #     if LegMode.CAR in transport_modes:
-        #         access_modes = direct_modes = [LegMode.CAR]
-        #     elif LegMode.BICYCLE in transport_modes:
-        #         access_modes = direct_modes = [LegMode.BICYCLE]
-        #     elif LegMode.WALK in transport_modes:
-        #         access_modes = direct_modes = [LegMode.WALK]
+            #     # this is weird: I reckon this is trying to keep the fastest mode only,
+            #     # and assumes that car is always faster that bike is always faster than walking
+            #     if LegMode.CAR in transport_modes:
+            #         access_modes = direct_modes = [LegMode.CAR]
+            #     elif LegMode.BICYCLE in transport_modes:
+            #         access_modes = direct_modes = [LegMode.BICYCLE]
+            #     elif LegMode.WALK in transport_modes:
+            #         access_modes = direct_modes = [LegMode.WALK]
 
             # let’s do that differently (even if potentially more expensive, computationally)
             access_modes = direct_modes
@@ -473,12 +453,10 @@ class RegionalTask:
         self.access_modes = access_modes
         self.egress_modes = egress_modes
         self._regional_task.transitModes = RegionalTask._enum_set(
-            transit_modes,
-            com.conveyal.r5.api.util.TransitModes
+            transit_modes, com.conveyal.r5.api.util.TransitModes
         )
         self._regional_task.directModes = RegionalTask._enum_set(
-            direct_modes,
-            com.conveyal.r5.api.util.LegMode
+            direct_modes, com.conveyal.r5.api.util.LegMode
         )
 
         # pre-compute closest road segments/public transport stops to destination points
@@ -504,8 +482,12 @@ class RegionalTask:
         return enum_set
 
 
-@jpype._jcustomizer.JConversion("com.conveyal.r5.analyst.cluster.AnalysisWorkerTask", exact=RegionalTask)
-@jpype._jcustomizer.JConversion("com.conveyal.r5.analyst.cluster.RegionalTask", exact=RegionalTask)
+@jpype._jcustomizer.JConversion(
+    "com.conveyal.r5.analyst.cluster.AnalysisWorkerTask", exact=RegionalTask
+)
+@jpype._jcustomizer.JConversion(
+    "com.conveyal.r5.analyst.cluster.RegionalTask", exact=RegionalTask
+)
 def _cast_RegionalTask(java_class, object_):
     return object_._regional_task.clone()
     # cloned, so we can reuse the Python instance (e.g., with next origin)

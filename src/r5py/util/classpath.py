@@ -49,3 +49,8 @@ else:
             R5_JAR_URL, R5_JAR_SHA256
         ) as response, open(R5_CLASSPATH, "wb") as jar:
             jar.write(response.content)
+        print(
+            "Successfully downloaded {}.".format(os.path.basename(R5_JAR_URL)),
+            file=sys.stderr,
+            flush=True,
+        )

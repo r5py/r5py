@@ -79,7 +79,7 @@ sys.path.append(
 )
 
 # Execute notebooks if changes occur
-jupyter_execute_notebooks = "auto"
+jupyter_execute_notebooks = "force"
 
 # Hide title in left navbar
 html_title = ""

@@ -3,11 +3,9 @@
 name: Lint-and-test-after-every-push-or-pull-request
 on:
   push:
-    paths:
-      - "*.py"
-      - "**/*.py"
   pull_request:
   workflow_call:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -25,12 +23,16 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: "3.10"
-      - name: Lint (using pre-commit.com)
-        uses: pre-commit/action@2.0.3
+      - name: Install black and flake8
+        run: python -m pip install black flake8
+      - name: Lint using black
+        run: python -m black --check src
+      - name: Lint using flake8
+        run: python -m flake8 src
 
   test:
     name: Run tests (${{ matrix.os }}, ${{ matrix.env }})
-    needs: Linting code
+    needs: lint
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -38,42 +40,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: 
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
         env:
-          - ci/python_310_dev.yaml
           - ci/python_310.yaml
           - ci/python_39.yaml
           - ci/python_38.yaml
-        include:
-          - env: ci/python_310.yaml
-            os: macos-latest
-          - env: ci/python_310.yaml
-            os: windows-latest
-          - env: ci/python_310.yaml
-            os: ubuntu-latest
-
-          - env: ci/python_39.yaml
-            os: macos-latest
-          - env: ci/python_39.yaml
-            os: windows-latest
-          - env: ci/python_39.yaml
-            os: ubuntu-latest
-
-          - env: ci/python_38.yaml
-            os: macos-latest
-          - env: ci/python_38.yaml
-            os: windows-latest
-          - env: ci/python_38.yaml
-            os: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Install JVM
-        run: |
-          apt-get update -qq
-          apt-get install -qq openjdk-11-jdk-headless openjdk-11-jre-headless
+        uses: actions/setup-java@v3
+        with: 
+          distribution: temurin
+          java-version: 11
 
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2.1.1
@@ -84,8 +68,11 @@ jobs:
           environment-file: ${{ matrix.env }}
           channel-priority: strict
 
+      - name: Make sure pytest{,-cov} are installed
+        shell: bash -l {0}
+        run: conda install pytest pytest-cov
 
-      - name: Install ${{env.GITHUB_REPOSITORY}}
+      - name: Install r5py
         shell: bash -l {0}
         run: pip install .
 
@@ -94,9 +81,12 @@ jobs:
         run: |
           conda info
           conda list
-      - name: Test pyrosm
+      - name: Test r5py
         shell: bash -l {0}
         run: pytest --cov --cov-report xml
 
       - name: Update codecov.io
         uses: codecov/codecov-action@v3.1.0
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}

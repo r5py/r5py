@@ -79,7 +79,8 @@ sys.path.append(
 )
 
 # Do not execute cells
-jupyter_execute_notebooks = "off"
+# (comment out following if you want to exclude executing notebooks during docs building)
+# jupyter_execute_notebooks = "off"
 
 # Hide title in left navbar
 html_title = ""

@@ -75,7 +75,7 @@ def max_memory(max_memory):
             elif unit == "G":
                 value *= 2**10
             elif unit == "T":
-                value *= 2 ** 20
+                value *= 2**20
             max_memory = round(value)
     except TypeError:
         raise ValueError("Could not interpret --max-memory: {}".format(max_memory))

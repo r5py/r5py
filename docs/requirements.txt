@@ -20,3 +20,12 @@ sphinxcontrib-jsmath
 sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
 sphinxcontrib.bibtex
+ConfigArgParse
+contextily
+geopandas
+joblib
+jpype1
+matplotlib
+pandas
+psutil
+rasterio>=1.3a3

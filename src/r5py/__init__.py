@@ -10,7 +10,7 @@ from .r5 import (
     RegionalTask,
     TransitMode,
     TransportNetwork,
-    TravelTimeMatrix
+    TravelTimeMatrix,
 )
 
 __all__ = [
@@ -20,5 +20,5 @@ __all__ = [
     "TransitMode",
     "TransportNetwork",
     "TravelTimeMatrix",
-    "__version__"
+    "__version__",
 ]

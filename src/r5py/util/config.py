@@ -9,13 +9,7 @@ import sys
 import configargparse
 
 
-__all__ = [
-    "argparser",
-    "arguments",
-    "CACHE_DIR",
-    "CONFIG_FILES",
-    "PACKAGE"
-]
+__all__ = ["argparser", "arguments", "CACHE_DIR", "CONFIG_FILES", "PACKAGE"]
 
 
 PACKAGE = __package__.split(".")[0]
@@ -29,7 +23,7 @@ CACHE_DIR = os.path.join(
         or os.environ.get("XDG_CACHE_HOME")
         or os.path.join(os.environ["HOME"], ".cache")
     ),
-    PACKAGE
+    PACKAGE,
 )
 CONFIG_FILES = [
     "/etc/{:s}.yml".format(PACKAGE),
@@ -39,15 +33,15 @@ CONFIG_FILES = [
             or os.environ.get("XDG_CONFIG_HOME")
             or os.path.join(os.environ["HOME"], ".config")
         ),
-        "{:s}.yml".format(PACKAGE)
-    )
+        "{:s}.yml".format(PACKAGE),
+    ),
 ]
 
 
 argparser = configargparse.get_argument_parser(
     prog=PACKAGE,
     description=sys.modules[PACKAGE].__doc__,
-    default_config_files=CONFIG_FILES
+    default_config_files=CONFIG_FILES,
 )
 
 

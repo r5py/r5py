@@ -2,6 +2,12 @@
 
 
 import pytest
+import os
+import sys
+
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+print(sys.path)
 
 
 @pytest.fixture(scope="session", autouse=True)

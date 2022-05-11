@@ -57,12 +57,8 @@ class TransportNetwork:
         osm_pbf = os.path.abspath(osm_pbf)
         gtfs = [os.path.abspath(path) for path in gtfs]
         build_config = TransportNetworkBuilderConfig(**build_config)
-        self._transport_network = (
-            com.conveyal.r5.transit.TransportNetwork.fromFiles(
-                java.lang.String(osm_pbf),
-                java.util.ArrayList.of(gtfs),
-                build_config
-            )
+        self._transport_network = com.conveyal.r5.transit.TransportNetwork.fromFiles(
+            java.lang.String(osm_pbf), java.util.ArrayList.of(gtfs), build_config
         )
         self._transport_network.transitLayer.buildDistanceTables(None)
 
@@ -83,8 +79,7 @@ class TransportNetwork:
 
 
 @jpype._jcustomizer.JConversion(
-    "com.conveyal.r5.transit.TransportNetwork",
-    exact=TransportNetwork
+    "com.conveyal.r5.transit.TransportNetwork", exact=TransportNetwork
 )
 def _cast_TransportNetwork(java_class, object_):
     return object_._transport_network

@@ -28,8 +28,7 @@ class Scenario:
 
 
 @jpype._jcustomizer.JConversion(
-    "com.conveyal.r5.analyst.scenario.Scenario",
-    exact=Scenario
+    "com.conveyal.r5.analyst.scenario.Scenario", exact=Scenario
 )
 def _cast_Scenario(java_class, object_):
     return object_._scenario

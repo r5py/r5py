@@ -22,5 +22,5 @@ __all__ = [
     "StreetMode",
     "TransitMode",
     "TransportNetwork",
-    "TravelTimeMatrix"
+    "TravelTimeMatrix",
 ]

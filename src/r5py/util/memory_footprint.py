@@ -28,7 +28,7 @@ config.argparser.add(
 arguments = config.arguments()
 
 
-def share_of_ram(share=0.8, leave_at_least=(2 * (2 ** 10))):
+def share_of_ram(share=0.8, leave_at_least=(2 * (2**10))):
     """
     Calculate a share of total RAM.
 
@@ -48,7 +48,7 @@ def share_of_ram(share=0.8, leave_at_least=(2 * (2 ** 10))):
     float
         A value in MiB that is close to `share` portion of total RAM.
     """
-    total_ram = psutil.virtual_memory().total / (2 ** 20)
+    total_ram = psutil.virtual_memory().total / (2**20)
     if total_ram * (1.0 - share) > leave_at_least:
         share_of_ram = round(share * total_ram)
     else:
@@ -59,10 +59,7 @@ def share_of_ram(share=0.8, leave_at_least=(2 * (2 ** 10))):
 def max_memory(max_memory):
     """Interpret the config parameter --max-memory."""
     try:
-        matches = re.match(
-            r'(?P<value>[0-9]+(\.[0-9]+)?)(?P<unit>[%MGT])?',
-            max_memory
-        )
+        matches = re.match(r"(?P<value>[0-9]+(\.[0-9]+)?)(?P<unit>[%MGT])?", max_memory)
         value = float(matches["value"])
         unit = matches["unit"]
         if unit == "%":
@@ -70,13 +67,13 @@ def max_memory(max_memory):
         else:
             # convert to MiB
             if unit is None:
-                value *= 2 ** -10
+                value *= 2**-10
                 if value < 1:
                     value = 1
             # elif unit == "M":
             #    value *= 2 ** 1
             elif unit == "G":
-                value *= 2 ** 10
+                value *= 2**10
             elif unit == "T":
                 value *= 2 ** 20
             max_memory = round(value)

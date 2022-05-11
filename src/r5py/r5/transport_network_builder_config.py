@@ -51,10 +51,7 @@ class TransportNetworkBuilderConfig(dict):
             See https://github.com/conveyal/r5/blob/v6.6/src/main/java/com/conveyal/r5/point_to_point/builder/TNBuilderConfig.java#L128
         """
         super().__init__()
-        kwargs = {
-            util.snake_to_camel_case(key): value
-            for key, value in kwargs
-        }
+        kwargs = {util.snake_to_camel_case(key): value for key, value in kwargs}
         _config = self.DEFAULT_CONFIG
         if "speeds" in kwargs:
             _config["speeds"] = SpeedConfig(kwargs["speeds"])
@@ -66,10 +63,10 @@ class TransportNetworkBuilderConfig(dict):
 
 @jpype._jcustomizer.JConversion(
     "com.conveyal.r5.point_to_point.builder.TNBuilderConfig",
-    exact=TransportNetworkBuilderConfig
+    exact=TransportNetworkBuilderConfig,
 )
 def _cast_TransportNetworkBuilderConfig(java_class, instance):
     return com.conveyal.r5.common.JsonUtilities.objectMapper.readValue(
         json.dumps(instance),
-        com.conveyal.r5.point_to_point.builder.TNBuilderConfig.class_
+        com.conveyal.r5.point_to_point.builder.TNBuilderConfig.class_,
     )

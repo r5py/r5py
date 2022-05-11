@@ -12,9 +12,9 @@ __all__ = ["camel_to_snake_case"]
 # https://stackoverflow.com/a/1176023
 
 
-CAMEL_CASE_TO_SNAKE_CASE_RE1 = re.compile('(.)([A-Z][a-z]+)')
-CAMEL_CASE_TO_SNAKE_CASE_RE2 = re.compile('([a-z0-9])([A-Z])')
-CAMEL_CASE_TO_SNAKE_CASE_SUBSTITUTE = r'\1_\2'
+CAMEL_CASE_TO_SNAKE_CASE_RE1 = re.compile("(.)([A-Z][a-z]+)")
+CAMEL_CASE_TO_SNAKE_CASE_RE2 = re.compile("([a-z0-9])([A-Z])")
+CAMEL_CASE_TO_SNAKE_CASE_SUBSTITUTE = r"\1_\2"
 
 
 def camel_to_snake_case(camel_case):
@@ -22,7 +22,6 @@ def camel_to_snake_case(camel_case):
     return CAMEL_CASE_TO_SNAKE_CASE_RE2.sub(
         CAMEL_CASE_TO_SNAKE_CASE_SUBSTITUTE,
         CAMEL_CASE_TO_SNAKE_CASE_RE1.sub(
-            CAMEL_CASE_TO_SNAKE_CASE_SUBSTITUTE,
-            camel_case
-        )
+            CAMEL_CASE_TO_SNAKE_CASE_SUBSTITUTE, camel_case
+        ),
     ).lower()

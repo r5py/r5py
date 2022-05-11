@@ -84,7 +84,8 @@ jobs:
           environment-file: ${{ matrix.env }}
           channel-priority: strict
 
-      - name: Install ${{ github.repository }}
+
+      - name: Install ${{env.GITHUB_REPOSITORY}}
         shell: bash -l {0}
         run: pip install .
 

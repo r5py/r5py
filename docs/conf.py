@@ -81,4 +81,8 @@ sys.path.append(
 # Do not execute cells
 jupyter_execute_notebooks = "off"
 
+# Hide title in left navbar
+html_title = ""
 
+# Logo
+html_logo = "_static/r5py.png"

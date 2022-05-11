@@ -4,16 +4,25 @@ ipyleaflet
 ipython
 ipython-genutils
 ipywidgets
+jupyter-book>=0.7.0b
 nbsphinx
+numpydoc
+myst-parser
+myst-nb
 Sphinx
-sphinx-rtd-theme
+sphinx-book-theme
+sphinx_copybutton
+sphinx-togglebutton
 sphinxcontrib-applehelp
 sphinxcontrib-devhelp
 sphinxcontrib-htmlhelp
 sphinxcontrib-jsmath
 sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
+sphinxcontrib.bibtex
 
+# Do we want to run the Notebooks always when building the docs?
+# If not, then these wouldn't be needed (I (HT) typically don't run the Notebooks)
 ConfigArgParse
 contextily
 geopandas

@@ -21,7 +21,6 @@ sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
 sphinxcontrib.bibtex
 ConfigArgParse
-contextily
 geopandas
 joblib
 jpype1

@@ -74,8 +74,8 @@ jobs:
 
       - name: Install JVM
         run: |
-          apt-get update -qq
-          apt-get install -qq openjdk-11-jdk-headless openjdk-11-jre-headless
+          sudo apt-get update -qq
+          sudo apt-get install -qq openjdk-11-jdk-headless openjdk-11-jre-headless
 
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2.1.1

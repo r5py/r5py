@@ -13,10 +13,15 @@ dependencies:
     - pandas
     - psutil
     - requests
-    - shapely
-    # testing / dev related
+    # testing / dev / docs related
     - pytest
     - pytest-cov
     - codecov
-    - requests
     - black
+    - contextily
+    - sphinx
+    - myst-parser
+    - myst-nb
+    - sphinx-book-theme
+    - nbsphinx
+    - numpydoc

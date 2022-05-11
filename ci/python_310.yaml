@@ -1,0 +1,16 @@
+name: r5py
+
+channels:
+    - conda-forge
+
+dependencies:
+    - python=3.10
+    - configargparse
+    - geopandas
+    - joblib
+    - jpype1
+    - numpy
+    - pandas
+    - psutil
+    - requests
+    - shapely

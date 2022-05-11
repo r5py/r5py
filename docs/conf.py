@@ -32,6 +32,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "IPython.sphinxext.ipython_console_highlighting",
     "myst_nb",
+
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -49,6 +50,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 #
 html_theme = 'sphinx_book_theme'
+
 
 html_theme_options = {
     # "external_links": [],

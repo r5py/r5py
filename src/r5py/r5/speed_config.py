@@ -28,8 +28,8 @@ class SpeedConfig(dict):
             "secondary_link": 25,
             "tertiary": 25,
             "tertiary_link": 25,
-            "living_street": 5
-        }
+            "living_street": 5,
+        },
     }
 
     def __init__(self, **kwargs):
@@ -44,10 +44,7 @@ class SpeedConfig(dict):
             See https://github.com/conveyal/r5/blob/v6.6/src/main/java/com/conveyal/r5/point_to_point/builder/SpeedConfig.java#L10
         """
         super().__init__()
-        kwargs = {
-            util.snake_to_camel_case(key): value
-            for key, value in kwargs
-        }
+        kwargs = {util.snake_to_camel_case(key): value for key, value in kwargs}
         _config = self.DEFAULT_CONFIG
         if "values" in kwargs:
             _config["values"].update(kwargs["values"])
@@ -58,8 +55,7 @@ class SpeedConfig(dict):
 
 
 @jpype._jcustomizer.JConversion(
-    "com.conveyal.r5.point_to_point.builder.SpeedConfig",
-    exact=SpeedConfig
+    "com.conveyal.r5.point_to_point.builder.SpeedConfig", exact=SpeedConfig
 )
 def _cast_TransportNetworkBuilderConfig(java_class, instance):
     speed_config = com.conveyal.r5.point_to_point.builder.SpeedConfig()

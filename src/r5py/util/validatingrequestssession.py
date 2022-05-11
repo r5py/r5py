@@ -16,12 +16,7 @@ class ChecksumFailed(requests.RequestException):
 class ValidatingRequestsSession(requests.Session):
     """Download a file and test whether it matches a checksum."""
 
-    def __init__(
-            self,
-            *args,
-            checksum_algorithm=hashlib.sha256,
-            **kwargs
-    ):
+    def __init__(self, *args, checksum_algorithm=hashlib.sha256, **kwargs):
         """
         Download a file and test whether it matches a checksum.
 
@@ -59,13 +54,8 @@ class ValidatingRequestsSession(requests.Session):
 
         if digest != checksum:
             raise ChecksumFailed(
-                (
-                    "Checksum failed for {}"
-                    + "expected {}, got {}"
-                ).format(
-                    url,
-                    checksum,
-                    digest
+                ("Checksum failed for {}" + "expected {}, got {}").format(
+                    url, checksum, digest
                 )
             )
 

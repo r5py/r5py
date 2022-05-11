@@ -26,7 +26,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Lint (using pre-commit.com)
-        uses: pre-commit/action@2.0.3
+        uses: pre-commit/action@v2.0.3
 
   test:
     name: Run tests (${{ matrix.os }}, ${{ matrix.env }})

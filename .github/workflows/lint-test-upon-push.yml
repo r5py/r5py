@@ -1,12 +1,17 @@
 # vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
 
-name: Lint and test after every push
-on: 
+name: Lint and test after every push or pull request
+on:
   push:
     paths:
       - "*.py"
       - "**/*.py"
+  pull_request:
   workflow_call:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:
@@ -20,27 +25,77 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: "3.10"
-      - name: Install flake8
-        run: python -m pip install flake8
-      - name: Lint code
-        run: flake8
+      - name: Lint (using pre-commit.com)
+        uses: pre-commit/action@2.0.3
 
   test:
-    name: Run tests
-    runs-on: ubuntu-latest
-    container: python:3
+    name: Run tests (${{ matrix.os }}, ${{ matrix.env }})
+    needs: Linting code
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        env:
+          - ci/python_310_dev.yaml
+          - ci/python_310.yaml
+          - ci/python_39.yaml
+          - ci/python_38.yaml
+        include:
+          - env: ci/python_310.yaml
+            os: macos-latest
+          - env: ci/python_310.yaml
+            os: windows-latest
+          - env: ci/python_310.yaml
+            os: ubuntu-latest
+
+          - env: ci/python_39.yaml
+            os: macos-latest
+          - env: ci/python_39.yaml
+            os: windows-latest
+          - env: ci/python_39.yaml
+            os: ubuntu-latest
+
+          - env: ci/python_38.yaml
+            os: macos-latest
+          - env: ci/python_38.yaml
+            os: windows-latest
+          - env: ci/python_38.yaml
+            os: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Install JVM
         run: |
           apt-get update -qq
           apt-get install -qq openjdk-11-jdk-headless openjdk-11-jre-headless
-      - name: Install Python
-        uses: actions/setup-python@v3
+
+      - name: Setup Conda
+        uses: conda-incubator/setup-miniconda@v2.1.1
         with:
-          python-version: "3.10"
-      - name: Install tox
-        run: python -m pip install tox
-      - name: Run tests
-        run: tox
+          auto-update-conda: true
+          auto-activate-base: false
+          activate-environment: test
+          environment-file: ${{ matrix.env }}
+          channel-priority: strict
+
+      - name: Install ${{GITHUB_REPOSITORY}}
+        shell: bash -l {0}
+        run: pip install .
+
+      - name: Check environment
+        shell: bash -l {0}
+        run: |
+          conda info
+          conda list
+      - name: Test pyrosm
+        shell: bash -l {0}
+        run: pytest --cov --cov-report xml
+
+      - name: Update codecov.io
+        uses: codecov/codecov-action@v3.1.0

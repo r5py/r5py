@@ -1,6 +1,6 @@
 # vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
 
-name: Lint and test after every push or pull request
+name: Lint-and-test-after-every-push-or-pull-request
 on:
   push:
     paths:

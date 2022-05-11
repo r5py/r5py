@@ -40,42 +40,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: 
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
         env:
           - ci/python_310_dev.yaml
           - ci/python_310.yaml
           - ci/python_39.yaml
           - ci/python_38.yaml
-        include:
-          - env: ci/python_310.yaml
-            os: macos-latest
-          - env: ci/python_310.yaml
-            os: windows-latest
-          - env: ci/python_310.yaml
-            os: ubuntu-latest
-
-          - env: ci/python_39.yaml
-            os: macos-latest
-          - env: ci/python_39.yaml
-            os: windows-latest
-          - env: ci/python_39.yaml
-            os: ubuntu-latest
-
-          - env: ci/python_38.yaml
-            os: macos-latest
-          - env: ci/python_38.yaml
-            os: windows-latest
-          - env: ci/python_38.yaml
-            os: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-#       - name: Install JVM
-#         run: |
-#           sudo apt-get update -qq
-#           sudo apt-get install -qq openjdk-11-jdk-headless openjdk-11-jre-headless
 
       - name: Install JVM
         uses: actions/setup-java@v3

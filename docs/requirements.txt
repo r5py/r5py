@@ -26,6 +26,7 @@ geopandas
 joblib
 jpype1
 matplotlib
+numpy
 pandas
 psutil
-rasterio>=1.3a3
+shapely

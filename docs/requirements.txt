@@ -20,17 +20,3 @@ sphinxcontrib-jsmath
 sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
 sphinxcontrib.bibtex
-
-# Do we want to run the Notebooks always when building the docs?
-# If not, then these wouldn't be needed (I (HT) typically don't run the Notebooks)
-ConfigArgParse
-contextily
-geopandas
-joblib
-jpype1
-matplotlib
-numpy
-pandas
-psutil
-rasterio>=1.3a3
-shapely

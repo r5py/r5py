@@ -31,7 +31,6 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "IPython.sphinxext.ipython_console_highlighting",
-    "myst_parser",
     "myst_nb",
 
 ]

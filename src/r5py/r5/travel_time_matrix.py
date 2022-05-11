@@ -21,12 +21,12 @@ __all__ = ["TravelTimeMatrix"]
 
 
 # R5 fills cut-off values with MAX_INT32
-MAX_INT32 = (2 ** 31) - 1
+MAX_INT32 = (2**31) - 1
 
 # how many (Python) threads to start
 # (they still run many Java threads, so be careful what you wish for ;) )
 # TODO: benchmark the optimal number of threads
-NUM_THREADS = math.ceil(multiprocessing.cpu_count() * .75)
+NUM_THREADS = math.ceil(multiprocessing.cpu_count() * 0.75)
 
 # Which columns (and types) are returned by
 # com.conveyal.r5.analyst.cluster.PathResult.summarizeIterations?
@@ -41,7 +41,7 @@ DATA_COLUMNS = {
     "transfer_time": float,
     "wait_times": pandas.SparseDtype(float),
     "total_time": float,
-    "n_iterations": int
+    "n_iterations": int,
 }
 
 
@@ -49,13 +49,13 @@ class TravelTimeMatrix:
     """Calculate travel times between many origins and destinations."""
 
     def __init__(
-            self,
-            transport_network,
-            origins,
-            destinations=None,
-            breakdown=False,
-            breakdown_stat=BreakdownStat.MEAN,
-            **kwargs
+        self,
+        transport_network,
+        origins,
+        destinations=None,
+        breakdown=False,
+        breakdown_stat=BreakdownStat.MEAN,
+        **kwargs
     ):
         """
         Load a transport network.
@@ -108,7 +108,9 @@ class TravelTimeMatrix:
         # static properites of Java classes be modified in a
         # singleton kind of way?)
         if breakdown:
-            com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = len(destinations) + 1
+            com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = (
+                len(destinations) + 1
+            )
 
         self.request = RegionalTask(
             transport_network,
@@ -147,9 +149,9 @@ class TravelTimeMatrix:
         # loop over all origins, modify the request, and compute the times
         # to all destinations.
         with joblib.Parallel(
-                prefer="threads",
-                verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
-                n_jobs=NUM_THREADS
+            prefer="threads",
+            verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
+            n_jobs=NUM_THREADS,
         ) as parallel:
             od_matrix = pandas.concat(
                 parallel(
@@ -181,13 +183,13 @@ class TravelTimeMatrix:
         _EMPTY_ROW = [None] * len(DATA_COLUMNS)
         details = [
             [str(value) if value else None for record in row for value in record]
-            if row else _EMPTY_ROW
+            if row
+            else _EMPTY_ROW
             for row in details
         ]
 
         for ((column_name, column_type), column_data) in zip(
-                DATA_COLUMNS.items(),
-                zip(*details)  # transpose data
+            DATA_COLUMNS.items(), zip(*details)  # transpose data
         ):
             # split the array columns (they are pipe-separated strings)
             # also, cast to destination type
@@ -201,7 +203,9 @@ class TravelTimeMatrix:
                     [
                         column_type.subtype.type(value)  # cast
                         for value in row.split("|")
-                    ] if row is not None else []
+                    ]
+                    if row is not None
+                    else []
                     for row in column_data
                 ]
             else:
@@ -230,7 +234,8 @@ class TravelTimeMatrix:
             {
                 "from_id": pandas.Series(dtype=str),
                 "to_id": pandas.Series(dtype=str),
-            } | travel_time_columns
+            }
+            | travel_time_columns
         )
 
         # first assign columns with correct length (not the scalar `from_id`)

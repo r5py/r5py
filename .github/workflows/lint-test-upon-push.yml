@@ -92,8 +92,11 @@ jobs:
           environment-file: ${{ matrix.env }}
           channel-priority: strict
 
+      - name: Make sure pytest{,-cov} are installed
+        shell: bash -l {0}
+        run: conda install pytest pytest-cov
 
-      - name: Install ${{env.GITHUB_REPOSITORY}}
+      - name: Install r5py
         shell: bash -l {0}
         run: pip install .
 
@@ -102,7 +105,7 @@ jobs:
         run: |
           conda info
           conda list
-      - name: Test pyrosm
+      - name: Test r5py
         shell: bash -l {0}
         run: pytest --cov --cov-report xml
 

@@ -27,14 +27,14 @@ CACHE_DIR = str(
 )
 
 CONFIG_FILES = [
-    "/etc/{:s}.yml".format(PACKAGE),
+    f"/etc/{PACKAGE}.yml",
     str(
         pathlib.Path(
             os.environ.get("APPDATA")
             or os.environ.get("XDG_CONFIG_HOME")
             or (pathlib.Path(os.environ["HOME"]) / ".config")
         )
-        / ("{:s}.yml".format(PACKAGE)),
+        / f"{PACKAGE}.yml",
     ),
 ]
 

@@ -95,7 +95,7 @@ class TransportNetwork:
             if len(potential_osm_pbf_files > 1):
                 warnings.warn(
                     (
-                        f"Found more than one OpenStreetMap extract file (`.osm.pbf`), "
+                        "Found more than one OpenStreetMap extract file (`.osm.pbf`), "
                         f"using alphabetically first one ({osm_pbf.name})"
                     ),
                     warnings.RuntimeWarning,

@@ -1,6 +1,9 @@
 - **0.0.3** (2022-05-12):
     - refreshed documention
-    - set up GitHub extas
+    - added contribution guidelines
+    - added issue templates
+    - added tests, set up matrix testing infrastructure
+    - setup coverage reports (codecov.io)
     - bugfixes, refactoring
     - license change: now GPL/MIT dual license
     - first release to PyPi

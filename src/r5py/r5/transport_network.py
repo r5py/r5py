@@ -60,13 +60,13 @@ class TransportNetwork:
         In case *no* OpenStreetMap extract is found, a `FileNotFound`
         exception is raised. Any and all GTFS data files are used.
 
-        Arguments:
-        ----------
+        Arguments
+        ---------
         path : str
             directory path in which to search for GTFS and .osm.pbf files
 
-        Returns:
-        --------
+        Returns
+        -------
         TransportNetwork
             A fully initialised r5py.TransportNetwork
         """

@@ -2,11 +2,13 @@
 
 
 import pytest
-import os
+import pathlib
 import sys
 
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+
+sys.path.insert(0, pathlib.Path().absolute().parent / "src")
+print(sys.path)
 
 
 @pytest.fixture(scope="session", autouse=True)

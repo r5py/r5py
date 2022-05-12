@@ -3,7 +3,7 @@
 """Handle configuration options and command line options."""
 
 import os
-import os.path
+import pathlib
 import sys
 
 import configargparse
@@ -14,26 +14,27 @@ __all__ = ["argparser", "arguments", "CACHE_DIR", "CONFIG_FILES", "PACKAGE"]
 
 PACKAGE = __package__.split(".")[0]
 
-if "HOME" not in os.environ:  # e.g., testing env
+if "HOME" not in os.environ:  # e.g., testing environment or container
     os.environ["HOME"] = "."
 
-CACHE_DIR = os.path.join(
-    (
+CACHE_DIR = str(
+    pathlib.Path(
         os.environ.get("LOCALAPPDATA")
         or os.environ.get("XDG_CACHE_HOME")
-        or os.path.join(os.environ["HOME"], ".cache")
-    ),
-    PACKAGE,
+        or (pathlib.Path(os.environ["HOME"]) / ".cache")
+    )
+    / PACKAGE
 )
+
 CONFIG_FILES = [
     "/etc/{:s}.yml".format(PACKAGE),
-    os.path.join(
-        (
+    str(
+        pathlib.Path(
             os.environ.get("APPDATA")
             or os.environ.get("XDG_CONFIG_HOME")
-            or os.path.join(os.environ["HOME"], ".config")
-        ),
-        "{:s}.yml".format(PACKAGE),
+            or (pathlib.Path(os.environ["HOME"]) / ".config")
+        )
+        / ("{:s}.yml".format(PACKAGE)),
     ),
 ]
 

@@ -5,7 +5,6 @@
 
 
 import json
-import os.path
 import pathlib
 import warnings
 
@@ -21,23 +20,6 @@ import java.util.ArrayList
 
 
 __all__ = ["TransportNetwork"]
-
-
-# TODO: Figure out how to make R5 save the .mapdb elsewhere, and not next
-# to the input files (they could well be on a r/o filesystem, or in a dedicate
-# data folder that should not be littered with random cache files).
-
-# There are (at least) the following three options of doing that:
-#   1) Use a java agent/instrumentation api to monkey-patch
-#      com.conveyal.r5.transit.TransportNetwork.fromFiles where the path to the
-#      .mapdb file is hardcoded. Not sure how easy that is, and whether jpype
-#      (properly) supports it.
-#   2) Have a patched com.conveyal.r5.transit.TransportNetwork (or com.conveyal.osmlib.OSM)
-#      in the class path _before_ the r5-all.jar. Easy, but messy, potential maintenance hell.
-#   3) Copy the input file(s) to a temporary directory before reading them.
-#      By far the cleanest option, but have to check /tmp disk space (if it’s a ramdisk - the
-#      default on most current linux installations - we cut into memory; might have to check how
-#      long R5 wants to be able to access input files)
 
 
 class TransportNetwork:
@@ -57,8 +39,8 @@ class TransportNetwork:
             options accepted by TNBuilderConfig (including SpeedConfig)
         """
         # TODO: Add TNBuilderConfig and SpeedConfig options to docstring
-        osm_pbf = os.path.abspath(osm_pbf)
-        gtfs = [os.path.abspath(path) for path in gtfs]
+        osm_pbf = str(pathlib.Path(osm_pbf).absolute())
+        gtfs = [str(pathlib.Path(path).absolute()) for path in gtfs]
         build_config = TransportNetworkBuilderConfig(**build_config)
         self._transport_network = com.conveyal.r5.transit.TransportNetwork.fromFiles(
             java.lang.String(osm_pbf), java.util.ArrayList.of(gtfs), build_config
@@ -78,13 +60,13 @@ class TransportNetwork:
         In case *no* OpenStreetMap extract is found, a `FileNotFound`
         exception is raised. Any and all GTFS data files are used.
 
-        Arguments:
-        ----------
+        Arguments
+        ---------
         path : str
             directory path in which to search for GTFS and .osm.pbf files
 
-        Returns:
-        --------
+        Returns
+        -------
         TransportNetwork
             A fully initialised r5py.TransportNetwork
         """
@@ -110,12 +92,20 @@ class TransportNetwork:
             if util.contains_gtfs_data(potential_gtfs_file)
         ]
         try:
-            with open(os.path.join(str(path), "build.json")) as build_json_file:
+            with open(pathlib.Path(path) / "build.json") as build_json_file:
                 build_json = json.load(build_json_file)
         except (FileNotFoundError, json.JSONDecodeError):
             build_json = {}
 
         return cls(osm_pbf, gtfs, build_json)
+
+    def __enter__(self):
+        """Provide a context."""
+        return self
+
+    def __exit__(self):
+        """Exit context."""
+        return False
 
     @property
     def linkage_cache(self):

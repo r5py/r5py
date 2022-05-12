@@ -17,7 +17,7 @@ from .transport_network import TransportNetwork
 import com.conveyal.r5
 
 
-__all__ = ["TravelTimeMatrix"]
+__all__ = ["TravelTimeMatrixComputer"]
 
 
 # R5 fills cut-off values with MAX_INT32
@@ -45,8 +45,8 @@ DATA_COLUMNS = {
 }
 
 
-class TravelTimeMatrix:
-    """Calculate travel times between many origins and destinations."""
+class TravelTimeMatrixComputer:
+    """Compute travel times between many origins and destinations."""
 
     def __init__(
         self,

@@ -10,7 +10,7 @@ R5py
 
    installation
    basic-usage.ipynb
-   CONTRIBUTIONS.md
+   CONTRIBUTING.md
 
 .. toctree::
     :caption: Reference

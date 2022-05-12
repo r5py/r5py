@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'r5py'
-copyright = '2022, r5py contributers'
-author = 'r5py contributers'
+copyright = '2022, r5py contributors'
+author = 'r5py contributors'
 
 
 # -- General configuration ---------------------------------------------------
@@ -31,7 +31,8 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "IPython.sphinxext.ipython_console_highlighting",
-    "myst_nb",
+    #"myst_nb",
+    "nbsphinx"
 
 ]
 
@@ -71,14 +72,10 @@ html_static_path = ['_static']
 # include __init__() in API doc
 autoclass_content = 'init'
 
-import os.path
+# add r5py’s package directory to path
+import pathlib
 import sys
-sys.path.append(
-    os.path.join(
-        os.path.abspath(""),  # directory of __file__
-        "../src/"
-    )
-)
+sys.path.insert(0, str(pathlib.Path().absolute().parent / "src"))
 
 # Do not execute cells
 # (comment out following if you want to exclude executing notebooks during docs building)

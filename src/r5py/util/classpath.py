@@ -3,7 +3,8 @@
 """Make sure R5 is in the class path, download it if not."""
 
 import hashlib
-import os.path
+import os
+import pathlib
 import sys
 
 from . import config
@@ -28,11 +29,11 @@ config.argparser.add(
 arguments = config.arguments()
 
 
-if os.path.exists(arguments.r5_classpath):
+if pathlib.Path(arguments.r5_classpath).exists():
     # do not test local files’ checksums, as they might be customly compiled
     R5_CLASSPATH = arguments.r5_classpath
 else:
-    R5_CLASSPATH = os.path.join(config.CACHE_DIR, os.path.basename(R5_JAR_URL))
+    R5_CLASSPATH = str(pathlib.Path(config.CACHE_DIR) / pathlib.Path(R5_JAR_URL).name)
     try:
         with open(R5_CLASSPATH, "rb") as jar:
             assert hashlib.sha256(jar.read()).hexdigest == R5_JAR_SHA256
@@ -50,7 +51,7 @@ else:
         ) as response, open(R5_CLASSPATH, "wb") as jar:
             jar.write(response.content)
         print(
-            "Successfully downloaded {}.".format(os.path.basename(R5_JAR_URL)),
+            "Successfully downloaded {}.".format(pathlib.Path(R5_JAR_URL).name),
             file=sys.stderr,
             flush=True,
         )

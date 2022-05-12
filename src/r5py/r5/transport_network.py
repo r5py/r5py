@@ -117,6 +117,14 @@ class TransportNetwork:
 
         return cls(osm_pbf, gtfs, build_json)
 
+    def __enter__(self):
+        """Provide a context."""
+        return self
+
+    def __exit__(self):
+        """Exit context."""
+        return False
+
     @property
     def linkage_cache(self):
         """Expose the `TransportNetwork`’s `linkageCache` to Python."""

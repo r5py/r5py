@@ -22,7 +22,8 @@ CACHE_DIR = str(
         os.environ.get("LOCALAPPDATA")
         or os.environ.get("XDG_CACHE_HOME")
         or (pathlib.Path(os.environ["HOME"]) / ".cache")
-    ) / PACKAGE
+    )
+    / PACKAGE
 )
 
 CONFIG_FILES = [
@@ -32,7 +33,8 @@ CONFIG_FILES = [
             os.environ.get("APPDATA")
             or os.environ.get("XDG_CONFIG_HOME")
             or (pathlib.Path(os.environ["HOME"]) / ".config")
-        ) / ("{:s}.yml".format(PACKAGE)),
+        )
+        / ("{:s}.yml".format(PACKAGE)),
     ),
 ]
 

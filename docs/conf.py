@@ -30,8 +30,9 @@ author = 'r5py contributers'
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
-    "nbsphinx",
-    "IPython.sphinxext.ipython_console_highlighting"
+    "IPython.sphinxext.ipython_console_highlighting",
+    "myst_nb",
+
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -48,7 +49,19 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'sphinx_book_theme'
+
+
+html_theme_options = {
+    # "external_links": [],
+    "repository_url": "https://github.com/r5py/r5py/",
+    "use_edit_page_button": True,
+    "launch_buttons": {
+        "binderhub_url": "https://mybinder.org",
+        "thebelab": False,
+        "notebook_interface": "jupyterlab",
+    },
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -66,3 +79,13 @@ sys.path.append(
         "../src/"
     )
 )
+
+# Do not execute cells
+# (comment out following if you want to exclude executing notebooks during docs building)
+# jupyter_execute_notebooks = "off"
+
+# Hide title in left navbar
+html_title = ""
+
+# Logo
+html_logo = "_static/r5py.png"

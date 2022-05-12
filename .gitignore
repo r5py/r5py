@@ -31,3 +31,5 @@ docs/data/*.mapdb.p
 **/.ipynb_checkpoints
 
 .tox
+.coverage
+coverage.xml

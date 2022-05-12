@@ -1,0 +1,27 @@
+name: r5py
+
+channels:
+    - conda-forge
+
+dependencies:
+    - python=3.10
+    - configargparse
+    - geopandas
+    - joblib
+    - jpype1
+    - numpy
+    - pandas
+    - psutil
+    - requests
+    # testing / dev / docs related
+    - pytest
+    - pytest-cov
+    - codecov
+    - black
+    - contextily
+    - sphinx
+    - myst-parser
+    - myst-nb
+    - sphinx-book-theme
+    - nbsphinx
+    - numpydoc

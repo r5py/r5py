@@ -17,5 +17,5 @@ jpype.startJVM(
     "-Xcheck:jni",
     # "--illegal-access=permit",
     # "--add-opens=java.lang/java.nio.DirectByteBuffer=ALL-UNNAMED",
-    classpath=[R5_CLASSPATH]
+    classpath=[R5_CLASSPATH],
 )

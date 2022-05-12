@@ -17,9 +17,12 @@ class TestBreakdownStat:
     )
     def test_breakdownstats(self, enum_member, enum_name):
         assert enum_member.name == enum_name
-        assert isinstance(enum_member.value, com.conveyal.r5.analyst.cluster.PathResult.Stat)
-        assert enum_member.value == com.conveyal.r5.analyst.cluster.PathResult.Stat.valueOf(
-            enum_name
+        assert isinstance(
+            enum_member.value, com.conveyal.r5.analyst.cluster.PathResult.Stat
+        )
+        assert (
+            enum_member.value
+            == com.conveyal.r5.analyst.cluster.PathResult.Stat.valueOf(enum_name)
         )
         assert (
             enum_member.name

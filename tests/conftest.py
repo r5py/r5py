@@ -7,7 +7,6 @@ import sys
 
 
 sys.path.insert(0, pathlib.Path().absolute().parent / "src")
-print(sys.path)
 
 
 @pytest.fixture(scope="session", autouse=True)

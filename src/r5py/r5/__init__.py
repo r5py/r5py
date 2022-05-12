@@ -11,7 +11,7 @@ from .scenario import Scenario
 from .street_mode import StreetMode
 from .transit_mode import TransitMode
 from .transport_network import TransportNetwork
-from .travel_time_matrix import TravelTimeMatrix
+from .travel_time_matrix_computer import TravelTimeMatrixComputer
 
 __all__ = [
     "BreakdownStat",
@@ -22,5 +22,5 @@ __all__ = [
     "StreetMode",
     "TransitMode",
     "TransportNetwork",
-    "TravelTimeMatrix",
+    "TravelTimeMatrixComputer",
 ]

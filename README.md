@@ -51,3 +51,9 @@ TODO:
 Citation (at least a Zenodo link, first; then also a software paper)
 
 //-->
+
+## License
+
+This work is dual-licensed under GNU General Public License v3.0 or later and MIT License. You can choose between one of them if you use this work.
+
+`SPDX-License-Identifier: GPL-3.0-or-later OR MIT`

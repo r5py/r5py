@@ -14,14 +14,19 @@ dependencies:
     - psutil
     - requests
     # testing / dev / docs related
-    - pytest
-    - pytest-cov
-    - codecov
     - black
-    - contextily
-    - sphinx
+    - codecov
+    - folium
+    - jupyterlab
+    - matplotlib
+    - mapclassify
     - myst-parser
     - myst-nb
-    - sphinx-book-theme
     - nbsphinx
     - numpydoc
+    - nbstripout
+    - openjdk
+    - pytest
+    - pytest-cov
+    - sphinx
+    - sphinx-book-theme

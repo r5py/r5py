@@ -4,8 +4,8 @@
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
 
-import pathlib
 import json
+import pathlib
 import warnings
 
 import jpype

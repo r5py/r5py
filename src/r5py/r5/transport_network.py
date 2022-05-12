@@ -7,6 +7,7 @@
 import json
 import os.path
 import pathlib
+import warnings
 
 import jpype
 import jpype.types
@@ -67,7 +68,7 @@ class TransportNetwork:
     @classmethod
     def from_directory(cls, path):
         """
-        Load a transport network, find input data in `path`.
+        Find input data in `path`, load an `r5py.TransportNetwork`.
 
         This mimicks r5r’s behaviour to accept a directory path
         as the only input to `setup_r5()`.
@@ -89,14 +90,27 @@ class TransportNetwork:
         """
         path = pathlib.Path(path)
         try:
-            osm_pbf = sorted(path.glob("*.osm.pbf"))[0]
+            potential_osm_pbf_files = sorted(path.glob("*.osm.pbf"))
+            osm_pbf = potential_osm_pbf_files[0]
+            if len(potential_osm_pbf_files > 1):
+                warnings.warn(
+                    (
+                        "Found more than one OpenStreetMap extract file (`.osm.pbf`), "
+                        + "using alphabetically first one ({})"
+                    ).format(osm_pbf.name),
+                    warnings.RuntimeWarning,
+                )
         except KeyError:
             raise FileNotFoundError(
                 "Could not find any OpenStreetMap extract file (`.osm.pbf`) in {}".format(
                     str(path.absolute())
                 )
             )
-        gtfs = list(path.glob("*GTFS.zip")) + list(path.glob("GTFS*.zip"))
+        gtfs = [
+            potential_gtfs_file
+            for potential_gtfs_file in path.glob("*.zip")
+            if util.contains_gtfs_data(potential_gtfs_file)
+        ]
         try:
             with open(os.path.join(str(path), "build.json")) as build_json_file:
                 build_json = json.load(build_json_file)

@@ -94,13 +94,13 @@ class TransportNetwork:
             osm_pbf = potential_osm_pbf_files[0]
             if len(potential_osm_pbf_files > 1):
                 warnings.warn(
-                        f"Found more than one OpenStreetMap extract file (`.osm.pbf`), "
-                        f"using alphabetically first one ({osm_pbf.name})",
-                        RuntimeWarning
+                    f"Found more than one OpenStreetMap extract file (`.osm.pbf`), "
+                    f"using alphabetically first one ({osm_pbf.name})",
+                    RuntimeWarning,
                 )
         except KeyError:
             raise FileNotFoundError(
-                f"Could not find any OpenStreetMap extract file (`.osm.pbf`) in {str(path.absolute()}"
+                f"Could not find any OpenStreetMap extract file (`.osm.pbf`) in {str(path.absolute())}"
             )
         gtfs = [
             potential_gtfs_file

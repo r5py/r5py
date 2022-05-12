@@ -4,7 +4,10 @@
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
 
+import json
 import os.path
+import pathlib
+import warnings
 
 import jpype
 import jpype.types
@@ -61,6 +64,58 @@ class TransportNetwork:
             java.lang.String(osm_pbf), java.util.ArrayList.of(gtfs), build_config
         )
         self._transport_network.transitLayer.buildDistanceTables(None)
+
+    @classmethod
+    def from_directory(cls, path):
+        """
+        Find input data in `path`, load an `r5py.TransportNetwork`.
+
+        This mimicks r5r’s behaviour to accept a directory path
+        as the only input to `setup_r5()`.
+
+        If more than one OpenStreetMap extract (`.osm.pbf`) is
+        found in `path`, the (alphabetically) first is used.
+        In case *no* OpenStreetMap extract is found, a `FileNotFound`
+        exception is raised. Any and all GTFS data files are used.
+
+        Arguments:
+        ----------
+        path : str
+            directory path in which to search for GTFS and .osm.pbf files
+
+        Returns:
+        --------
+        TransportNetwork
+            A fully initialised r5py.TransportNetwork
+        """
+        path = pathlib.Path(path)
+        try:
+            potential_osm_pbf_files = sorted(path.glob("*.osm.pbf"))
+            osm_pbf = potential_osm_pbf_files[0]
+            if len(potential_osm_pbf_files > 1):
+                warnings.warn(
+                    (
+                        f"Found more than one OpenStreetMap extract file (`.osm.pbf`), "
+                        f"using alphabetically first one ({osm_pbf.name})"
+                    ),
+                    RuntimeWarning,
+                )
+        except KeyError:
+            raise FileNotFoundError(
+                f"Could not find any OpenStreetMap extract file (`.osm.pbf`) in {path.absolute()}"
+            )
+        gtfs = [
+            potential_gtfs_file
+            for potential_gtfs_file in path.glob("*.zip")
+            if util.contains_gtfs_data(potential_gtfs_file)
+        ]
+        try:
+            with open(os.path.join(str(path), "build.json")) as build_json_file:
+                build_json = json.load(build_json_file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            build_json = {}
+
+        return cls(osm_pbf, gtfs, build_json)
 
     @property
     def linkage_cache(self):

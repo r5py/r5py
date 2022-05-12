@@ -102,9 +102,7 @@ class TransportNetwork:
                 )
         except KeyError:
             raise FileNotFoundError(
-                "Could not find any OpenStreetMap extract file (`.osm.pbf`) in {}".format(
-                    str(path.absolute())
-                )
+                f"Could not find any OpenStreetMap extract file (`.osm.pbf`) in {path.absolute()}"
             )
         gtfs = [
             potential_gtfs_file

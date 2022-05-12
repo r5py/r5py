@@ -4,7 +4,7 @@
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
 
-import os.path
+import pathlib
 
 import jpype
 import jpype.types
@@ -54,8 +54,8 @@ class TransportNetwork:
             options accepted by TNBuilderConfig (including SpeedConfig)
         """
         # TODO: Add TNBuilderConfig and SpeedConfig options to docstring
-        osm_pbf = os.path.abspath(osm_pbf)
-        gtfs = [os.path.abspath(path) for path in gtfs]
+        osm_pbf = str(pathlib.Path(osm_pbf).absolute())
+        gtfs = [str(pathlib.Path(path).absolute()) for path in gtfs]
         build_config = TransportNetworkBuilderConfig(**build_config)
         self._transport_network = com.conveyal.r5.transit.TransportNetwork.fromFiles(
             java.lang.String(osm_pbf), java.util.ArrayList.of(gtfs), build_config

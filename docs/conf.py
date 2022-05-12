@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'r5py'
-copyright = '2022, r5py contributers'
-author = 'r5py contributers'
+copyright = '2022, r5py contributors'
+author = 'r5py contributors'
 
 
 # -- General configuration ---------------------------------------------------

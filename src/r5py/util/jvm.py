@@ -13,7 +13,7 @@ __all__ = []
 
 
 jpype.startJVM(
-    "-Xmx{:d}M".format(MAX_JVM_MEMORY),
+    f"-Xmx{MAX_JVM_MEMORY:d}M",
     "-Xcheck:jni",
     # "--illegal-access=permit",
     # "--add-opens=java.lang/java.nio.DirectByteBuffer=ALL-UNNAMED",

@@ -21,7 +21,8 @@ We used [osmium](https://osmcode.org/osmium-tool/) to crop the data to the given
 
 ### population_points_2020.gpkg
 
-A sample dataset distributed with the package representing populated points in Helsinki. The data is obtained from Helsinki Region Environmental Services (HSY). 
+A sample dataset distributed with the package representing populated points in Helsinki. 
+The data is obtained from Helsinki Region Environmental Services (HSY). 
 The data is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). 
 
 The data is downloaded using HSY WFS service (see [the script](scripts/download_population_grid.py)) and modified slightly 

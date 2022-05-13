@@ -54,7 +54,7 @@ class ValidatingRequestsSession(requests.Session):
 
         if digest != checksum:
             raise ChecksumFailed(
-                f"Checksum failed for {url}" + "expected {checksum}, got {digest}"
+                f"Checksum failed for {url} expected {checksum}, got {digest}"
             )
 
         return response

@@ -2,6 +2,7 @@
 
 """R5 classes."""
 
+# start the JVM first thing
 from ..util import jvm  # noqa: F401
 
 from .breakdown_stat import BreakdownStat

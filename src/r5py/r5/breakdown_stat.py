@@ -4,8 +4,6 @@
 
 import enum
 
-from ..util import jvm  # noqa: F401
-
 import com.conveyal.r5
 
 

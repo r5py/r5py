@@ -6,7 +6,7 @@ import json
 
 import jpype
 
-from ..util import jvm, snake_to_camel_case  # noqa: F401
+from ..util import snake_to_camel_case
 from .speed_config import SpeedConfig
 
 import com.conveyal.r5

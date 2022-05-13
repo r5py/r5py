@@ -9,7 +9,7 @@ import joblib
 import numpy
 import pandas
 
-from ..util import config, jvm  # noqa: F401
+from ..util import config
 from .breakdown_stat import BreakdownStat
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork

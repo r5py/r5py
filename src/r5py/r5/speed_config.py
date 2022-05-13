@@ -2,7 +2,8 @@
 
 """Wraps a com.conveyal.r5.point_to_point.builder.SpeedConfig."""
 
-from ..util import jvm, snake_to_camel_case  # noqa: F401
+# from ..util import jvm, snake_to_camel_case  # noqa: F401
+from ..util import snake_to_camel_case
 
 import jpype
 

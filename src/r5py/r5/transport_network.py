@@ -11,7 +11,7 @@ import warnings
 import jpype
 import jpype.types
 
-from ..util import contains_gtfs_data, jvm  # noqa: F401
+from ..util import contains_gtfs_data
 from .transport_network_builder_config import TransportNetworkBuilderConfig
 
 import com.conveyal.r5

@@ -11,7 +11,7 @@ import warnings
 import jpype
 import jpype.types
 
-from .. import util  # noqa: F401
+from ..util import contains_gtfs_data, jvm  # noqa: F401
 from .transport_network_builder_config import TransportNetworkBuilderConfig
 
 import com.conveyal.r5
@@ -89,7 +89,7 @@ class TransportNetwork:
         gtfs = [
             potential_gtfs_file
             for potential_gtfs_file in path.glob("*.zip")
-            if util.contains_gtfs_data(potential_gtfs_file)
+            if contains_gtfs_data(potential_gtfs_file)
         ]
         try:
             with open(pathlib.Path(path) / "build.json") as build_json_file:

@@ -2,7 +2,7 @@
 
 """R5 classes."""
 
-from .. import util  # noqa: F401
+from ..util import jvm  # noqa: F401
 
 from .breakdown_stat import BreakdownStat
 from .leg_mode import LegMode

@@ -25,7 +25,7 @@ A sample dataset distributed with the package representing populated points in H
 The data is obtained from Helsinki Region Environmental Services (HSY). 
 The data is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). 
 
-The data is downloaded from the Helsinki Region Environmental Services’ (HSY) *Web Feature Service (WFS)* endpoint (see the [Helsinki Region Infoshare’s data description](https://hri.fi/data/en_GB/dataset/vaestotietoruudukko)). We used [a script](scripts/download_population_grid.py), that we share with this package to download the data set and adapt it to the requirements of r5py’s documentation. Namely, we:
+The data is downloaded from the Helsinki Region Environmental Services’ (HSY) *Web Feature Service (WFS)* endpoint (see the [Helsinki Region Infoshare’s data description](https://hri.fi/data/en_GB/dataset/vaestotietoruudukko)). We used [a script](scripts/download_population_grid.py), that we share with this package, to download the data set and adapt it to the requirements of r5py’s documentation. Namely, we:
 
 - reindexed the data,
 - omitted some columns,

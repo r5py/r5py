@@ -78,7 +78,7 @@ def max_memory(max_memory):
                 value *= 2**20
             max_memory = round(value)
     except TypeError:
-        raise ValueError("Could not interpret --max-memory: {}".format(max_memory))
+        raise ValueError(f"Could not interpret --max-memory: {max_memory}")
     return max_memory
 
 

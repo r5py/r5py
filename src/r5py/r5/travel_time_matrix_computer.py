@@ -55,7 +55,7 @@ class TravelTimeMatrixComputer:
         destinations=None,
         breakdown=False,
         breakdown_stat=BreakdownStat.MEAN,
-        **kwargs
+        **kwargs,
     ):
         """
         Load a transport network.
@@ -117,7 +117,7 @@ class TravelTimeMatrixComputer:
             origins.iloc[0].geometry,  # just one origin to pass through __init__
             destinations,
             breakdown=breakdown,
-            **kwargs
+            **kwargs,
         )
 
         self.verbose = util.config.arguments().verbose
@@ -227,7 +227,7 @@ class TravelTimeMatrixComputer:
             travel_time_columns = {"travel_time": pandas.Series(dtype=float)}
         else:
             travel_time_columns = {
-                "travel_time_p{:d}".format(percentile): pandas.Series(dtype=float)
+                f"travel_time_p{percentile:d}": pandas.Series(dtype=float)
                 for percentile in self.request.percentiles
             }
         od_matrix = pandas.DataFrame(
@@ -249,7 +249,7 @@ class TravelTimeMatrixComputer:
         else:
             for (p, percentile) in enumerate(self.request.percentiles):
                 travel_times = results.travelTimes.getValues()[p]
-                od_matrix["travel_time_p{:d}".format(percentile)] = travel_times
+                od_matrix[f"travel_time_p{percentile:d}"] = travel_times
 
         # R5’s NULL value is MAX_INT32
         od_matrix = od_matrix.applymap(lambda x: numpy.nan if x == MAX_INT32 else x)

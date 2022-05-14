@@ -38,7 +38,7 @@ else:
         with open(R5_CLASSPATH, "rb") as jar:
             jar_hash = hashlib.sha256(jar.read()).hexdigest()
             assert jar_hash == R5_JAR_SHA256
-    except (AssertionError, FileNotFoundError) as e:
+    except (AssertionError, FileNotFoundError):
         # TODO: print this only when --verbose is specified,
         # (problem: verbosity.py already wants a jvm running)
         print(

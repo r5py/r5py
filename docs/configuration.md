@@ -22,7 +22,7 @@ package searches in the following paths:
 When running **r5py** from the command line, you can supply command line arguments.
 To show available options, consult the [table below](#configuration-command-line-options), or run:
 
-```python
+```bash
 python -m r5py --help
 ```
 

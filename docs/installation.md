@@ -4,7 +4,7 @@
 
 ### Java Development Kit
 
-In order to interface with R5, **r5py** requires a *Java Development Kit* (jdk) in version 11. [OpenJDK](https://openjdk.java.net/) works fine.
+To interface with R5, **r5py** requires a *Java Development Kit* (jdk) in version 11. [OpenJDK](https://openjdk.java.net/) works fine.
 
 
 ### R5

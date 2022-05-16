@@ -9,9 +9,9 @@ R5py
    :caption: Contents
 
    installation
-   configuration.md
+   configuration
    basic-usage.ipynb
-   CONTRIBUTING.md
+   CONTRIBUTING
 
 .. toctree::
     :caption: Reference

@@ -9,7 +9,7 @@ R5py
    :caption: Contents
 
    installation
-   configuration
+   configuration.md
    basic-usage.ipynb
    CONTRIBUTING.md
 

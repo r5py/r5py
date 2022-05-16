@@ -29,14 +29,3 @@ Alternatively, r5py can be installed from source by cloning its repository and r
     git clone https://github.com/r5py/r5py/
     cd r5py
     pip install .
-
-
-
-Configuration
--------------
-
-R5py can be configured using a configuration file ``r5py.yml``, for which the package searches in ``/etc``, ``%APPDATA%\``, ``${XDG_CONFIG_HOME}/``, and ``~/.config/``. Currently the following configuration options and default values are available::
-
-    r5-classpath: /usr/share/java/r5/r5-all.jar
-    max-memory: 80%
-    verbose: False

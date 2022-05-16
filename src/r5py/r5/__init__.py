@@ -9,6 +9,7 @@ from .breakdown_stat import BreakdownStat
 from .leg_mode import LegMode
 from .regional_task import RegionalTask
 from .scenario import Scenario
+from .speed_config import SpeedConfig
 from .street_mode import StreetMode
 from .transit_mode import TransitMode
 from .transport_network import TransportNetwork
@@ -19,7 +20,7 @@ __all__ = [
     "LegMode",
     "RegionalTask",
     "Scenario",
-    "SpeedUnit",
+    "SpeedConfig",
     "StreetMode",
     "TransitMode",
     "TransportNetwork",

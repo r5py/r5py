@@ -12,14 +12,18 @@ package searches in the following paths:
 
 - On Unix-like operating systems (such as most Linux and BSD distributions,
   as well as MacOS): 
-    - ``${XDG_CONFIG_HOME}/r5py.yml`` or ``~/.config/r5py.yml`` for per-user
-      configuration (if both files exist, only the former is read)
-    - ``/etc/r5py.yml`` for system-wide configuration (user config overrides system
-      config)
+
+  - ``${XDG_CONFIG_HOME}/r5py.yml`` or ``~/.config/r5py.yml`` for per-user
+    configuration (if both files exist, only the former is read)
+
+  - ``/etc/r5py.yml`` for system-wide configuration (user config overrides system
+    config)
+
 - On Windows operating systems:
-    - ``%APPDATA%\\r5py.yml``. The precise path of the ``%APPDATA%`` directory depends
-      on your user name and locale (enter ``%APPDATA%`` in a Windows Explorer’s search
-      bar to navigate to it).
+
+  - ``%APPDATA%\\r5py.yml``. The precise path of the ``%APPDATA%`` directory depends
+    on your user name and locale (enter ``%APPDATA%`` in a Windows Explorer’s search
+    bar to navigate to it).
 
 
 Configuration from the command line
@@ -77,7 +81,7 @@ verbose: [boolean]         --verbose, -v               Show more detailed output
 
 
 Setting the maximum Java heap size (memory use)
-===============================================
+-----------------------------------------------
 
 A *Java Virtual Machine* (JVM) typically restricts the memory usage of programs it runs.
 More specifically, the *heap size* can be limited (see `this stackoverflow discussion

@@ -2,7 +2,7 @@
 
 """Wraps a com.conveyal.r5.point_to_point.builder.SpeedConfig."""
 
-from .. import util  # noqa: F401
+from ..util import snake_to_camel_case
 
 import jpype
 
@@ -44,7 +44,7 @@ class SpeedConfig(dict):
             See https://github.com/conveyal/r5/blob/v6.6/src/main/java/com/conveyal/r5/point_to_point/builder/SpeedConfig.java#L10
         """
         super().__init__()
-        kwargs = {util.snake_to_camel_case(key): value for key, value in kwargs}
+        kwargs = {snake_to_camel_case(key): value for key, value in kwargs}
         _config = self.DEFAULT_CONFIG
         if "values" in kwargs:
             _config["values"].update(kwargs["values"])

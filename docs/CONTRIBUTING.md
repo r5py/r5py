@@ -180,11 +180,12 @@ If you don't have black, you can install it using pip:
 
 #### Import order, import of submodules
 
-**R5py** uses [jpype](https://jpype.readthedocs.io) with the help of which Java classes
+**R5py** uses [jpype](https://jpype.readthedocs.io), with the help of which Java classes
 can be imported using normal `import` statements. As a consequence, the order of import
 statements at the beginning of source files plays a crucial role. 
 
-By convention, in r5py source files, the import statements should be grouped as follows:
+By convention, in r5py source files, the import statements should be grouped in the 
+following order:
 
 1. Imports of modules of the Python Standard Library
 2. Imports of third-party Python modules
@@ -194,8 +195,8 @@ By convention, in r5py source files, the import statements should be grouped as 
 The modules of each group should be sorted alphabetically, the groups be separated by an
 empty line.
 
-The import of submodules (`from ... import ...`), as well as using an alias for an
-imported module (`import ... as ...`) are discouraged. An exception to this rule,
+The import of submodules (`from ... import ...`), as well as the use of aliases for
+imported modules (`import ... as ...`) are discouraged. An exception to this rule,
 assets from other modules from within r5py should always be imported as submodules
 (`from . import TravelTimeMatrixComputer`).
 

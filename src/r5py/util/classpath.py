@@ -51,7 +51,7 @@ else:
         ) as response, open(R5_CLASSPATH, "wb") as jar:
             jar.write(response.content)
         print(
-            "Successfully downloaded {}.".format(pathlib.Path(R5_JAR_URL).name),
+            f"Successfully downloaded {pathlib.Path(R5_JAR_URL).name}",
             file=sys.stderr,
             flush=True,
         )

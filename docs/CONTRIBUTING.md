@@ -178,6 +178,28 @@ If you don't have black, you can install it using pip:
 
     pip install black
 
+#### Import order, import of submodules
+
+**R5py** uses [jpype](https://jpype.readthedocs.io) with the help of which Java classes
+can be imported using normal `import` statements. As a consequence, the order of import
+statements at the beginning of source files plays a crucial role. 
+
+By convention, in r5py source files, the import statements should be grouped as follows:
+
+1. Imports of modules of the Python Standard Library
+2. Imports of third-party Python modules
+3. Relative imports of other r5py modules
+4. Imports of Java classes
+
+The modules of each group should be sorted alphabetically, the groups be separated by an
+empty line.
+
+The import of submodules (`from ... import ...`), as well as using an alias for an
+imported module (`import ... as ...`) are discouraged. An exception to this rule,
+assets from other modules from within r5py should always be imported as submodules
+(`from . import TravelTimeMatrixComputer`).
+
+
 ### 8. Submitting a Pull Request
 
 Once you've made changes and pushed them to your forked repository, you then

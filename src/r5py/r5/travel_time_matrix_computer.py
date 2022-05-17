@@ -9,7 +9,7 @@ import joblib
 import numpy
 import pandas
 
-from .. import util  # noqa: F401
+from ..util import config
 from .breakdown_stat import BreakdownStat
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork
@@ -120,7 +120,7 @@ class TravelTimeMatrixComputer:
             **kwargs,
         )
 
-        self.verbose = util.config.arguments().verbose
+        self.verbose = config.arguments().verbose
 
     def compute_travel_times(self):
         """

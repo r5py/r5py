@@ -19,6 +19,7 @@ The data is licensed under the [Open Data Commons Open Database License (ODbL)](
 
 We used [osmium](https://osmcode.org/osmium-tool/) to crop the data to the given extent.
 
+
 ## population_points_2020.gpkg, population_grid_2020.gpkg
 
 A sample dataset distributed with the package representing populated points in Helsinki. 

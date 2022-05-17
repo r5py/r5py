@@ -11,6 +11,7 @@ R5py
    installation
    basic-usage.ipynb
    CONTRIBUTING.md
+   CODE_OF_CONDUCT.md
 
 .. toctree::
     :caption: Reference

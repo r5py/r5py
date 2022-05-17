@@ -62,15 +62,16 @@ jobs:
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2.1.1
         with:
-          auto-update-conda: true
-          auto-activate-base: false
-          activate-environment: test
           environment-file: ${{ matrix.env }}
+          miniforge-version: latest
+          miniforge-variant: Mambaforge
+          activate-environment: test
+          auto-activate-base: false
           channel-priority: strict
 
       - name: Make sure pytest{,-cov} are installed
         shell: bash -l {0}
-        run: conda install pytest pytest-cov
+        run: mamba install -c conda-forge pytest pytest-cov
 
       - name: Install r5py
         shell: bash -l {0}

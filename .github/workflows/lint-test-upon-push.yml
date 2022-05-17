@@ -73,18 +73,15 @@ jobs:
         shell: bash -l {0}
         run: mamba install -c conda-forge pytest pytest-cov
 
-      - name: Install r5py
-        shell: bash -l {0}
-        run: pip install -e .
-
       - name: Check environment
         shell: bash -l {0}
         run: |
           conda info
           conda list
+
       - name: Test r5py
         shell: bash -l {0}
-        run: pytest -v -r s --color=yes --cov=src/r5py --cov-append --cov-report term-missing --cov-report xml tests/
+        run: pytest
 
       - name: Update codecov.io
         uses: codecov/codecov-action@v3.1.0

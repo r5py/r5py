@@ -1,22 +1,21 @@
 # vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
 
-name: Build main branch
+name: Build and deploy distribution-specific packages
 
 on:
-  pull_request:
-    branches: [main]
-    types: [closed]
   workflow_call:
 
 jobs:
 
-  build:
-    name: Build wheel(s) and packages
+  build_pkgbuild_and_push_to_aur:
+    name: Create an Archlinux PKGBUILD and push it to the Arch User Repository
     runs-on: ubuntu-latest
     container: python:3
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: 
+
       - name: Install Python
         uses: actions/setup-python@v3
         with:

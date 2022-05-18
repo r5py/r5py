@@ -17,18 +17,16 @@ generate detailed routing analyses or calculate travel time matrices using
 parallel computing, and integrates seamlessly with Python/Geopandas workflows.
 
 
-## Installation
+## Installation using `mamba` (recommended)
 
-Install r5py from PyPi, e.g., using `pip`:
+1. Download and install [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) for your operating system.
+2. Install r5py and Java Development Kit (OpenJDK) with `mamba` by executing following command from terminal:
+    
+       mamba install -c conda-forge r5py openjdk
 
-```
-pip install r5py
-```
+After this r5py is ready for use in your Python environment. 
 
-You also need to install a *Java Development Kit*, for instance,
-[OpenJDK](http://jdk.java.net/java-se-ri/11), in version 11. If you are on
-Linux, please use the jdk provided by your operating system’s package manager.
-
+For more details and alternative installation options, read the dedicated [installation section](https://r5py.readthedocs.io/en/latest/installation.html) from the r5py documentation.
 
 ## Usage
 

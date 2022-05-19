@@ -85,13 +85,6 @@ a JDK in version 11, for instance, [OpenJDK](http://jdk.java.net/java-se-ri/11).
 `conda` installation methods outlined above automatically install [OpenJDK
 11](http://jdk.java.net/java-se-ri/11), `pip` does not.
 
-```{note}
-Since you’ve read until here, we assume that you are a more advanced user. We generally
-recommend to install OpenJDK 11 using your operating system’s package manager. That way, your system
-can keep track of installed packages and provide security updates; as a side effect, your project
-directories/environments stay smaller.
-```
-
 ### Java Development Kit
 
 To interface with R5, **r5py** requires a *Java Development Kit* (jdk) in version 11.
@@ -104,7 +97,9 @@ To interface with R5, **r5py** requires a *Java Development Kit* (jdk) in versio
 If it is not found, it automatically downloads its own copy of R5. The class path can be configured to
 point to a different location, see *[Configuration](configuration)*).
 
-
-### Python
-
-**R5py** requires [Python](https://python.org/) in version 3.8 or later.
+```{note}
+Since you’ve read until here, we assume that you are a more advanced user. We generally
+recommend to install OpenJDK 11 using your operating system’s package manager. That way, your system
+can keep track of installed packages and provide security updates; as a side effect, your project
+directories/environments stay smaller.
+```

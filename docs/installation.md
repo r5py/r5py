@@ -1,96 +1,110 @@
 # Installation
 
-There are many ways to install `r5py` to your computer. In this page, we document different options for installing the library.
-For most users, we recommend to install r5py and all its dependencies (incl. Java Developent Kit) from conda-forge. 
-Please see the [dependencies](#dependencies) section to understand what will be installed to your computer.
+```{note}
+There are many different ways to install **r5py** on your computer. Below, we describe the most
+commonly used ones.  If you don’t have any particular preferences, we recommend to try `mamba`,
+which will install r5py and all dependencies (including a matching Java Development Kit) from conda-forge.
 
-**Contents:**
+Please see the [dependencies](#dependencies) section to understand what will be installed on your computer.
+```
 
- - [Install r5py with mamba](#install-using-mamba)
- - [Install r5py with conda](#install-using-conda)
- - [Install r5py with pip](#install-using-pip)
- - [Dependencies](#dependencies)
 
 ## Install using `mamba`
 
-The best way to install `r5py` is by installing [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) (available for Windows/Linux/Mac), which is a drop-in replacement to a popular package distribution [Miniconda](https://docs.conda.io/en/latest/miniconda.html),
-but comes with a significantly faster package manager called `mamba`. Mamba solves dependencies and installs Python packages faster than `conda`, 
-and when it is installed from [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge), it by default uses only `conda-forge` channel to fetch 
-packages. This is a good thing because it helps avoiding dependency conflicts and potential issues with licensing (see [this blog post](https://florianwilhelm.info/2021/09/Handling_Anaconda_without_getting_constricted/)).
-If you are new to (sometimes confusing) Python package managers, you can read more information [from here](https://python-gis-book.readthedocs.io/en/develop/part1/chapter-01/nb/05-installation.html).
+[Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) (available for Windows/Linux/Mac)
+is a drop-in replacement for the popular package manager [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
+It comes with a significantly faster package manager called `mamba`. By default, uses only the
+`conda-forge` channel to fetch packages. This helps to avoid dependency conflicts and potential
+issues with licensing (see [this blog post](https://florianwilhelm.info/2021/09/Handling_Anaconda_without_getting_constricted/)).
 
-If you don't have `mamba` yet available on your system:
+If you are new to the (sometimes confusing) world of Python package managers, you can read more about them
+[here](https://python-gis-book.readthedocs.io/en/develop/part1/chapter-01/nb/05-installation.html).
 
-1. Download and install [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) for your operating system.
-2. Alternatively, if you are already using `conda`, you can install mamba to your `base` environment by:
 
-       conda install -n base -c conda-forge mamba 
+### Install `mamba`
 
-### Install r5py to your environment 
+First, make sure that you have `mamba` available on your system. You can either download it from
+[Mambaforge](https://github.com/conda-forge/miniforge#mambaforge), or use `conda`:
 
-1. Install r5py and Java Development Kit (OpenJDK) with `mamba` by executing following command from terminal:
-    
-       mamba install -c conda-forge r5py openjdk
+     conda install -n base -c conda-forge mamba
 
-After this r5py is ready for use in your Python environment. 
 
-### Install r5py to a dedicated Python environment
+### Install `r5py` in your existing environment
 
-As an alternative approach (for the step 2 above), you can also install r5py and a few useful Python packages into a dedicated conda environment called `r5py-env` (uses Python 3.10).
+To install r5py and a Java Development Kit (OpenJDK), run:
 
-1. [Download the r5py_distro.yaml file](../ci/r5py_distro.yaml) to your computer 
-2. Navigate with a terminal to the folder where you downloaded the file
-3. Execute following command which will install the packages into environment called `r5py-env`:
+     mamba install -c conda-forge r5py openjdk
 
-       mamba env create -f r5py_distro.yaml
+
+### Install `r5py` into a dedicated Python environment
+
+You can also install r5py (plus a few other Python packages that are useful
+when working with it, such as, e.g., [Geopandas](https://geopandas.org/)) into
+a dedicated conda environment.
+
+1. [Download the `r5py_distro.yaml` file](../../ci/r5py_distro.yaml)
+2. Run the following command to install the packages into a new environment named `r5py-env`:
+
+     mamba env create -f r5py_distro.yaml
 
 4. Activate the `r5py-env` environment:
-       
-       conda activate r5py-env
 
-After this, you can start using the `r5py` library in the environment e.g. using [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) which was 
-installed as part of the environment. 
+     conda activate r5py-env
 
-## Install using `conda` 
+After this, you can start using the `r5py` library in the environment, e.g., using
+[JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (installed as part of the environment).
 
-If you are using `conda` as your package manager, you can install r5py with following steps (although we highly recommend using `mamba`!).
+## Install using `conda`
 
-1. Download and install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) for your operating system.
-2. Install r5py and Java Development Kit (OpenJDK) with `conda` by executing following command from terminal:
-    
-       conda install -c conda-forge r5py openjdk
+If you prefer to use conda as your Python package manager, follow the same instructions as above,
+but replace `mamba` with `conda`:
 
-After this r5py is ready for use in your Python environment. Alternatively, you can install the r5py into a dedicated Python
-environment by following the [instructions above](#install-r5py-to-dedicated-python-environment) but by replacing the `mamba` 
-command to `conda` (as mamba is a direct drop-in replacement for conda).
-  
-## Install using pip
-  
-You can also install r5py from PyPi, e.g., using `pip`:  
+To install r5py and a Java Development Kit (OpenJDK) with `conda`, run
 
-    pip install r5py    
-  
-In addition, to be able to use r5py, you need to install a *Java Development Kit*, for instance,  
-[OpenJDK](http://jdk.java.net/java-se-ri/11), in version 11. If you are on  
-Linux, please use the jdk provided by your operating system’s package manager.
+     conda install -c conda-forge r5py openjdk
+
+Alternatively, to create a dedicated Python environment, [download the `r5py_distro.yaml`
+file](../../ci/r5py_distro.yaml), and use conda to create and activate the environment:
+
+    conda env create -f r5py_distro.yaml
+    conda activate r5py-env
+
+## Install using `pip`
+
+The ‘classic’ way to install Python packages is from the PyPi repository, using `pip`:
+
+    pip install r5py
+
+This does not install a *Java Development Kit* (JDK), by default. Be sure to separately install
+a JDK in version 11, for instance, [OpenJDK](http://jdk.java.net/java-se-ri/11).
+
 
 ## Dependencies
 
+**R5py** relies on a few external dependencies, most noteably a Java environment. The `mamba` and
+`conda` installation methods outlined above automatically install [OpenJDK
+11](http://jdk.java.net/java-se-ri/11), `pip` does not.
+
+```{note}
+Since you’ve read until here, we assume that you are a more advanced user. We generally
+recommend to install OpenJDK 11 using your operating system’s package manager. That way, your system
+can keep track of installed packages and provide security updates; as a side effect, your project
+directories/environments stay smaller.
+```
+
 ### Java Development Kit
 
-To interface with R5, **r5py** requires a *Java Development Kit* (jdk) in version 11. [OpenJDK](https://openjdk.java.net/) works fine.
+To interface with R5, **r5py** requires a *Java Development Kit* (jdk) in version 11.
+[OpenJDK](https://openjdk.java.net/) works fine.
 
 
 ### R5
 
-**R5py** searches for a local R5 installation in the default class path (`/usr/share/java/r5/r5-all.jar`). If it is not found, it automatically downloads its own copy of R5. The class path can be configured to point to a different location, see *[Configuration](configuration)*). 
+**R5py** searches for a local R5 installation in the default class path (`/usr/share/java/r5/r5-all.jar`).
+If it is not found, it automatically downloads its own copy of R5. The class path can be configured to
+point to a different location, see *[Configuration](configuration)*).
 
 
 ### Python
 
-**R5py** requires Python in version 3.8 or later.
-
-
-### Python modules
-
-If installed using `mamba`, `conda` or `pip`, all Python modules that **r5py** depends on are installed as dependencies.
+**R5py** requires [Python](https://python.org/) in version 3.8 or later.

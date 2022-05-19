@@ -9,7 +9,7 @@ pkgver=
 pkgrel=1
 
 arch=("any")
-license=("GPL")
+license=("GPL" "MIT")
 
 makedepends=(
     "python-build"

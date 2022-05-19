@@ -13,7 +13,7 @@ Please see the [dependencies](#dependencies) section to understand what will be 
 
 [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge) (available for Windows/Linux/Mac)
 is a drop-in replacement for the popular package manager [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
-It comes with a significantly faster package manager called `mamba`. By default, uses only the
+It comes with a significantly faster package manager called `mamba`. By default, MambaForge uses only the
 `conda-forge` channel to fetch packages. This helps to avoid dependency conflicts and potential
 issues with licensing (see [this blog post](https://florianwilhelm.info/2021/09/Handling_Anaconda_without_getting_constricted/)).
 
@@ -45,11 +45,12 @@ a dedicated conda environment.
 1. [Download the `r5py_distro.yaml` file](../../ci/r5py_distro.yaml)
 2. Run the following command to install the packages into a new environment named `r5py-env`:
 
-     mamba env create -f r5py_distro.yaml
+        mamba env create -f r5py_distro.yaml
+
 
 4. Activate the `r5py-env` environment:
 
-     conda activate r5py-env
+        conda activate r5py-env
 
 After this, you can start using the `r5py` library in the environment, e.g., using
 [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (installed as part of the environment).
@@ -59,7 +60,7 @@ After this, you can start using the `r5py` library in the environment, e.g., usi
 If you prefer to use conda as your Python package manager, follow the same instructions as above,
 but replace `mamba` with `conda`:
 
-To install r5py and a Java Development Kit (OpenJDK) with `conda`, run
+To install r5py and a Java Development Kit (OpenJDK) with `conda`, run:
 
      conda install -c conda-forge r5py openjdk
 

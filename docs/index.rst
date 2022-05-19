@@ -12,7 +12,7 @@ R5py
    configuration
    basic-usage.ipynb
    CONTRIBUTING
-   CODE_OF_CONDUCT
+   Code of conduct <CODE_OF_CONDUCT>
 
 .. toctree::
     :caption: Reference

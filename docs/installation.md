@@ -42,7 +42,7 @@ You can also install r5py (plus a few other Python packages that are useful
 when working with it, such as, e.g., [Geopandas](https://geopandas.org/)) into
 a dedicated conda environment.
 
-1. [Download the `r5py_distro.yaml` file](../../ci/r5py_distro.yaml)
+1. [Download the `r5py_distro.yaml` file](https://github.com/r5py/r5py/raw/main/ci/r5py_distro.yaml)
 2. Run the following command to install the packages into a new environment named `r5py-env`:
 
         mamba env create -f r5py_distro.yaml
@@ -65,7 +65,7 @@ To install r5py and a Java Development Kit (OpenJDK) with `conda`, run:
      conda install -c conda-forge r5py openjdk
 
 Alternatively, to create a dedicated Python environment, [download the `r5py_distro.yaml`
-file](../../ci/r5py_distro.yaml), and use conda to create and activate the environment:
+file](https://github.com/r5py/r5py/raw/main/ci/r5py_distro.yaml), and use conda to create and activate the environment:
 
     conda env create -f r5py_distro.yaml
     conda activate r5py-env

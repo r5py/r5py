@@ -16,18 +16,17 @@ If you decide to contribute to the codebase, ensure that you are using an
 up-to-date `main` branch. The latest development version will always be there,
 including the documentation (powered by [sphinx](https://www.sphinx-doc.org/)).
 
-## Eight Steps for Contributing
+## Seven Steps for Contributing
 
-There are eight basic steps to contributing to r5py:
+There are seven basic steps to contributing to r5py:
 
 1. Fork the r5py git repository
-2. Create a development environment
-3. Install r5py dependencies
-4. Make a development build of r5py
-5. Make changes to code and add tests
-6. Update the documentation
-7. Format code
-8. Submit a Pull Request
+2. Create a development environment with r5py dependencies
+3. Make a development build of r5py
+4. Make changes to code and add tests
+5. Update the documentation
+6. Format code
+7. Submit a Pull Request
 
 Each of the steps is detailed below.
 
@@ -45,7 +44,7 @@ want to use command line, you can fork r5py repository using following:
 This creates the directory r5py-yourname and connects your repository to
 the upstream (main project) r5py repository.
 
-Then simply create a new branch of master branch.
+Then simply create a new branch of main branch.
 
 ### 2. Create a development environment
 
@@ -56,17 +55,17 @@ break while playing with code) in another.
 
 An easy way to create a r5py development environment is as follows:
 
-- Install [miniconda](http://conda.pydata.org/miniconda.html)
-- Make sure that you have cloned the repository
-- `cd` to the *r5py* source directory
+- Install [MambaForge](https://github.com/conda-forge/miniforge#mambaforge) (alternatively [install mamba using conda](https://r5py.readthedocs.io/en/latest/installation.html#install-mamba)) 
+- Make sure that you have **cloned the r5py repository**
+- `cd` to the *r5py* source directory (the root folder)
 
-Tell conda to create a new environment, named `r5py`, or any other name you would like
-for this environment, by running::
+Tell `mamba` to create a new environment, named `r5py` from a [YAML file](https://github.com/r5py/r5py/blob/main/ci/python_310_dev.yaml) inside `ci` directory, by running:
 
-      conda create -n r5py
+      mamba env create -f ci/python_310_dev.yaml
 
 This will create the new environment, and not touch any of your existing environments,
-nor any existing python installation.
+nor any existing python installation. The environment includes all necessary dependencies for r5py, 
+as well as, optional and packages for running tests. With this environment, you can directly start working with r5py.  
 
 To work in this environment, you should `activate` it as follows:
 
@@ -74,7 +73,7 @@ To work in this environment, you should `activate` it as follows:
 
 You will then see a confirmation message to indicate you are in the new development environment.
 
-To view your environments::
+To view your environments:
 
       conda info -e
 
@@ -84,22 +83,7 @@ To return to you home root environment::
 
 See the full conda docs [here](http://conda.pydata.org/docs).
 
-At this point you can easily do a *development* install, as detailed in the next sections.
-
-### 3. Installing Dependencies
-
-To run *r5py* in an development environment, you must first install
-*r5py*'s dependencies. We suggest doing so using the following commands
-(executed after your development environment has been activated)
-to ensure compatibility of all dependencies:
-
-    conda config --env --add channels conda-forge
-    conda config --env --set channel_priority strict
-    conda install configargparse geopandas joblib jpype1 pandas psutil requests pytest pytest-cov codecov requests black
-
-This should install all necessary dependencies including optional and packages for running tests.
-
-### 4. Making a development build
+### 3. Making a development build
 
 Once dependencies are in place, make an in-place build by navigating to the git
 clone of the *r5py* repository and running:
@@ -108,7 +92,7 @@ clone of the *r5py* repository and running:
 
 This will install r5py from the source into your environment.
 
-### 5. Making changes and writing tests
+### 4. Making changes and writing tests
 
 *r5py* is serious about testing and strongly encourages contributors to embrace
 [test-driven development (TDD)](http://en.wikipedia.org/wiki/Test-driven_development).
@@ -133,7 +117,7 @@ install *r5py*) by typing::
 
     pytest
 
-### 6. Updating the Documentation and User Guide
+### 5. Updating the Documentation and User Guide
 
 *r5py* documentation resides in the `docs` folder. Changes to the docs are
 make by modifying the appropriate file within `docs`.
@@ -160,7 +144,7 @@ consists of collection of reStructuredText files and Jupyter notebooks.
 Changes in reStructuredText are straightforward, changes in notebooks should be done using Jupyter. Make sure that all cells have their correct outputs as notebooks
 are not executed by readthedocs.
 
-### 7. Formatting the code
+### 6. Formatting the code
 
 #### Python (PEP8 / black)
 
@@ -201,7 +185,7 @@ assets from other modules from within r5py should always be imported as submodul
 (`from . import TravelTimeMatrixComputer`).
 
 
-### 8. Submitting a Pull Request
+### 7. Submitting a Pull Request
 
 Once you've made changes and pushed them to your forked repository, you then
 submit a pull request to have them integrated into the *r5py* code base.

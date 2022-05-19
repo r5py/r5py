@@ -1,0 +1,14 @@
+name: r5py-env
+
+channels:
+    - conda-forge
+
+dependencies:
+    - python=3.10
+    - geopandas
+    - numpy
+    - pandas
+    - folium
+    - jupyterlab
+    - matplotlib
+    - mapclassify

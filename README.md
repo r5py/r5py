@@ -19,16 +19,11 @@ parallel computing, and integrates seamlessly with Python/Geopandas workflows.
 
 ## Installation
 
-Install r5py from PyPi, e.g., using `pip`:
+**R5py** is available from conda-forge and PyPi. You can use `mamba`, `pip` or `conda` to install it.
+To quickstart your use of **r5py**, we also provide an [`environment.yml` file ](ci/r5py_distro.yaml),
+using which you can [quickly set up a development environment](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file) and are ready to go.
 
-```
-pip install r5py
-```
-
-You also need to install a *Java Development Kit*, for instance,
-[OpenJDK](http://jdk.java.net/java-se-ri/11), in version 11. If you are on
-Linux, please use the jdk provided by your operating system’s package manager.
-
+For more details and alternative installation options, read the dedicated [installation section](https://r5py.readthedocs.io/en/latest/installation.html) of the r5py documentation.
 
 ## Usage
 

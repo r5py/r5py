@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Install additional tools
-      - run: pacman -Syu --noconfirm --needed git pacman-contrib
+        run: pacman -Syu --noconfirm --needed git pacman-contrib
 
       - name: Update version number
-      - run:
+        run:
           VERSION="${{github.ref}}"
           VERSION="${VERSION/ref\/tags\/v/}"
           mkdir -p dist

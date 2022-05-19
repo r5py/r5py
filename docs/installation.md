@@ -98,8 +98,7 @@ If it is not found, it automatically downloads its own copy of R5. The class pat
 point to a different location, see *[Configuration](configuration)*).
 
 ```{note}
-Since you’ve read until here, we assume that you are a more advanced user. We generally
-recommend to install OpenJDK 11 using your operating system’s package manager. That way, your system
-can keep track of installed packages and provide security updates; as a side effect, your project
-directories/environments stay smaller.
+We generally recommend to install OpenJDK 11 (and R5, if available) using your operating system’s
+package manager. That way, your system can keep track of installed packages and provide security
+updates; as a side effect, your project directories/environments stay smaller.
 ```

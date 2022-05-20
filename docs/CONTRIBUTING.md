@@ -133,7 +133,7 @@ To do so, you can navigate to the docs folder and type:
 
     make html
 
-The resulting html pages will be located in docs/build/html. 
+The resulting html pages will be located in `docs/_build/html/`. 
 
 For minor updates, you can skip whole make html part as reStructuredText syntax is
 usually quite straightforward.

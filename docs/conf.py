@@ -58,7 +58,7 @@ html_theme_options = {
     "path_to_docs": "docs",
     "use_edit_page_button": True,
     "launch_buttons": {
-        "binderhub_url": "https://mybinder.org",
+        "binderhub_url": "https://notebooks.gesis.org/binder",
         "thebelab": False,
         "notebook_interface": "jupyterlab",
     },

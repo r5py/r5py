@@ -2,8 +2,9 @@
 
 Contributions of any kind to r5py are more than welcome. That does not mean
 new code only, but also improvements of documentation and user guide, additional
-tests (ideally filling the gaps in existing suite) or bug report or idea what
-could be added or done better.
+tests (ideally filling the gaps in existing suite) or a bug report. In addition, we
+warmly welcome ideas of new features that could be added to the r5py, 
+or ideas how to improve the existing codebase.
 
 All contributions should go through our GitHub repository. Bug reports, ideas or
 even questions should be raised by opening an issue on the GitHub tracker.
@@ -34,14 +35,14 @@ Each of the steps is detailed below.
 
 Git can be complicated for new users, but you no longer need to use command line
 to work with git. If you are not familiar with git, we recommend using tools on
-GitHub.org, GitHub Desktop or tools with included git like Atom or PyCharm. However, if you
+Github.com, GitHub Desktop or tools with included git like Atom or PyCharm. However, if you
 want to use command line, you can fork r5py repository using following:
 
     git clone git@github.com:your-user-name/r5py.git r5py-yourname
     cd r5py-yourname
     git remote add upstream git://github.com/r5py/r5py.git
 
-This creates the directory r5py-yourname and connects your repository to
+This creates the directory `r5py-yourname` and connects your repository to
 the upstream (main project) r5py repository.
 
 Then simply create a new branch of main branch.
@@ -55,17 +56,18 @@ break while playing with code) in another.
 
 An easy way to create a r5py development environment is as follows:
 
-- Install [MambaForge](https://github.com/conda-forge/miniforge#mambaforge) (alternatively [install mamba using conda](https://r5py.readthedocs.io/en/latest/installation.html#install-mamba)) 
+- Install [MambaForge](https://github.com/conda-forge/miniforge#mambaforge) (or [install mamba using conda](https://r5py.readthedocs.io/en/latest/installation.html#install-mamba)) 
 - Make sure that you have **cloned the r5py repository**
 - `cd` to the *r5py* source directory (the root folder)
 
-Tell `mamba` to create a new environment, named `r5py` from a [YAML file](https://github.com/r5py/r5py/blob/main/ci/python_310_dev.yaml) inside `ci` directory, by running:
+Tell `mamba` to create a new environment from a [YAML file](https://github.com/r5py/r5py/blob/main/ci/python_310_dev.yaml) inside `ci` directory, by running:
 
       mamba env create -f ci/python_310_dev.yaml
 
-This will create the new environment, and not touch any of your existing environments,
-nor any existing python installation. The environment includes all necessary dependencies for r5py, 
-as well as, optional and packages for running tests. With this environment, you can directly start working with r5py.  
+This will create a new environment called `r5py`, and not touch any of your existing environments,
+nor existing python installations. The environment includes all necessary dependencies for r5py, 
+as well as optional packages for running tests and building docs. 
+With this environment, you can directly start working with r5py.  
 
 To work in this environment, you should `activate` it as follows:
 
@@ -86,7 +88,7 @@ See the full conda docs [here](http://conda.pydata.org/docs).
 ### 3. Making a development build
 
 Once dependencies are in place, make an in-place build by navigating to the git
-clone of the *r5py* repository and running:
+clone of the *r5py* repository and run:
 
     pip install .
 
@@ -112,10 +114,10 @@ current examples of tests, and we suggest looking to these for inspiration.
 
 #### Running the test suite
 
-The tests can then be run directly inside your Git clone (without having to
-install *r5py*) by typing::
+The tests can then be run directly inside your Git clone without having to
+install *r5py*. Run the tests by typing (`v` means *verbose*):
 
-    pytest
+    pytest -v
 
 ### 5. Updating the Documentation and User Guide
 
@@ -125,24 +127,24 @@ make by modifying the appropriate file within `docs`.
 Jupyter Notebooks ([read more here](https://docs.jupyter.org/en/latest)),
 and the docstrings follow the [Numpy Docstring standard](https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt).
 
-Once you have made your changes, you may try if they render correctly by building the docs using sphinx.
-To do so, you can navigate to the docs folder and type::
+Once you have made your changes, you may try if they render correctly by building the docs using Sphinx 
+(comes with `r5py` environment if [installed from the YAML file](#2-create-a-development-environment)).
+To do so, you can navigate to the docs folder and type:
 
     make html
 
-The resulting html pages will be located in docs/build/html. In case of any errors,
-you can try to use make html within a new environment based on the libraries in the requirements.txt in the docs folder.
+The resulting html pages will be located in docs/build/html. 
 
 For minor updates, you can skip whole make html part as reStructuredText syntax is
 usually quite straightforward.
 
 #### Updating User Guide
 
-
 Updating user guide might be slightly more complicated as it
 consists of collection of reStructuredText files and Jupyter notebooks.
-Changes in reStructuredText are straightforward, changes in notebooks should be done using Jupyter. Make sure that all cells have their correct outputs as notebooks
-are not executed by readthedocs.
+Changes in reStructuredText are straightforward, changes in notebooks should be done using Jupyter. 
+Once pushing changes, make sure that all the cells are **without outputs** as notebooks
+are executed by readthedocs.
 
 ### 6. Formatting the code
 

@@ -68,7 +68,7 @@ For the sake of this exercise, we have prepared a grid of points covering parts 
 ```python
 import geopandas
 
-grid_points = geopandas.read_file("../notebooks/data/population_points_2020.gpkg")
+grid_points = geopandas.read_file("../data/population_points_2020.gpkg")
 
 grid_points.head()
 ```

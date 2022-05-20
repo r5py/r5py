@@ -5,10 +5,11 @@ channels:
 
 dependencies:
     - python=3.10
-    - geopandas
-    - numpy
-    - pandas
     - folium
-    - jupyterlab
+    - geopandas
     - matplotlib
     - mapclassify
+    - numpy
+    - openjdk
+    - pandas
+    - r5py

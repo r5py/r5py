@@ -54,6 +54,8 @@ html_theme = 'sphinx_book_theme'
 html_theme_options = {
     # "external_links": [],
     "repository_url": "https://github.com/r5py/r5py/",
+    "repository_branch": "main",
+    "path_to_docs": "docs",
     "use_edit_page_button": True,
     "launch_buttons": {
         "binderhub_url": "https://mybinder.org",

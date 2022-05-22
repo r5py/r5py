@@ -1,0 +1,16 @@
+name: r5py
+
+channels:
+    - conda-forge
+
+dependencies:
+    - python=3.10
+    - folium
+    - geopandas
+    - jupyterlab
+    - matplotlib
+    - mapclassify
+    - numpy
+    - openjdk
+    - pandas
+    - r5py

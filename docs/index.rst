@@ -5,12 +5,14 @@ R5py
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents
 
    installation
+   configuration
    basic-usage.ipynb
-   CONTRIBUTING.md
+   CONTRIBUTING
+   Code of conduct <CODE_OF_CONDUCT>
 
 .. toctree::
     :caption: Reference

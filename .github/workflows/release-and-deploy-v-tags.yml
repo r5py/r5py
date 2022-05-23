@@ -13,6 +13,24 @@ jobs:
     uses: ./.github/workflows/build-merged-pull-requests.yml
     secrets: inherit
 
+  merge-into-stable:
+    name: Update stable branch to point to this release
+    runs-on: ubuntu-latest
+    needs: [build]
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout stable
+        uses: actions/checkout@v3
+        with:
+          ref: stable
+      - name: Merge tag into stable
+        run:
+          TAG="${{github.ref}}"
+          TAG="${TAG/ref\/tags\/v/}"
+          git merge "${TAG}"
+          git push
+
   deploy:
     name: Upload built package to PyPi
     runs-on: ubuntu-latest

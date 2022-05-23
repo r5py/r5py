@@ -50,11 +50,22 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 html_theme = 'sphinx_book_theme'
 
+# if we are building a stable version, point the binder link to branch `stable`,
+# otherwise, point to branch `main`
+import os
+try:
+    if os.environ["READTHEDOCS_VERSION"] == "stable":
+        BINDER_BRANCH = "stable"
+    else:
+        BINDER_BRANCH = "main"
+except KeyError:  # not on RTD
+    BINDER_BRANCH = "main"
+
 
 html_theme_options = {
     # "external_links": [],
     "repository_url": "https://github.com/r5py/r5py/",
-    "repository_branch": "main",
+    "repository_branch": BINDER_BRANCH,
     "path_to_docs": "docs",
     "use_edit_page_button": True,
     "launch_buttons": {
@@ -86,10 +97,3 @@ html_title = ""
 
 # Logo
 html_logo = "_static/r5py.png"
-
-# debugging: figure out whether RTD tells us which build (stable/latest) we are on:
-import json
-import os
-print(json.dumps(dict(os.environ), indent=4, sort_keys=True))
-
-# foo bar

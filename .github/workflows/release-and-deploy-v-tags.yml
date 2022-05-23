@@ -57,7 +57,7 @@ jobs:
     name: Create a new release
     runs-on: ubuntu-latest
     needs: [deploy, distribution_packages]
-    permissions: 
+    permissions:
       contents: write
     steps:
       - name: Download built artifacts

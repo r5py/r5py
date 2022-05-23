@@ -58,7 +58,7 @@ try:
         BINDER_BRANCH = "stable"
     else:
         BINDER_BRANCH = "main"
-except KeyError:  # not on RTD
+except KeyError:  # not running on RTD
     BINDER_BRANCH = "main"
 
 

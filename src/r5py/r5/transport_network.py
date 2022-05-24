@@ -56,7 +56,7 @@ class TransportNetwork:
         as the only input to `setup_r5()`.
 
         If more than one OpenStreetMap extract (`.osm.pbf`) is
-        found in `path`, the (alphabetically) first is used.
+        found in `path`, the (alphabetically) first one is used.
         In case *no* OpenStreetMap extract is found, a `FileNotFound`
         exception is raised. Any and all GTFS data files are used.
 
@@ -74,7 +74,7 @@ class TransportNetwork:
         try:
             potential_osm_pbf_files = sorted(path.glob("*.osm.pbf"))
             osm_pbf = potential_osm_pbf_files[0]
-            if len(potential_osm_pbf_files > 1):
+            if len(potential_osm_pbf_files) > 1:
                 warnings.warn(
                     (
                         f"Found more than one OpenStreetMap extract file (`.osm.pbf`), "

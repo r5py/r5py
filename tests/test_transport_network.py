@@ -30,9 +30,6 @@ class Test_TransportNetwork:
         transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
         return transport_network
 
-    def test_foobar(self, transport_network_from_test_files):
-        assert transport_network_from_test_files is not None
-
     @pytest.fixture(scope="session")
     def transport_network_from_test_directory(self):
         return r5py.TransportNetwork.from_directory(DATA_DIRECTORY)

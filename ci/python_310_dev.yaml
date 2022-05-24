@@ -17,6 +17,7 @@ dependencies:
     - black
     - codecov
     - folium
+    - gitpython
     - jupyterlab
     - matplotlib
     - mapclassify

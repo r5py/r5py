@@ -17,13 +17,6 @@ GTFS_TIMEZONE = "Europe/Helsinki"
 # TRANSPORT_NETWORK_CHECKSUM = 925935595  # not consistent between computers
 
 
-print(DATA_DIRECTORY, OSM_PBF, GTFS)
-
-
-# These tests are not wrapped in a class, because
-# pytest/jpype don’t seem to like that - segfaults
-
-
 class Test_TransportNetwork:
     @pytest.fixture(scope="session")
     def transport_network_from_test_files(self):

@@ -10,7 +10,7 @@ R5py
 
    installation
    configuration
-   basic-usage.ipynb
+   notebooks/basic-usage.ipynb
    CONTRIBUTING
    Code of conduct <CODE_OF_CONDUCT>
 

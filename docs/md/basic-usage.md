@@ -23,7 +23,7 @@ jupyter:
 # - set sys.path to point to the local repo
 import pathlib
 import sys
-sys.path.insert(0, str(pathlib.Path().absolute().parent / "src"))
+sys.path.insert(0, str(pathlib.Path().absolute().parent.parent / "src"))
 
 # - make ipython show all outputs of each cell
 get_ipython().ast_node_interactivity = "all"

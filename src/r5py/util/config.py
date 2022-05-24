@@ -45,6 +45,10 @@ argparser = configargparse.get_argument_parser(
     default_config_files=CONFIG_FILES,
 )
 
+argparser.add(
+    "-v", "--verbose", help="Enable verbose output from R5." "", action="store_true"
+)
+
 
 def arguments():
     """Parse arguments passed from command line or config file."""

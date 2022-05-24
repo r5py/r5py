@@ -13,22 +13,22 @@ jobs:
     uses: ./.github/workflows/build-merged-pull-requests.yml
     secrets: inherit
 
-  release:
-    name: Create a new release
+  merge-into-stable:
+    name: Update stable branch to point to this release
     runs-on: ubuntu-latest
     needs: [build]
-    permissions:
-      contents: write
+    permissions: write-all
     steps:
-      - name: Download built artifacts
-        uses: actions/download-artifact@v3
+      - name: Checkout stable
+        uses: actions/checkout@v3
         with:
-          name: package
-          path: dist/
-      - name: Create release and upload package
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/*
+          ref: stable
+      - name: Merge tag into stable
+        run:
+          TAG="${{github.ref}}"
+          TAG="${TAG/ref\/tags\/v/}"
+          git merge "${TAG}"
+          git push
 
   deploy:
     name: Upload built package to PyPi
@@ -46,3 +46,27 @@ jobs:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
           skip_existing: true
+
+  distribution_packages:
+    name: Build and deploy distribution-specific packages
+    needs: [deploy]
+    uses: ./.github/workflows/distribution-packages.yml
+    secrets: inherit
+
+  release:
+    name: Create a new release
+    runs-on: ubuntu-latest
+    needs: [deploy, distribution_packages]
+    permissions:
+      contents: write
+    steps:
+      - name: Download built artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: package
+          path: dist/
+      - name: Create release and upload package
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+

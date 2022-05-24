@@ -4,8 +4,6 @@
 
 import jpype
 
-from .. import util  # noqa: F401
-
 import com.conveyal.r5
 
 

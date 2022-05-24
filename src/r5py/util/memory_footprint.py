@@ -5,11 +5,15 @@
 
 import psutil
 import re
+import warnings
 
 from . import config
 
 
 __all__ = ["MAX_JVM_MEMORY"]
+
+
+ABSOLUTE_MINIMUM_MEMORY = 200  # never grant less than 200 MiB to JVM
 
 
 config.argparser.add(
@@ -79,6 +83,15 @@ def max_memory(max_memory):
             max_memory = round(value)
     except TypeError:
         raise ValueError(f"Could not interpret --max-memory: {max_memory}")
+
+    if max_memory < ABSOLUTE_MINIMUM_MEMORY:
+        max_memory = ABSOLUTE_MINIMUM_MEMORY
+        warnings.warn(
+            f"Requested maximum JVM heap size is too low for R5, "
+            f"setting to minimum value {ABSOLUTE_MINIMUM_MEMORY:d} MiB.",
+            RuntimeWarning,
+        )
+
     return max_memory
 
 

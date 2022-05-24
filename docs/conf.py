@@ -31,9 +31,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "IPython.sphinxext.ipython_console_highlighting",
-    #"myst_nb",
-    "nbsphinx"
-
+    "myst_nb"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -52,13 +50,31 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 html_theme = 'sphinx_book_theme'
 
+# if we are building a stable version, point the binder link to branch `stable`,
+# otherwise, point to branch `main`
+import os
+try:
+    READTHEDOCS_VERSION = os.environ["READTHEDOCS_VERSION"]
+except KeyError:  # not running on RTD
+    READTHEDOCS_VERSION = ""
+
+if READTHEDOCS_VERSION == "stable":
+    BINDER_REF = "stable"  # stable is synced with last version tag/release
+elif READTHEDOCS_VERSION == "latest":
+    BINDER_REF = "main"
+else:
+    import git
+    repository = git.Repo(search_parent_directories=True)
+    BINDER_REF = repository.git.rev_parse(repository.head.commit.hexsha, short=True)
 
 html_theme_options = {
     # "external_links": [],
     "repository_url": "https://github.com/r5py/r5py/",
+    "repository_branch": BINDER_REF,
+    "path_to_docs": "docs",
     "use_edit_page_button": True,
     "launch_buttons": {
-        "binderhub_url": "https://mybinder.org",
+        "binderhub_url": "https://notebooks.gesis.org/binder",
         "thebelab": False,
         "notebook_interface": "jupyterlab",
     },

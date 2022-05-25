@@ -16,6 +16,14 @@ GTFS = DATA_DIRECTORY / "GTFS.zip"
 GTFS_TIMEZONE = "Europe/Helsinki"
 # TRANSPORT_NETWORK_CHECKSUM = 925935595  # not consistent between computers
 
+# TODO: improve these tests to check whether the test data set
+# is loaded correctly.
+# Note that com.conveyal.r5.transit.TransportNetwork.checksum()
+# is not consistent between runs (and sometimes also not between the
+# two constructors, for some reason). Ideas how to test:
+#  - count segments/nodes/etc in transport_network.street_layer
+#  - count stops/routes/etc in ._transport_network.transitLayer()
+
 
 class Test_TransportNetwork:
     @pytest.fixture(scope="session")
@@ -34,23 +42,6 @@ class Test_TransportNetwork:
             transport_network_from_test_files._transport_network.getEnvelope()
             == transport_network_from_test_directory._transport_network.getEnvelope()
         )
-        # assert (
-        #     transport_network_from_test_files._transport_network.checksum()
-        #     == transport_network_from_test_directory._transport_network.checksum()
-        # )
-
-    # @pytest.mark.parametrize(
-    #     ["transport_network"],
-    #     [
-    #         (pytest.lazy_fixture("transport_network_from_test_files"),),
-    #         (pytest.lazy_fixture("transport_network_from_test_directory"),),
-    #     ],
-    # )
-    # def test_transport_network_checksum(self, transport_network):
-    #     assert (
-    #         transport_network._transport_network.checksum()
-    #         == TRANSPORT_NETWORK_CHECKSUM
-    #     )
 
     @pytest.mark.parametrize(
         ["transport_network"],

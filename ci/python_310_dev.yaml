@@ -30,5 +30,6 @@ dependencies:
     - openjdk
     - pytest
     - pytest-cov
+    - pytest-lazy-fixture
     - sphinx
     - sphinx-book-theme

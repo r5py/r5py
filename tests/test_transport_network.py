@@ -15,10 +15,11 @@ OSM_PBF = DATA_DIRECTORY / "kantakaupunki.osm.pbf"
 GTFS = DATA_DIRECTORY / "GTFS.zip"
 
 
-GTFS_TIMEZONE = "Europe/Helsinki"
-
-
 class Test_TransportNetwork:
+    @pytest.fixture
+    def gtfs_timezone(self):
+        yield "Europe/Helsinki"
+
     @pytest.fixture(scope="session")
     def transport_network_from_test_files(self):
         transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
@@ -92,6 +93,6 @@ class Test_TransportNetwork:
             (pytest.lazy_fixture("transport_network_from_test_directory"),),
         ],
     )
-    def test_timezone(self, transport_network):
+    def test_timezone(self, transport_network, gtfs_timezone):
         assert isinstance(transport_network.timezone, java.time.ZoneId)
-        assert transport_network.timezone.toString() == GTFS_TIMEZONE
+        assert transport_network.timezone.toString() == gtfs_timezone

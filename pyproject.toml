@@ -6,6 +6,7 @@ requires = ["setuptools>=50.0.0", "wheel"]
 addopts = "-p no:faulthandler -r s --cov=./src/r5py --cov-append --cov-report term-missing --cov-report xml"
 pythonpath = ["src"]
 testpaths = ["tests"]
+asyncio_mode = "auto"
 
 [tool.coverage.run]
 omit = ["tests/*"]

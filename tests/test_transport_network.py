@@ -9,31 +9,24 @@ import r5py
 import com.conveyal.r5
 import java.time
 
+# test data sets
 DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
 OSM_PBF = DATA_DIRECTORY / "kantakaupunki.osm.pbf"
 GTFS = DATA_DIRECTORY / "GTFS.zip"
 
-GTFS_TIMEZONE = "Europe/Helsinki"
-# TRANSPORT_NETWORK_CHECKSUM = 925935595  # not consistent between computers
 
-# TODO: improve these tests to check whether the test data set
-# is loaded correctly.
-# Note that com.conveyal.r5.transit.TransportNetwork.checksum()
-# is not consistent between runs (and sometimes also not between the
-# two constructors, for some reason). Ideas how to test:
-#  - count segments/nodes/etc in transport_network.street_layer
-#  - count stops/routes/etc in ._transport_network.transitLayer()
+GTFS_TIMEZONE = "Europe/Helsinki"
 
 
 class Test_TransportNetwork:
     @pytest.fixture(scope="session")
     def transport_network_from_test_files(self):
         transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
-        return transport_network
+        yield transport_network
 
     @pytest.fixture(scope="session")
     def transport_network_from_test_directory(self):
-        return r5py.TransportNetwork.from_directory(DATA_DIRECTORY)
+        yield r5py.TransportNetwork.from_directory(DATA_DIRECTORY)
 
     def test_init_from_files_and_dir_cover_same_extent(
         self, transport_network_from_test_files, transport_network_from_test_directory

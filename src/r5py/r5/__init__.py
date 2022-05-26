@@ -2,11 +2,6 @@
 
 """R5 classes."""
 
-# start the JVM first thing
-# (all/most of the imported classes below use it)
-from ..util import jvm
-jvm.start_jvm()
-
 from .breakdown_stat import BreakdownStat
 from .leg_mode import LegMode
 from .regional_task import RegionalTask

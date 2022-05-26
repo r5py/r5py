@@ -6,13 +6,16 @@ import json
 
 import jpype
 
-from ..util import snake_to_camel_case
+from ..util import snake_to_camel_case, start_jvm
 from .speed_config import SpeedConfig
 
 import com.conveyal.r5
 
 
 __all__ = ["TransportNetworkBuilderConfig"]
+
+
+start_jvm()
 
 
 class TransportNetworkBuilderConfig(dict):

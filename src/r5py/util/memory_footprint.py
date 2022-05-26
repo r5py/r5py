@@ -73,9 +73,9 @@ def parse_max_memory_string(max_memory):
 
         if unit is None:
             raise ValueError(
-                f"Could not interpret the memory unit from --max-memory."
-                f"The suffix for --max-memory should be '%', 'K', 'M', 'G' or 'T'."
-                f"For example to allocate five gigabytes of memory, use: '5G'"
+                "Could not interpret the memory unit from --max-memory."
+                "The suffix for --max-memory should be '%', 'K', 'M', 'G' or 'T'."
+                "For example to allocate five gigabytes of memory, use: '5G'"
             )
         return value, unit
     except TypeError:

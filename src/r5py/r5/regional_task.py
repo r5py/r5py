@@ -20,7 +20,7 @@ __all__ = ["RegionalTask"]
 
 
 class RegionalTask:
-    """Create a RegionalTask, a computing request for R5)."""
+    """Create a RegionalTask, a computing request for R5."""
 
     def __init__(
         self,

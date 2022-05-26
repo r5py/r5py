@@ -20,7 +20,7 @@ __all__ = ["RegionalTask"]
 
 
 class RegionalTask:
-    """Wrap a com.conveyal.r5.analyst.cluster.RegionalTask."""
+    """Create a RegionalTask, a computing request for R5)."""
 
     def __init__(
         self,
@@ -44,7 +44,17 @@ class RegionalTask:
         breakdown=False,
     ):
         """
-        Create a RegionalTask.
+        Create a RegionalTask, a computing request for R5.
+
+        A RegionalTask wraps a `com.conveyal.r5.analyst.cluster.RegionalTask`,
+        which is used to specify the details of a requested computation.
+        RegionalTasks underlie virtually all major computations carried out,
+        such as, e.g., `TravelTimeMatrixComputer` or `AccessibilityEstimator`.
+
+        In **r5py**, there is usually no need to explicitely create a
+        `RegionalTask`. Rather, the constructors to the computation classes
+        (`TravelTimeMatrixComputer`, `AccessibilityEstimator`, ...) accept
+        the arguments, and pass them through to an internally handled `RegionalTask`.
 
         Arguments
         ---------

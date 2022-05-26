@@ -13,7 +13,9 @@ class TestMemoryFootprint:
         [
             ("5G", 5*1024),
             ("1000M", 1000),
-            ("1T", 1024*1024)
+            ("1T", 1024*1024),
+            ("1073741824K", 1000),
+            ("1073741824", 1000),
         ],
     )
     def test_max_memory(self, memory_input, expected):

@@ -3,7 +3,9 @@
 """R5 classes."""
 
 # start the JVM first thing
-from ..util import jvm  # noqa: F401
+# (all/most of the imported classes below use it)
+from ..util import jvm
+jvm.start_jvm()
 
 from .breakdown_stat import BreakdownStat
 from .leg_mode import LegMode

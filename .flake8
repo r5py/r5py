@@ -3,3 +3,7 @@ max-line-length = 88
 select = C,E,F,W,B,B950
 ignore = E203, E501, W503
 exclude = docs/conf.py
+
+per-file-ignores = """
+    src/r5py/r5/__init__.py: E402
+"""

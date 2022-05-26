@@ -25,14 +25,14 @@ config.argparser.add(
         Use % as a suffix to specify a share of total RAM;
         K, M, G, T to specify KiB, MiB, GiB, or TiB, respectively.
         Values are rounded to the closest MiB.
-        Values without suffix will raise an error.
+        Values without suffix are interpreted as bytes.
     """,
     default="80%",
 )
 arguments = config.arguments()
 
 
-def share_of_ram(share=0.8, leave_at_least=(2 * (2**10))):
+def _share_of_ram(share=0.8, leave_at_least=(2 * (2**10))):
     """
     Calculate a share of total RAM.
 
@@ -60,18 +60,16 @@ def share_of_ram(share=0.8, leave_at_least=(2 * (2**10))):
     return share_of_ram
 
 
-def parse_max_memory_string(max_memory):
+def _parse_max_memory_string(max_memory):
     """
     Extract maximum memory value and unit from text input.
     """
     try:
-        matches = re.match(
-            r"(?P<value>[0-9]+(\.[0-9]+)?)(?P<unit>[%KMGT])?", max_memory
-        )
+        matches = re.match(r"(?P<value>[0-9]+(\.[0-9]+)?)(?P<unit>[^0-9])?", max_memory)
         value = float(matches["value"])
         unit = matches["unit"]
 
-        if unit is None:
+        if unit is None and unit not in "%KMGT":
             raise ValueError(
                 "Could not interpret the memory unit from --max-memory."
                 "The suffix for --max-memory should be '%', 'K', 'M', 'G' or 'T'."
@@ -85,7 +83,7 @@ def parse_max_memory_string(max_memory):
         )
 
 
-def get_max_memory(max_memory):
+def _get_max_memory(max_memory):
     """
     Interpret the config parameter --max-memory.
 
@@ -97,26 +95,28 @@ def get_max_memory(max_memory):
 
         Use % as a suffix to specify a share of total RAM;
         K, M, G, T suffix specify KiB, MiB, GiB, or TiB, respectively.
-        Values without suffix are interpreted as bytes.
         Values are rounded to the closest MiB.
+        Values without suffix are interpreted as bytes.
     """
 
-    value, unit = parse_max_memory_string(max_memory)
+    value, unit = _parse_max_memory_string(max_memory)
 
     if unit == "%":
-        max_memory = share_of_ram(share=(value / 100.0))
+        max_memory = _share_of_ram(share=(value / 100.0))
     else:
         # convert to MiB
         if unit == "K":
-            value *= 2**-20
-            if value < 1:
-                value = 1
+            value *= 2**-10
         elif unit == "M":
             value *= 2**1
         elif unit == "G":
             value *= 2**10
         elif unit == "T":
             value *= 2**20
+
+        if value < 1:
+            value = 1
+
         max_memory = round(value)
 
     if max_memory < ABSOLUTE_MINIMUM_MEMORY:
@@ -130,4 +130,4 @@ def get_max_memory(max_memory):
     return max_memory
 
 
-MAX_JVM_MEMORY = get_max_memory(arguments.max_memory)
+MAX_JVM_MEMORY = _get_max_memory(arguments.max_memory)

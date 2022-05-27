@@ -10,6 +10,7 @@ from .leg_mode import LegMode
 from .scenario import Scenario
 from .street_mode import StreetMode
 from .transit_mode import TransitMode
+from ..util import start_jvm
 
 import java.io
 import java.time
@@ -17,6 +18,9 @@ import com.conveyal.r5
 
 
 __all__ = ["RegionalTask"]
+
+
+start_jvm()
 
 
 class RegionalTask:

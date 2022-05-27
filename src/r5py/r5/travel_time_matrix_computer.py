@@ -20,7 +20,7 @@ import com.conveyal.r5
 __all__ = ["TravelTimeMatrixComputer"]
 
 
-# R5 fills cut-off values with MAX_INT32
+# R5 fills cut-off (NULL) values with MAX_INT32
 MAX_INT32 = (2**31) - 1
 
 # how many (Python) threads to start
@@ -58,7 +58,7 @@ class TravelTimeMatrixComputer:
         **kwargs,
     ):
         """
-        Load a transport network.
+        Compute travel times between many origins and destinations.
 
         Arguments
         ---------
@@ -101,20 +101,9 @@ class TravelTimeMatrixComputer:
         self.breakdown = breakdown
         self.breakdown_stat = breakdown_stat
 
-        # R5 has a maximum number of destinations for which
-        # it returns detailed information, and it’s set
-        # at 5000 by default. The value is a static property
-        # of com.conveyal.r5.analyst.cluster.PathResult; can
-        # static properites of Java classes be modified in a
-        # singleton kind of way?)
-        if breakdown:
-            com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = (
-                len(destinations) + 1
-            )
-
         self.request = RegionalTask(
             transport_network,
-            origins.iloc[0].geometry,  # just one origin to pass through __init__
+            origins.iloc[0].geometry,  # just any one origin to pass to __init__ (overriden later)
             destinations,
             breakdown=breakdown,
             **kwargs,
@@ -180,6 +169,12 @@ class TravelTimeMatrixComputer:
 
         details = results.paths.summarizeIterations(self.breakdown_stat.value)
 
+        try:
+            self._details
+        except AttributeError:
+            self._details = {}
+        self._details[from_id] = details
+
         _EMPTY_ROW = [None] * len(DATA_COLUMNS)
         details = [
             [str(value) if value else None for record in row for value in record]
@@ -189,7 +184,8 @@ class TravelTimeMatrixComputer:
         ]
 
         for ((column_name, column_type), column_data) in zip(
-            DATA_COLUMNS.items(), zip(*details)  # transpose data
+            DATA_COLUMNS.items(),
+            zip(*details),  # transpose data
         ):
             # split the array columns (they are pipe-separated strings)
             # also, cast to destination type

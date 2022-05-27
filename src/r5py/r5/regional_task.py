@@ -24,7 +24,7 @@ start_jvm()
 
 
 class RegionalTask:
-    """Wrap a com.conveyal.r5.analyst.cluster.RegionalTask."""
+    """Create a RegionalTask, a computing request for R5."""
 
     def __init__(
         self,
@@ -48,7 +48,17 @@ class RegionalTask:
         breakdown=False,
     ):
         """
-        Create a RegionalTask.
+        Create a RegionalTask, a computing request for R5.
+
+        A RegionalTask wraps a `com.conveyal.r5.analyst.cluster.RegionalTask`,
+        which is used to specify the details of a requested computation.
+        RegionalTasks underlie virtually all major computations carried out,
+        such as, e.g., `TravelTimeMatrixComputer` or `AccessibilityEstimator`.
+
+        In **r5py**, there is usually no need to explicitely create a
+        `RegionalTask`. Rather, the constructors to the computation classes
+        (`TravelTimeMatrixComputer`, `AccessibilityEstimator`, ...) accept
+        the arguments, and pass them through to an internally handled `RegionalTask`.
 
         Arguments
         ---------
@@ -216,6 +226,14 @@ class RegionalTask:
     @destinations.setter
     def destinations(self, destinations):
         self._destinations = destinations
+
+        # R5 has a maximum number of destinations for which it returns detailed
+        # information, and it’s set to 5000 by default.
+        # The value is a static property of com.conveyal.r5.analyst.cluster.PathResult;
+        # static properites of Java classes can be modified in a singleton kind of way
+        com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = (
+            len(destinations) + 1
+        )
 
         # wrap destinations in a few layers of streams (yeah, Java)
         output_stream = java.io.ByteArrayOutputStream()
@@ -432,12 +450,14 @@ class RegionalTask:
             egress_modes = self.egress_modes
             if TransitMode.TRANSIT in transport_modes:
                 transit_modes = list(TransitMode)  # all of them
-            if not direct_modes:  # only public transport modes passed in,
+            if not direct_modes:
+                # only public transport modes passed in,
                 # let people walk to and from the stops
                 access_modes = direct_modes = [LegMode.WALK]
             else:
                 access_modes = direct_modes
-        else:  # not public transport
+        else:
+            # no public transport
             egress_modes = []  # ignore egress (why?)
 
             #     # this is weird: I reckon this is trying to keep the fastest mode only,
@@ -472,8 +492,6 @@ class RegionalTask:
                     destination_point_set,
                     self.transport_network.street_layer,
                     StreetMode[mode.name].value
-                    # check whether casting this in Java (LegMode.value.toStreetMode())
-                    # would be better
                 )
 
     @staticmethod

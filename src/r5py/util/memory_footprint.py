@@ -63,13 +63,24 @@ def _share_of_ram(share=0.8, leave_at_least=(2 * (2**10))):
 def _parse_max_memory_string(max_memory):
     """
     Extract maximum memory value and unit from text input.
+
+    Arguments
+    ---------
+    max_memory : str
+        Input text from the config parameter --max-memory.
+
+    Returns
+    -------
+    tuple: a tuple containing
+        - value (float): Amount of memory to be allocated in a given unit.
+        - unit (str): The unit of memory.
     """
     try:
         matches = re.match(r"(?P<value>[0-9]+(\.[0-9]+)?)(?P<unit>[^0-9])?", max_memory)
         value = float(matches["value"])
         unit = matches["unit"]
 
-        if unit is None and unit not in "%KMGT":
+        if unit is not None and unit not in "%KMGT":
             raise ValueError(
                 "Could not interpret the memory unit from --max-memory."
                 "The suffix for --max-memory should be '%', 'K', 'M', 'G' or 'T'."
@@ -97,6 +108,11 @@ def _get_max_memory(max_memory):
         K, M, G, T suffix specify KiB, MiB, GiB, or TiB, respectively.
         Values are rounded to the closest MiB.
         Values without suffix are interpreted as bytes.
+
+    Returns
+    -------
+    float
+        Maximum amount of memory allocated for R5 in MiB.
     """
 
     value, unit = _parse_max_memory_string(max_memory)
@@ -105,7 +121,9 @@ def _get_max_memory(max_memory):
         max_memory = _share_of_ram(share=(value / 100.0))
     else:
         # convert to MiB
-        if unit == "K":
+        if unit is None:
+            value *= 2**-20
+        elif unit == "K":
             value *= 2**-10
         elif unit == "M":
             value *= 2**1

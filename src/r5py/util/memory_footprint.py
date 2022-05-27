@@ -76,7 +76,9 @@ def _parse_max_memory_string(max_memory):
         - unit (str): The unit of memory.
     """
     try:
-        matches = re.match(r"^(?P<value>[0-9]+(\.[0-9]+)?)(?P<unit>[^0-9])?$", max_memory)
+        matches = re.match(
+            r"^(?P<value>[0-9]+(\.[0-9]+)?)(?P<unit>[^0-9])?$", max_memory
+        )
         value = float(matches["value"])
         unit = matches["unit"]
 

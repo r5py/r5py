@@ -103,8 +103,7 @@ class TravelTimeMatrixComputer:
 
         self.request = RegionalTask(
             transport_network,
-            origins.iloc[0].geometry,  # any one origin to pass
-            # to __init__ (overriden later)
+            origins.iloc[0].geometry,  # any one origin (overriden later)
             destinations,
             breakdown=breakdown,
             **kwargs,

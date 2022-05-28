@@ -491,7 +491,7 @@ class RegionalTask:
                 self.transport_network.linkage_cache.getLinkage(
                     destination_point_set,
                     self.transport_network.street_layer,
-                    StreetMode[mode.name].value
+                    StreetMode[mode.name].value,
                 )
 
     @staticmethod

@@ -227,6 +227,14 @@ class RegionalTask:
     def destinations(self, destinations):
         self._destinations = destinations
 
+        # R5 has a maximum number of destinations for which it returns detailed
+        # information, and it’s set to 5000 by default.
+        # The value is a static property of com.conveyal.r5.analyst.cluster.PathResult;
+        # static properites of Java classes can be modified in a singleton kind of way
+        com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = (
+            len(destinations) + 1
+        )
+
         # wrap destinations in a few layers of streams (yeah, Java)
         output_stream = java.io.ByteArrayOutputStream()
         data_output_stream = java.io.DataOutputStream(output_stream)
@@ -442,12 +450,14 @@ class RegionalTask:
             egress_modes = self.egress_modes
             if TransitMode.TRANSIT in transport_modes:
                 transit_modes = list(TransitMode)  # all of them
-            if not direct_modes:  # only public transport modes passed in,
+            if not direct_modes:
+                # only public transport modes passed in,
                 # let people walk to and from the stops
                 access_modes = direct_modes = [LegMode.WALK]
             else:
                 access_modes = direct_modes
-        else:  # not public transport
+        else:
+            # no public transport
             egress_modes = []  # ignore egress (why?)
 
             #     # this is weird: I reckon this is trying to keep the fastest mode only,
@@ -481,9 +491,7 @@ class RegionalTask:
                 self.transport_network.linkage_cache.getLinkage(
                     destination_point_set,
                     self.transport_network.street_layer,
-                    StreetMode[mode.name].value
-                    # check whether casting this in Java (LegMode.value.toStreetMode())
-                    # would be better
+                    StreetMode[mode.name].value,
                 )
 
     @staticmethod

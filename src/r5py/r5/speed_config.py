@@ -2,7 +2,7 @@
 
 """Wraps a com.conveyal.r5.point_to_point.builder.SpeedConfig."""
 
-from ..util import snake_to_camel_case
+from ..util import snake_to_camel_case, start_jvm
 
 import jpype
 
@@ -10,6 +10,9 @@ import com.conveyal.r5
 
 
 __all__ = ["SpeedConfig"]
+
+
+start_jvm()
 
 
 class SpeedConfig(dict):

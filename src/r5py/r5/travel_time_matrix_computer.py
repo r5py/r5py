@@ -58,7 +58,7 @@ class TravelTimeMatrixComputer:
         **kwargs,
     ):
         """
-        Load a transport network.
+        Compute travel times between many origins and destinations.
 
         Arguments
         ---------
@@ -104,9 +104,9 @@ class TravelTimeMatrixComputer:
         # R5 has a maximum number of destinations for which
         # it returns detailed information, and it’s set
         # at 5000 by default. The value is a static property
-        # of com.conveyal.r5.analyst.cluster.PathResult; can
-        # static properites of Java classes be modified in a
-        # singleton kind of way?)
+        # of com.conveyal.r5.analyst.cluster.PathResult;
+        # static properites of Java classes can be modified
+        # in a singleton kind of way?)
         if breakdown:
             com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = (
                 len(destinations) + 1

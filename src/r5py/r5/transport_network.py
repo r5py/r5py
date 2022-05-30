@@ -11,7 +11,7 @@ import warnings
 import jpype
 import jpype.types
 
-from ..util import contains_gtfs_data
+from ..util import contains_gtfs_data, start_jvm
 from .transport_network_builder_config import TransportNetworkBuilderConfig
 
 import com.conveyal.r5
@@ -20,6 +20,9 @@ import java.util.ArrayList
 
 
 __all__ = ["TransportNetwork"]
+
+
+start_jvm()
 
 
 class TransportNetwork:

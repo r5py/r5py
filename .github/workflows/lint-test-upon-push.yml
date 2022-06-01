@@ -69,9 +69,9 @@ jobs:
           auto-activate-base: false
           channel-priority: strict
 
-      - name: Make sure pytest{,-cov} are installed
+      - name: Make sure pytest{,-cov,-lazy-fixture} are installed
         shell: bash -l {0}
-        run: mamba install -c conda-forge pytest pytest-cov
+        run: mamba install -c conda-forge pytest pytest-cov pytest-lazy-fixture
 
       - name: Check environment
         shell: bash -l {0}
@@ -86,5 +86,4 @@ jobs:
       - name: Update codecov.io
         uses: codecov/codecov-action@v3.1.0
         with:
-          fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}

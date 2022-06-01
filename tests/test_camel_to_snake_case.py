@@ -13,8 +13,8 @@ class TestCamelToSnakeCase:
             ("camelCase", "camel_case"),
             ("CamelCase", "camel_case"),
             ("getHTTPResponseCode", "get_http_response_code"),
-            ("HTTPResponseCodeXYZ", "http_response_code_xyz")
-        ]
+            ("HTTPResponseCodeXYZ", "http_response_code_xyz"),
+        ],
     )
     def test_case_camel_case(self, camel_case, snake_case):
         assert r5py.util.camel_to_snake_case(camel_case) == snake_case

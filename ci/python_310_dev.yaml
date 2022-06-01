@@ -17,7 +17,9 @@ dependencies:
     - black
     - codecov
     - folium
+    - gitpython
     - jupyterlab
+    - jupytext=1.13.8
     - matplotlib
     - mapclassify
     - myst-parser
@@ -28,5 +30,6 @@ dependencies:
     - openjdk
     - pytest
     - pytest-cov
+    - pytest-lazy-fixture
     - sphinx
     - sphinx-book-theme

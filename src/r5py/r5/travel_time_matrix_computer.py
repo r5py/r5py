@@ -44,8 +44,13 @@ DATA_COLUMNS = {
     "n_iterations": int,
 }
 
-class NoIDColumnError(Exception): pass
-class NotUniqueIDError(Exception): pass
+
+class NoIDColumnError(Exception):
+    pass
+
+
+class NotUniqueIDError(Exception):
+    pass
 
 
 class TravelTimeMatrixComputer:

@@ -44,6 +44,9 @@ DATA_COLUMNS = {
     "n_iterations": int,
 }
 
+class NoIDColumnError(Exception): pass
+class NotUniqueIDError(Exception): pass
+
 
 class TravelTimeMatrixComputer:
     """Compute travel times between many origins and destinations."""
@@ -92,10 +95,24 @@ class TravelTimeMatrixComputer:
             transport_network = TransportNetwork(*transport_network)
         self.transport_network = transport_network
 
+        # Quick validation to ensure an ID column exists
+        if "id" not in origins.columns:
+            raise NoIDColumnError("Origin dataset must contain an 'id' column.")
+        # And to make sure the column is indeed unique
+        if len(origins.id.unique()) < origins.shape[0]:
+            raise NotUniqueIDError("Origin id values must be unique.")
         self.origins = origins
 
         if destinations is None:
             destinations = origins
+
+        # Quick validation to ensure an ID column exists
+        if "id" not in destinations.columns:
+            raise NoIDColumnError("Destination dataset must contain an 'id' column.")
+        # And to make sure the column is indeed unique
+        if len(destinations.id.unique()) < destinations.shape[0]:
+            raise NotUniqueIDError("Destination id values must be unique.")
+
         self.destinations = destinations
 
         self.breakdown = breakdown

@@ -36,7 +36,7 @@ else:
     R5_CLASSPATH = str(pathlib.Path(CACHE_DIR) / pathlib.Path(R5_JAR_URL).name)
     try:
         with open(R5_CLASSPATH, "rb") as jar:
-            assert hashlib.sha256(jar.read()).hexdigest == R5_JAR_SHA256
+            assert hashlib.sha256(jar.read()).hexdigest() == R5_JAR_SHA256
     except (AssertionError, FileNotFoundError):
         if arguments.verbose:
             print(

@@ -61,10 +61,10 @@ class TestMemoryFootprint:
     @pytest.mark.parametrize(
         ["share", "leave_at_least", "expected"],
         [
-            (0.8, 10000, [round(psutil.virtual_memory().total / (2**20) - 10000)]),
-            (0.1, 1000000, [round(psutil.virtual_memory().total / (2**20) - 1000000)])
+            (0.8, 10000, round(psutil.virtual_memory().total / (2**20) - 10000)),
+            (0.1, 1000000, round(psutil.virtual_memory().total / (2**20) - 1000000))
             # todo in the future this should return 0
         ],
     )
     def test_share_or_ram(self, share, leave_at_least, expected):
-        assert round(_share_of_ram(share, leave_at_least), 0) in expected
+        assert round(_share_of_ram(share, leave_at_least), 0) == expected

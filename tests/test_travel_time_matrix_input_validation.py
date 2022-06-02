@@ -9,8 +9,6 @@ import pytest  # noqa: F401
 import r5py
 import r5py.util.exceptions
 
-import com.conveyal.r5
-
 PBF_FILE = os.path.join("tests", "data", "kantakaupunki.osm.pbf")
 
 

@@ -128,7 +128,7 @@ def _get_max_memory(max_memory):
         elif unit == "K":
             value = value >> 10
         elif unit == "M":
-            value = int(value*1.024)
+            value = int(value * 1.024)
         elif unit == "G":
             value = value << 10
         elif unit == "T":

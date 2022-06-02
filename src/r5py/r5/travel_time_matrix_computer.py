@@ -10,6 +10,7 @@ import numpy
 import pandas
 
 from ..util import config
+from ..util.exceptions import NonUniqueIDError, NoIDColumnError
 from .breakdown_stat import BreakdownStat
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork
@@ -43,14 +44,6 @@ DATA_COLUMNS = {
     "total_time": float,
     "n_iterations": int,
 }
-
-
-class NoIDColumnError(Exception):
-    pass
-
-
-class NotUniqueIDError(Exception):
-    pass
 
 
 class TravelTimeMatrixComputer:
@@ -105,7 +98,7 @@ class TravelTimeMatrixComputer:
             raise NoIDColumnError("Origin dataset must contain an 'id' column.")
         # And to make sure the column is indeed unique
         if len(origins.id.unique()) < origins.shape[0]:
-            raise NotUniqueIDError("Origin id values must be unique.")
+            raise NonUniqueIDError("Origin id values must be unique.")
         self.origins = origins
 
         if destinations is None:
@@ -116,7 +109,7 @@ class TravelTimeMatrixComputer:
             raise NoIDColumnError("Destination dataset must contain an 'id' column.")
         # And to make sure the column is indeed unique
         if len(destinations.id.unique()) < destinations.shape[0]:
-            raise NotUniqueIDError("Destination id values must be unique.")
+            raise NonUniqueIDError("Destination id values must be unique.")
 
         self.destinations = destinations
 

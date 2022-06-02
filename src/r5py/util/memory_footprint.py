@@ -49,14 +49,14 @@ def _share_of_ram(share=0.8, leave_at_least=(2 * (2**10))):
 
     Returns
     -------
-    float
+    int
         A value in MiB that is close to `share` portion of total RAM.
     """
     total_ram = psutil.virtual_memory().total / (2**20)
     if total_ram * (1.0 - share) > leave_at_least:
-        share_of_ram = round(share * total_ram)
+        share_of_ram = int(round(share * total_ram))
     else:
-        share_of_ram = round(total_ram - leave_at_least)
+        share_of_ram = int(round(total_ram - leave_at_least))
     return share_of_ram
 
 
@@ -72,14 +72,14 @@ def _parse_max_memory_string(max_memory):
     Returns
     -------
     tuple: a tuple containing
-        - value (float): Amount of memory to be allocated in a given unit.
+        - value (int): Amount of memory to be allocated in a given unit.
         - unit (str): The unit of memory.
     """
     try:
         matches = re.match(
             r"^(?P<value>[0-9]+(\.[0-9]+)?)(?P<unit>[^0-9])?$", max_memory
         )
-        value = float(matches["value"])
+        value = int(round(float(matches["value"])))
         unit = matches["unit"]
 
         if unit is not None and unit not in "%KMGT":
@@ -113,7 +113,7 @@ def _get_max_memory(max_memory):
 
     Returns
     -------
-    float
+    int
         Maximum amount of memory allocated for R5 in MiB.
     """
 
@@ -124,20 +124,20 @@ def _get_max_memory(max_memory):
     else:
         # convert to MiB
         if unit is None:
-            value *= 2**-20
+            value = value >> 20
         elif unit == "K":
-            value *= 2**-10
+            value = value >> 10
         elif unit == "M":
-            value *= 2**1
+            value = int(value*1.024)
         elif unit == "G":
-            value *= 2**10
+            value = value << 10
         elif unit == "T":
-            value *= 2**20
+            value = value << 20
 
         if value < 1:
             value = 1
 
-        max_memory = round(value)
+        max_memory = value
 
     if max_memory < ABSOLUTE_MINIMUM_MEMORY:
         max_memory = ABSOLUTE_MINIMUM_MEMORY

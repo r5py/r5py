@@ -61,7 +61,7 @@ class TestMemoryFootprint:
     @pytest.mark.parametrize(
         ["share", "leave_at_least", "expected"],
         [
-            (0.8, 2000, [5734, round(0.8 * psutil.virtual_memory().total / (2**20))]),
+            (0.8, 2000, [round(0.8 * (psutil.virtual_memory().total / (2**20)))]),
             (0.8, 10000, [round(psutil.virtual_memory().total / (2**20) - 10000)]),
             (0.1, 1000000, [round(psutil.virtual_memory().total / (2**20) - 1000000)])
             # todo in the future this should return 0

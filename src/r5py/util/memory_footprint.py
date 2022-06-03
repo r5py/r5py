@@ -54,9 +54,9 @@ def _share_of_ram(share=0.8, leave_at_least=(2 * (2**10))):
     """
     total_ram = psutil.virtual_memory().total / (2**20)
     if total_ram * (1.0 - share) > leave_at_least:
-        share_of_ram = int(round(share * total_ram))
+        share_of_ram = round(share * total_ram)
     else:
-        share_of_ram = int(round(total_ram - leave_at_least))
+        share_of_ram = round(total_ram - leave_at_least)
     return share_of_ram
 
 
@@ -72,14 +72,14 @@ def _parse_max_memory_string(max_memory):
     Returns
     -------
     tuple: a tuple containing
-        - value (int): Amount of memory to be allocated in a given unit.
+        - value (float): Amount of memory to be allocated in a given unit.
         - unit (str): The unit of memory.
     """
     try:
         matches = re.match(
             r"^(?P<value>[0-9]+(\.[0-9]+)?)(?P<unit>[^0-9])?$", max_memory
         )
-        value = int(round(float(matches["value"])))
+        value = float(matches["value"])
         unit = matches["unit"]
 
         if unit is not None and unit not in "%KMGT":
@@ -124,20 +124,20 @@ def _get_max_memory(max_memory):
     else:
         # convert to MiB
         if unit is None:
-            value = value >> 20
+            value *= 2**-20
         elif unit == "K":
-            value = value >> 10
+            value *= 2**-10
         elif unit == "M":
-            value = int(value * 1.024)
+            value *= 1.024
         elif unit == "G":
-            value = value << 10
+            value *= 2**10
         elif unit == "T":
-            value = value << 20
+            value *= 2**20
 
         if value < 1:
             value = 1
 
-        max_memory = value
+        max_memory = round(value)
 
     if max_memory < ABSOLUTE_MINIMUM_MEMORY:
         max_memory = ABSOLUTE_MINIMUM_MEMORY

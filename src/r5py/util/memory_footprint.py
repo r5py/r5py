@@ -49,7 +49,7 @@ def _share_of_ram(share=0.8, leave_at_least=(2 * (2**10))):
 
     Returns
     -------
-    float
+    int
         A value in MiB that is close to `share` portion of total RAM.
     """
     total_ram = psutil.virtual_memory().total / (2**20)
@@ -113,7 +113,7 @@ def _get_max_memory(max_memory):
 
     Returns
     -------
-    float
+    int
         Maximum amount of memory allocated for R5 in MiB.
     """
 
@@ -128,7 +128,7 @@ def _get_max_memory(max_memory):
         elif unit == "K":
             value *= 2**-10
         elif unit == "M":
-            value *= 2**1
+            value *= 1.024
         elif unit == "G":
             value *= 2**10
         elif unit == "T":

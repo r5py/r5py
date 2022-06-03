@@ -42,6 +42,7 @@ class TestMemoryFootprint:
         ["memory_input", "expected"],
         [
             ("5G", 5 * 1024),
+            ("1.5G", 1.5 * 1024),
             ("1000M", 1024),
             ("1T", 1024 * 1024),
             ("1048576K", 1024),

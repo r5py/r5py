@@ -27,14 +27,14 @@ CACHE_DIR = str(
 )
 
 CONFIG_FILES = [
-    "/etc/{:s}.yml".format(PACKAGE),
+    f"/etc/{PACKAGE}.yml",
     str(
         pathlib.Path(
             os.environ.get("APPDATA")
             or os.environ.get("XDG_CONFIG_HOME")
             or (pathlib.Path(os.environ["HOME"]) / ".config")
         )
-        / ("{:s}.yml".format(PACKAGE)),
+        / f"{PACKAGE}.yml",
     ),
 ]
 
@@ -43,6 +43,10 @@ argparser = configargparse.get_argument_parser(
     prog=PACKAGE,
     description=sys.modules[PACKAGE].__doc__,
     default_config_files=CONFIG_FILES,
+)
+
+argparser.add(
+    "-v", "--verbose", help="Enable verbose output from R5." "", action="store_true"
 )
 
 

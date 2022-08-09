@@ -1,0 +1,47 @@
+# vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
+
+name: Build and deploy distribution-specific packages
+
+# the second one is only for debugging, remember to clear it out!
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+
+  arch_pkgbuild:
+    name: Create an Archlinux PKGBUILD from a template and deploy it to the AUR
+    runs-on: docker
+    image: archlinux:base-devel
+
+    if: startsWith(github.ref, "ref/tags/v")
+
+    steps:
+      - name: Install additional tools
+        run: pacman -Syu --noconfirm --needed git pacman-contrib
+
+      - name: Update version number
+        run:
+          VERSION="${{github.ref}}"
+          VERSION="${VERSION/ref\/tags\/v/}"
+          mkdir -p dist
+          sed 's/^pkgver=.*$/pkgver='"${VERSION}"'/' < ./.github/workflows/PKGBUILD.template > dist/PKGBUILD
+
+      - name: Update checksums
+        run: updpkgsums dist/PKGBUILD
+
+      - name: Upload PKGBUILD to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: dist/PKGBUILD
+
+      - name: Deploy PKGBUILD to the Arch User Repository
+        uses: KSXGitHub/github-actions-deploy-aur@v2.2.5
+        with:
+          pkgname: python-r5py
+          pkgbuild: dist/PKGBUILD
+          commit_username: ${{ secrets.AUR_USER }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_TOKEN }}
+          commit_message: Upstream release (${{github.ref}})

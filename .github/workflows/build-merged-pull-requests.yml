@@ -9,15 +9,6 @@ on:
   workflow_call:
 
 jobs:
-  # Skipping explicit linting and testing here,
-  # as a) everything that has been pushed will have
-  # been linted anyway, and b) we would exceed GitHub’s
-  # workflow depth
-
-  # lint_and_test:
-  #   name: Lint and test
-  #   uses: ./.github/workflows/lint-test-upon-push.yml
-  #   secrets: inherit
 
   build:
     name: Build wheel(s) and packages

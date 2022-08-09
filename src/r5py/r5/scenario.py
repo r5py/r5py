@@ -4,12 +4,15 @@
 
 import jpype
 
-from .. import util  # noqa: F401
+from ..util import start_jvm
 
 import com.conveyal.r5
 
 
 __all__ = ["Scenario"]
+
+
+start_jvm()
 
 
 class Scenario:

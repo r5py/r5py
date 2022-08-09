@@ -4,12 +4,15 @@
 
 import enum
 
-from .. import util  # noqa: F401
+from ..util import start_jvm
 
 import com.conveyal.r5
 
 
 __all__ = ["BreakdownStat"]
+
+
+start_jvm()
 
 
 class BreakdownStat(enum.Enum):

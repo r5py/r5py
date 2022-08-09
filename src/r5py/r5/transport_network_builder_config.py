@@ -6,13 +6,16 @@ import json
 
 import jpype
 
-from .. import util  # noqa: F401
+from ..util import snake_to_camel_case, start_jvm
 from .speed_config import SpeedConfig
 
 import com.conveyal.r5
 
 
 __all__ = ["TransportNetworkBuilderConfig"]
+
+
+start_jvm()
 
 
 class TransportNetworkBuilderConfig(dict):
@@ -51,7 +54,7 @@ class TransportNetworkBuilderConfig(dict):
             See https://github.com/conveyal/r5/blob/v6.6/src/main/java/com/conveyal/r5/point_to_point/builder/TNBuilderConfig.java#L128
         """
         super().__init__()
-        kwargs = {util.snake_to_camel_case(key): value for key, value in kwargs}
+        kwargs = {snake_to_camel_case(key): value for key, value in kwargs}
         _config = self.DEFAULT_CONFIG
         if "speeds" in kwargs:
             _config["speeds"] = SpeedConfig(kwargs["speeds"])

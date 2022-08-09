@@ -2,6 +2,7 @@ ConfigArgParse
 contextily
 folium
 geopandas
+gitpython
 ipycache
 ipykernel
 ipyleaflet

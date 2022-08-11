@@ -27,7 +27,7 @@ class Test_TransportNetwork:
 
     @pytest.fixture(scope="session")
     def transport_network_from_test_directory(self):
-        yield r5py.TransportNetwork.from_directory(DATA_DIRECTORY)
+        yield r5py.TransportNetwork.from_directory(DATA_DIRECTORY / "Helsinki")
 
     def test_init_from_files_and_dir_cover_same_extent(
         self, transport_network_from_test_files, transport_network_from_test_directory

@@ -52,9 +52,9 @@ To import the street and public transport networks, instantiate an `r5py.Transpo
 from r5py import TransportNetwork
 
 transport_network = TransportNetwork(
-    "../data/kantakaupunki.osm.pbf",
+    "../data/Helsinki/kantakaupunki.osm.pbf",
     [
-        "../data/GTFS.zip"
+        "../data/Helsinki/GTFS.zip"
     ]
 )
 ```
@@ -68,7 +68,7 @@ For the sake of this exercise, we have prepared a grid of points covering parts 
 ```python
 import geopandas
 
-grid_points = geopandas.read_file("../data/population_points_2020.gpkg")
+grid_points = geopandas.read_file("../data/Helsinki/population_points_2020.gpkg")
 
 grid_points.head()
 ```

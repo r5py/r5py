@@ -8,8 +8,8 @@ import pytest  # noqa: F401
 import r5py
 
 DATA_DIRECTORY = pathlib.Path(__file__).absolute().parents[1] / "docs/data"
-GTFS_FILE = DATA_DIRECTORY / "GTFS.zip"
-NOT_GTFS_FILE = DATA_DIRECTORY / "kantakaupunki.osm.pbf"
+GTFS_FILE = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
+NOT_GTFS_FILE = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
 
 
 class TestContainsGtfsData:

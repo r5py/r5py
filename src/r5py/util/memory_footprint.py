@@ -83,9 +83,11 @@ def _parse_value_and_unit(value_and_unit, max_unit_length=1):
         - unit (str): The unit extracted from `value_and_unit`.
     """
     matches = re.match(
-        "^(?P<value>[0-9]+(\\.[0-9]+)?)"
-        f"(?P<unit>[^0-9]){{0,{max_unit_length}}}$",
-        value_and_unit
+        (
+            "^(?P<value>[0-9]+(\\.[0-9]+)?)"  # value
+            f"(?P<unit>[^0-9]){{0,{max_unit_length}}}$"  # unit
+        ),
+        value_and_unit,
     )
     value = float(matches["value"])
     unit = matches["unit"]
@@ -157,9 +159,7 @@ def _get_max_memory(max_memory):
     try:
         value, unit = _parse_value_and_unit(max_memory)
     except TypeError:
-        raise ValueError(
-            f"Could not interpret `--max-memory` ('{max_memory}')."
-        )
+        raise ValueError(f"Could not interpret `--max-memory` ('{max_memory}').")
 
     if unit == "%":
         max_memory = _share_of_ram(share=(value / 100.0))

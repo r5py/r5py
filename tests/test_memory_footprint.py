@@ -71,9 +71,8 @@ class TestMemoryFootprint:
         # by other processes running at the same time.
 
         # Let’s try to see whether we get to within 100MiB
-        assert (
-            _share_of_ram(share, leave_at_least)
-            == pytest.approx(expected, 100 * 1024**2)
+        assert _share_of_ram(share, leave_at_least) == pytest.approx(
+            expected, 100 * 1024**2
         )
 
     # There remain two tricky cases untested:

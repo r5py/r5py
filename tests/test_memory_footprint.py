@@ -5,8 +5,9 @@ import pytest  # noqa: F401
 
 from r5py.util.memory_footprint import (
     _get_max_memory,
+    _interpret_power_of_two_units,
+    _parse_value_and_unit,
     _share_of_ram,
-    _parse_max_memory_string,
 )
 import psutil
 
@@ -22,50 +23,59 @@ class TestMemoryFootprint:
             ("1073741824", (1073741824, None)),
         ],
     )
-    def test_parse_max_memory_string(self, memory_input, expected):
-        assert _parse_max_memory_string(memory_input) == expected
+    def test_parse_value_and_unit(self, memory_input, expected):
+        assert _parse_value_and_unit(memory_input) == expected
 
     def test_incorrect_memory_input(self):
         # Totally incorrect input
         value = "incorrect_value"
-        with pytest.raises(
-            ValueError, match=f"Could not interpret --max-memory: {value}"
-        ):
-            _parse_max_memory_string(value)
+        with pytest.raises(ValueError, match="Could not interpret .*"):
+            _get_max_memory(value)
+
         # Incorrect suffix
         value = "1000J"
-        with pytest.raises(ValueError) as e:
-            _parse_max_memory_string(value)
-            assert "Could not interprect --max-memory" in str(e)
+        with pytest.raises(ValueError, match="Could not interpret unit .*"):
+            _get_max_memory(value)
 
     @pytest.mark.parametrize(
-        ["memory_input", "expected"],
+        ["value", "unit", "expected"],
         [
-            ("5G", 5 * 1024),
-            ("1.5G", 1.5 * 1024),
-            ("1000M", 1024),
-            ("1T", 1024 * 1024),
-            ("1048576K", 1024),
-            ("1073741824", 1024),
+            (5, "G", 5368709120),
+            (1.5, "G", 1610612736),
+            (1000, "M", 1048576000),
+            (1, "T", 1099511627776),
+            (1048576, "K", 1073741824),
+            (1073741824, None, 1073741824),
         ],
     )
-    def test_max_memory(self, memory_input, expected):
-        assert _get_max_memory(memory_input) == expected
+    def test_interpret_power_of_two_units(self, value, unit, expected):
+        assert _interpret_power_of_two_units(value, unit) == expected
 
     def test_lower_than_allowed_memory_input(self):
         value = "1"
         with pytest.warns(
             RuntimeWarning, match="Requested maximum JVM heap size is too low for R5"
         ):
-            assert _get_max_memory(value) == 200
+            assert _get_max_memory(value) == 209715200
 
     @pytest.mark.parametrize(
         ["share", "leave_at_least", "expected"],
         [
-            (0.8, 10000, round(psutil.virtual_memory().total / (2**20) - 10000)),
-            (0.1, 1000000, round(psutil.virtual_memory().total / (2**20) - 1000000))
-            # todo in the future this should return 0
+            (0.8, 0, psutil.virtual_memory().total * 0.8),
+            (0.1, 0, psutil.virtual_memory().total * 0.1)
         ],
     )
-    def test_share_or_ram(self, share, leave_at_least, expected):
-        assert round(_share_of_ram(share, leave_at_least), 0) == expected
+    def test_share_of_ram(self, share, leave_at_least, expected):
+        # NOTE: this can never match exactly, as memory is consumed
+        # in the computation of the share, and most likely
+        # by other processes running at the same time.
+
+        # Let’s try to see whether we get to within 100MiB
+        assert (
+            _share_of_ram(share, leave_at_least)
+            == pytest.approx(expected, 100 * 1024**2)
+        )
+
+    # TODO: test the `leave_at_least` logic without short-circuiting
+    # and simply reproducing the logic that should be tested
+    # (which is kinda already the case for `test_share_of_ram()` ...)

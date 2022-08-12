@@ -93,7 +93,48 @@ def _parse_value_and_unit(value_and_unit, max_unit_length=1):
     return value, unit
 
 
-def _parse_max_memory(max_memory):
+def _interpret_power_of_two_units(value, unit):
+    """
+    Convert a value given as value and power-of-two unit into a bytes value.
+
+    Arguments
+    ---------
+    value : float
+        Input value.
+    unit : str
+        Unit suffix, as specified in IEC 80000-13, e.g., 'K' for kibibyte.
+
+    Returns
+    -------
+    int:
+        interpreted value in bytes
+    """
+
+    SUFFIXES = " KMGTPEZY"
+    # the position of each suffix in this string is the unit’s exponent
+    # over 1024.
+    # Compare https://en.wikipedia.org/wiki/ISO%2FIEC_80000#Part_13:_Information_science_and_technology
+
+    if unit is None:
+        unit = " "
+
+    if unit not in SUFFIXES:
+        raise ValueError(
+            f"Could not interpret unit '{unit}'. "
+            "Allowed suffixes are 'K', 'M', 'G', 'T', 'P', 'E', 'Z', and 'Y'."
+        )
+
+    exponent = SUFFIXES.find(unit)
+    with open("/tmp/r5pydebug.log", "a") as f:
+        print(value, unit, exponent, file=f, flush=True)
+    value *= 1024**exponent
+    with open("/tmp/r5pydebug.log", "a") as f:
+        print(value, unit, exponent, file=f, flush=True)
+
+    return value
+
+
+def _get_max_memory(max_memory):
     """
     Interpret the config parameter --max-memory.
 
@@ -120,26 +161,11 @@ def _parse_max_memory(max_memory):
             f"Could not interpret `--max-memory` ('{max_memory}')."
         )
 
-    if unit is not None and unit not in "%KMGT":
-        raise ValueError(
-            f"Could not interpret unit '{unit}' (`--max-memory`)."
-            "Allowed suffixes are '%', 'K', 'M', 'G', and 'T'."
-        )
-
     if unit == "%":
         max_memory = _share_of_ram(share=(value / 100.0))
     else:
         # convert to bytes
-        if unit is None:
-            value *= 2**0
-        elif unit == "K":
-            value *= 2**10
-        elif unit == "M":
-            value *= 2**20
-        elif unit == "G":
-            value *= 2**30
-        elif unit == "T":
-            value *= 2**40
+        value = _interpret_power_of_two_units(value, unit)
 
     max_memory = round(value)
 
@@ -147,11 +173,11 @@ def _parse_max_memory(max_memory):
         max_memory = ABSOLUTE_MINIMUM_MEMORY
         warnings.warn(
             f"Requested maximum JVM heap size is too low for R5, "
-            f"setting to minimum value {ABSOLUTE_MINIMUM_MEMORY:d} MiB.",
+            f"setting to minimum value {ABSOLUTE_MINIMUM_MEMORY:d} bytes.",
             RuntimeWarning,
         )
 
     return max_memory
 
 
-MAX_JVM_MEMORY = _parse_max_memory(arguments.max_memory)
+MAX_JVM_MEMORY = _get_max_memory(arguments.max_memory)

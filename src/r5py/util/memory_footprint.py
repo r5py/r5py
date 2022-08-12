@@ -127,11 +127,7 @@ def _interpret_power_of_two_units(value, unit):
         )
 
     exponent = SUFFIXES.find(unit)
-    with open("/tmp/r5pydebug.log", "a") as f:
-        print(value, unit, exponent, file=f, flush=True)
     value *= 1024**exponent
-    with open("/tmp/r5pydebug.log", "a") as f:
-        print(value, unit, exponent, file=f, flush=True)
 
     return value
 
@@ -162,7 +158,7 @@ def _get_max_memory(max_memory):
         raise ValueError(f"Could not interpret `--max-memory` ('{max_memory}').")
 
     if unit == "%":
-        max_memory = _share_of_ram(share=(value / 100.0))
+        value = _share_of_ram(share=(value / 100.0))
     else:
         # convert to bytes
         value = _interpret_power_of_two_units(value, unit)

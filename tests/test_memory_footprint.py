@@ -62,10 +62,10 @@ class TestMemoryFootprint:
         ["share", "leave_at_least", "expected"],
         [
             (0.8, 0, psutil.virtual_memory().total * 0.8),
-            (0.1, 0, psutil.virtual_memory().total * 0.1)
+            (0.1, 0, psutil.virtual_memory().total * 0.1),
         ],
     )
-    def test_share_of_ram(self, share, leave_at_least, expected):
+    def test_share_of_ram_leaving_zero(self, share, leave_at_least, expected):
         # NOTE: this can never match exactly, as memory is consumed
         # in the computation of the share, and most likely
         # by other processes running at the same time.
@@ -76,6 +76,9 @@ class TestMemoryFootprint:
             == pytest.approx(expected, 100 * 1024**2)
         )
 
-    # TODO: test the `leave_at_least` logic without short-circuiting
-    # and simply reproducing the logic that should be tested
-    # (which is kinda already the case for `test_share_of_ram()` ...)
+    # There remain two tricky cases untested:
+    #    - share_of_ram() with leave_at_least > 0:
+    #      very tricky to test without reproducing the to-be-tested
+    #      code 1:1, dynamically depending on available RAM
+    #    - share_of_ram() with a leave_at_least > (total - share).
+    #      Even more complicated ;)

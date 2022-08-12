@@ -13,7 +13,7 @@ from . import config
 __all__ = ["MAX_JVM_MEMORY"]
 
 
-ABSOLUTE_MINIMUM_MEMORY = 200 * 2**20  # never grant less than 200 MiB to JVM
+ABSOLUTE_MINIMUM_MEMORY = 200 * 1024**2  # never grant less than 200 MiB to JVM
 
 
 config.argparser.add(
@@ -31,7 +31,7 @@ config.argparser.add(
 arguments = config.arguments()
 
 
-def _share_of_ram(share=0.8, leave_at_least=(2 * (2**30))):
+def _share_of_ram(share=0.8, leave_at_least=(2 * 1024**3)):
     """
     Calculate a share of total RAM.
 

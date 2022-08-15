@@ -231,7 +231,8 @@ class RegionalTask:
         # information, and it’s set to 5000 by default.
         # The value is a static property of com.conveyal.r5.analyst.cluster.PathResult;
         # static properites of Java classes can be modified in a singleton kind of way
-        com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = (
+        com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = max(
+            com.conveyal.r5.analyst.cluster.PathResult.maxDestinations,
             len(destinations) + 1
         )
 

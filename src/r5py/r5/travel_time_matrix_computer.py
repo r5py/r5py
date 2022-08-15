@@ -30,7 +30,7 @@ NUM_THREADS = math.ceil(multiprocessing.cpu_count() * 0.75)
 
 # Which columns (and types) are returned by
 # com.conveyal.r5.analyst.cluster.PathResult.summarizeIterations?
-# Note that these are already camel_case names and pandas/numpy (d)types.
+# Note that these are already camel_case (Python) names and pandas/numpy (d)types.
 DATA_COLUMNS = {
     "routes": pandas.SparseDtype(str),
     "board_stops": pandas.SparseDtype(str),
@@ -190,7 +190,7 @@ class TravelTimeMatrixComputer:
             # split the array columns (they are pipe-separated strings)
             # also, cast to destination type
 
-            # note, that `pandas.SparseDtype(str).subtype` defaults to dtype('O')
+            # note, that `pandas.SparseDtype(str).subtype` defaults to dtype('O').
             # fortunately, we get str, which remains a character string when
             # cast to dtype('O')
 
@@ -217,7 +217,7 @@ class TravelTimeMatrixComputer:
     def _parse_results_of_one_origin_travel_times(self, from_id, results):
         # return travel times only
 
-        # create the columns in order to force dtypes
+        # create the columns, in order to force dtypes
         if self.request.percentiles == [50]:
             # if we’re only interested in the default (the median)
             travel_time_columns = {"travel_time": pandas.Series(dtype=float)}

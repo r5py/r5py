@@ -233,7 +233,7 @@ class RegionalTask:
         # static properites of Java classes can be modified in a singleton kind of way
         com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = max(
             com.conveyal.r5.analyst.cluster.PathResult.maxDestinations,
-            len(destinations) + 1
+            len(destinations) + 1,
         )
 
         # wrap destinations in a few layers of streams (yeah, Java)

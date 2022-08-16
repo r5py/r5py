@@ -38,7 +38,7 @@ jobs:
       run:
         shell: bash -l {0}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         os: 
           - ubuntu-latest

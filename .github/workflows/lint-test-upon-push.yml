@@ -62,12 +62,12 @@ jobs:
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2.1.1
         with:
-          environment-file: ${{ matrix.env }}
-          miniforge-version: latest
-          miniforge-variant: Mambaforge
-          activate-environment: test
-          auto-activate-base: false
           channel-priority: strict
+          channels: conda-forge
+          environment-file: ${{ matrix.env }}
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          use-mamba: true
 
       - name: Make sure pytest{,-cov,-lazy-fixture} are installed
         shell: bash -l {0}

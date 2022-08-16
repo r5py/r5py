@@ -84,8 +84,7 @@ jobs:
           conda list
 
       - name: Test r5py
-        shell: bash -l {0}
-        run: pytest
+        run: python -m pytest
 
       - name: Update codecov.io
         uses: codecov/codecov-action@v3.1.0

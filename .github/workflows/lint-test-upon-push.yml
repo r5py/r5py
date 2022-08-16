@@ -70,6 +70,9 @@ jobs:
           miniforge-version: latest
           use-mamba: true
 
+      - name: Test whether fiona can be imported
+        run: python -c "import fiona"
+
       - name: Make sure pytest{,-cov,-lazy-fixture} are installed
         shell: bash -l {0}
         run: mamba install -c conda-forge pytest pytest-cov pytest-lazy-fixture

@@ -364,7 +364,9 @@ class RegionalTask:
             assert len(percentiles) <= 5  # R5 does not allow more than five percentiles
             # (compare https://github.com/r5py/r5py/issues/139 )
         except AssertionError as exception:
-            raise ValueError("Maximum number of percentiles allowed is 5") from exception
+            raise ValueError(
+                "Maximum number of percentiles allowed is 5"
+            ) from exception
         self._percentiles = percentiles
         self._regional_task.percentiles = percentiles
 

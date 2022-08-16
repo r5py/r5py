@@ -3,6 +3,7 @@
 
 import pytest  # noqa: F401
 
+import fiona
 import geopandas
 import pathlib
 

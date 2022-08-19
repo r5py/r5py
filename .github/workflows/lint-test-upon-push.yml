@@ -70,6 +70,10 @@ jobs:
           miniforge-version: latest
           use-mamba: true
 
+      - name: On Windows, resort JDK/GDAL conflicts
+        if: matrix.os == 'windows-latest'
+        run: mamba install --force-reinstall gdal libgdal libzip freetype
+
       - name: Test whether fiona can be imported
         run: python -c "import fiona"
 

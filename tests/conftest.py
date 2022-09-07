@@ -9,6 +9,7 @@
 
 import pathlib
 
+import geopandas
 import pytest  # noqa: F401
 
 import r5py
@@ -18,10 +19,36 @@ DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "dat
 OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
 GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
 
+ORIGINS_INVALID_NO_ID = (
+    DATA_DIRECTORY / "test data" / "test_invalid_points_no_id_column.geojson"
+)
+ORIGINS_INVALID_DUPLICATE_IDS = (
+    DATA_DIRECTORY / "test data" / "test_invalid_points_duplicate_ids.geojson"
+)
+ORIGINS_VALID_IDS = DATA_DIRECTORY / "test data" / "test_valid_points_data.geojson"
+
 
 @pytest.fixture
 def gtfs_timezone_helsinki():
     yield "Europe/Helsinki"
+
+
+@pytest.fixture(scope="session")
+def origins_invalid_no_id():
+    origins = geopandas.read_file(ORIGINS_INVALID_NO_ID)
+    yield origins
+
+
+@pytest.fixture(scope="session")
+def origins_invalid_duplicate_ids():
+    origins = geopandas.read_file(ORIGINS_INVALID_DUPLICATE_IDS)
+    yield origins
+
+
+@pytest.fixture(scope="session")
+def origins_valid_ids():
+    origins = geopandas.read_file(ORIGINS_VALID_IDS)
+    yield origins
 
 
 @pytest.fixture(scope="session")

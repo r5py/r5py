@@ -6,11 +6,9 @@ channels:
 dependencies:
     - python=3.10
     - folium
-    - fiona
     - geopandas
     - matplotlib
     - mapclassify
     - numpy
-    - openjdk
     - pandas
     - r5py

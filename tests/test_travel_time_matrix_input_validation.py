@@ -18,6 +18,7 @@ ORIGINS_INVALID_NO_ID = (
 ORIGINS_INVALID_DUPLICATE_IDS = (
     DATA_DIRECTORY / "test data" / "test_invalid_points_duplicate_ids.geojson"
 )
+ORIGINS_VALID_IDS = DATA_DIRECTORY / "test data" / "test_valid_points_data.geojson"
 
 
 class TestTravelTimeMatrixInputValidation:
@@ -34,7 +35,7 @@ class TestTravelTimeMatrixInputValidation:
             ),
         ],
     )
-    def test_non_valid_data(self, geojson_file, expected_error):
+    def test_invalid_data(self, geojson_file, expected_error):
         # Just looking at a simple walking system.
         transport_network = r5py.TransportNetwork(OSM_PBF)
         origins = geopandas.read_file(geojson_file)
@@ -45,3 +46,17 @@ class TestTravelTimeMatrixInputValidation:
                 origins=origins,
             )
             del travel_time_matrix_computer
+
+    @pytest.mark.parametrize(
+        ["geojson_file"],
+        [(ORIGINS_VALID_IDS,)]
+    )
+    def test_valid_data(self, geojson_file):
+        transport_network = r5py.TransportNetwork(OSM_PBF)
+        origins = geopandas.read_file(geojson_file)
+
+        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+            transport_network,
+            origins=origins,
+        )
+        del travel_time_matrix_computer

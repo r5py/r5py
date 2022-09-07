@@ -227,21 +227,21 @@ class TravelTimeMatrixComputer:
         # return travel times only
 
         # create the columns in order to force dtypes
+        travel_time_columns = {
+            "from_id": pandas.Series(dtype=str),
+            "to_id": pandas.Series(dtype=str),
+        }
         if self.request.percentiles == [50]:
             # if we’re only interested in the default (the median)
-            travel_time_columns = {"travel_time": pandas.Series(dtype=float)}
+            travel_time_columns.update({"travel_time": pandas.Series(dtype=float)})
         else:
-            travel_time_columns = {
-                f"travel_time_p{percentile:d}": pandas.Series(dtype=float)
-                for percentile in self.request.percentiles
-            }
-        od_matrix = pandas.DataFrame(
-            {
-                "from_id": pandas.Series(dtype=str),
-                "to_id": pandas.Series(dtype=str),
-            }
-            | travel_time_columns
-        )
+            travel_time_columns.update(
+                {
+                    f"travel_time_p{percentile:d}": pandas.Series(dtype=float)
+                    for percentile in self.request.percentiles
+                }
+            )
+        od_matrix = pandas.DataFrame(travel_time_columns)
 
         # first assign columns with correct length (not the scalar `from_id`)
         od_matrix["to_id"] = self.destinations.id

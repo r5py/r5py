@@ -3,7 +3,7 @@
 ```{note}
 There are many different ways to install **r5py** on your computer. Below, we describe the most
 commonly used ones.  If you don’t have any particular preferences, we recommend to try `mamba`,
-which will install r5py and all dependencies (including a matching Java Development Kit) from conda-forge.
+which will install r5py and all dependencies (*except* a Java Development Kit) from conda-forge.
 
 Please see the [dependencies](#dependencies) section to understand what will be installed on your computer.
 ```
@@ -31,9 +31,9 @@ First, make sure that you have `mamba` available on your system. You can either 
 
 ### Install `r5py` in your existing environment
 
-To install r5py and a Java Development Kit (OpenJDK), run:
+To install r5py, run:
 
-     mamba install -c conda-forge r5py openjdk
+     mamba install -c conda-forge r5py
 
 
 ### Install `r5py` into a dedicated Python environment
@@ -60,9 +60,9 @@ After this, you can start using the `r5py` library in the environment, e.g., usi
 If you prefer to use conda as your Python package manager, follow the same instructions as above,
 but replace `mamba` with `conda`:
 
-To install r5py and a Java Development Kit (OpenJDK) with `conda`, run:
+To install r5py with `conda`, run:
 
-     conda install -c conda-forge r5py openjdk
+     conda install -c conda-forge r5py
 
 Alternatively, to create a dedicated Python environment, [download the `r5py_distro.yaml`
 file](https://github.com/r5py/r5py/blob/main/ci/r5py_distro.yaml), and use conda to create and activate the environment:
@@ -76,20 +76,14 @@ The ‘classic’ way to install Python packages is from the PyPi repository, us
 
     pip install r5py
 
-This does not install a *Java Development Kit* (JDK), by default. Be sure to separately install
-a JDK in version 11, for instance, [OpenJDK](http://jdk.java.net/java-se-ri/11).
-
-
 ## Dependencies
 
-**R5py** relies on a few external dependencies, most noteably a Java environment. The `mamba` and
-`conda` installation methods outlined above automatically install [OpenJDK
-11](http://jdk.java.net/java-se-ri/11), `pip` does not.
+**R5py** relies on a few external dependencies, most noteably a Java environment. 
 
 ### Java Development Kit
 
-To interface with R5, **r5py** requires a *Java Development Kit* (jdk) in version 11.
-[OpenJDK](https://openjdk.java.net/) works fine.
+To interface with R5, **r5py** requires a *Java Development Kit* (jdk).
+Please install a JDK in version 11, for instance, [OpenJDK](https://openjdk.java.net/java-se-ri/11).
 
 
 ### R5

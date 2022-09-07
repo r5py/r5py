@@ -58,8 +58,7 @@ class TestTravelTimeMatrixInputValidation:
             ),
         ],
     )
-    def test_invalid_data(self, transport_network, origins, expected_error):
-        # Just looking at a simple walking system.
+    def test_origins_invalid_data(self, transport_network, origins, expected_error):
         with pytest.raises(expected_error):
             travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
                 transport_network,
@@ -77,9 +76,67 @@ class TestTravelTimeMatrixInputValidation:
             )
         ]
     )
-    def test_valid_data(self, transport_network, origins):
+    def test_origins_valid_data(self, transport_network, origins):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
             transport_network,
             origins=origins,
+        )
+        del travel_time_matrix_computer
+
+    @pytest.mark.parametrize(
+        [
+            "origins",
+            "destinations",
+            "expected_error",
+        ],
+        [
+            (
+                pytest.lazy_fixture("origins_invalid_no_id"),
+                pytest.lazy_fixture("origins_invalid_no_id"),
+                r5py.util.exceptions.NoIDColumnError,
+            ),
+            (
+                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                r5py.util.exceptions.NonUniqueIDError,
+            ),
+            (
+                pytest.lazy_fixture("origins_invalid_no_id"),
+                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                r5py.util.exceptions.NoIDColumnError,
+            ),
+            (
+                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                pytest.lazy_fixture("origins_invalid_no_id"),
+                r5py.util.exceptions.NonUniqueIDError,
+            ),
+        ],
+    )
+    def test_origins_and_destinations_invalid_data(self, transport_network, origins, destinations, expected_error):
+        with pytest.raises(expected_error):
+            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+                transport_network,
+                origins=origins,
+                destinations=destinations,
+            )
+            del travel_time_matrix_computer
+
+    @pytest.mark.parametrize(
+        [
+            "origins",
+            "destinations",
+        ],
+        [
+            (
+                pytest.lazy_fixture("origins_valid_ids"),
+                pytest.lazy_fixture("origins_valid_ids"),
+            )
+        ]
+    )
+    def test_origins_and_destinations_valid_data(self, transport_network, origins, destinations):
+        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+            transport_network,
+            origins=origins,
+            destinations=destinations,
         )
         del travel_time_matrix_computer

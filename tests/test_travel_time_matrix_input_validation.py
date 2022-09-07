@@ -22,24 +22,44 @@ ORIGINS_VALID_IDS = DATA_DIRECTORY / "test data" / "test_valid_points_data.geojs
 
 
 class TestTravelTimeMatrixInputValidation:
+    @pytest.fixture(scope="session")
+    def transport_network(self):
+        transport_network = r5py.TransportNetwork(OSM_PBF)
+        yield transport_network
+
+    @pytest.fixture(scope="session")
+    def origins_invalid_no_id(self):
+        origins = geopandas.read_file(ORIGINS_INVALID_NO_ID)
+        yield origins
+
+    @pytest.fixture(scope="session")
+    def origins_invalid_duplicate_ids(self):
+        origins = geopandas.read_file(ORIGINS_INVALID_DUPLICATE_IDS)
+        yield origins
+
+    @pytest.fixture(scope="session")
+    def origins_valid_ids(self):
+        origins = geopandas.read_file(ORIGINS_VALID_IDS)
+        yield origins
+
     @pytest.mark.parametrize(
-        ["geojson_file", "expected_error"],
+        [
+            "origins",
+            "expected_error",
+        ],
         [
             (
-                ORIGINS_INVALID_NO_ID,
+                pytest.lazy_fixture("origins_invalid_no_id"),
                 r5py.util.exceptions.NoIDColumnError,
             ),
             (
-                ORIGINS_INVALID_DUPLICATE_IDS,
+                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
                 r5py.util.exceptions.NonUniqueIDError,
             ),
         ],
     )
-    def test_invalid_data(self, geojson_file, expected_error):
+    def test_invalid_data(self, transport_network, origins, expected_error):
         # Just looking at a simple walking system.
-        transport_network = r5py.TransportNetwork(OSM_PBF)
-        origins = geopandas.read_file(geojson_file)
-
         with pytest.raises(expected_error):
             travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
                 transport_network,
@@ -48,13 +68,16 @@ class TestTravelTimeMatrixInputValidation:
             del travel_time_matrix_computer
 
     @pytest.mark.parametrize(
-        ["geojson_file"],
-        [(ORIGINS_VALID_IDS,)]
+        [
+            "origins",
+        ],
+        [
+            (
+                pytest.lazy_fixture("origins_valid_ids"),
+            )
+        ]
     )
-    def test_valid_data(self, geojson_file):
-        transport_network = r5py.TransportNetwork(OSM_PBF)
-        origins = geopandas.read_file(geojson_file)
-
+    def test_valid_data(self, transport_network, origins):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
             transport_network,
             origins=origins,

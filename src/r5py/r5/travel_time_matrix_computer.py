@@ -9,7 +9,7 @@ import joblib
 import numpy
 import pandas
 
-from ..util import config
+from ..util import check_od_data_set, config
 from .breakdown_stat import BreakdownStat
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork
@@ -92,10 +92,15 @@ class TravelTimeMatrixComputer:
             transport_network = TransportNetwork(*transport_network)
         self.transport_network = transport_network
 
+        check_od_data_set(origins)
         self.origins = origins
 
         if destinations is None:
             destinations = origins
+        else:
+            # only check destinations when it’s
+            # different from origins (already checked)
+            check_od_data_set(destinations)
         self.destinations = destinations
 
         self.breakdown = breakdown

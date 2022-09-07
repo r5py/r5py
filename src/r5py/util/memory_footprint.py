@@ -50,12 +50,22 @@ def _share_of_ram(share=0.8, leave_at_least=(2 * 1024**3)):
     -------
     int
         A value in bytes that is close to `share` portion of total RAM.
+        Note: Will return the absolute minimum RAM (200 MB) if lower value is requested.
     """
     total_ram = psutil.virtual_memory().total
     if total_ram * (1.0 - share) > leave_at_least:
         share_of_ram = round(share * total_ram)
     else:
         share_of_ram = round(total_ram - leave_at_least)
+
+    if share_of_ram < ABSOLUTE_MINIMUM_MEMORY:
+        warnings.warn(
+            f"Requested maximum JVM heap size is too low for R5, "
+            f"setting to minimum value {ABSOLUTE_MINIMUM_MEMORY:d} bytes.",
+            RuntimeWarning,
+        )
+        share_of_ram = ABSOLUTE_MINIMUM_MEMORY
+
     return share_of_ram
 
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 
+import fiona  # noqa: F401  # for triggering import error early
 import pathlib
 
 import pytest  # noqa: F401

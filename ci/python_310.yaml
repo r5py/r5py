@@ -13,5 +13,4 @@ dependencies:
     - numpy
     - pandas
     - psutil
-    - pyogrio
     - requests

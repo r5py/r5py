@@ -32,6 +32,5 @@ dependencies:
     - pytest
     - pytest-cov
     - pytest-lazy-fixture
-    - pyogrio
     - sphinx
     - sphinx-book-theme

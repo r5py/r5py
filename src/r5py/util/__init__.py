@@ -4,7 +4,7 @@
 
 from . import config
 from .camel_to_snake_case import camel_to_snake_case
-from .check_od_data_set import check_od_data_set
+from .data_validation import check_od_data_set
 from .contains_gtfs_data import contains_gtfs_data
 from .jvm import start_jvm
 from .snake_to_camel_case import snake_to_camel_case

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Check whether an origin/destination data set fulfils certain minimum criteria."""
+"""Utility functions for validating input data."""
 
 
 from .exceptions import NoIDColumnError, NonUniqueIDError

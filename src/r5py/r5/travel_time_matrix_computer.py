@@ -10,7 +10,6 @@ import numpy
 import pandas
 
 from ..util import check_od_data_set, config
-from ..util.exceptions import NonUniqueIDError, NoIDColumnError
 from .breakdown_stat import BreakdownStat
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork

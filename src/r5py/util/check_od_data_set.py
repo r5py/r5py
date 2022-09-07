@@ -23,5 +23,5 @@ def check_od_data_set(od_data_set):
     """
     if "id" not in od_data_set.columns:
         raise NoIDColumnError("Origin dataset must contain an 'id' column.")
-    if not od_data_set.id.is_unique():
+    if not od_data_set.id.is_unique:
         raise NonUniqueIDError("Origin id values must be unique.")

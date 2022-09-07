@@ -93,11 +93,15 @@ class TravelTimeMatrixComputer:
             transport_network = TransportNetwork(*transport_network)
         self.transport_network = transport_network
 
+        check_od_data_set(origins)
+        self.origins = origins
+
         if destinations is None:
             destinations = origins
         else:
+            # only check destinations when it’s
+            # different from origins (already checked)
             check_od_data_set(destinations)
-
         self.destinations = destinations
 
         self.breakdown = breakdown

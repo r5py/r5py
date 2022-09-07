@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
 
-import os
+import pytest  # noqa: F401
+import pathlib
 
 import geopandas
-
-import pytest  # noqa: F401
 
 import r5py
 import r5py.util.exceptions
 
-PBF_FILE = os.path.join("tests", "data", "kantakaupunki.osm.pbf")
+
+DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
+OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
+
+ORIGINS_INVALID_NO_ID = (
+    DATA_DIRECTORY / "test data" / "test_invalid_points_no_id_column.geojson"
+)
+ORIGINS_INVALID_DUPLICATE_IDS = (
+    DATA_DIRECTORY / "test data" / "test_invalid_points_duplicate_ids.geojson"
+)
 
 
 class TestTravelTimeMatrixInputValidation:
@@ -17,22 +25,23 @@ class TestTravelTimeMatrixInputValidation:
         ["geojson_file", "expected_error"],
         [
             (
-                "test_invalid_points_no_id_column.geojson",
+                ORIGINS_INVALID_NO_ID,
                 r5py.util.exceptions.NoIDColumnError,
             ),
             (
-                "test_invalid_points_duplicate_ids.geojson",
+                ORIGINS_INVALID_DUPLICATE_IDS,
                 r5py.util.exceptions.NonUniqueIDError,
             ),
         ],
     )
     def test_non_valid_data(self, geojson_file, expected_error):
         # Just looking at a simple walking system.
-        transport_network = r5py.TransportNetwork(PBF_FILE)
-        origins = geopandas.read_file(os.path.join("tests", "data", geojson_file))
+        transport_network = r5py.TransportNetwork(OSM_PBF)
+        origins = geopandas.read_file(geojson_file)
 
         with pytest.raises(expected_error):
             travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
                 transport_network,
                 origins=origins,
             )
+            del travel_time_matrix_computer

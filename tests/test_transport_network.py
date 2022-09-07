@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
 
-import fiona  # noqa: F401  # for triggering import error early
-import pathlib
-
 import pytest  # noqa: F401
 
 import r5py
@@ -11,26 +8,7 @@ import com.conveyal.r5
 import java.time
 
 
-# test data sets
-DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
-OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
-GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
-
-
 class Test_TransportNetwork:
-    @pytest.fixture
-    def gtfs_timezone(self):
-        yield "Europe/Helsinki"
-
-    @pytest.fixture(scope="session")
-    def transport_network_from_test_files(self):
-        transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
-        yield transport_network
-
-    @pytest.fixture(scope="session")
-    def transport_network_from_test_directory(self):
-        yield r5py.TransportNetwork.from_directory(DATA_DIRECTORY / "Helsinki")
-
     def test_init_from_files_and_dir_cover_same_extent(
         self, transport_network_from_test_files, transport_network_from_test_directory
     ):
@@ -95,6 +73,6 @@ class Test_TransportNetwork:
             (pytest.lazy_fixture("transport_network_from_test_directory"),),
         ],
     )
-    def test_timezone(self, transport_network, gtfs_timezone):
+    def test_timezone(self, transport_network, gtfs_timezone_helsinki):
         assert isinstance(transport_network.timezone, java.time.ZoneId)
-        assert transport_network.timezone.toString() == gtfs_timezone
+        assert transport_network.timezone.toString() == gtfs_timezone_helsinki

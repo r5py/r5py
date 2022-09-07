@@ -2,6 +2,7 @@
 
 """Wraps a com.conveyal.r5.analyst.cluster.RegionalTask."""
 
+import collections.abc
 import datetime
 
 import jpype
@@ -352,12 +353,20 @@ class RegionalTask:
         Return the travel time for these percentiles of all computed trips, by travel time.
 
         By default, return the median travel time.
-        (list[int])
+        (collections.abc.Sequence[int])
         """
         return self._percentiles
 
     @percentiles.setter
     def percentiles(self, percentiles):
+        try:
+            assert isinstance(percentiles, collections.abc.Sequence)
+            assert len(percentiles) <= 5  # R5 does not allow more than five percentiles
+            # (compare https://github.com/r5py/r5py/issues/139 )
+        except AssertionError as exception:
+            raise ValueError(
+                "Maximum number of percentiles allowed is 5"
+            ) from exception
         self._percentiles = percentiles
         self._regional_task.percentiles = percentiles
 

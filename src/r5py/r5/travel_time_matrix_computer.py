@@ -10,6 +10,7 @@ import numpy
 import pandas
 
 from ..util import config
+from ..util.exceptions import NonUniqueIDError, NoIDColumnError
 from .breakdown_stat import BreakdownStat
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork
@@ -92,10 +93,24 @@ class TravelTimeMatrixComputer:
             transport_network = TransportNetwork(*transport_network)
         self.transport_network = transport_network
 
+        # Quick validation to ensure an ID column exists
+        if "id" not in origins.columns:
+            raise NoIDColumnError("Origin dataset must contain an 'id' column.")
+        # And to make sure the column is indeed unique
+        if len(origins.id.unique()) < origins.shape[0]:
+            raise NonUniqueIDError("Origin id values must be unique.")
         self.origins = origins
 
         if destinations is None:
             destinations = origins
+
+        # Quick validation to ensure an ID column exists
+        if "id" not in destinations.columns:
+            raise NoIDColumnError("Destination dataset must contain an 'id' column.")
+        # And to make sure the column is indeed unique
+        if len(destinations.id.unique()) < destinations.shape[0]:
+            raise NonUniqueIDError("Destination id values must be unique.")
+
         self.destinations = destinations
 
         self.breakdown = breakdown

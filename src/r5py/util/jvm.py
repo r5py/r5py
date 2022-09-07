@@ -25,7 +25,7 @@ def start_jvm():
     """
     if not jpype.isJVMStarted():
         jpype.startJVM(
-            f"-Xmx{MAX_JVM_MEMORY:d}M",
+            f"-Xmx{MAX_JVM_MEMORY:d}",
             "-Xcheck:jni",
             classpath=[R5_CLASSPATH],
         )

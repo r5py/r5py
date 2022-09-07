@@ -2,6 +2,9 @@
 build-backend = "setuptools.build_meta"
 requires = ["setuptools>=50.0.0", "wheel"]
 
+[project.optional-dependencies]
+tests = ["pytest", "pytest-cov", "pytest-lazy-fixture"]
+
 [tool.pytest.ini_options]
 addopts = "-p no:faulthandler -r s --cov=./src/r5py --cov-append --cov-report term-missing --cov-report xml"
 pythonpath = ["src"]

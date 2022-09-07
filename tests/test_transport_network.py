@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 
+import fiona  # noqa: F401  # for triggering import error early
 import pathlib
 
 import pytest  # noqa: F401
@@ -8,6 +9,7 @@ import pytest  # noqa: F401
 import r5py
 import com.conveyal.r5
 import java.time
+
 
 # test data sets
 DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"

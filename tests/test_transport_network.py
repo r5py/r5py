@@ -10,6 +10,7 @@ import r5py
 import com.conveyal.r5
 import java.time
 
+
 # test data sets
 DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
 OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"

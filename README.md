@@ -7,16 +7,14 @@
 [![PyPi package version](https://img.shields.io/pypi/v/r5py)](https://pypi.org/project/r5py)
 [![Coverage](https://codecov.io/gh/r5py/r5py/branch/main/graph/badge.svg?token=WG8RBMZBK6)](https://codecov.io/gh/r5py/r5py)
 
-**R5py** is a Python wrapper for the [R5 routing analysis
-engine](https://github.com/conveyal/r5). It is inspired by [r5r, a wrapper for
-R](https://ipeagit.github.io/r5r/), and is designed to interact with
-[GeoPandas](https://geopandas.org/) data frames.
+**R5py** is a Python library for rapid realistic routing on multimodal transport networks (walk, bike, public transport and car).
+It provides a simple and friendly interface to R<sup>5</sup>, the Rapid Realistic Routing on Real-world and Reimagined networks,
+the [routing engine](https://github.com/conveyal/r5) developed by Conveyal. `r5py` is inspired by [r5r, a wrapper for R](https://ipeagit.github.io/r5r),
+and the library is designed to interact with [GeoPandas](https://geopandas.org) GeoDataFrames.
 
-Similar to [r5r](https://ipeagit.github.io/r5r/), **r5py** represents a simple
-way to run [R5](https://github.com/conveyal/r5) locally. It allows users to
-generate detailed routing analyses or calculate travel time matrices using
-parallel computing, and integrates seamlessly with Python/Geopandas workflows.
-
+`R5py` offers a simple way to run R5 locally with Python, allowing the users to calculate travel time matrices and accessibility by different travel modes.
+To get started, see a detailed demonstration of the `r5py` in action from the [Usage](notebooks/basic-usage.ipynb) -section.
+Over time, `r5py` will be expanded to incorporate other functionalities from R5.
 
 ## Installation
 

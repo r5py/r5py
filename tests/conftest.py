@@ -21,13 +21,15 @@ GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
 POP_POINTS = DATA_DIRECTORY / "Helsinki" / "population_points_2020.gpkg"
 
 ORIGINS_INVALID_NO_ID = (
-        DATA_DIRECTORY / "test_data" / "test_invalid_points_no_id_column.geojson"
+    DATA_DIRECTORY / "test_data" / "test_invalid_points_no_id_column.geojson"
 )
 ORIGINS_INVALID_DUPLICATE_IDS = (
-        DATA_DIRECTORY / "test_data" / "test_invalid_points_duplicate_ids.geojson"
+    DATA_DIRECTORY / "test_data" / "test_invalid_points_duplicate_ids.geojson"
 )
 ORIGINS_VALID_IDS = DATA_DIRECTORY / "test_data" / "test_valid_points_data.geojson"
-SINGLE_VALID_ORIGIN = DATA_DIRECTORY / "test_data" / "test_valid_single_point_data.geojson"
+SINGLE_VALID_ORIGIN = (
+    DATA_DIRECTORY / "test_data" / "test_valid_single_point_data.geojson"
+)
 
 
 @pytest.fixture
@@ -81,16 +83,18 @@ def origin_point(scope="session"):
 
 @pytest.fixture
 def data_columns_with_breakdown(scope="session"):
-    yield ["from_id",
-           "to_id",
-           "travel_time",
-           "routes",
-           "board_stops",
-           "alight_stops",
-           "ride_times",
-           "access_time",
-           "egress_time",
-           "transfer_time",
-           "wait_times",
-           "total_time",
-           "n_iterations"]
+    yield [
+        "from_id",
+        "to_id",
+        "travel_time",
+        "routes",
+        "board_stops",
+        "alight_stops",
+        "ride_times",
+        "access_time",
+        "egress_time",
+        "transfer_time",
+        "wait_times",
+        "total_time",
+        "n_iterations",
+    ]

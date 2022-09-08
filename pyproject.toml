@@ -2,6 +2,19 @@
 build-backend = "setuptools.build_meta"
 requires = ["setuptools>=50.0.0", "wheel"]
 
+[project]
+name = "r5py"
+dynamic = [
+    "authors",
+    "classifiers",
+    "description",
+    "license",
+    "readme",
+    "requires-python",
+    "urls",
+    "version",
+]
+
 [project.optional-dependencies]
 tests = ["pytest", "pytest-cov", "pytest-lazy-fixture"]
 

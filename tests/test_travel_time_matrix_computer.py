@@ -3,18 +3,11 @@
 import os
 import geopandas
 import pandas
-import pathlib
 import datetime
-from shapely.geometry import Point
 import pytest  # noqa: F401
 
 import r5py
-
-# test data sets
-DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
-OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
-GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
-POP_POINTS = DATA_DIRECTORY / "Helsinki" / "population_points_2020.gpkg"
+import r5py.util.exceptions
 
 
 class TestTravelTimeMatrixComputer:
@@ -77,3 +70,104 @@ class TestTravelTimeMatrixComputer:
 
         assert isinstance(travel_time_matrix, pandas.DataFrame)
         # TODO: Add more tests
+
+
+class TestTravelTimeMatrixInputValidation:
+    @pytest.mark.parametrize(
+        [
+            "origins",
+            "expected_error",
+        ],
+        [
+            (
+                pytest.lazy_fixture("origins_invalid_no_id"),
+                r5py.util.exceptions.NoIDColumnError,
+            ),
+            (
+                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                r5py.util.exceptions.NonUniqueIDError,
+            ),
+        ],
+    )
+    def test_origins_invalid_data(self, transport_network_from_test_files, origins, expected_error):
+        with pytest.raises(expected_error):
+            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+                transport_network_from_test_files,
+                origins=origins,
+            )
+            del travel_time_matrix_computer
+
+    @pytest.mark.parametrize(
+        [
+            "origins",
+        ],
+        [(pytest.lazy_fixture("origins_valid_ids"),)],
+    )
+    def test_origins_valid_data(self, transport_network_from_test_files, origins):
+        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+            transport_network_from_test_files,
+            origins=origins,
+        )
+        del travel_time_matrix_computer
+
+    @pytest.mark.parametrize(
+        [
+            "origins",
+            "destinations",
+            "expected_error",
+        ],
+        [
+            (
+                pytest.lazy_fixture("origins_invalid_no_id"),
+                pytest.lazy_fixture("origins_invalid_no_id"),
+                r5py.util.exceptions.NoIDColumnError,
+            ),
+            (
+                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                r5py.util.exceptions.NonUniqueIDError,
+            ),
+            (
+                pytest.lazy_fixture("origins_invalid_no_id"),
+                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                r5py.util.exceptions.NoIDColumnError,
+            ),
+            (
+                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                pytest.lazy_fixture("origins_invalid_no_id"),
+                r5py.util.exceptions.NonUniqueIDError,
+            ),
+        ],
+    )
+    def test_origins_and_destinations_invalid_data(
+        self, transport_network_from_test_files, origins, destinations, expected_error
+    ):
+        with pytest.raises(expected_error):
+            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+                transport_network_from_test_files,
+                origins=origins,
+                destinations=destinations,
+            )
+            del travel_time_matrix_computer
+
+    @pytest.mark.parametrize(
+        [
+            "origins",
+            "destinations",
+        ],
+        [
+            (
+                pytest.lazy_fixture("origins_valid_ids"),
+                pytest.lazy_fixture("origins_valid_ids"),
+            )
+        ],
+    )
+    def test_origins_and_destinations_valid_data(
+        self, transport_network_from_test_files, origins, destinations
+    ):
+        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+            transport_network_from_test_files,
+            origins=origins,
+            destinations=destinations,
+        )
+        del travel_time_matrix_computer

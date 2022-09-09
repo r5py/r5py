@@ -24,7 +24,7 @@ jobs:
         with:
           ref: stable
       - name: Merge tag into stable
-        run:
+        run: |
           TAG="${{github.ref}}"
           TAG="${TAG/ref\/tags\/v/}"
           git merge "${TAG}"

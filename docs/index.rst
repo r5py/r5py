@@ -24,6 +24,7 @@ Over time, ``r5py`` will be expanded to incorporate other functionalities from R
    notebooks/basic-usage.ipynb
    CONTRIBUTING
    Code of conduct <CODE_OF_CONDUCT>
+   citation
 
 .. toctree::
     :caption: Reference

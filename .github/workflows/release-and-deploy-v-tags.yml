@@ -5,7 +5,7 @@ name: Create a release and deploy to PyPi whenever a protected tag (v0.0.0) is c
 on:
   push:
     tag:
-      - v*
+      - v*.*.*
 
 jobs:
   build:
@@ -47,11 +47,11 @@ jobs:
           password: ${{ secrets.PYPI_API_TOKEN }}
           skip_existing: true
 
-  distribution_packages:
-    name: Build and deploy distribution-specific packages
-    needs: [deploy]
-    uses: ./.github/workflows/distribution-packages.yml
-    secrets: inherit
+  #distribution_packages:
+  #  name: Build and deploy distribution-specific packages
+  #  needs: [deploy]
+  #  uses: ./.github/workflows/distribution-packages.yml
+  #  secrets: inherit
 
   release:
     name: Create a new release

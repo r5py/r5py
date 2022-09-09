@@ -4,8 +4,8 @@ name: Create a release and deploy to PyPi whenever a protected tag (v0.0.0) is c
 
 on:
   push:
-    tags:
-      - "v*.*.*"
+    tag:
+      - v*
 
 jobs:
   build:

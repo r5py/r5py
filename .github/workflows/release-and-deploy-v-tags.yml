@@ -4,7 +4,7 @@ name: Create a release and deploy to PyPi whenever a protected tag (v0.0.0) is c
 
 on:
   push:
-    tag:
+    tags:
       - v*.*.*
 
 jobs:
@@ -56,7 +56,8 @@ jobs:
   release:
     name: Create a new release
     runs-on: ubuntu-latest
-    needs: [deploy, distribution_packages]
+    # needs: [deploy, distribution_packages]
+    needs: [deploy]
     permissions:
       contents: write
     steps:

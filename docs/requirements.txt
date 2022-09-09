@@ -13,7 +13,6 @@ joblib
 jpype1
 jupyter-book>=0.7.0b
 mapclassify
-matplotlib
 myst-nb
 myst-parser
 nbsphinx

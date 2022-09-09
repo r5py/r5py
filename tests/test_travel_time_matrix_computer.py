@@ -170,7 +170,8 @@ class TestTravelTimeMatrixComputer:
         assert travel_time_matrix["from_id"].min() == travel_time_matrix["to_id"].min()
         assert travel_time_matrix["from_id"].max() == travel_time_matrix["to_id"].max()
         assert travel_time_matrix["travel_time"].min() >= 0
-        assert travel_time_matrix["travel_time"].max() in [50, 51]
+        # There can be a bit of fluctuation in the maximum travel time
+        assert travel_time_matrix["travel_time"].max() in [49, 50, 51]
 
     def test_one_to_all(
         self, transport_network_from_test_files, population_points, origin_point
@@ -188,7 +189,7 @@ class TestTravelTimeMatrixComputer:
         assert travel_time_matrix["to_id"].min() == 0
         assert travel_time_matrix["to_id"].max() == 91
         # There can be a bit of fluctuation in the maximum travel time
-        assert travel_time_matrix["travel_time"].max() in [29, 30]
+        assert travel_time_matrix["travel_time"].max() in [28, 29, 30, 31]
 
     def test_one_to_all_with_breakdown(
         self,

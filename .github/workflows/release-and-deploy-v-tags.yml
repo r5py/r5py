@@ -27,8 +27,7 @@ jobs:
         run: |
           TAG="${{github.ref}}"
           #TAG="${TAG/ref\/tags\/v/}"
-          TAG="${TAG:10}"
-          git merge "${TAG}"
+          git merge "${TAG:10}"
           git push
 
   deploy:

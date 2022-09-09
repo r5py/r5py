@@ -19,10 +19,11 @@ jobs:
     needs: [build]
     permissions: write-all
     steps:
-      - name: Clone repository
+      - name: Clone repository, check-out stable
         uses: actions/checkout@v3
-      - name: Checkout stable
-        run: git checkout stable
+        with:
+          fetch-depth: 0
+          ref: stable
       - name: Merge tag into stable
         run: |
           TAG="${{github.ref}}"  # /ref/tags/v0.0.0

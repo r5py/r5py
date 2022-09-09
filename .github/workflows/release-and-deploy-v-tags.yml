@@ -26,7 +26,8 @@ jobs:
       - name: Merge tag into stable
         run: |
           TAG="${{github.ref}}"
-          TAG="${TAG/ref\/tags\/v/}"
+          #TAG="${TAG/ref\/tags\/v/}"
+          TAG="${TAG:10}"
           git merge "${TAG}"
           git push
 

@@ -12,9 +12,9 @@ jobs:
   arch_pkgbuild:
     name: Create an Archlinux PKGBUILD from a template and deploy it to the AUR
     runs-on: docker
-    image: archlinux:base-devel
+    container: archlinux:base-devel
 
-    if: startsWith(github.ref, "ref/tags/v")
+    if: startsWith(github.ref, 'ref/tags/v')
 
     steps:
       - name: Install additional tools

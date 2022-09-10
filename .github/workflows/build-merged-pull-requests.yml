@@ -6,11 +6,11 @@ on:
   pull_request:
     branches: [main]
     types: [closed]
+  push:
+    branches: [main]
   workflow_call:
-  workflow_dispatch:
 
 jobs:
-
   build:
     name: Build wheel(s) and packages
     runs-on: ubuntu-latest

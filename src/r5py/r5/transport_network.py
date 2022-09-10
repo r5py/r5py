@@ -42,13 +42,18 @@ class TransportNetwork:
             options accepted by TNBuilderConfig (including SpeedConfig)
         """
         # TODO: Add TNBuilderConfig and SpeedConfig options to docstring
-        osm_pbf = str(pathlib.Path(osm_pbf).absolute())
+        osm_pbf = pathlib.Path(osm_pbf).absolute()
+
         gtfs = [str(pathlib.Path(path).absolute()) for path in gtfs]
         build_config = TransportNetworkBuilderConfig(**build_config)
         self._transport_network = com.conveyal.r5.transit.TransportNetwork.fromFiles(
-            java.lang.String(osm_pbf), java.util.ArrayList.of(gtfs), build_config
+            java.lang.String(str(osm_pbf)), java.util.ArrayList.of(gtfs), build_config
         )
         self._transport_network.transitLayer.buildDistanceTables(None)
+
+        # remove temporary files created by R5 during import
+        for temp_file in osm_pbf.parent.glob(f"{osm_pbf.name}.mapdb*"):
+            temp_file.unlink()
 
     @classmethod
     def from_directory(cls, path):

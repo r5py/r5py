@@ -1,4 +1,4 @@
-# r5py: Rapid Realistic Routing with R5 in Python <img align="right" src="docs/_static/r5py_blue.svg" alt="logo" width="180">
+# r5py: Rapid Realistic Routing with R5 in Python <img align="right" src="https://github.com/r5py/r5py/raw/main/docs/_static/r5py_blue.svg" alt="r5py logo" width="180">
 
 [![Try r5py with binder][binder-badge]][binder-link]
 [![DOI][doi-badge]][doi-link]
@@ -88,7 +88,7 @@ You can choose between the two depending on which license fits your project bett
 <!-- (2) other links -->
 [conda-create-env-from-yml]: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file
 [conveyal]: https://www.conveyal.com/
-[env-file]: ci/r5py_distro.yaml
+[env-file]: https://github.com/r5py/r5py/blob/main/ci/r5py_distro.yaml
 [geopandas]: https://geopandas.org/
 [r5-github]: https://github.com/conveyal/r5/
 [r5r-github]: https://github.com/ipeaGIT/r5r/

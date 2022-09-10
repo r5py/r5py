@@ -125,7 +125,7 @@ class TransportNetwork:
     @functools.cached_property
     def _cache_directory(self):
         cache_dir = (
-            pathlib.Path(config.CACHE_DIR) / f"{self.__class__.__name__}_{hash(self)}"
+            pathlib.Path(config.CACHE_DIR) / f"{self.__class__.__name__:s}_{hash(self):x}"
         )
         cache_dir.mkdir(exist_ok=True)
         return cache_dir

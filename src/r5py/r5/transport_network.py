@@ -43,7 +43,6 @@ class TransportNetwork:
         build_json : dict
             options accepted by TNBuilderConfig (including SpeedConfig)
         """
-        # TODO: Add TNBuilderConfig and SpeedConfig options to docstring
         osm_pbf = self._working_copy(pathlib.Path(osm_pbf)).absolute()
         gtfs = [str(self._working_copy(path).absolute()) for path in gtfs]
         build_config = TransportNetworkBuilderConfig(**build_config)

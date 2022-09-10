@@ -111,7 +111,7 @@ class TransportNetwork:
         return cls(osm_pbf, gtfs, build_json)
 
     def __del__(self):
-        """Clean cache directory when done."""
+        """Remove cache directory when done."""
         shutil.rmtree(str(self._cache_directory))
 
     def __enter__(self):

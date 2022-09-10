@@ -41,12 +41,12 @@ R5py draws a lot of inspiration from [r5r](https://github.com/ipeaGIT/r5r/), an
 interface to R5 from the R language that is developed at the Institute for Applied
 Economic Research (Ipea), Brazil.
 
-<!--//
 
-TODO:
-Citation (at least a Zenodo link, first; then also a software paper)
+## Citation
 
-//-->
+If you use *r5py* for scientific research, please cite it in your publications: <br />
+Fink, C., Klumpenhouwer, W., Saraiva, M., Pereira, R., &amp; Tenkanen, H., 2022: *r5py: Rapid Realistic Routing with R5 in Python*. [DOI:10.5281/zenodo.7060437](https://doi.org/10.5281/zenodo.7060437)
+
 
 ## License
 

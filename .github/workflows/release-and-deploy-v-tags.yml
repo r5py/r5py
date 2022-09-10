@@ -5,7 +5,7 @@ name: Create a release and deploy to PyPi whenever a protected tag (v0.0.0) is c
 on:
   push:
     tags:
-      - "v*.*.*"
+      - v*.*.*
 
 jobs:
   build:
@@ -19,15 +19,15 @@ jobs:
     needs: [build]
     permissions: write-all
     steps:
-      - name: Checkout stable
+      - name: Clone repository, check-out stable
         uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           ref: stable
       - name: Merge tag into stable
-        run:
-          TAG="${{github.ref}}"
-          TAG="${TAG/ref\/tags\/v/}"
-          git merge "${TAG}"
+        run: |
+          TAG="${{github.ref}}"  # /ref/tags/v0.0.0
+          git merge "${TAG:10}"
           git push
 
   deploy:
@@ -47,16 +47,17 @@ jobs:
           password: ${{ secrets.PYPI_API_TOKEN }}
           skip_existing: true
 
-  distribution_packages:
-    name: Build and deploy distribution-specific packages
-    needs: [deploy]
-    uses: ./.github/workflows/distribution-packages.yml
-    secrets: inherit
+  #distribution_packages:
+  #  name: Build and deploy distribution-specific packages
+  #  needs: [deploy]
+  #  uses: ./.github/workflows/distribution-packages.yml
+  #  secrets: inherit
 
   release:
     name: Create a new release
     runs-on: ubuntu-latest
-    needs: [deploy, distribution_packages]
+    # needs: [deploy, distribution_packages]
+    needs: [deploy]
     permissions:
       contents: write
     steps:

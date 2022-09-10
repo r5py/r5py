@@ -4,8 +4,8 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7060437.svg)](https://doi.org/10.5281/zenodo.7060437)
 <br />
 [![Python version](https://img.shields.io/pypi/pyversions/r5py)](https://pypi.org/project/r5py)
-[![PyPi package version](https://img.shields.io/pypi/v/r5py)](https://pypi.org/project/r5py)
 [![conda-forge version](https://anaconda.org/conda-forge/r5py/badges/version.svg)](https://anaconda.org/conda-forge/r5py)
+[![PyPi package version](https://img.shields.io/pypi/v/r5py)](https://pypi.org/project/r5py)
 <br />
 [![Trunk build status](https://github.com/r5py/r5py/actions/workflows/build-merged-pull-requests.yml/badge.svg)](https://github.com/r5py/r5py/actions/workflows/build-merged-pull-requests.yml)
 [![Documentation Status](https://readthedocs.org/projects/r5py/badge/?version=stable)](https://r5py.readthedocs.io/en/stable/?badge=stable)

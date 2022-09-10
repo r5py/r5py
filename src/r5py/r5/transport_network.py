@@ -45,9 +45,9 @@ class TransportNetwork:
         """
         # TODO: Add TNBuilderConfig and SpeedConfig options to docstring
         osm_pbf = self._working_copy(pathlib.Path(osm_pbf)).absolute()
-
         gtfs = [str(self._working_copy(path).absolute()) for path in gtfs]
         build_config = TransportNetworkBuilderConfig(**build_config)
+
         self._transport_network = com.conveyal.r5.transit.TransportNetwork.fromFiles(
             java.lang.String(str(osm_pbf)), java.util.ArrayList.of(gtfs), build_config
         )
@@ -157,10 +157,7 @@ class TransportNetwork:
         try:
             destination_file.symlink_to(input_file)
         except OSError:
-            shutil.copyfile(
-                str(input_file),
-                str(destination_file)
-            )
+            shutil.copyfile(str(input_file), str(destination_file))
         return destination_file
 
     @property

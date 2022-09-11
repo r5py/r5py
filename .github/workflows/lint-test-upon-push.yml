@@ -70,13 +70,6 @@ jobs:
           miniforge-version: latest
           use-mamba: true
 
-      - name: On Windows, resort JDK/GDAL conflicts
-        if: matrix.os == 'windows-latest'
-        run: mamba install --force-reinstall gdal libgdal libzip freetype
-
-      - name: Test whether fiona can be imported
-        run: python -c "import fiona"
-
       - name: Make sure pytest{,-cov,-lazy-fixture} are installed
         shell: bash -l {0}
         run: mamba install -c conda-forge pytest pytest-cov pytest-lazy-fixture

@@ -85,8 +85,8 @@ class Test_TransportNetwork:
         cache_dir = transport_network._cache_directory
         assert cache_dir.is_dir()
         assert len(list(cache_dir.glob("*"))) > 0  # files have been copied/linked to cache
-        del transport_network  # not sure whether this works as expected
-        assert not cache_dir.exists()
+        del transport_network
+        assert not cache_dir.exists()  # destructor deleted cache directory
 
     @pytest.mark.parametrize(
         ["transport_network"],

@@ -9,6 +9,8 @@
 
 import pathlib
 
+# explicitly importing fiona before geopandas fixes issue #156
+import fiona  # noqa: F401
 import geopandas
 import pytest  # noqa: F401
 

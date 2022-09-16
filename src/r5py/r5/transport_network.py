@@ -113,7 +113,19 @@ class TransportNetwork:
     def __del__(self):
         """Remove cache directory when done."""
         del self._transport_network  # first, delete the Java instance
-        shutil.rmtree(str(self._cache_directory))
+        try:
+            shutil.rmtree(str(self._cache_directory))
+        except PermissionError:
+            import os.path
+            import psutil
+            cache_dir = str(self._cache_directory)
+            for proc in psutil.process_iter():
+                try:
+                    for item in proc.open_files():
+                        if os.path.commonprefix([item.path, cache_dir]) == cache_dir:
+                            print(proc, "has file open")
+                except Exception as exception:
+                    print(exception, exception.message)  # semi-swallow exception
 
     def __enter__(self):
         """Provide a context."""

@@ -14,3 +14,5 @@ dependencies:
     - pandas
     - psutil
     - requests
+    # for debugging issue #193
+    - psutil

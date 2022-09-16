@@ -112,6 +112,7 @@ class TransportNetwork:
 
     def __del__(self):
         """Remove cache directory when done."""
+        del self._transport_network  # first, delete the Java instance
         shutil.rmtree(str(self._cache_directory))
 
     def __enter__(self):

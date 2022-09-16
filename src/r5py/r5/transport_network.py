@@ -52,12 +52,18 @@ class TransportNetwork:
         )
         self._transport_network.transitLayer.buildDistanceTables(None)
 
-        # attempt to remove temporary files created by R5 during import.
+        # attempt to remove temporary files created by R5 during import
+        # (potentially frees up RAM)
         for temp_file in osm_pbf.parent.glob(f"{osm_pbf.name}.mapdb*"):
             try:
                 temp_file.unlink()
             except (OSError, PermissionError):
-                pass  # they will be deleted in __del__(), the latest
+                # it does not really matter if we cannot delete temp files now,
+                # as they will be deleted, at latest, in __del__()
+
+                # (e.g., on Windows there seem to occur race conditions between
+                # here and the Java garbage collector, that prevent us from deleting)
+                pass
 
     @classmethod
     def from_directory(cls, path):

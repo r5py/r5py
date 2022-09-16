@@ -118,11 +118,14 @@ class TransportNetwork:
         except PermissionError:
             import os.path
             import psutil
+
             cache_dir = str(self._cache_directory)
             for proc in psutil.process_iter():
                 try:
                     for item in proc.open_files():
-                        if os.path.commonprefix([item.path, cache_dir]) == cache_dir:
+                        if os.path.commonpath([cache_dir]) == os.path.commonpath(
+                            [cache_dir, item.path]
+                        ):
                             print(proc, "has file open")
                 except Exception as exception:
                     print(exception, exception.message)  # semi-swallow exception

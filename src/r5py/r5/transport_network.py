@@ -52,11 +52,12 @@ class TransportNetwork:
         )
         self._transport_network.transitLayer.buildDistanceTables(None)
 
-        # remove temporary files created by R5 during import.
-        # this can be done immediately, they’re not needed anymore,
-        # and potentially take up temp/cache space
+        # attempt to remove temporary files created by R5 during import.
         for temp_file in osm_pbf.parent.glob(f"{osm_pbf.name}.mapdb*"):
-            temp_file.unlink()
+            try:
+                temp_file.unlink()
+            except (OSError, PermissionError):
+                pass  # they will be deleted in __del__(), the latest
 
     @classmethod
     def from_directory(cls, path):
@@ -112,20 +113,7 @@ class TransportNetwork:
 
     def __del__(self):
         """Remove cache directory when done."""
-        del self._transport_network  # first, delete the Java instance
-        try:
-            shutil.rmtree(str(self._cache_directory))
-        except PermissionError:
-            import psutil
-
-            cache_dir = self._cache_directory
-            for proc in psutil.process_iter():
-                try:
-                    for item in proc.open_files():
-                        if pathlib.Path(item.path).is_relative_to(cache_dir):
-                            print(proc, "has file open")
-                except Exception as exception:
-                    print(exception, exception.message)  # semi-swallow exception
+        shutil.rmtree(str(self._cache_directory))
 
     def __enter__(self):
         """Provide a context."""

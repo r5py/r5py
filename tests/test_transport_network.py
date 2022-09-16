@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import filecmp
+import pathlib
+import tempfile
 
 import pytest  # noqa: F401
 
@@ -76,3 +79,27 @@ class Test_TransportNetwork:
     def test_timezone(self, transport_network, gtfs_timezone_helsinki):
         assert isinstance(transport_network.timezone, java.time.ZoneId)
         assert transport_network.timezone.toString() == gtfs_timezone_helsinki
+
+    def test_cache_directory(self, transport_network_files_tuple):
+        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
+        cache_dir = transport_network._cache_directory
+        assert cache_dir.is_dir()
+        assert len(list(cache_dir.glob("*"))) > 0  # files have been copied/linked to cache
+        del transport_network
+        assert not cache_dir.exists()  # destructor deleted cache directory
+
+    @pytest.mark.parametrize(
+        ["transport_network"],
+        [
+            (pytest.lazy_fixture("transport_network_from_test_files"),),
+            (pytest.lazy_fixture("transport_network_from_test_directory"),),
+        ]
+    )
+    def test_working_copy(self, transport_network):
+        with tempfile.TemporaryDirectory() as temp_directory:
+            # create a file with (not really) random content
+            input_file = pathlib.Path(temp_directory) / "test_input.txt"
+            with open(input_file, "w") as f:
+                print("asdffoobarrandomstring", file=f)
+            working_copy = transport_network._working_copy(input_file)
+            assert filecmp.cmp(input_file, working_copy, shallow=False)

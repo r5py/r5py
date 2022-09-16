@@ -116,16 +116,13 @@ class TransportNetwork:
         try:
             shutil.rmtree(str(self._cache_directory))
         except PermissionError:
-            import os.path
             import psutil
 
-            cache_dir = str(self._cache_directory)
+            cache_dir = self._cache_directory
             for proc in psutil.process_iter():
                 try:
                     for item in proc.open_files():
-                        if os.path.commonpath([cache_dir]) == os.path.commonpath(
-                            [cache_dir, item.path]
-                        ):
+                        if pathlib.Path(item.path).is_relative_to(cache_dir):
                             print(proc, "has file open")
                 except Exception as exception:
                     print(exception, exception.message)  # semi-swallow exception

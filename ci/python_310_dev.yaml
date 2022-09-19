@@ -28,7 +28,6 @@ dependencies:
     - nbsphinx
     - numpydoc
     - nbstripout
-    - pre-commit
     - pytest
     - pytest-cov
     - pytest-lazy-fixture

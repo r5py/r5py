@@ -65,6 +65,8 @@ jobs:
 
       - name: Commit changes back to repository
         run: |
+          git config user.email "4998473+christophfink@users.noreply.github.com"
+          git config user.name "GitHub action: notebook updater"
           git commit docs/notebooks/*.ipynb docs/md/*.md -m "synced notebooks" && git push || echo "Notebooks are up-to-date"
 
   test:

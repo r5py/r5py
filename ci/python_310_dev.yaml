@@ -20,7 +20,7 @@ dependencies:
     - folium
     - gitpython
     - jupyterlab
-    - jupytext=1.13.8
+    - jupytext
     - matplotlib
     - mapclassify
     - myst-parser
@@ -28,6 +28,7 @@ dependencies:
     - nbsphinx
     - numpydoc
     - nbstripout
+    - pre-commit
     - pytest
     - pytest-cov
     - pytest-lazy-fixture

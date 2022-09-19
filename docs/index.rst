@@ -1,10 +1,6 @@
 R5py
 ====
 
-.. figure:: _static/r5py_blue.svg
-    :align: right
-    :width: 180
-
 **R5py** is a Python library for rapid realistic routing on multimodal transport networks (walk, bike, public transport and car).
 It provides a simple and friendly interface to R\ :sup:`5`\ , the Rapid Realistic Routing on Real-world and Reimagined networks,
 the `routing engine <https://github.com/conveyal/r5>`_ developed by Conveyal. ``r5py`` is inspired by `r5r, a wrapper for R <https://ipeagit.github.io/r5r/>`_,
@@ -24,6 +20,7 @@ Over time, ``r5py`` will be expanded to incorporate other functionalities from R
    notebooks/basic-usage.ipynb
    CONTRIBUTING
    Code of conduct <CODE_OF_CONDUCT>
+   citation
 
 .. toctree::
     :caption: Reference

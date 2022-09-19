@@ -8,9 +8,7 @@ import hashlib
 
 import requests
 
-
-class ChecksumFailed(requests.RequestException):
-    """Requested resource did not pass checksum test."""
+from .exceptions import ChecksumFailed
 
 
 class ValidatingRequestsSession(requests.Session):

@@ -28,7 +28,6 @@ dependencies:
     - nbsphinx
     - numpydoc
     - nbstripout
-    - openjdk
     - pytest
     - pytest-cov
     - pytest-lazy-fixture

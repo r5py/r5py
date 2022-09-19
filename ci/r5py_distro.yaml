@@ -11,6 +11,5 @@ dependencies:
     - matplotlib
     - mapclassify
     - numpy
-    - openjdk
     - pandas
     - r5py

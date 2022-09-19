@@ -1,13 +1,12 @@
 # vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
 
-name: Sync notebook formats upon pull request
+name: Sync notebook formats (on pull request)
 on:
   pull_request:
-  workflow_dispatch:
 
 jobs:
   sync-notebooks:
-    name: Make sure Jupyter and Markdown notebooks are in sync
+    name: Synchronise Jupyter and Markdown notebooks
     runs-on: ubuntu-latest
     container: python:3
     defaults:
@@ -15,6 +14,9 @@ jobs:
         shell: bash -l {0}
 
     steps:
+      - name: (debug) show environment
+        run: python -c "import json; import os; print(json.dumps(dict(os.environ), indent=4, sort_keys=True))"
+
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
@@ -37,7 +39,8 @@ jobs:
           conda list
 
       - name: Sync notebooks
-        run: python -c "import jupytext.cli; jupytext.cli.jupytext()" --sync docs/notebooks/*.ipynb
+        # run: python -c "import jupytext.cli; jupytext.cli.jupytext()" --sync docs/notebooks/*.ipynb
+        run: jupytext --sync docs/notebooks/*.ipynb
 
       - name: Commit changes
         run: |

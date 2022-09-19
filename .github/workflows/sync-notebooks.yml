@@ -1,0 +1,48 @@
+# vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
+
+name: Sync notebook formats upon pull request
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  sync-notebooks:
+    name: Make sure Jupyter and Markdown notebooks are in sync
+    runs-on: ubuntu-latest
+    container: python:3
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Conda
+        uses: conda-incubator/setup-miniconda@v2.1.1
+        with:
+          activate-environment: r5py
+          channel-priority: strict
+          channels: conda-forge
+          environment-file: ci/python_310_dev.yaml
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          use-mamba: true
+
+      - name: Check environment
+        run: |
+          conda info
+          conda list
+
+      - name: Sync notebooks
+        run: python -c "import jupytext.cli; jupytext.cli.jupytext()" --sync docs/notebooks/*.ipynb
+
+      - name: Commit changes
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add docs/notebooks/*.ipynb docs/md/*.md
+          git commit docs/notebooks/*.ipynb docs/md/*.md -m "[GitHub action] sync notebooks" || echo "Notebooks are up-to-date"
+          git push

@@ -48,7 +48,8 @@ jobs:
           miniforge-version: latest
           use-mamba: true
       - name: Sync notebooks
-        run: jupytext --sync docs/notebooks/*.ipynb
+        # run: jupytext --sync docs/notebooks/*.ipynb
+        run: python -c "from jupytext.cli import jupytext; jupytext" --sync docs/notebooks/*.ipynb
       - name: Commit changes back to repository
         run: |
           git commit docs/notebooks/*.ipynb docs/md/*.md -m "synced notebooks" && git push || echo "Notebooks are up-to-date"

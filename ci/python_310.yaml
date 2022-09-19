@@ -6,6 +6,8 @@ channels:
 dependencies:
     - python=3.10
     - configargparse
+    - fiona
+    - geopandas
     - joblib
     - jpype1
     - numpy

@@ -9,7 +9,7 @@ import joblib
 import numpy
 import pandas
 
-from ..util import config
+from ..util import check_od_data_set, config
 from .breakdown_stat import BreakdownStat
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork
@@ -92,10 +92,15 @@ class TravelTimeMatrixComputer:
             transport_network = TransportNetwork(*transport_network)
         self.transport_network = transport_network
 
+        check_od_data_set(origins)
         self.origins = origins
 
         if destinations is None:
             destinations = origins
+        else:
+            # only check destinations when it’s
+            # different from origins (already checked)
+            check_od_data_set(destinations)
         self.destinations = destinations
 
         self.breakdown = breakdown
@@ -218,21 +223,22 @@ class TravelTimeMatrixComputer:
         # return travel times only
 
         # create the columns, in order to force dtypes
+        # create the columns in order to force dtypes
+        travel_time_columns = {
+            "from_id": pandas.Series(dtype=str),
+            "to_id": pandas.Series(dtype=str),
+        }
         if self.request.percentiles == [50]:
             # if we’re only interested in the default (the median)
-            travel_time_columns = {"travel_time": pandas.Series(dtype=float)}
+            travel_time_columns.update({"travel_time": pandas.Series(dtype=float)})
         else:
-            travel_time_columns = {
-                f"travel_time_p{percentile:d}": pandas.Series(dtype=float)
-                for percentile in self.request.percentiles
-            }
-        od_matrix = pandas.DataFrame(
-            {
-                "from_id": pandas.Series(dtype=str),
-                "to_id": pandas.Series(dtype=str),
-            }
-            | travel_time_columns
-        )
+            travel_time_columns.update(
+                {
+                    f"travel_time_p{percentile:d}": pandas.Series(dtype=float)
+                    for percentile in self.request.percentiles
+                }
+            )
+        od_matrix = pandas.DataFrame(travel_time_columns)
 
         # first assign columns with correct length (not the scalar `from_id`)
         od_matrix["to_id"] = self.destinations.id

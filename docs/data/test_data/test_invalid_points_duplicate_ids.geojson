@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "test_invalid_points_duplicate_ids",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "fid": 1, "id": 0, "population": 389 }, "geometry": { "type": "Point", "coordinates": [ 24.907702501007009, 60.161987363153791 ] } },
+{ "type": "Feature", "properties": { "fid": 2, "id": 1, "population": 296 }, "geometry": { "type": "Point", "coordinates": [ 24.907708791908853, 60.15974346626647 ] } },
+{ "type": "Feature", "properties": { "fid": 3, "id": 1, "population": 636 }, "geometry": { "type": "Point", "coordinates": [ 24.907715081686053, 60.157499613501706 ] } }
+]
+}

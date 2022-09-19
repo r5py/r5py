@@ -101,4 +101,4 @@ sys.path.insert(0, str(pathlib.Path().absolute().parent / "src"))
 html_title = ""
 
 # Logo
-html_logo = "_static/r5py.png"
+html_logo = "_static/r5py_blue.svg"

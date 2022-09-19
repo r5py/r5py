@@ -62,7 +62,7 @@ jobs:
         run: python -c "import jupytext.cli; jupytext.cli.jupytext()" --sync docs/notebooks/*.ipynb
 
       - name: Commit changes
-      - run: |
+        run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add docs/notebooks/*.ipynb docs/md/*.md

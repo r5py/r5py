@@ -34,6 +34,10 @@ jobs:
     name: Make sure Jupyter and Markdown notebooks are in sync
     runs-on: ubuntu-latest
     container: python:3
+    defaults:
+      run:
+        shell: bash -l {0}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3

@@ -39,8 +39,6 @@ jobs:
         shell: bash -l {0}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2.1.1
         with:
@@ -58,16 +56,15 @@ jobs:
           conda info
           conda list
 
-      - name: Sync notebooks
+      - name: Checkout repository, sync notebooks, and commit changes
+        uses: actions/checkout@v3
         run: |
-          conda activate r5py
           python -c "import jupytext.cli; jupytext.cli.jupytext()" --sync docs/notebooks/*.ipynb
-
-      - name: Commit changes back to repository
-        run: |
-          git config user.email "4998473+christophfink@users.noreply.github.com"
-          git config user.name "GitHub action: notebook updater"
-          git commit docs/notebooks/*.ipynb docs/md/*.md -m "synced notebooks" && git push || echo "Notebooks are up-to-date"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add docs/notebooks/*.ipynb docs/md/*.md
+          git commit docs/notebooks/*.ipynb docs/md/*.md -m "[GitHub action] sync notebooks" || echo "Notebooks are up-to-date"
+          git push
 
   test:
     name: Run tests (${{ matrix.os }}, ${{ matrix.env }})

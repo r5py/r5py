@@ -4,10 +4,15 @@
 
 import enum
 
+from ..util import start_jvm
+
 import com.conveyal.r5
 
 
 __all__ = ["StreetMode"]
+
+
+start_jvm()
 
 
 class StreetMode(enum.Enum):

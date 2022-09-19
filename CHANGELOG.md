@@ -1,3 +1,15 @@
+- **0.0.4** (2022-09-09):
+    - a new logo
+    - created DOI to properly cite r5py in academic research
+    - improved and expanded documentation
+    - enable interactive notebooks (using binder)
+    - added more sample data
+    - provide Markdown and Jupyter notebooks
+    - fix calculation of memory limits
+    - better input data validation
+    - improved test coverage to 94%
+    - fixed Python-3.8 compatibility
+
 - **0.0.3** (2022-05-12):
     - refreshed documention
     - added contribution guidelines

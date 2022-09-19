@@ -2,6 +2,7 @@
 
 """Wraps a com.conveyal.r5.analyst.cluster.RegionalTask."""
 
+import collections.abc
 import datetime
 
 import jpype
@@ -10,6 +11,7 @@ from .leg_mode import LegMode
 from .scenario import Scenario
 from .street_mode import StreetMode
 from .transit_mode import TransitMode
+from ..util import start_jvm
 
 import java.io
 import java.time
@@ -19,8 +21,11 @@ import com.conveyal.r5
 __all__ = ["RegionalTask"]
 
 
+start_jvm()
+
+
 class RegionalTask:
-    """Wrap a com.conveyal.r5.analyst.cluster.RegionalTask."""
+    """Create a RegionalTask, a computing request for R5."""
 
     def __init__(
         self,
@@ -44,7 +49,17 @@ class RegionalTask:
         breakdown=False,
     ):
         """
-        Create a RegionalTask.
+        Create a RegionalTask, a computing request for R5.
+
+        A RegionalTask wraps a `com.conveyal.r5.analyst.cluster.RegionalTask`,
+        which is used to specify the details of a requested computation.
+        RegionalTasks underlie virtually all major computations carried out,
+        such as, e.g., `TravelTimeMatrixComputer` or `AccessibilityEstimator`.
+
+        In **r5py**, there is usually no need to explicitely create a
+        `RegionalTask`. Rather, the constructors to the computation classes
+        (`TravelTimeMatrixComputer`, `AccessibilityEstimator`, ...) accept
+        the arguments, and pass them through to an internally handled `RegionalTask`.
 
         Arguments
         ---------
@@ -338,12 +353,20 @@ class RegionalTask:
         Return the travel time for these percentiles of all computed trips, by travel time.
 
         By default, return the median travel time.
-        (list[int])
+        (collections.abc.Sequence[int])
         """
         return self._percentiles
 
     @percentiles.setter
     def percentiles(self, percentiles):
+        try:
+            assert isinstance(percentiles, collections.abc.Sequence)
+            assert len(percentiles) <= 5  # R5 does not allow more than five percentiles
+            # (compare https://github.com/r5py/r5py/issues/139 )
+        except AssertionError as exception:
+            raise ValueError(
+                "Maximum number of percentiles allowed is 5"
+            ) from exception
         self._percentiles = percentiles
         self._regional_task.percentiles = percentiles
 

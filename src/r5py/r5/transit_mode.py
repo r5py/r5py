@@ -4,10 +4,15 @@
 
 import enum
 
+from ..util import start_jvm
+
 import com.conveyal.r5
 
 
 __all__ = ["TransitMode"]
+
+
+start_jvm()
 
 
 class TransitMode(enum.Enum):

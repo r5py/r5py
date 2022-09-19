@@ -55,7 +55,9 @@ jobs:
           conda list
 
       - name: Sync notebooks
-        run: python -c "import jupytext.cli; jupytext.cli.jupytext()" --sync docs/notebooks/*.ipynb
+        run: |
+          conda activate r5py
+          python -c "import jupytext.cli; jupytext.cli.jupytext()" --sync docs/notebooks/*.ipynb
 
       - name: Commit changes back to repository
         run: |

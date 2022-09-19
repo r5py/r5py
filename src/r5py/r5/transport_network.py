@@ -152,8 +152,8 @@ class TransportNetwork:
         """
         # try to first create a symbolic link, if that fails (e.g., on Windows),
         # copy the file to a cache directory
-        input_file = pathlib.Path(input_file)
-        destination_file = pathlib.Path(self._cache_directory / input_file.name)
+        input_file = pathlib.Path(input_file).absolute()
+        destination_file = pathlib.Path(self._cache_directory / input_file.name).absolute()
         try:
             destination_file.symlink_to(input_file)
         except OSError:

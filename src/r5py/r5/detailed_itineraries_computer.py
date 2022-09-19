@@ -208,7 +208,7 @@ class DetailedItinerariesComputer(TravelTimeMatrixComputer):
                 ]
             else:
                 column_data = [
-                    column_type(value) if value else None  # cast, unless False-ish (then None)
+                    column_type(value) if value else None  # cast (nullable)
                     for value in column_data
                 ]
 

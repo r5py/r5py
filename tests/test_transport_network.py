@@ -84,7 +84,9 @@ class Test_TransportNetwork:
         transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
         cache_dir = transport_network._cache_directory
         assert cache_dir.is_dir()
-        assert len(list(cache_dir.glob("*"))) > 0  # files have been copied/linked to cache
+        assert (
+            len(list(cache_dir.glob("*"))) > 0
+        )  # files have been copied/linked to cache
         del transport_network
         assert not cache_dir.exists()  # destructor deleted cache directory
 
@@ -93,7 +95,7 @@ class Test_TransportNetwork:
         [
             (pytest.lazy_fixture("transport_network_from_test_files"),),
             (pytest.lazy_fixture("transport_network_from_test_directory"),),
-        ]
+        ],
     )
     def test_working_copy(self, transport_network):
         with tempfile.TemporaryDirectory() as temp_directory:

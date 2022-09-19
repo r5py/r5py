@@ -156,7 +156,7 @@ class RegionalTask:
         # always record travel times
         self._regional_task.recordTimes = True
         # also report paths, if `breakdown`
-        self._regional_task.includePathResults = breakdown
+        self.breakdown = breakdown
 
         # a few settings we don’t expose (yet?)
         self._regional_task.makeTauiSite = False
@@ -175,6 +175,25 @@ class RegionalTask:
         self._access_modes = access_modes
         self._regional_task.accessModes = RegionalTask._enum_set(
             access_modes, com.conveyal.r5.api.util.LegMode
+        )
+
+    @property
+    def breakdown(self):
+        """Compute a more detailed breakdown of the routes."""
+        return self._breakdown
+
+    @breakdown.setter
+    def breakdown(self, breakdown):
+        self._breakdown = breakdown
+        self._regional_task.includePathResults = breakdown
+
+        # R5 has a maximum number of destinations for which it returns detailed
+        # information, and it’s set to 5000 by default.
+        # The value is a static property of com.conveyal.r5.analyst.cluster.PathResult;
+        # static properites of Java classes can be modified in a singleton kind of way
+        com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = max(
+            com.conveyal.r5.analyst.cluster.PathResult.maxDestinations,
+            len(self.destinations) + 1,
         )
 
     @property
@@ -227,15 +246,6 @@ class RegionalTask:
     @destinations.setter
     def destinations(self, destinations):
         self._destinations = destinations
-
-        # R5 has a maximum number of destinations for which it returns detailed
-        # information, and it’s set to 5000 by default.
-        # The value is a static property of com.conveyal.r5.analyst.cluster.PathResult;
-        # static properites of Java classes can be modified in a singleton kind of way
-        com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = max(
-            com.conveyal.r5.analyst.cluster.PathResult.maxDestinations,
-            len(destinations) + 1,
-        )
 
         # wrap destinations in a few layers of streams (yeah, Java)
         output_stream = java.io.ByteArrayOutputStream()
@@ -470,8 +480,9 @@ class RegionalTask:
             # no public transport
             egress_modes = []  # ignore egress (why?)
 
-            #     # this is weird: I reckon this is trying to keep the fastest mode only,
-            #     # and assumes that car is always faster that bike is always faster than walking
+            #     # this is weird (the following is the logic implemented in r5r)
+            #     # I reckon this is trying to keep the fastest mode only, and
+            #     # assumes that car is always faster that bike is always faster than walking
             #     if LegMode.CAR in transport_modes:
             #         access_modes = direct_modes = [LegMode.CAR]
             #     elif LegMode.BICYCLE in transport_modes:

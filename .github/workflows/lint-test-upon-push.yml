@@ -30,7 +30,7 @@ jobs:
       - name: Lint using flake8
         run: python -m flake8 src
 
-  update-notebooks:
+  sync-notebooks:
     name: Make sure Jupyter and Markdown notebooks are in sync
     runs-on: ubuntu-latest
     container: python:3
@@ -64,7 +64,7 @@ jobs:
 
   test:
     name: Run tests (${{ matrix.os }}, ${{ matrix.env }})
-    needs: lint
+    needs: [lint, sync-notebooks]
     runs-on: ${{ matrix.os }}
     defaults:
       run:

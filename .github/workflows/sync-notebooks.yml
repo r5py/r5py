@@ -9,6 +9,7 @@ jobs:
     name: Synchronise Jupyter and Markdown notebooks
     runs-on: ubuntu-latest
     container: python:3
+    permissions: write-all
     defaults:
       run:
         shell: bash -l {0}

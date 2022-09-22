@@ -122,14 +122,17 @@ class TransportNetwork:
         """Exit context."""
         return False
 
-    @functools.cached_property
+    @property
     def _cache_directory(self):
-        cache_dir = (
-            pathlib.Path(config.CACHE_DIR)
-            / f"{self.__class__.__name__:s}_{hash(self):x}"
-        )
-        cache_dir.mkdir(exist_ok=True)
-        return cache_dir
+        try:
+            self.__cache_dir
+        except AttributeError:
+            self.__cache_dir = (
+                pathlib.Path(config.CACHE_DIR)
+                / f"{self.__class__.__name__:s}_{hash(self):x}"
+            )
+            self.__cache_dir.mkdir(exist_ok=True)
+        return self.__cache_dir
 
     def _working_copy(self, input_file):
         """Create a copy or link of an input file in a cache directory.

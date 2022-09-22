@@ -33,54 +33,9 @@ SINGLE_VALID_ORIGIN = (
     DATA_DIRECTORY / "test_data" / "test_valid_single_point_data.geojson"
 )
 
-
-@pytest.fixture
-def gtfs_timezone_helsinki():
-    yield "Europe/Helsinki"
-
-
-@pytest.fixture(scope="session")
-def origins_invalid_no_id():
-    origins = geopandas.read_file(ORIGINS_INVALID_NO_ID)
-    yield origins
-
-
-@pytest.fixture(scope="session")
-def origins_invalid_duplicate_ids():
-    origins = geopandas.read_file(ORIGINS_INVALID_DUPLICATE_IDS)
-    yield origins
-
-
-@pytest.fixture(scope="session")
-def origins_valid_ids():
-    origins = geopandas.read_file(ORIGINS_VALID_IDS)
-    yield origins
-
-
-@pytest.fixture(scope="session")
-def transport_network_from_test_files():
-    transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
-    yield transport_network
-
-
-@pytest.fixture(scope="session")
-def transport_network_from_test_directory():
-    yield r5py.TransportNetwork.from_directory(DATA_DIRECTORY / "Helsinki")
-
-
-@pytest.fixture
-def transport_network_files_tuple(scope="session"):
-    yield OSM_PBF, [GTFS]
-
-
-@pytest.fixture
-def population_points(scope="session"):
-    yield geopandas.read_file(POP_POINTS)
-
-
-@pytest.fixture
-def origin_point(scope="session"):
-    yield geopandas.read_file(SINGLE_VALID_ORIGIN)
+R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.6/r5-v6.6-all.jar"
+R5_JAR_SHA256 = "9e4ceb85a09e750f146f95d98013eb164afac2dfc900a9e68e37ae925b1ec702"
+R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
 
 
 @pytest.fixture
@@ -100,3 +55,67 @@ def data_columns_with_breakdown(scope="session"):
         "total_time",
         "n_iterations",
     ]
+
+
+@pytest.fixture
+def gtfs_timezone_helsinki():
+    yield "Europe/Helsinki"
+
+
+@pytest.fixture(scope="session")
+def origins_invalid_no_id():
+    origins = geopandas.read_file(ORIGINS_INVALID_NO_ID)
+    yield origins
+
+
+@pytest.fixture(scope="session")
+def origins_invalid_duplicate_ids():
+    origins = geopandas.read_file(ORIGINS_INVALID_DUPLICATE_IDS)
+    yield origins
+
+
+@pytest.fixture
+def origin_point(scope="session"):
+    yield geopandas.read_file(SINGLE_VALID_ORIGIN)
+
+
+@pytest.fixture(scope="session")
+def origins_valid_ids():
+    origins = geopandas.read_file(ORIGINS_VALID_IDS)
+    yield origins
+
+
+@pytest.fixture(scope="session")
+def population_points():
+    yield geopandas.read_file(POP_POINTS)
+
+
+@pytest.fixture(scope="session")
+def r5_jar_sha256():
+    yield R5_JAR_SHA256
+
+
+@pytest.fixture(scope="session")
+def r5_jar_sha256_invalid():
+    yield R5_JAR_SHA256_INVALID
+
+
+@pytest.fixture(scope="session")
+def r5_jar_url():
+    yield R5_JAR_URL
+
+
+@pytest.fixture
+def transport_network_files_tuple(scope="session"):
+    yield OSM_PBF, [GTFS]
+
+
+@pytest.fixture(scope="session")
+def transport_network_from_test_directory():
+    yield r5py.TransportNetwork.from_directory(DATA_DIRECTORY / "Helsinki")
+
+
+@pytest.fixture(scope="session")
+def transport_network_from_test_files():
+    transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
+    yield transport_network

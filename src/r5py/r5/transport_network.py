@@ -5,7 +5,6 @@
 
 
 import json
-import functools
 import pathlib
 import shutil
 import warnings

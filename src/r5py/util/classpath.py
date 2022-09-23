@@ -32,7 +32,7 @@ if pathlib.Path(arguments.r5_classpath).exists():
     # do not test local files’ checksums, as they might be customly compiled
     R5_CLASSPATH = arguments.r5_classpath
 else:
-    R5_CLASSPATH = CACHE_DIR / pathlib.Path(R5_JAR_URL).name
+    R5_CLASSPATH = str(CACHE_DIR / pathlib.Path(R5_JAR_URL).name)
     try:
         with open(R5_CLASSPATH, "rb") as jar:
             assert hashlib.sha256(jar.read()).hexdigest() == R5_JAR_SHA256

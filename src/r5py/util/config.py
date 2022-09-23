@@ -17,7 +17,7 @@ PACKAGE = __package__.split(".")[0]
 if "HOME" not in os.environ:  # e.g., testing environment or container
     os.environ["HOME"] = "."
 
-CACHE_DIR = str(
+CACHE_DIR = (
     pathlib.Path(
         os.environ.get("LOCALAPPDATA")
         or os.environ.get("XDG_CACHE_HOME")
@@ -25,6 +25,7 @@ CACHE_DIR = str(
     )
     / PACKAGE
 )
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 CONFIG_FILES = [
     f"/etc/{PACKAGE}.yml",
@@ -37,7 +38,6 @@ CONFIG_FILES = [
         / f"{PACKAGE}.yml",
     ),
 ]
-
 
 argparser = configargparse.get_argument_parser(
     prog=PACKAGE,

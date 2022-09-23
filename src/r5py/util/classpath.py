@@ -8,7 +8,7 @@ import pathlib
 import sys
 
 from .config import argparser, arguments, CACHE_DIR
-from .validatingrequestssession import ValidatingRequestsSession
+from .validating_requests_session import ValidatingRequestsSession
 
 
 # update these to use a newer R5 version if no R5 available locally

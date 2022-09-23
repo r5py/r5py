@@ -25,6 +25,7 @@ CACHE_DIR = str(
     )
     / PACKAGE
 )
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 CONFIG_FILES = [
     f"/etc/{PACKAGE}.yml",
@@ -37,6 +38,8 @@ CONFIG_FILES = [
         / f"{PACKAGE}.yml",
     ),
 ]
+for config_file in CONFIG_FILES:
+    config_file.absolute().parent.mkdir(parents=True, exist_ok=True)
 
 
 argparser = configargparse.get_argument_parser(

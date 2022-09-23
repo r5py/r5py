@@ -38,7 +38,7 @@ jobs:
       run:
         shell: bash -l {0}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: 
           - ubuntu-latest
@@ -48,6 +48,7 @@ jobs:
           - ci/python_310.yaml
           - ci/python_39.yaml
           - ci/python_38.yaml
+          - ci/python_37.yaml
 
     steps:
       - name: Checkout repository

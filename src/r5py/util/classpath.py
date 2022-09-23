@@ -3,7 +3,6 @@
 """Make sure R5 is in the class path, download it if not."""
 
 import hashlib
-import os
 import pathlib
 import sys
 

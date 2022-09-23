@@ -29,7 +29,7 @@ CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 CONFIG_FILES = [
     f"/etc/{PACKAGE}.yml",
-    (
+    str(
         pathlib.Path(
             os.environ.get("APPDATA")
             or os.environ.get("XDG_CONFIG_HOME")

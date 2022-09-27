@@ -95,3 +95,4 @@ You can choose between the two depending on which license fits your project bett
 [r5r-vignette]: https://ipeagit.github.io/r5r/
 [rtd-basic-usage]: https://r5py.readthedocs.io/en/latest/notebooks/basic-usage.html
 [rtd-installation]: https://r5py.readthedocs.io/en/latest/installation.html
+[rtd-link]: https://r5py.readthedocs.io/

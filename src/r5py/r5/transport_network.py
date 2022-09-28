@@ -184,6 +184,15 @@ class TransportNetwork:
         """Determine the timezone of the GTFS data."""
         return self._transport_network.getTimeZone()
 
+    @property
+    def transit_layer(self):
+        """Expose the `TransportNetwork`’s `transitLayer` to Python."""
+        return self._transport_network.transitLayer
+
+# notes to self:
+# do we need a separate TransitLayer() class to make this work neatly?
+# #list(transport_network._transport_network.transitLayer.services)[0].calendar.end_date
+
 
 @jpype._jcustomizer.JConversion(
     "com.conveyal.r5.transit.TransportNetwork", exact=TransportNetwork

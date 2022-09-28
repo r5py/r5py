@@ -77,7 +77,7 @@ jobs:
 
       - name: Install JVM (using mamba)
         if: ${{ matrix.jdk_from == 'mamba' }}
-        run: mamba install 'openjdk>=11,<12'
+        run: mamba install 'openjdk\>=11,\<12'
 
       - name: Make sure pytest{,-cov,-lazy-fixture} are installed
         run: mamba install -c conda-forge pytest pytest-cov pytest-lazy-fixture

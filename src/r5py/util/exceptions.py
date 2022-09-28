@@ -14,6 +14,10 @@ class ChecksumFailed(requests.RequestException, R5pyError):
     """Requested resource did not pass checksum test."""
 
 
+class NoCrsError(ValueError, R5pyError):
+    """An input data set’s geometry column does not have a reference system defined."""
+
+
 class NonUniqueIDError(ValueError, R5pyError):
     """An input data set’s `id` column has non-unique values."""
 

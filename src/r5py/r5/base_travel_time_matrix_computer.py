@@ -67,14 +67,9 @@ class BaseTravelTimeMatrixComputer:
             transport_network = TransportNetwork(*transport_network)
         self.transport_network = transport_network
 
-        check_od_data_set(origins)
         self.origins = origins
-
         if destinations is None:
             destinations = origins
-        else:
-            # only check destinations when different from origins (already checked)
-            check_od_data_set(destinations)
         self.destinations = destinations
 
         self.request = RegionalTask(
@@ -115,7 +110,16 @@ class BaseTravelTimeMatrixComputer:
                 )
             )
 
-        return od_matrix
+        return od_matrix.to_crs(self._origins_crs)
+
+    @property
+    def destinations(self):
+        return self._destinations
+
+    @destinations.setter
+    def destinations(self, destinations):
+        check_od_data_set(destinations)
+        self._destinations = destinations.to_crs("EPSG:4326")
 
     def _fill_nulls(self, data_set):
         """
@@ -135,6 +139,16 @@ class BaseTravelTimeMatrixComputer:
             Data frame in which all MAX_INT32 have been replaced by `numpy.nan`.
         """
         return data_set.applymap(lambda x: numpy.nan if x == MAX_INT32 else x)
+
+    @property
+    def origins(self):
+        return self._origins
+
+    @origins.setter
+    def origins(self, origins):
+        check_od_data_set(origins)
+        self._origins_crs = origins.crs
+        self._origins = origins.to_crs("EPSG:4326")
 
     def _travel_times_per_origin(self, from_id):
         # TODO: check whether this following line could cause race conditions

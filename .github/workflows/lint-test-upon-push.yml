@@ -1,5 +1,7 @@
 # vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
 
+# nonsense change to trigger gh action
+
 name: Lint and test after every push or pull request
 on:
   push:

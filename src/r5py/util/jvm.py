@@ -3,6 +3,7 @@
 """Set up a JVM and import basic java classes."""
 
 import os
+import pathlib
 import sys
 
 import jpype
@@ -24,6 +25,13 @@ def start_jvm():
     line and configuration options.
     """
     if not jpype.isJVMStarted():
+        # preload signal handling; this, among other things, prevents some of
+        # the warning messages we have been seeing
+        # (cf. https://stackoverflow.com/questions/
+        #   15790403/what-does-consider-using-jsig-library-mean )
+        os.environ["LD_PRELOAD"] = str(
+            pathlib.Path(jpype.getDefaultJVMPath()).parent.parent / "libjsig.so"
+        )
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",
             "-Xcheck:jni",

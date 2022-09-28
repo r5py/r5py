@@ -110,7 +110,11 @@ class BaseTravelTimeMatrixComputer:
                 )
             )
 
-        return od_matrix.to_crs(self._origins_crs)
+        try:
+            od_matrix = od_matrix.to_crs(self._origins_crs)
+        except AttributeError:  # (not a GeoDataFrame)
+            pass
+        return od_matrix
 
     @property
     def destinations(self):

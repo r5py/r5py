@@ -29,9 +29,10 @@ def start_jvm():
         # the warning messages we have been seeing
         # (cf. https://stackoverflow.com/questions/
         #   15790403/what-does-consider-using-jsig-library-mean )
-        os.environ["LD_PRELOAD"] = str(
-            pathlib.Path(jpype.getDefaultJVMPath()).parent / "libjsig.so"
-        )
+        LIBJSIG = str(pathlib.Path(jpype.getDefaultJVMPath()).parent / "libjsig.so")
+        os.environ["LD_PRELOAD"] = LIBJSIG  # Linux, Windows
+        os.environ["DYLD_INSERT_LIBRARIES"] = LIBJSIG  # MacOS
+
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",
             "-Xcheck:jni",

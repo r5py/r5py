@@ -30,7 +30,7 @@ def start_jvm():
         # (cf. https://stackoverflow.com/questions/
         #   15790403/what-does-consider-using-jsig-library-mean )
         os.environ["LD_PRELOAD"] = str(
-            pathlib.Path(jpype.getDefaultJVMPath()).parent.parent / "libjsig.so"
+            pathlib.Path(jpype.getDefaultJVMPath()).parent / "libjsig.so"
         )
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",

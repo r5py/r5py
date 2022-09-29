@@ -62,7 +62,6 @@ jobs:
         uses: actions/setup-java@v3
         with: 
           distribution: temurin
-          java-version: 11
 
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2.1.1
@@ -77,7 +76,7 @@ jobs:
 
       - name: Install JVM (from conda-forge)
         if: ${{ matrix.jdk_from == 'conda-forge' }}
-        run: conda install 'openjdk>=11,<12'
+        run: conda install openjdk
 
       - name: Make sure pytest{,-cov,-lazy-fixture} are installed
         run: conda install pytest pytest-cov pytest-lazy-fixture

@@ -50,7 +50,7 @@ jobs:
           - ci/python_38.yaml
           - ci/python_37.yaml
         jdk_from:
-          - mamba
+          - conda-forge
           - system
 
     steps:
@@ -75,12 +75,12 @@ jobs:
           miniforge-version: latest
           use-mamba: true
 
-      - name: Install JVM (using mamba)
-        if: ${{ matrix.jdk_from == 'mamba' }}
-        run: mamba install 'openjdk>=11,<12'
+      - name: Install JVM (from conda-forge)
+        if: ${{ matrix.jdk_from == 'conda-forge' }}
+        run: conda install 'openjdk>=11,<12'
 
       - name: Make sure pytest{,-cov,-lazy-fixture} are installed
-        run: mamba install -c conda-forge pytest pytest-cov pytest-lazy-fixture
+        run: conda install pytest pytest-cov pytest-lazy-fixture
 
       - name: Check environment
         run: |

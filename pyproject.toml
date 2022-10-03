@@ -18,11 +18,15 @@ dynamic = [
 [project.optional-dependencies]
 tests = ["pytest", "pytest-cov", "pytest-lazy-fixture"]
 
+[tool.coverage.run]
+omit = ["tests/*"]
+
+[tool.jupytext.formats]
+"docs/notebooks/" = "ipynb"
+"docs/md/" = "md"
+
 [tool.pytest.ini_options]
 addopts = "-p no:faulthandler -r s --cov=./src/r5py --cov-append --cov-report term-missing --cov-report xml"
 pythonpath = ["src"]
 testpaths = ["tests"]
 asyncio_mode = "auto"
-
-[tool.coverage.run]
-omit = ["tests/*"]

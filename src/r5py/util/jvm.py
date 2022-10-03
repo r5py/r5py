@@ -30,7 +30,7 @@ def start_jvm():
         # (cf. https://stackoverflow.com/questions/
         #   15790403/what-does-consider-using-jsig-library-mean )
         LIBJSIG = str(pathlib.Path(jpype.getDefaultJVMPath()).parent / "libjsig.so")
-        os.environ["LD_PRELOAD"] = LIBJSIG  # Linux, Windows
+        os.environ["LD_PRELOAD"] = LIBJSIG  # Linux
         os.environ["DYLD_INSERT_LIBRARIES"] = LIBJSIG  # MacOS
 
         jpype.startJVM(

@@ -33,6 +33,7 @@ class SpeedConfig(dict):
             "tertiary_link": 25,
             "living_street": 5,
         },
+        "defaultSpeed": 25,
     }
 
     def __init__(self, **kwargs):

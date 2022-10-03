@@ -20,7 +20,7 @@ dependencies:
     - folium
     - gitpython
     - jupyterlab
-    - jupytext=1.13.8
+    - jupytext=1.14.0
     - matplotlib
     - mapclassify
     - myst-parser

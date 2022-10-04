@@ -4,7 +4,6 @@
 
 import hashlib
 import pathlib
-import sys
 import warnings
 
 from .config import argparser, arguments, CACHE_DIR

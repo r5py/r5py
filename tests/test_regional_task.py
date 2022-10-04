@@ -105,9 +105,9 @@ class TestRegionalTask:
         ["regional_task", "max_pt_rides", "expected"],
         [
             (pytest.lazy_fixture("blank_regional_task"), 1, 1),
-            (pytest.lazy_fixture("blank_regional_task"), 2, 2),
-            (pytest.lazy_fixture("blank_regional_task"), 3, 3),
-            (pytest.lazy_fixture("blank_regional_task"), 4, 4),
+            (pytest.lazy_fixture("blank_regional_task"), 1232, 1232),
+            (pytest.lazy_fixture("blank_regional_task"), 31, 31),
+            (pytest.lazy_fixture("blank_regional_task"), 999, 999),
         ],
     )
     def test_max_public_transport_rides_setter(
@@ -116,6 +116,36 @@ class TestRegionalTask:
         regional_task.max_public_transport_rides = max_pt_rides
         assert regional_task.max_public_transport_rides == expected
         assert regional_task._regional_task.maxRides == expected
+
+    @pytest.mark.parametrize(
+        ["regional_task", "max_time", "expected", "expected_java"],
+        [
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(hours=1),
+                datetime.timedelta(hours=1),
+                60,
+            ),
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(minutes=15),
+                datetime.timedelta(minutes=15),
+                15,
+            ),
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(hours=7, minutes=23),
+                datetime.timedelta(hours=7, minutes=23),
+                443,
+            ),
+        ],
+    )
+    def test_max_time_setter(self, regional_task, max_time, expected, expected_java):
+        regional_task.max_time = max_time
+        assert regional_task.max_time == expected
+        assert regional_task._regional_task.streetTime == expected_java
+        assert regional_task._regional_task.maxTripDurationMinutes == expected_java
+        assert regional_task._regional_task.maxCarTime == expected_java
 
     @pytest.mark.parametrize(
         ["regional_task", "percentiles"],

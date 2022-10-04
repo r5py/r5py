@@ -14,8 +14,6 @@ import fiona  # noqa: F401
 import geopandas
 import pytest  # noqa: F401
 
-import r5py
-
 # test_data
 DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
 OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
@@ -41,6 +39,7 @@ R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
 
 @pytest.fixture(scope="session")
 def blank_regional_task():
+    import r5py
     transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
     grid_points = geopandas.read_file(POPULATION_GRID_POINTS)
     regional_task = r5py.RegionalTask(
@@ -125,10 +124,12 @@ def transport_network_files_tuple(scope="session"):
 
 @pytest.fixture(scope="session")
 def transport_network_from_test_directory():
+    import r5py
     yield r5py.TransportNetwork.from_directory(DATA_DIRECTORY / "Helsinki")
 
 
 @pytest.fixture(scope="session")
 def transport_network_from_test_files():
+    import r5py
     transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
     yield transport_network

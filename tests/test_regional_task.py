@@ -102,6 +102,22 @@ class TestRegionalTask:
         assert regional_task._regional_task.bikeTrafficStress == expected
 
     @pytest.mark.parametrize(
+        ["regional_task", "max_pt_rides", "expected"],
+        [
+            (pytest.lazy_fixture("blank_regional_task"), 1, 1),
+            (pytest.lazy_fixture("blank_regional_task"), 2, 2),
+            (pytest.lazy_fixture("blank_regional_task"), 3, 3),
+            (pytest.lazy_fixture("blank_regional_task"), 4, 4),
+        ],
+    )
+    def test_max_public_transport_rides_setter(
+        self, regional_task, max_pt_rides, expected
+    ):
+        regional_task.max_public_transport_rides = max_pt_rides
+        assert regional_task.max_public_transport_rides == expected
+        assert regional_task._regional_task.maxRides == expected
+
+    @pytest.mark.parametrize(
         ["regional_task", "percentiles"],
         [
             (pytest.lazy_fixture("blank_regional_task"), []),

@@ -7,6 +7,8 @@ import hashlib
 import pathlib
 import sys
 
+import jpype
+
 from r5py.util.classpath import find_r5_classpath
 from r5py.util.config import arguments
 
@@ -22,6 +24,8 @@ class TestClassPath:
                 r5_jar_cached_invalid,
             ]
         )
+
+        jpype.shutdownJVM()
         pathlib.Path(r5_jar_cached).unlink()  # delete cached jar!
 
         with pytest.warns(RuntimeWarning):

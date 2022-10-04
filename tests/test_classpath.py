@@ -7,13 +7,12 @@ import hashlib
 import pathlib
 import sys
 
-import jpype
-
 from r5py.util.classpath import find_r5_classpath
 from r5py.util.config import arguments
 
 
 class TestClassPath:
+    @pytest.mark.skipif(sys.platform == "win32", reason="Windows cannot delete jar while JVM runs")
     def test_download_classpath_with_verbose(
         self, r5_jar_url, r5_jar_sha256, r5_jar_cached, r5_jar_cached_invalid
     ):
@@ -25,7 +24,6 @@ class TestClassPath:
             ]
         )
 
-        jpype.shutdownJVM()
         pathlib.Path(r5_jar_cached).unlink()  # delete cached jar!
 
         with pytest.warns(RuntimeWarning):

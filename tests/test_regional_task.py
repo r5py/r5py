@@ -73,6 +73,20 @@ class TestRegionalTask:
         assert regional_task._regional_task.fromTime == expected_java_from_time
 
     @pytest.mark.parametrize(
+        ["regional_task", "bicycle_stress", "expected"],
+        [
+            (pytest.lazy_fixture("blank_regional_task"), 1, 1),
+            (pytest.lazy_fixture("blank_regional_task"), 2, 2),
+            (pytest.lazy_fixture("blank_regional_task"), 3, 3),
+            (pytest.lazy_fixture("blank_regional_task"), 4, 4),
+        ]
+    )
+    def test_max_bicycle_traffic_stress_setter(self, regional_task, bicycle_stress, expected):
+        regional_task.max_bicycle_traffic_stress = bicycle_stress
+        assert regional_task.max_bicycle_traffic_stress == expected
+        assert regional_task._regional_task.bikeTrafficStress == expected
+
+    @pytest.mark.parametrize(
         ["regional_task", "percentiles"],
         [
             (pytest.lazy_fixture("blank_regional_task"), []),

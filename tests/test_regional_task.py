@@ -148,6 +148,90 @@ class TestRegionalTask:
         assert regional_task._regional_task.maxCarTime == expected_java
 
     @pytest.mark.parametrize(
+        ["regional_task", "max_time_cycling", "expected", "expected_java"],
+        [
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(hours=1),
+                datetime.timedelta(hours=1),
+                60,
+            ),
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(minutes=15),
+                datetime.timedelta(minutes=15),
+                15,
+            ),
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(hours=7, minutes=23),
+                datetime.timedelta(hours=7, minutes=23),
+                443,
+            ),
+        ],
+    )
+    def test_max_time_cycling_setter(self, regional_task, max_time_cycling, expected, expected_java):
+        regional_task.max_time_cycling = max_time_cycling
+        assert regional_task.max_time_cycling == expected
+        assert regional_task._regional_task.maxBikeTime == expected_java
+
+    @pytest.mark.parametrize(
+        ["regional_task", "max_time_driving", "expected", "expected_java"],
+        [
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(hours=1),
+                datetime.timedelta(hours=1),
+                60,
+            ),
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(minutes=15),
+                datetime.timedelta(minutes=15),
+                15,
+            ),
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(hours=7, minutes=23),
+                datetime.timedelta(hours=7, minutes=23),
+                443,
+            ),
+        ],
+    )
+    def test_max_time_driving_setter(self, regional_task, max_time_driving, expected, expected_java):
+        regional_task.max_time_driving = max_time_driving
+        assert regional_task.max_time_driving == expected
+        assert regional_task._regional_task.maxCarTime == expected_java
+
+    @pytest.mark.parametrize(
+        ["regional_task", "max_time_walking", "expected", "expected_java"],
+        [
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(hours=1),
+                datetime.timedelta(hours=1),
+                60,
+            ),
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(minutes=15),
+                datetime.timedelta(minutes=15),
+                15,
+            ),
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                datetime.timedelta(hours=7, minutes=23),
+                datetime.timedelta(hours=7, minutes=23),
+                443,
+            ),
+        ],
+    )
+    def test_max_time_walking_setter(self, regional_task, max_time_walking, expected, expected_java):
+        regional_task.max_time_walking = max_time_walking
+        assert regional_task.max_time_walking == expected
+        assert regional_task._regional_task.maxWalkTime == expected_java
+
+    @pytest.mark.parametrize(
         ["regional_task", "percentiles"],
         [
             (pytest.lazy_fixture("blank_regional_task"), []),
@@ -179,5 +263,42 @@ class TestRegionalTask:
             ValueError, match="Maximum number of percentiles allowed is 5"
         ):
             regional_task.percentiles = percentiles
+
+    @pytest.mark.parametrize(["regional_task"], [(pytest.lazy_fixture("blank_regional_task"),)])
+    def test_scenario(self, regional_task):
+        from r5py.r5 import Scenario
+        scenario = Scenario()
+        regional_task.scenario = scenario
+        assert regional_task.scenario == scenario
+        assert regional_task._regional_task.scenarioId == scenario.id
+
+    @pytest.mark.parametrize(
+        ["regional_task", "speed_cycling", "expected", "expected_java"],
+        [
+            (pytest.lazy_fixture("blank_regional_task"), 14.4, 14.4, 4.0),
+            (pytest.lazy_fixture("blank_regional_task"), 18, 18.0, 5.0),
+            (pytest.lazy_fixture("blank_regional_task"), 19.8, 19.8, 5.5),
+            (pytest.lazy_fixture("blank_regional_task"), 28.8, 28.8, 8.0),
+            (pytest.lazy_fixture("blank_regional_task"), 36, 36, 10.0),
+        ]
+    )
+    def test_speed_cycling_setter(self, regional_task, speed_cycling, expected, expected_java):
+        regional_task.speed_cycling = speed_cycling
+        assert regional_task.speed_cycling == expected
+        assert regional_task._regional_task.bikeSpeed == pytest.approx(expected_java)
+
+    @pytest.mark.parametrize(
+        ["regional_task", "speed_walking", "expected", "expected_java"],
+        [
+            (pytest.lazy_fixture("blank_regional_task"), 3.6, 3.6, 1.0),
+            (pytest.lazy_fixture("blank_regional_task"), 5.4, 5.4, 1.5),
+            (pytest.lazy_fixture("blank_regional_task"), 7.2, 7.2, 2.0),
+            (pytest.lazy_fixture("blank_regional_task"), 9.0, 9.0, 2.5),
+        ]
+    )
+    def test_speed_walking_setter(self, regional_task, speed_walking, expected, expected_java):
+        regional_task.speed_walking = speed_walking
+        assert regional_task.speed_walking == expected
+        assert regional_task._regional_task.walkSpeed == pytest.approx(expected_java)
 
     # TODO: all other methods and attributes!

@@ -41,7 +41,7 @@ def find_r5_classpath(arguments):
             if arguments.verbose:
                 warnings.warn(
                     "Could not find R5 jar, trying to download it from upstream",
-                    RuntimeWarning
+                    RuntimeWarning,
                 )
             with ValidatingRequestsSession() as session, session.get(
                 R5_JAR_URL, R5_JAR_SHA256
@@ -50,7 +50,7 @@ def find_r5_classpath(arguments):
             if arguments.verbose:
                 warnings.warn(
                     f"Successfully downloaded {pathlib.Path(R5_JAR_URL).name}",
-                    RuntimeWarning
+                    RuntimeWarning,
                 )
     return r5_classpath
 

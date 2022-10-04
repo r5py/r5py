@@ -20,7 +20,8 @@ import r5py
 DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
 OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
 GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
-POP_POINTS = DATA_DIRECTORY / "Helsinki" / "population_points_2020.gpkg"
+POPULATION_GRID_POINTS = DATA_DIRECTORY / "Helsinki" / "population_points_2020.gpkg"
+
 
 ORIGINS_INVALID_NO_ID = (
     DATA_DIRECTORY / "test_data" / "test_invalid_points_no_id_column.geojson"
@@ -36,6 +37,18 @@ SINGLE_VALID_ORIGIN = (
 R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.6/r5-v6.6-all.jar"
 R5_JAR_SHA256 = "9e4ceb85a09e750f146f95d98013eb164afac2dfc900a9e68e37ae925b1ec702"
 R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
+
+
+@pytest.fixture(scope="session")
+def blank_regional_task():
+    transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
+    grid_points = geopandas.read_file(POPULATION_GRID_POINTS)
+    regional_task = r5py.RegionalTask(
+        transport_network,
+        grid_points.at[1, "geometry"],
+        grid_points,
+    )
+    yield regional_task
 
 
 @pytest.fixture
@@ -87,7 +100,7 @@ def origins_valid_ids():
 
 @pytest.fixture(scope="session")
 def population_points():
-    yield geopandas.read_file(POP_POINTS)
+    yield geopandas.read_file(POPULATION_GRID_POINTS)
 
 
 @pytest.fixture(scope="session")

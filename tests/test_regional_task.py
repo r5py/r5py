@@ -3,31 +3,33 @@
 
 import pytest  # noqa: F401
 
-import fiona
-import geopandas
-import pathlib
-
 import r5py
+from r5py.util import start_jvm
+
+import com.conveyal.r5
 
 
-# test data sets
-DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
-OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
-GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
-POPULATION_GRID_POINTS = DATA_DIRECTORY / "Helsinki" / "population_points_2020.gpkg"
+start_jvm()
 
 
 class TestRegionalTask:
-    @pytest.fixture(scope="session")
-    def blank_regional_task(self):
-        transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
-        grid_points = geopandas.read_file(POPULATION_GRID_POINTS)
-        regional_task = r5py.RegionalTask(
-            transport_network,
-            grid_points.at[1, "geometry"],
-            grid_points,
+    @pytest.mark.parametrize(
+        ["regional_task", "access_modes", "expected"],
+        [
+            (pytest.lazy_fixture("blank_regional_task"), [], set([])),
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                [r5py.LegMode.WALK],
+                set([r5py.LegMode.WALK]),
+            ),
+        ],
+    )
+    def test_access_mode_setter(self, regional_task, access_modes, expected):
+        regional_task.access_modes = access_modes
+        assert regional_task.access_modes == expected
+        assert regional_task._regional_task.accessModes == r5py.RegionalTask._enum_set(
+            expected, com.conveyal.r5.api.util.LegMode
         )
-        yield regional_task
 
     @pytest.mark.parametrize(
         ["regional_task", "percentiles"],

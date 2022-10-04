@@ -133,8 +133,6 @@ class TestTravelTimeMatrixComputer:
 
         assert travel_time_matrix_computer.origins.shape == origin_point.shape
         assert travel_time_matrix_computer.destinations.shape == population_points.shape
-        assert travel_time_matrix_computer.breakdown is False
-        assert travel_time_matrix_computer.breakdown_stat == r5py.BreakdownStat.MEAN
 
     def test_travel_time_matrix_initialization_with_files(
         self, transport_network_files_tuple, population_points, origin_point
@@ -189,31 +187,6 @@ class TestTravelTimeMatrixComputer:
         assert travel_time_matrix["to_id"].max() == 91
         # There can be a bit of fluctuation in the maximum travel time
         assert travel_time_matrix["travel_time"].max() == pytest.approx(30, abs=3)
-
-    def test_one_to_all_with_breakdown(
-        self,
-        transport_network_from_test_files,
-        population_points,
-        origin_point,
-        data_columns_with_breakdown,
-    ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
-            transport_network_from_test_files,
-            origins=origin_point,
-            destinations=population_points,
-            breakdown=True,
-            departure=datetime.datetime(2022, 2, 22, 8, 30),
-            transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
-        )
-        travel_time_matrix = travel_time_matrix_computer.compute_travel_times()
-
-        assert travel_time_matrix.shape == (92, 13)
-
-        for col in travel_time_matrix.columns.to_list():
-            assert col in data_columns_with_breakdown
-        assert travel_time_matrix["n_iterations"].min() > 0
-        assert travel_time_matrix["total_time"].min() > 0
-        assert travel_time_matrix["transfer_time"].min() >= 0
 
     def test_one_to_all_with_percentiles(
         self, transport_network_from_test_files, population_points, origin_point

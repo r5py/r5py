@@ -270,18 +270,19 @@ In our study area, there seems to be a bit poorer accessibility in the Southern 
 ### Compute travel times with a detailed breakdown of the routing results
 
 
-In case you are interested in more detailed routing results, it is possible to specify `breakdown=True` once initializing the `TravelTimeMatrixComputer` object. This will provide not only the same information as in the previous examples, but it also brings more detailed information about the routings. When breakdown is enabled, `r5py` produces information about the used routes for each origin-destination pair, as well as total time disaggregated by access, waiting, in-vehicle and transfer times:
+In case you are interested in more detailed routing results, you can use a `DetailedItinerariesComputer` instead of the `TravelTimeMatrixComputer`. This will provide roughly the same information as in the previous examples, but it also brings more detailed information about the routes. `DetailedItinerariesComputer` produces information about the used routes for each origin-destination pair, as well as total time disaggregated by access, waiting, in-vehicle and transfer times:
 
 ```python
-travel_time_matrix_computer = TravelTimeMatrixComputer(
+from r5py import DetailedItinerariesComputer
+
+detailed_itineraries_computer = DetailedItinerariesComputer(
     transport_network,
     origins=origin,
     destinations=points,
     departure=datetime.datetime(2022,2,22,8,30),
     transport_modes=[TransitMode.TRANSIT, LegMode.WALK],
-    breakdown=True,
 )
-travel_time_matrix_detailed = travel_time_matrix_computer.compute_travel_times()
+travel_time_matrix_detailed = detailed_itineraries_computer.compute_travel_times()
 travel_time_matrix_detailed.head()
 ```
 

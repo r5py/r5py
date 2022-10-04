@@ -99,7 +99,7 @@ class TransportNetwork:
                     ),
                     RuntimeWarning,
                 )
-        except KeyError:
+        except IndexError:
             raise FileNotFoundError(
                 f"Could not find any OpenStreetMap extract file (`.osm.pbf`) in {path.absolute()}"
             )

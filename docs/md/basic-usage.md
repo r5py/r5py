@@ -182,7 +182,7 @@ travel_time_matrix_computer = TravelTimeMatrixComputer(
     destinations=points,
     departure=datetime.datetime(2022,2,22,8,30),
     transport_modes=[
-        TransitMode.TRANSIT, 
+        TransitMode.TRANSIT,
         LegMode.WALK
     ]
 )

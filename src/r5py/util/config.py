@@ -14,18 +14,25 @@ __all__ = ["argparser", "arguments", "CACHE_DIR", "CONFIG_FILES", "PACKAGE"]
 
 PACKAGE = __package__.split(".")[0]
 
-if "HOME" not in os.environ:  # e.g., testing environment or container
-    os.environ["HOME"] = "."
 
-CACHE_DIR = (
-    pathlib.Path(
-        os.environ.get("LOCALAPPDATA")
-        or os.environ.get("XDG_CACHE_HOME")
-        or (pathlib.Path(os.environ["HOME"]) / ".cache")
+def find_cache_dir():
+    if "HOME" not in os.environ:  # e.g., testing environment or container
+        os.environ["HOME"] = "."
+
+    cache_dir = (
+        pathlib.Path(
+            os.environ.get("LOCALAPPDATA")
+            or os.environ.get("XDG_CACHE_HOME")
+            or (pathlib.Path(os.environ["HOME"]) / ".cache")
+        )
+        / PACKAGE
     )
-    / PACKAGE
-)
-CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    return cache_dir
+
+
+CACHE_DIR = find_cache_dir()
+
 
 CONFIG_FILES = [
     f"/etc/{PACKAGE}.yml",

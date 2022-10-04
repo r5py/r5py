@@ -63,7 +63,7 @@ class TestMemoryFootprint:
         [
             (0.8, 0, psutil.virtual_memory().total * 0.8),
             (0.1, 0, psutil.virtual_memory().total * 0.1),
-            (1.0, 2000, psutil.virtual_memory().total - 2000)
+            (1.0, 2000, psutil.virtual_memory().total - 2000),
         ],
     )
     def test_share_of_ram_leaving_zero(self, share, leave_at_least, expected):

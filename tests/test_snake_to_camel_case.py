@@ -13,7 +13,7 @@ class TestSnakeToCamelCase:
             ("camel_case", "camelCase"),
             ("get_http_response_code", "getHttpResponseCode"),
             ("http_response_code_xyz", "httpResponseCodeXyz"),
-            ("snake", "snake")
+            ("snake", "snake"),
         ],
     )
     def test_case_snake_case(self, snake_case, camel_case):

@@ -35,11 +35,15 @@ SINGLE_VALID_ORIGIN = (
 R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.6/r5-v6.6-all.jar"
 R5_JAR_SHA256 = "9e4ceb85a09e750f146f95d98013eb164afac2dfc900a9e68e37ae925b1ec702"
 R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
+R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
+    "14aa2347be79c280e4d0fd3a137fb8f5bf2863261a1e48e1a122df1a52a0f453"
+)
 
 
 @pytest.fixture(scope="session")
 def blank_regional_task():
     import r5py
+
     transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
     grid_points = geopandas.read_file(POPULATION_GRID_POINTS)
     regional_task = r5py.RegionalTask(
@@ -113,6 +117,11 @@ def r5_jar_sha256_invalid():
 
 
 @pytest.fixture(scope="session")
+def r5_jar_sha256_github_error_message_when_posting():
+    yield R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING
+
+
+@pytest.fixture(scope="session")
 def r5_jar_url():
     yield R5_JAR_URL
 
@@ -125,11 +134,13 @@ def transport_network_files_tuple(scope="session"):
 @pytest.fixture(scope="session")
 def transport_network_from_test_directory():
     import r5py
+
     yield r5py.TransportNetwork.from_directory(DATA_DIRECTORY / "Helsinki")
 
 
 @pytest.fixture(scope="session")
 def transport_network_from_test_files():
     import r5py
+
     transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
     yield transport_network

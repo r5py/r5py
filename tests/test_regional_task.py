@@ -55,18 +55,31 @@ class TestRegionalTask:
         )
 
     @pytest.mark.parametrize(
-        ["regional_task", "departure", "expected", "expected_java_date", "expected_java_from_time"],
+        [
+            "regional_task",
+            "departure",
+            "expected",
+            "expected_java_date",
+            "expected_java_from_time",
+        ],
         [
             (
                 pytest.lazy_fixture("blank_regional_task"),
                 datetime.datetime(2022, 2, 22, 8, 30),
                 datetime.datetime(2022, 2, 22, 8, 30),
                 java.time.LocalDate.of(2022, 2, 22),
-                30600
+                30600,
             )
-        ]
+        ],
     )
-    def test_departure_setter(self, regional_task, departure, expected, expected_java_date, expected_java_from_time):
+    def test_departure_setter(
+        self,
+        regional_task,
+        departure,
+        expected,
+        expected_java_date,
+        expected_java_from_time,
+    ):
         regional_task.departure = departure
         assert regional_task.departure == expected
         assert regional_task._regional_task.date == expected_java_date
@@ -79,9 +92,11 @@ class TestRegionalTask:
             (pytest.lazy_fixture("blank_regional_task"), 2, 2),
             (pytest.lazy_fixture("blank_regional_task"), 3, 3),
             (pytest.lazy_fixture("blank_regional_task"), 4, 4),
-        ]
+        ],
     )
-    def test_max_bicycle_traffic_stress_setter(self, regional_task, bicycle_stress, expected):
+    def test_max_bicycle_traffic_stress_setter(
+        self, regional_task, bicycle_stress, expected
+    ):
         regional_task.max_bicycle_traffic_stress = bicycle_stress
         assert regional_task.max_bicycle_traffic_stress == expected
         assert regional_task._regional_task.bikeTrafficStress == expected

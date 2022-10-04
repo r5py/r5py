@@ -7,7 +7,7 @@ import pytest  # noqa: F401
 
 from r5py.util.validating_requests_session import (
     ChecksumFailed,
-    ValidatingRequestsSession
+    ValidatingRequestsSession,
 )
 
 

@@ -108,9 +108,9 @@ def population_points():
 
 @pytest.fixture(scope="session")
 def r5_jar_cached():
-    from r5py.util.config import CACHE_DIR
+    from r5py.util.config import Config
 
-    yield str(CACHE_DIR / pathlib.Path(R5_JAR_URL).name)
+    yield str(Config().CACHE_DIR / pathlib.Path(R5_JAR_URL).name)
 
 
 @pytest.fixture(scope="session")

@@ -6,7 +6,7 @@ import hashlib
 import pathlib
 import warnings
 
-from .config import argparser, arguments, CACHE_DIR
+from .config import Config
 from .validating_requests_session import ValidatingRequestsSession
 
 
@@ -19,7 +19,9 @@ R5_JAR_SHA256 = "9e4ceb85a09e750f146f95d98013eb164afac2dfc900a9e68e37ae925b1ec70
 __all__ = ["R5_CLASSPATH"]
 
 
-argparser.add(
+config = Config()
+
+config.argparser.add(
     "-r",
     "--r5-classpath",
     help="R5’s class path, can point to r5-all.jar",
@@ -32,7 +34,7 @@ def find_r5_classpath(arguments):
         # do not test local files’ checksums, as they might be customly compiled
         r5_classpath = arguments.r5_classpath
     else:
-        r5_classpath = str(CACHE_DIR / pathlib.Path(R5_JAR_URL).name)
+        r5_classpath = str(config.CACHE_DIR / pathlib.Path(R5_JAR_URL).name)
         try:
             with open(r5_classpath, "rb") as jar:
                 assert hashlib.sha256(jar.read()).hexdigest() == R5_JAR_SHA256
@@ -54,4 +56,4 @@ def find_r5_classpath(arguments):
     return r5_classpath
 
 
-R5_CLASSPATH = find_r5_classpath(arguments())
+R5_CLASSPATH = find_r5_classpath(config.arguments)

@@ -26,7 +26,10 @@ class TestClassPath:
             ]
         )
 
-        pathlib.Path(r5_jar_cached).unlink()  # delete cached jar!
+        try:
+            pathlib.Path(r5_jar_cached).unlink()  # delete cached jar!
+        except FileNotFoundError:
+            pass
 
         with pytest.warns(RuntimeWarning):
             r5_classpath = find_r5_classpath(Config().arguments)

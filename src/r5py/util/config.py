@@ -9,15 +9,13 @@ import sys
 import configargparse
 
 
-__all__ = [
-    "Config"
-]
+__all__ = ["Config"]
 
 
 class Config:
     """Load configuration from config files or command line arguments."""
 
-    _instance = None  # needed for Singleton implementation
+    _instance = None  # stores singleton instance
 
     def __init__(self):
         """Load configuration from config files or command line arguments."""

@@ -11,13 +11,13 @@ import configargparse
 
 __all__ = [
     "Config"
-]  # "argparser", "arguments", "CACHE_DIR", "CONFIG_FILES", "PACKAGE"]
+]
 
 
 class Config:
     """Load configuration from config files or command line arguments."""
 
-    PACKAGE = __package__.split(".")[0]
+    _instance = None  # needed for Singleton implementation
 
     def __init__(self):
         """Load configuration from config files or command line arguments."""
@@ -30,6 +30,11 @@ class Config:
             help="Enable verbose output from R5.",
             action="store_true",
         )
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(Config, cls).__new__(cls)
+        return cls._instance
 
     @property
     def arguments(self):
@@ -85,3 +90,5 @@ class Config:
                 ),
             ]
         return self._config_files
+
+    PACKAGE = __package__.split(".")[0]

@@ -27,6 +27,4 @@ def check_od_data_set(od_data_set):
     if not od_data_set.id.is_unique:
         raise NonUniqueIDError("Id values must be unique.")
     if od_data_set.crs is None:
-        raise NoCrsError(
-            "Data set has to have a coordinate reference system defined."
-        )
+        raise NoCrsError("Data set has to have a coordinate reference system defined.")

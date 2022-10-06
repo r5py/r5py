@@ -146,8 +146,7 @@ from r5py import TransportNetwork
 transport_network = TransportNetwork(
     "../data/Helsinki/kantakaupunki.osm.pbf",
     [
-        #"../data/Helsinki/GTFS.zip"
-        "/home/christoph/Dokumente/Helsingin Yliopisto/Papers/Current/2021-10 Slawek’s paper/r5/Helsinki/paakaupunkiseutu_unfiltered.pbf"
+        "../data/Helsinki/GTFS.zip"
     ]
 )
 ```
@@ -173,7 +172,7 @@ Now, we will first create a `travel_time_matrix_computer` instance as described 
 
 ```python
 import datetime
-from r5py import TravelTimeMatrixComputer, TransitMode, StreetMode, LegMode
+from r5py import TravelTimeMatrixComputer, TransitMode, LegMode
 
 
 travel_time_matrix_computer = TravelTimeMatrixComputer(
@@ -181,11 +180,7 @@ travel_time_matrix_computer = TravelTimeMatrixComputer(
     origins=origin,
     destinations=points,
     departure=datetime.datetime(2022,2,22,8,30),
-    transport_modes=[
-        #TransitMode.TRANSIT, 
-        StreetMode.CAR,
-        LegMode.WALK
-    ]
+    transport_modes=[TransitMode.TRANSIT, LegMode.WALK]
 )
 
 ```

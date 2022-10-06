@@ -7,6 +7,9 @@
 [![conda-forge version][conda-forge-badge]][conda-forge-link]
 [![PyPi package version][pypi-badge]][pypi-link]
 <br />
+[![downloads (conda-forge)][downloads-conda-forge-badge]][conda-forge-link]
+[![downloads (pypi)][downloads-pypi-badge]][pypi-link]
+<br />
 [![Trunk build status][build-status-badge]][build-status-link]
 [![Documentation Status][rtd-status-badge]][rtd-status-link]
 [![Coverage][coverage-badge]][coverage-link]
@@ -78,6 +81,8 @@ You can choose between the two depending on which license fits your project bett
 [coverage-link]: https://codecov.io/gh/r5py/r5py
 [doi-badge]: https://zenodo.org/badge/DOI/10.5281/zenodo.7060437.svg
 [doi-link]: https://doi.org/10.5281/zenodo.7060437
+[downloads-conda-forge-badge]: https://img.shields.io/conda/dn/conda-forge/r5py?label=downloads%20%28conda-forge%29
+[downloads-pypi-badge]: https://static.pepy.tech/personalized-badge/r5py?period=total&units=international_system&left_color=grey&right_color=orange&left_text=downloads%20(pypi)
 [pypi-badge]: https://img.shields.io/pypi/v/r5py
 [pypi-link]: https://pypi.org/project/r5py
 [python-version-badge]: https://img.shields.io/pypi/pyversions/r5py

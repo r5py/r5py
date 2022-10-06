@@ -12,7 +12,7 @@ import warnings
 import jpype
 import jpype.types
 
-from ..util import config, contains_gtfs_data, start_jvm
+from ..util import Config, contains_gtfs_data, start_jvm
 from .transport_network_builder_config import TransportNetworkBuilderConfig
 
 import com.conveyal.r5
@@ -99,7 +99,7 @@ class TransportNetwork:
                     ),
                     RuntimeWarning,
                 )
-        except KeyError:
+        except IndexError:
             raise FileNotFoundError(
                 f"Could not find any OpenStreetMap extract file (`.osm.pbf`) in {path.absolute()}"
             )
@@ -134,7 +134,7 @@ class TransportNetwork:
             self.__cache_dir
         except AttributeError:
             self.__cache_dir = (
-                pathlib.Path(config.CACHE_DIR)
+                pathlib.Path(Config().CACHE_DIR)
                 / f"{self.__class__.__name__:s}_{hash(self):x}"
             )
             self.__cache_dir.mkdir(exist_ok=True)

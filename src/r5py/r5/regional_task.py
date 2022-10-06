@@ -431,7 +431,7 @@ class RegionalTask:
     @speed_cycling.setter
     def speed_cycling(self, speed_cycling):
         self._speed_cycling = speed_cycling
-        self._regional_task.walkSpeed = speed_cycling / 3600 * 1000  # km/h -> m/s
+        self._regional_task.bikeSpeed = speed_cycling / 3600 * 1000  # km/h -> m/s
 
     @property
     def speed_walking(self):

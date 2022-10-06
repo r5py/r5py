@@ -9,7 +9,7 @@ import joblib
 import numpy
 import pandas
 
-from ..util import check_od_data_set, config
+from ..util import check_od_data_set, Config
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork
 
@@ -79,7 +79,7 @@ class BaseTravelTimeMatrixComputer:
             **kwargs,
         )
 
-        self.verbose = config.arguments().verbose
+        self.verbose = Config().arguments.verbose
 
     def compute_travel_times(self):
         """

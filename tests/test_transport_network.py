@@ -89,8 +89,10 @@ class Test_TransportNetwork:
         assert (
             len(list(cache_dir.glob("*"))) > 0
         )  # files have been copied/linked to cache
+
         time.sleep(3)  # wait for Windows to release file handles
         del transport_network
+
         assert not cache_dir.exists()  # destructor deleted cache directory
 
     @pytest.mark.parametrize(
@@ -121,9 +123,9 @@ class Test_TransportNetwork:
                 transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
                     temp_directory
                 )
-            time.sleep(3)  # wait for Windows to release file handles
-            del transport_network
-            time.sleep(3)
+                time.sleep(3)  # wait for Windows to release file handles
+                del transport_network
+                time.sleep(3)
 
     def test_fromdirectory_no_osm_files(self):
         # try to create transport network from a directory without osm file
@@ -133,9 +135,9 @@ class Test_TransportNetwork:
                 transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
                     temp_directory
                 )
-            time.sleep(3)  # wait for Windows to release file handles
-            del transport_network
-            time.sleep(3)
+                time.sleep(3)  # wait for Windows to release file handles
+                del transport_network
+                time.sleep(3)
 
     def test_fromdirectory_build_json(self, transport_network_files_tuple):
         osm, gtfs = transport_network_files_tuple

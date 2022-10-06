@@ -7,7 +7,7 @@ import psutil
 import re
 import warnings
 
-from . import config
+from .config import Config
 
 
 __all__ = ["MAX_JVM_MEMORY"]
@@ -16,19 +16,22 @@ __all__ = ["MAX_JVM_MEMORY"]
 ABSOLUTE_MINIMUM_MEMORY = 200 * 1024**2  # never grant less than 200 MiB to JVM
 
 
-config.argparser.add(
-    "-m",
-    "--max-memory",
-    help="""
-        Memory limit for the JVM running R5.
+config = Config()
+try:
+    config.argparser.add(
+        "-m",
+        "--max-memory",
+        help="""
+            Memory limit for the JVM running R5.
 
-        Use % as a suffix to specify a share of total RAM;
-        K, M, G, T to specify KiB, MiB, GiB, or TiB, respectively.
-        Values without suffix are interpreted as bytes.
-    """,
-    default="80%",
-)
-arguments = config.arguments()
+            Use % as a suffix to specify a share of total RAM;
+            K, M, G, T to specify KiB, MiB, GiB, or TiB, respectively.
+            Values without suffix are interpreted as bytes.
+        """,
+        default="80%",
+    )
+except ValueError:
+    pass  # argument has been added, already
 
 
 def _share_of_ram(share=0.8, leave_at_least=(2 * 1024**3)):
@@ -176,4 +179,4 @@ def _get_max_memory(max_memory):
     return max_memory
 
 
-MAX_JVM_MEMORY = _get_max_memory(arguments.max_memory)
+MAX_JVM_MEMORY = _get_max_memory(config.arguments.max_memory)

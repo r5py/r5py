@@ -156,7 +156,7 @@ class RegionalTask:
         # always record travel times
         self._regional_task.recordTimes = True
         # also report paths, if `breakdown`
-        self._regional_task.includePathResults = breakdown
+        self.breakdown = breakdown
 
         # a few settings we don’t expose (yet?)
         self._regional_task.makeTauiSite = False
@@ -175,6 +175,25 @@ class RegionalTask:
         self._access_modes = access_modes
         self._regional_task.accessModes = RegionalTask._enum_set(
             access_modes, com.conveyal.r5.api.util.LegMode
+        )
+
+    @property
+    def breakdown(self):
+        """Compute a more detailed breakdown of the routes."""
+        return self._breakdown
+
+    @breakdown.setter
+    def breakdown(self, breakdown):
+        self._breakdown = breakdown
+        self._regional_task.includePathResults = breakdown
+
+        # R5 has a maximum number of destinations for which it returns detailed
+        # information, and it’s set to 5000 by default.
+        # The value is a static property of com.conveyal.r5.analyst.cluster.PathResult;
+        # static properites of Java classes can be modified in a singleton kind of way
+        com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = max(
+            com.conveyal.r5.analyst.cluster.PathResult.maxDestinations,
+            len(self.destinations) + 1,
         )
 
     @property
@@ -412,7 +431,7 @@ class RegionalTask:
     @speed_cycling.setter
     def speed_cycling(self, speed_cycling):
         self._speed_cycling = speed_cycling
-        self._regional_task.walkSpeed = speed_cycling / 3600 * 1000  # km/h -> m/s
+        self._regional_task.bikeSpeed = speed_cycling / 3600 * 1000  # km/h -> m/s
 
     @property
     def speed_walking(self):
@@ -451,16 +470,19 @@ class RegionalTask:
             egress_modes = self.egress_modes
             if TransitMode.TRANSIT in transport_modes:
                 transit_modes = list(TransitMode)  # all of them
-            if not direct_modes:  # only public transport modes passed in,
+            if not direct_modes:
+                # only public transport modes passed in,
                 # let people walk to and from the stops
                 access_modes = direct_modes = [LegMode.WALK]
             else:
                 access_modes = direct_modes
-        else:  # not public transport
+        else:
+            # no public transport
             egress_modes = []  # ignore egress (why?)
 
-            #     # this is weird: I reckon this is trying to keep the fastest mode only,
-            #     # and assumes that car is always faster that bike is always faster than walking
+            #     # this is weird (the following is the logic implemented in r5r)
+            #     # I reckon this is trying to keep the fastest mode only, and
+            #     # assumes that car is always faster that bike is always faster than walking
             #     if LegMode.CAR in transport_modes:
             #         access_modes = direct_modes = [LegMode.CAR]
             #     elif LegMode.BICYCLE in transport_modes:
@@ -490,9 +512,7 @@ class RegionalTask:
                 self.transport_network.linkage_cache.getLinkage(
                     destination_point_set,
                     self.transport_network.street_layer,
-                    StreetMode[mode.name].value
-                    # check whether casting this in Java (LegMode.value.toStreetMode())
-                    # would be better
+                    StreetMode[mode.name].value,
                 )
 
     @staticmethod

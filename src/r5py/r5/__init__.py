@@ -3,6 +3,7 @@
 """R5 classes."""
 
 from .breakdown_stat import BreakdownStat
+from .detailed_itineraries_computer import DetailedItinerariesComputer
 from .leg_mode import LegMode
 from .regional_task import RegionalTask
 from .scenario import Scenario
@@ -14,6 +15,7 @@ from .travel_time_matrix_computer import TravelTimeMatrixComputer
 
 __all__ = [
     "BreakdownStat",
+    "DetailedItinerariesComputer",
     "LegMode",
     "RegionalTask",
     "Scenario",

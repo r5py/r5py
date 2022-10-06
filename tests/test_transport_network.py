@@ -2,6 +2,7 @@
 
 import filecmp
 import pathlib
+import shutil
 import tempfile
 
 import pytest  # noqa: F401
@@ -84,7 +85,9 @@ class Test_TransportNetwork:
         transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
         cache_dir = transport_network._cache_directory
         assert cache_dir.is_dir()
-        assert len(list(cache_dir.glob("*"))) > 0  # files have been copied/linked to cache
+        assert (
+            len(list(cache_dir.glob("*"))) > 0
+        )  # files have been copied/linked to cache
         del transport_network
         assert not cache_dir.exists()  # destructor deleted cache directory
 
@@ -93,7 +96,7 @@ class Test_TransportNetwork:
         [
             (pytest.lazy_fixture("transport_network_from_test_files"),),
             (pytest.lazy_fixture("transport_network_from_test_directory"),),
-        ]
+        ],
     )
     def test_working_copy(self, transport_network):
         with tempfile.TemporaryDirectory() as temp_directory:
@@ -103,3 +106,36 @@ class Test_TransportNetwork:
                 print("asdffoobarrandomstring", file=f)
             working_copy = transport_network._working_copy(input_file)
             assert filecmp.cmp(input_file, working_copy, shallow=False)
+
+    def test_fromdirectory_multiple_osm_files(self, transport_network_files_tuple):
+        # try to create transport network from a directory, in which
+        # more than one osm file is found
+        osm, gtfs = transport_network_files_tuple
+        with tempfile.TemporaryDirectory() as temp_directory:
+            temp_directory = pathlib.Path(temp_directory)
+            shutil.copy(osm, temp_directory / "first.osm.pbf")
+            shutil.copy(osm, temp_directory / "second.osm.pbf")
+            with pytest.warns(RuntimeWarning):
+                transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
+                    temp_directory
+                )
+
+    def test_fromdirectory_no_osm_files(self):
+        # try to create transport network from a directory without osm file
+        with tempfile.TemporaryDirectory() as temp_directory:
+            temp_directory = pathlib.Path(temp_directory)
+            with pytest.raises(FileNotFoundError):
+                transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
+                    temp_directory
+                )
+
+    def test_fromdirectory_build_json(self, transport_network_files_tuple):
+        osm, gtfs = transport_network_files_tuple
+        with tempfile.TemporaryDirectory() as temp_directory:
+            temp_directory = pathlib.Path(temp_directory)
+            shutil.copy(osm, temp_directory / pathlib.Path(osm).name)
+            with open(temp_directory / "build.json", "w") as f:
+                f.write("{}")  # <- minimal valid json
+            transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
+                temp_directory
+            )

@@ -14,13 +14,12 @@ import fiona  # noqa: F401
 import geopandas
 import pytest  # noqa: F401
 
-import r5py
-
 # test_data
 DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
 OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
 GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
-POP_POINTS = DATA_DIRECTORY / "Helsinki" / "population_points_2020.gpkg"
+POPULATION_GRID_POINTS = DATA_DIRECTORY / "Helsinki" / "population_points_2020.gpkg"
+
 
 ORIGINS_INVALID_NO_ID = (
     DATA_DIRECTORY / "test_data" / "test_invalid_points_no_id_column.geojson"
@@ -36,6 +35,23 @@ SINGLE_VALID_ORIGIN = (
 R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.6/r5-v6.6-all.jar"
 R5_JAR_SHA256 = "9e4ceb85a09e750f146f95d98013eb164afac2dfc900a9e68e37ae925b1ec702"
 R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
+R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
+    "14aa2347be79c280e4d0fd3a137fb8f5bf2863261a1e48e1a122df1a52a0f453"
+)
+
+
+@pytest.fixture(scope="session")
+def blank_regional_task():
+    import r5py
+
+    transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
+    grid_points = geopandas.read_file(POPULATION_GRID_POINTS)
+    regional_task = r5py.RegionalTask(
+        transport_network,
+        grid_points.at[1, "geometry"],
+        grid_points,
+    )
+    yield regional_task
 
 
 @pytest.fixture
@@ -87,7 +103,19 @@ def origins_valid_ids():
 
 @pytest.fixture(scope="session")
 def population_points():
-    yield geopandas.read_file(POP_POINTS)
+    yield geopandas.read_file(POPULATION_GRID_POINTS)
+
+
+@pytest.fixture(scope="session")
+def r5_jar_cached():
+    from r5py.util.config import Config
+
+    yield str(Config().CACHE_DIR / pathlib.Path(R5_JAR_URL).name)
+
+
+@pytest.fixture(scope="session")
+def r5_jar_cached_invalid():
+    yield "/definitely/invalid/path/to/r5.jar"
 
 
 @pytest.fixture(scope="session")
@@ -98,6 +126,11 @@ def r5_jar_sha256():
 @pytest.fixture(scope="session")
 def r5_jar_sha256_invalid():
     yield R5_JAR_SHA256_INVALID
+
+
+@pytest.fixture(scope="session")
+def r5_jar_sha256_github_error_message_when_posting():
+    yield R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING
 
 
 @pytest.fixture(scope="session")
@@ -112,10 +145,14 @@ def transport_network_files_tuple(scope="session"):
 
 @pytest.fixture(scope="session")
 def transport_network_from_test_directory():
+    import r5py
+
     yield r5py.TransportNetwork.from_directory(DATA_DIRECTORY / "Helsinki")
 
 
 @pytest.fixture(scope="session")
 def transport_network_from_test_files():
+    import r5py
+
     transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
     yield transport_network

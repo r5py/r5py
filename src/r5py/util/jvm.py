@@ -9,7 +9,7 @@ import jpype
 import jpype.imports
 
 from .classpath import R5_CLASSPATH
-from . import config
+from .config import Config
 from .memory_footprint import MAX_JVM_MEMORY
 
 
@@ -30,7 +30,7 @@ def start_jvm():
             classpath=[R5_CLASSPATH],
         )
 
-        if not config.arguments().verbose:
+        if not Config().arguments.verbose:
             import ch.qos.logback.classic
             import java.io
             import java.lang

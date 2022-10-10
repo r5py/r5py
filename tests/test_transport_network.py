@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import filecmp
+import os
 import pathlib
 import shutil
 import tempfile
@@ -11,6 +12,9 @@ import pytest  # noqa: F401
 import r5py
 import com.conveyal.r5
 import java.time
+
+
+ON_WINDOWS = (os.name == "nt")
 
 
 class Test_TransportNetwork:
@@ -90,7 +94,8 @@ class Test_TransportNetwork:
             len(list(cache_dir.glob("*"))) > 0
         )  # files have been copied/linked to cache
 
-        time.sleep(3)  # wait for Windows to release file handles
+        if ON_WINDOWS:
+            time.sleep(20)  # wait for Windows to release file handles
         del transport_network
 
         assert not cache_dir.exists()  # destructor deleted cache directory
@@ -123,9 +128,11 @@ class Test_TransportNetwork:
                 transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
                     temp_directory
                 )
-                time.sleep(3)  # wait for Windows to release file handles
+                if ON_WINDOWS:
+                    time.sleep(20)  # wait for Windows to release file handles
                 del transport_network
-                time.sleep(3)
+                if ON_WINDOWS:
+                    time.sleep(20)
 
     def test_fromdirectory_no_osm_files(self):
         # try to create transport network from a directory without osm file
@@ -135,9 +142,11 @@ class Test_TransportNetwork:
                 transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
                     temp_directory
                 )
-                time.sleep(3)  # wait for Windows to release file handles
+                if ON_WINDOWS:
+                    time.sleep(20)  # wait for Windows to release file handles
                 del transport_network
-                time.sleep(3)
+                if ON_WINDOWS:
+                    time.sleep(20)
 
     def test_fromdirectory_build_json(self, transport_network_files_tuple):
         osm, gtfs = transport_network_files_tuple
@@ -149,6 +158,8 @@ class Test_TransportNetwork:
             transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
                 temp_directory
             )
-            time.sleep(3)  # wait for Windows to release file handles
+            if ON_WINDOWS:
+                time.sleep(20)  # wait for Windows to release file handles
             del transport_network
-            time.sleep(3)
+            if ON_WINDOWS:
+                time.sleep(20)

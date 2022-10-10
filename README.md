@@ -1,4 +1,4 @@
-<img align="right" src="https://github.com/r5py/r5py/raw/main/docs/_static/r5py_blue.svg" alt="r5py logo" style="width:180px; max-width: 30vW;">
+<img class="r5py_logo" align="right" src="https://github.com/r5py/r5py/raw/main/docs/_static/r5py_blue.svg" alt="r5py logo" style="width:180px; max-width:30vW;">
 
 # r5py: Rapid Realistic Routing with R5 in Python
 
@@ -98,3 +98,12 @@ You can choose between the two depending on which license fits your project bett
 [rtd-basic-usage]: https://r5py.readthedocs.io/en/latest/notebooks/basic-usage.html
 [rtd-installation]: https://r5py.readthedocs.io/en/latest/installation.html
 [rtd-link]: https://r5py.readthedocs.io/
+
+<!-- style sheet -->
+<style>
+    img.r5py_logo {
+        width: 180px;
+        max-width: 30vW;
+        float: right;
+    }
+</style>

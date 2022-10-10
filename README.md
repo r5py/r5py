@@ -1,6 +1,4 @@
-# r5py: Rapid Realistic Routing with R5 in Python <img align="right" src="https://github.com/r5py/r5py/raw/main/docs/_static/r5py_blue.svg" alt="r5py logo" width="180">
-
-<br />
+<img align="right" src="https://github.com/r5py/r5py/raw/main/docs/_static/r5py_blue.svg" alt="r5py logo" width="180">
 
 [![Try r5py with binder][binder-badge]][binder-link]
 [![DOI][doi-badge]][doi-link]
@@ -13,6 +11,7 @@
 [![Coverage][coverage-badge]][coverage-link]
 <br />
 
+# r5py: Rapid Realistic Routing with R5 in Python
 
 **R5py** is a Python library for rapid realistic routing on multimodal transport networks (walk,
 bike, public transport and car).  It provides a simple and friendly interface to R<sup>5</sup>, the

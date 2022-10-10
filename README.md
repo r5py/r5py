@@ -2,8 +2,8 @@
 
 # r5py: Rapid Realistic Routing with R5 in Python
 
+<!-- badges -->
 <br />
-
 [![Try r5py with binder][binder-badge]][binder-link]
 [![DOI][doi-badge]][doi-link]
 <br />

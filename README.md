@@ -5,8 +5,8 @@
 [![Try r5py with binder][binder-badge]][binder-link]
 [![DOI][doi-badge]][doi-link]
 <br />
-[![downloads (conda-forge)][downloads-conda-forge-badge]][downloads-conda-forge-link]
 [![downloads (pypi)][downloads-pypi-badge]][downloads-pypi-link]
+[![downloads (conda-forge)][downloads-conda-forge-badge]][downloads-conda-forge-link]
 <br />
 [![Trunk build status][build-status-badge]][build-status-link]
 [![Documentation Status][rtd-status-badge]][rtd-status-link]

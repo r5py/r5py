@@ -6,6 +6,7 @@
 [![Try r5py with binder][binder-badge]][binder-link]
 [![DOI][doi-badge]][doi-link]
 <br />
+[![stable version][stable-version-badge]][stable-version-link]
 [![downloads (pypi)][downloads-pypi-badge]][downloads-pypi-link]
 [![downloads (conda-forge)][downloads-conda-forge-badge]][downloads-conda-forge-link]
 <br />
@@ -85,6 +86,8 @@ You can choose between the two depending on which license fits your project bett
 [downloads-pypi-link]: https://pypi.org/project/r5py/
 [rtd-status-badge]: https://readthedocs.org/projects/r5py/badge/?version=stable
 [rtd-status-link]: https://r5py.readthedocs.io/
+[stable-version-badge]: https://img.shields.io/pypi/v/r5py?label=Stable
+[stable-version-link]: https://github.com/r5py/r5py/releases
 
 <!-- (2) other links -->
 [conda-create-env-from-yml]: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file

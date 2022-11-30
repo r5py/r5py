@@ -112,9 +112,14 @@ class TransportNetwork:
     def __del__(self):
         """Remove cache directory when done."""
         del self._transport_network
-        if os.name == "nt":  # on windows:
-            time.sleep(1)  # wait for Java garbage collector
-        shutil.rmtree(str(self._cache_directory))
+
+        MAX_TRIES = 10
+        for _ in range(MAX_TRIES):
+            try:
+                shutil.rmtree(str(self._cache_directory))
+                break
+            except PermissionError:
+                time.sleep(1)  # wait for Java VM to garbage-collect
 
     def __enter__(self):
         """Provide a context."""

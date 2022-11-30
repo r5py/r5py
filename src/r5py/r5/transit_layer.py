@@ -47,15 +47,12 @@ class TransitLayer:
         try:
             self._end_date
         except AttributeError:
-            self._end_date = (
-                max(
-                    [
-                        parse_int_date(service.calendar.end_date)
-                        for service in self._transit_layer.services
-                    ]
-                )
-                + datetime.timedelta(hours=23, minutes=59, seconds=59)
-            )
+            self._end_date = max(
+                [
+                    parse_int_date(service.calendar.end_date)
+                    for service in self._transit_layer.services
+                ]
+            ) + datetime.timedelta(hours=23, minutes=59, seconds=59)
 
 
 @jpype._jcustomizer.JConversion(

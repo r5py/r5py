@@ -37,13 +37,19 @@ class TransitLayer:
             self._start_date
         except AttributeError:
             try:
+                print(
+                    [
+                        parse_int_date(service.calendar.start_date)
+                        for service in self._transit_layer.services
+                    ]
+                )
                 self._start_date = min(
                     [
                         parse_int_date(service.calendar.start_date)
                         for service in self._transit_layer.services
                     ]
                 )
-            except ValueError as exception:
+            except (AttributeError, ValueError) as exception:
                 raise ValueError("No GTFS data set loaded") from exception
         return self._start_date
 
@@ -64,7 +70,7 @@ class TransitLayer:
                     hours=23, minutes=59, seconds=59
                 )  # *end* of day
                 self._end_date = end_date
-            except ValueError as exception:
+            except (AttributeError, ValueError) as exception:
                 raise ValueError("No GTFS data set loaded") from exception
         return self._end_date
 

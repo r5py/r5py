@@ -4,6 +4,7 @@
 import pytest  # noqa: F401
 
 import datetime
+import shapely.geometry
 
 import r5py
 from r5py.util import start_jvm
@@ -313,5 +314,27 @@ class TestRegionalTask:
         regional_task.speed_walking = speed_walking
         assert regional_task.speed_walking == expected
         assert regional_task._regional_task.walkSpeed == pytest.approx(expected_java)
+
+    @pytest.mark.parametrize(
+        ["regional_task", "breakdown"],
+        [
+            (pytest.lazy_fixture("blank_regional_task"), True),
+            (pytest.lazy_fixture("blank_regional_task"), False),
+        ]
+    )
+    def test_breakdown_setter_getter(self, regional_task, breakdown):
+        regional_task.breakdown = breakdown
+        assert regional_task.breakdown == breakdown
+
+    @pytest.mark.parametrize(
+        ["regional_task", "origin"],
+        [
+            (pytest.lazy_fixture("blank_regional_task"), shapely.geometry.Point(60, 24)),
+            (pytest.lazy_fixture("blank_regional_task"), shapely.geometry.Point(61, 25)),
+        ]
+    )
+    def test_origin_setter_getter(self, regional_task, origin):
+        regional_task.origin = origin
+        assert regional_task.origin == origin
 
     # TODO: all other methods and attributes!

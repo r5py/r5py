@@ -209,7 +209,7 @@ class RegionalTask:
             and not self.transport_network.transit_layer.covers(departure)
         ):
             warnings.warn(
-                f"Departure time {departure} is outside of the time range"
+                f"Departure time {departure} is outside of the time range "
                 "covered by currently loaded GTFS data sets.",
                 RuntimeWarning,
             )

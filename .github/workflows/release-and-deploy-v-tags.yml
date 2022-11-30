@@ -47,16 +47,9 @@ jobs:
           password: ${{ secrets.PYPI_API_TOKEN }}
           skip_existing: true
 
-  #distribution_packages:
-  #  name: Build and deploy distribution-specific packages
-  #  needs: [deploy]
-  #  uses: ./.github/workflows/distribution-packages.yml
-  #  secrets: inherit
-
   release:
     name: Create a new release
     runs-on: ubuntu-latest
-    # needs: [deploy, distribution_packages]
     needs: [deploy]
     permissions:
       contents: write

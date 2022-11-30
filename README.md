@@ -1,15 +1,19 @@
-# r5py: Rapid Realistic Routing with R5 in Python <img align="right" src="https://github.com/r5py/r5py/raw/main/docs/_static/r5py_blue.svg" alt="r5py logo" width="180">
+<img class="r5py_logo" align="right" src="https://github.com/r5py/r5py/raw/main/docs/_static/r5py_blue.svg" alt="r5py logo" style="width:180px; max-width:30vW;">
 
+# r5py: Rapid Realistic Routing with R5 in Python
+
+<!-- badges -->
 [![Try r5py with binder][binder-badge]][binder-link]
 [![DOI][doi-badge]][doi-link]
 <br />
-[![Python version][python-version-badge]][python-version-link]
-[![conda-forge version][conda-forge-badge]][conda-forge-link]
-[![PyPi package version][pypi-badge]][pypi-link]
+[![stable version][stable-version-badge]][stable-version-link]
+[![downloads (pypi)][downloads-pypi-badge]][downloads-pypi-link]
+[![downloads (conda-forge)][downloads-conda-forge-badge]][downloads-conda-forge-link]
 <br />
 [![Trunk build status][build-status-badge]][build-status-link]
 [![Documentation Status][rtd-status-badge]][rtd-status-link]
 [![Coverage][coverage-badge]][coverage-link]
+<br />
 
 
 **R5py** is a Python library for rapid realistic routing on multimodal transport networks (walk,
@@ -72,18 +76,18 @@ You can choose between the two depending on which license fits your project bett
 [binder-link]: https://notebooks.gesis.org/binder/v2/gh/r5py/r5py/stable?urlpath=lab/tree/docs/notebooks/basic-usage.ipynb
 [build-status-badge]: https://github.com/r5py/r5py/actions/workflows/build-merged-pull-requests.yml/badge.svg
 [build-status-link]: https://github.com/r5py/r5py/actions/workflows/build-merged-pull-requests.yml
-[conda-forge-badge]: https://anaconda.org/conda-forge/r5py/badges/version.svg
-[conda-forge-link]: https://anaconda.org/conda-forge/r5py
 [coverage-badge]: https://codecov.io/gh/r5py/r5py/branch/main/graph/badge.svg?token=WG8RBMZBK6
 [coverage-link]: https://codecov.io/gh/r5py/r5py
 [doi-badge]: https://zenodo.org/badge/DOI/10.5281/zenodo.7060437.svg
 [doi-link]: https://doi.org/10.5281/zenodo.7060437
-[pypi-badge]: https://img.shields.io/pypi/v/r5py
-[pypi-link]: https://pypi.org/project/r5py
-[python-version-badge]: https://img.shields.io/pypi/pyversions/r5py
-[python-version-link]: https://pypi.org/project/r5py
+[downloads-conda-forge-badge]: https://img.shields.io/conda/dn/conda-forge/r5py?label=Downloads%20%28conda-forge%29
+[downloads-conda-forge-link]: https://anaconda.org/conda-forge/r5py
+[downloads-pypi-badge]: https://static.pepy.tech/personalized-badge/r5py?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Downloads%20(pypi)
+[downloads-pypi-link]: https://pypi.org/project/r5py/
 [rtd-status-badge]: https://readthedocs.org/projects/r5py/badge/?version=stable
 [rtd-status-link]: https://r5py.readthedocs.io/
+[stable-version-badge]: https://img.shields.io/pypi/v/r5py?label=Stable
+[stable-version-link]: https://github.com/r5py/r5py/releases
 
 <!-- (2) other links -->
 [conda-create-env-from-yml]: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file

@@ -11,8 +11,8 @@ from .validating_requests_session import ValidatingRequestsSession
 
 
 # update these to use a newer R5 version if no R5 available locally
-R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.6/r5-v6.6-all.jar"
-R5_JAR_SHA256 = "9e4ceb85a09e750f146f95d98013eb164afac2dfc900a9e68e37ae925b1ec702"
+R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.7/r5-v6.7-all.jar"
+R5_JAR_SHA256 = "797ac2a06ce1c6805d0dce3876fb036d8b627f46824893515178780136b96188"
 # ---
 
 

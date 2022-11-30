@@ -4,16 +4,15 @@
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
 
-import json
 import pathlib
 import shutil
+import time
 import warnings
 
 import jpype
 import jpype.types
 
 from ..util import Config, contains_gtfs_data, start_jvm
-from .transport_network_builder_config import TransportNetworkBuilderConfig
 
 import com.conveyal.r5
 import java.lang
@@ -29,7 +28,7 @@ start_jvm()
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
 
-    def __init__(self, osm_pbf, gtfs=[], build_config={}):
+    def __init__(self, osm_pbf, gtfs=[]):
         """
         Load a transport network.
 
@@ -39,15 +38,13 @@ class TransportNetwork:
             file path of an OpenStreetMap extract in PBF format
         gtfs : list[str]
             paths to public transport schedule information in GTFS format
-        build_json : dict
-            options accepted by TNBuilderConfig (including SpeedConfig)
         """
         osm_pbf = self._working_copy(pathlib.Path(osm_pbf)).absolute()
         gtfs = [str(self._working_copy(path).absolute()) for path in gtfs]
-        build_config = TransportNetworkBuilderConfig(**build_config)
 
         self._transport_network = com.conveyal.r5.transit.TransportNetwork.fromFiles(
-            java.lang.String(str(osm_pbf)), java.util.ArrayList.of(gtfs), build_config
+            java.lang.String(str(osm_pbf)),
+            java.util.ArrayList.of(gtfs),
         )
         self._transport_network.transitLayer.buildDistanceTables(None)
 
@@ -108,17 +105,20 @@ class TransportNetwork:
             for potential_gtfs_file in path.glob("*.zip")
             if contains_gtfs_data(potential_gtfs_file)
         ]
-        try:
-            with open(pathlib.Path(path) / "build.json") as build_json_file:
-                build_json = json.load(build_json_file)
-        except (FileNotFoundError, json.JSONDecodeError):
-            build_json = {}
 
-        return cls(osm_pbf, gtfs, build_json)
+        return cls(osm_pbf, gtfs)
 
     def __del__(self):
         """Remove cache directory when done."""
-        shutil.rmtree(str(self._cache_directory))
+        del self._transport_network
+
+        MAX_TRIES = 10
+        for _ in range(MAX_TRIES):
+            try:
+                shutil.rmtree(str(self._cache_directory))
+                break
+            except PermissionError:
+                time.sleep(1)  # wait for Java VM to garbage-collect
 
     def __enter__(self):
         """Provide a context."""

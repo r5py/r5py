@@ -12,6 +12,7 @@ import warnings
 import jpype
 import jpype.types
 
+from .transit_layer import TransitLayer
 from ..util import Config, contains_gtfs_data, start_jvm
 
 import com.conveyal.r5
@@ -189,11 +190,13 @@ class TransportNetwork:
     @property
     def transit_layer(self):
         """Expose the `TransportNetwork`’s `transitLayer` to Python."""
-        return self._transport_network.transitLayer
-
-# notes to self:
-# do we need a separate TransitLayer() class to make this work neatly?
-# #list(transport_network._transport_network.transitLayer.services)[0].calendar.end_date
+        try:
+            self._transit_layer
+        except AttributeError:
+            self._transit_layer = TransitLayer.from_r5_transit_layer(
+                self._transport_network.transitLayer
+            )
+        return self._transit_layer
 
 
 @jpype._jcustomizer.JConversion(

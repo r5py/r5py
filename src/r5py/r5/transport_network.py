@@ -4,8 +4,10 @@
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
 
+import os
 import pathlib
 import shutil
+import time
 import warnings
 
 import jpype
@@ -109,6 +111,9 @@ class TransportNetwork:
 
     def __del__(self):
         """Remove cache directory when done."""
+        del self._transport_network
+        if os.name == "nt":  # on windows:
+            time.sleep(1)  # wait for Java garbage collector
         shutil.rmtree(str(self._cache_directory))
 
     def __enter__(self):

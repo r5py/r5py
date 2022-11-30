@@ -4,7 +4,6 @@
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
 
-import json
 import pathlib
 import shutil
 import warnings
@@ -105,13 +104,8 @@ class TransportNetwork:
             for potential_gtfs_file in path.glob("*.zip")
             if contains_gtfs_data(potential_gtfs_file)
         ]
-        try:
-            with open(pathlib.Path(path) / "build.json") as build_json_file:
-                build_json = json.load(build_json_file)
-        except (FileNotFoundError, json.JSONDecodeError):
-            build_json = {}
 
-        return cls(osm_pbf, gtfs, build_json)
+        return cls(osm_pbf, gtfs)
 
     def __del__(self):
         """Remove cache directory when done."""

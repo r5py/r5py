@@ -320,7 +320,7 @@ class TestRegionalTask:
         [
             (pytest.lazy_fixture("blank_regional_task"), True),
             (pytest.lazy_fixture("blank_regional_task"), False),
-        ]
+        ],
     )
     def test_breakdown_setter_getter(self, regional_task, breakdown):
         regional_task.breakdown = breakdown
@@ -329,9 +329,15 @@ class TestRegionalTask:
     @pytest.mark.parametrize(
         ["regional_task", "origin"],
         [
-            (pytest.lazy_fixture("blank_regional_task"), shapely.geometry.Point(60, 24)),
-            (pytest.lazy_fixture("blank_regional_task"), shapely.geometry.Point(61, 25)),
-        ]
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                shapely.geometry.Point(60, 24),
+            ),
+            (
+                pytest.lazy_fixture("blank_regional_task"),
+                shapely.geometry.Point(61, 25),
+            ),
+        ],
     )
     def test_origin_setter_getter(self, regional_task, origin):
         regional_task.origin = origin

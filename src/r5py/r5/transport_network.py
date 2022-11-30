@@ -4,7 +4,6 @@
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
 
-import os
 import pathlib
 import shutil
 import time

@@ -55,7 +55,7 @@ class TransitLayer:
 
     @property
     def end_date(self):
-        """The earliest date the loaded GTFS data covers."""
+        """The latest date the loaded GTFS data covers."""
         try:
             self._end_date
         except AttributeError:

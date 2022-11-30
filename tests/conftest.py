@@ -32,8 +32,8 @@ SINGLE_VALID_ORIGIN = (
     DATA_DIRECTORY / "test_data" / "test_valid_single_point_data.geojson"
 )
 
-R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.6/r5-v6.6-all.jar"
-R5_JAR_SHA256 = "9e4ceb85a09e750f146f95d98013eb164afac2dfc900a9e68e37ae925b1ec702"
+R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.7/r5-v6.7-all.jar"
+R5_JAR_SHA256 = "797ac2a06ce1c6805d0dce3876fb036d8b627f46824893515178780136b96188"
 R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
 R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
     "14aa2347be79c280e4d0fd3a137fb8f5bf2863261a1e48e1a122df1a52a0f453"

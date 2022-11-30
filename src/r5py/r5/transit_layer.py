@@ -87,4 +87,4 @@ class TransitLayer:
     "com.conveyal.r5.transit.TransitLayer", exact=TransitLayer
 )
 def _cast_TransitLayer(java_class, object_):
-    return object_._transport_network
+    return object_._transit_layer

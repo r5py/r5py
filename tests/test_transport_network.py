@@ -3,10 +3,11 @@
 import filecmp
 import pathlib
 import shutil
-import tempfile
 import time
 
-import pytest  # noqa: F401
+import pytest
+
+from .temporary_directory import TemporaryDirectory
 
 import r5py
 import com.conveyal.r5
@@ -103,7 +104,7 @@ class Test_TransportNetwork:
         ],
     )
     def test_working_copy(self, transport_network):
-        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temp_directory:
+        with TemporaryDirectory() as temp_directory:
             # create a file with (not really) random content
             input_file = pathlib.Path(temp_directory) / "test_input.txt"
             with open(input_file, "w") as f:
@@ -115,7 +116,7 @@ class Test_TransportNetwork:
         # try to create transport network from a directory, in which
         # more than one osm file is found
         osm, gtfs = transport_network_files_tuple
-        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temp_directory:
+        with TemporaryDirectory() as temp_directory:
             temp_directory = pathlib.Path(temp_directory)
             shutil.copy(osm, temp_directory / "first.osm.pbf")
             shutil.copy(osm, temp_directory / "second.osm.pbf")
@@ -129,26 +130,10 @@ class Test_TransportNetwork:
 
     def test_fromdirectory_no_osm_files(self):
         # try to create transport network from a directory without osm file
-        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temp_directory:
+        with TemporaryDirectory() as temp_directory:
             temp_directory = pathlib.Path(temp_directory)
             with pytest.raises(FileNotFoundError):
                 transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
                     temp_directory
                 )
-                time.sleep(3)  # wait for Windows to release file handles
                 del transport_network
-                time.sleep(3)
-
-    def test_fromdirectory_build_json(self, transport_network_files_tuple):
-        osm, gtfs = transport_network_files_tuple
-        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as temp_directory:
-            temp_directory = pathlib.Path(temp_directory)
-            shutil.copy(osm, temp_directory / pathlib.Path(osm).name)
-            with open(temp_directory / "build.json", "w") as f:
-                f.write("{}")  # <- minimal valid json
-            transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
-                temp_directory
-            )
-            time.sleep(3)  # wait for Windows to release file handles
-            del transport_network
-            time.sleep(3)

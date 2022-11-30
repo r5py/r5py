@@ -18,7 +18,7 @@ class TransitLayer:
     """Wrap a com.conveyal.r5.transit.TransitLayer."""
 
     @classmethod
-    def from_r5_transit_layer(self, transit_layer):
+    def from_r5_transit_layer(cls, transit_layer):
         """
         Create a TransitLayer from a com.conveyal.r5.transit.TransitLayer.
 
@@ -26,7 +26,9 @@ class TransitLayer:
         ---------
         transit_layer : com.conveyal.r5.transit.TransitLayer
         """
-        self._transit_layer = transit_layer
+        instance = cls()
+        instance._transit_layer = transit_layer
+        return instance
 
     @property
     def start_date(self):
@@ -43,6 +45,7 @@ class TransitLayer:
                 )
             except ValueError as exception:
                 raise ValueError("No GTFS data set loaded") from exception
+        return self._start_date
 
     @property
     def end_date(self):
@@ -63,6 +66,7 @@ class TransitLayer:
                 self._end_date = end_date
             except ValueError as exception:
                 raise ValueError("No GTFS data set loaded") from exception
+        return self._end_date
 
     def covers(self, point_in_time):
         """Check whether `point_in_time` is covered by GTFS data sets."""

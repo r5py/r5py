@@ -43,7 +43,8 @@ class TransportNetwork:
         gtfs = [str(self._working_copy(path).absolute()) for path in gtfs]
 
         self._transport_network = com.conveyal.r5.transit.TransportNetwork.fromFiles(
-            java.lang.String(str(osm_pbf)), java.util.ArrayList.of(gtfs),
+            java.lang.String(str(osm_pbf)),
+            java.util.ArrayList.of(gtfs),
         )
         self._transport_network.transitLayer.buildDistanceTables(None)
 

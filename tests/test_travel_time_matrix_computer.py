@@ -211,3 +211,32 @@ class TestTravelTimeMatrixComputer:
             >= travel_time_matrix["travel_time_p25"]
         )
         assert False not in check.to_list()
+
+    def test_gtfs_date_range_warnings(
+        self, transport_network_from_test_files, population_points, origin_point
+    ):
+        with pytest.warns(RuntimeWarning):
+            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+                transport_network_from_test_files,
+                origins=origin_point,
+                destinations=population_points,
+                departure=datetime.datetime(2021, 2, 22, 8, 30),  # not in GTFS data set
+                transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+            )
+            del travel_time_matrix_computer
+
+    def test_gtfs_date_range_warnings_without_gtfs_file(
+        self,
+        transport_network_from_test_files_without_gtfs,
+        population_points,
+        origin_point,
+    ):
+        with pytest.warns(RuntimeWarning):
+            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+                transport_network_from_test_files_without_gtfs,
+                origins=origin_point,
+                destinations=population_points,
+                departure=datetime.datetime(2022, 2, 22, 8, 30),
+                transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+            )
+            del travel_time_matrix_computer

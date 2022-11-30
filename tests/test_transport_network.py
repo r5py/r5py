@@ -124,9 +124,7 @@ class Test_TransportNetwork:
                 transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
                     temp_directory
                 )
-                time.sleep(3)  # wait for Windows to release file handles
                 del transport_network
-                time.sleep(3)
 
     def test_fromdirectory_no_osm_files(self):
         # try to create transport network from a directory without osm file

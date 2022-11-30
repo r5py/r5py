@@ -13,7 +13,6 @@ import jpype
 import jpype.types
 
 from ..util import Config, contains_gtfs_data, start_jvm
-from .transport_network_builder_config import TransportNetworkBuilderConfig
 
 import com.conveyal.r5
 import java.lang
@@ -29,7 +28,7 @@ start_jvm()
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
 
-    def __init__(self, osm_pbf, gtfs=[], build_config={}):
+    def __init__(self, osm_pbf, gtfs=[]):
         """
         Load a transport network.
 
@@ -39,15 +38,12 @@ class TransportNetwork:
             file path of an OpenStreetMap extract in PBF format
         gtfs : list[str]
             paths to public transport schedule information in GTFS format
-        build_json : dict
-            options accepted by TNBuilderConfig (including SpeedConfig)
         """
         osm_pbf = self._working_copy(pathlib.Path(osm_pbf)).absolute()
         gtfs = [str(self._working_copy(path).absolute()) for path in gtfs]
-        build_config = TransportNetworkBuilderConfig(**build_config)
 
         self._transport_network = com.conveyal.r5.transit.TransportNetwork.fromFiles(
-            java.lang.String(str(osm_pbf)), java.util.ArrayList.of(gtfs), build_config
+            java.lang.String(str(osm_pbf)), java.util.ArrayList.of(gtfs),
         )
         self._transport_network.transitLayer.buildDistanceTables(None)
 

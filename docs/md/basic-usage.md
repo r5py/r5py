@@ -132,6 +132,7 @@ Virtually all operations of `r5py` require a transport network. In this example,
 import pathlib
 import sys
 sys.path.insert(0, str(pathlib.Path().absolute().parent.parent / "src"))
+DATA_DIR = str(pathlib.Path().absolute().parent / "data")
 ```
 
 ```python
@@ -144,9 +145,9 @@ sys.argv.append(["--max-memory", "8G"])
 from r5py import TransportNetwork
 
 transport_network = TransportNetwork(
-    "../data/Helsinki/kantakaupunki.osm.pbf",
+    f"{DATA_DIR}/Helsinki/kantakaupunki.osm.pbf",
     [
-        "../data/Helsinki/GTFS.zip"
+        f"{DATA_DIR}/Helsinki/GTFS.zip"
     ]
 )
 ```

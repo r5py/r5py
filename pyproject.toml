@@ -16,7 +16,7 @@ dynamic = [
 ]
 
 [project.optional-dependencies]
-tests = ["pytest", "pytest-cov", "pytest-lazy-fixture"]
+tests = ["pytest", "pytest-asyncio", "pytest-cov", "pytest-lazy-fixture"]
 
 [tool.coverage.run]
 omit = ["tests/*"]

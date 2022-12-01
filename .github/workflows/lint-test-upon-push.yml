@@ -79,8 +79,9 @@ jobs:
         if: ${{ matrix.jdk_from == 'conda-forge' }}
         run: conda install openjdk
 
-      - name: Make sure pytest{,-cov,-lazy-fixture} are installed
-        run: conda install pytest pytest-cov pytest-lazy-fixture
+      - name: Make sure pytest{,-asyncio,-cov,-lazy-fixture} are installed
+        shell: bash -l {0}
+        run: mamba install -c conda-forge pytest pytest-asyncio pytest-cov pytest-lazy-fixture
 
       - name: Check environment
         run: |

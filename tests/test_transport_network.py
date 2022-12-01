@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import filecmp
+import os
 import pathlib
 import shutil
 import time
@@ -91,8 +92,10 @@ class Test_TransportNetwork:
             len(list(cache_dir.glob("*"))) > 0
         )  # files have been copied/linked to cache
 
-        time.sleep(3)  # wait for Windows to release file handles
         del transport_network
+
+        if os.name == "nt":
+            time.sleep(3)  # wait for Windows to release file handles
 
         assert not cache_dir.exists()  # destructor deleted cache directory
 

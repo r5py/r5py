@@ -25,5 +25,5 @@ class TemporaryDirectory:
         """Exit context."""
         try:
             self.temp_directory.cleanup()
-        except PermissionError:
+        except (PermissionError, NotADirectoryError):
             pass  # let the operating system take care of it

@@ -14,15 +14,19 @@ def main():
     # Download vector data set for the specified bounding box
     # in the upstream native reference system ETRS GK-25 (EPSG:3879),
     # then reproject it to WGS-84 (EPSG:4326)
-    df = geopandas.read_file(
-        "https://kartta.hsy.fi/geoserver/wfs"
-        "?service=wfs"
-        "&version=2.0.0"
-        "&request=GetFeature"
-        "&typeName=asuminen_ja_maankaytto:Vaestotietoruudukko_2020"
-        "&srsName=EPSG:3879"
-        "&bbox=25494767,6671328,25497720,6673701,EPSG:3879"
-    ).set_crs("EPSG:3879").to_crs("EPSG:4326")
+    df = (
+        geopandas.read_file(
+            "https://kartta.hsy.fi/geoserver/wfs"
+            "?service=wfs"
+            "&version=2.0.0"
+            "&request=GetFeature"
+            "&typeName=asuminen_ja_maankaytto:Vaestotietoruudukko_2020"
+            "&srsName=EPSG:3879"
+            "&bbox=25494767,6671328,25497720,6673701,EPSG:3879"
+        )
+        .set_crs("EPSG:3879")
+        .to_crs("EPSG:4326")
+    )
 
     # discard most columns (detailed data), and add a sequential index column
     df = df[["asukkaita", "geometry"]].reset_index()

@@ -13,3 +13,4 @@ dependencies:
     - numpy
     - pandas
     - r5py
+    - shapely

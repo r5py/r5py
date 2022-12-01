@@ -4,6 +4,7 @@
 
 import collections.abc
 import datetime
+import warnings
 
 import jpype
 
@@ -127,14 +128,14 @@ class RegionalTask:
         self.origin = origin
         self.destinations = destinations
 
-        self.departure = departure
-        self.departure_time_window = departure_time_window
-        self.percentiles = percentiles
-
         self.access_modes = access_modes
         self.egress_modes = egress_modes if egress_modes is not None else access_modes
         # last, because extra logic that depends on the others having been set
         self.transport_modes = transport_modes
+
+        self.departure = departure  # transport modes should be set before this line
+        self.departure_time_window = departure_time_window
+        self.percentiles = percentiles
 
         self.max_time = max_time
         self.max_time_walking = (
@@ -203,6 +204,16 @@ class RegionalTask:
 
     @departure.setter
     def departure(self, departure):
+        if (
+            TransitMode.TRANSIT in self.transport_modes
+            and not self.transport_network.transit_layer.covers(departure)
+        ):
+            warnings.warn(
+                f"Departure time {departure} is outside of the time range "
+                "covered by currently loaded GTFS data sets.",
+                RuntimeWarning,
+            )
+
         self._departure = departure
         self._regional_task.date = java.time.LocalDate.of(
             departure.year, departure.month, departure.day

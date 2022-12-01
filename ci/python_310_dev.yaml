@@ -21,15 +21,16 @@ dependencies:
     - gitpython
     - jupyterlab
     - jupytext=1.14.0
-    - matplotlib
     - mapclassify
-    - myst-parser
+    - matplotlib
     - myst-nb
+    - myst-parser
     - nbsphinx
-    - numpydoc
     - nbstripout
+    - numpydoc
     - pytest
     - pytest-cov
     - pytest-lazy-fixture
+    - shapely
     - sphinx
     - sphinx-book-theme

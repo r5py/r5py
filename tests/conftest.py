@@ -156,3 +156,11 @@ def transport_network_from_test_files():
 
     transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
     yield transport_network
+
+
+@pytest.fixture(scope="session")
+def transport_network_from_test_files_without_gtfs():
+    import r5py
+
+    transport_network = r5py.TransportNetwork(OSM_PBF, [])
+    yield transport_network

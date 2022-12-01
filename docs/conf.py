@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'r5py'
-copyright = '2022, r5py contributors'
-author = 'r5py contributors'
+project = "r5py"
+copyright = "2022, r5py contributors"
+author = "r5py contributors"
 
 
 # -- General configuration ---------------------------------------------------
@@ -31,16 +31,16 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "IPython.sphinxext.ipython_console_highlighting",
-    "myst_nb"
+    "myst_nb",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -48,11 +48,12 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_book_theme'
+html_theme = "sphinx_book_theme"
 
 # if we are building a stable version, point the binder link to branch `stable`,
 # otherwise, point to branch `main`
 import os
+
 try:
     READTHEDOCS_VERSION = os.environ["READTHEDOCS_VERSION"]
 except KeyError:  # not running on RTD
@@ -64,6 +65,7 @@ elif READTHEDOCS_VERSION == "latest":
     BINDER_REF = "main"
 else:
     import git
+
     repository = git.Repo(search_parent_directories=True)
     BINDER_REF = repository.git.rev_parse(repository.head.commit.hexsha, short=True)
 
@@ -83,14 +85,15 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # include __init__() in API doc
-autoclass_content = 'init'
+autoclass_content = "init"
 
 # add r5py’s package directory to path
 import pathlib
 import sys
+
 sys.path.insert(0, str(pathlib.Path().absolute().parent / "src"))
 
 # Do not execute cells

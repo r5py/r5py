@@ -49,16 +49,20 @@ jobs:
           - ci/python_39.yaml
           - ci/python_38.yaml
           - ci/python_37.yaml
+        jdk_from:
+          - conda-forge
+          - system
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install JVM
+      - name: Install JVM (system-wide)
+        if: ${{ matrix.jdk_from == 'system' }}
         uses: actions/setup-java@v3
         with: 
           distribution: temurin
-          java-version: 11
+          java-version: 18
 
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2.2.0
@@ -71,12 +75,15 @@ jobs:
           miniforge-version: latest
           use-mamba: true
 
+      - name: Install JVM (from conda-forge)
+        if: ${{ matrix.jdk_from == 'conda-forge' }}
+        run: conda install openjdk
+
       - name: Make sure pytest{,-asyncio,-cov,-lazy-fixture} are installed
         shell: bash -l {0}
         run: mamba install -c conda-forge pytest pytest-asyncio pytest-cov pytest-lazy-fixture
 
       - name: Check environment
-        shell: bash -l {0}
         run: |
           conda info
           conda list

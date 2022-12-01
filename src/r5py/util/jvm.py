@@ -29,7 +29,8 @@ def start_jvm():
         # the warning messages we have been seeing
         # (cf. https://stackoverflow.com/questions/
         #   15790403/what-does-consider-using-jsig-library-mean )
-        LIBJSIG = str(pathlib.Path(jpype.getDefaultJVMPath()).parent / "libjsig.so")
+        JVM_PATH = pathlib.Path(jpype.getDefaultJVMPath()).resolve()
+        LIBJSIG = str(JVM_PATH.parent / "libjsig.so")
         os.environ["LD_PRELOAD"] = LIBJSIG  # Linux
         os.environ["DYLD_INSERT_LIBRARIES"] = LIBJSIG  # MacOS
 

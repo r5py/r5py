@@ -4,7 +4,6 @@ import filecmp
 import os
 import pathlib
 import shutil
-import time
 
 import pytest
 
@@ -84,10 +83,6 @@ class Test_TransportNetwork:
         assert isinstance(transport_network.timezone, java.time.ZoneId)
         assert transport_network.timezone.toString() == gtfs_timezone_helsinki
 
-    @pytest.mark.skipif(
-        os.name == "nt",
-        reason="Windows does not always release cache files"
-    )
     def test_cache_directory(self, transport_network_files_tuple):
         transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
         cache_dir = transport_network._cache_directory

@@ -1,28 +1,38 @@
 #!/usr/bin/env python3
 
 
-import pathlib
-
-import pytest  # noqa: F401
+import pytest
 
 import r5py
-
-DATA_DIRECTORY = pathlib.Path(__file__).absolute().parents[1] / "docs/data"
-GTFS_FILE = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
-NOT_GTFS_FILE = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
 
 
 class TestContainsGtfsData:
     @pytest.mark.parametrize(
         ["path", "expected"],
         [
-            (GTFS_FILE, True),
-            (str(GTFS_FILE), True),
-            (open(GTFS_FILE, "rb"), True),
-            (NOT_GTFS_FILE, False),
-            (str(NOT_GTFS_FILE), False),
-            (open(NOT_GTFS_FILE, "rb"), False),
+            (pytest.lazy_fixture("gtfs_file_path"), True),
+            (pytest.lazy_fixture("osm_pbf_file_path"), False),
         ],
     )
-    def test_contains_gtfs_data(self, path, expected):
+    def test_contains_gtfs_data_path(self, path, expected):
         assert r5py.util.contains_gtfs_data(path) == expected
+
+    @pytest.mark.parametrize(
+        ["path", "expected"],
+        [
+            (pytest.lazy_fixture("gtfs_file_path"), True),
+            (pytest.lazy_fixture("osm_pbf_file_path"), False),
+        ],
+    )
+    def test_contains_gtfs_data_str(self, path, expected):
+        assert r5py.util.contains_gtfs_data(str(path)) == expected
+
+    @pytest.mark.parametrize(
+        ["path", "expected"],
+        [
+            (pytest.lazy_fixture("gtfs_file_path"), True),
+            (pytest.lazy_fixture("osm_pbf_file_path"), False),
+        ],
+    )
+    def test_contains_gtfs_data_filehandle(self, path, expected):
+        assert r5py.util.contains_gtfs_data(open(path, "rb")) == expected

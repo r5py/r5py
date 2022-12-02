@@ -15,7 +15,9 @@ import geopandas
 import pytest  # noqa: F401
 
 # test_data
-DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
+DATA_DIRECTORY = (
+    pathlib.Path(__file__).resolve().parent.parent / "docs" / "_static" / "data"
+)
 OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
 GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
 POPULATION_GRID_POINTS = DATA_DIRECTORY / "Helsinki" / "population_points_2020.gpkg"
@@ -74,6 +76,11 @@ def data_columns_with_breakdown(scope="session"):
 
 
 @pytest.fixture
+def gtfs_file_path():
+    yield GTFS
+
+
+@pytest.fixture
 def gtfs_timezone_helsinki():
     yield "Europe/Helsinki"
 
@@ -99,6 +106,11 @@ def origin_point(scope="session"):
 def origins_valid_ids():
     origins = geopandas.read_file(ORIGINS_VALID_IDS)
     yield origins
+
+
+@pytest.fixture
+def osm_pbf_file_path():
+    yield OSM_PBF
 
 
 @pytest.fixture(scope="session")

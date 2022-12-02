@@ -20,7 +20,7 @@ package searches in the following paths:
 ## Configuration from the command line
 
 When running **r5py** from the command line, you can supply command line arguments.
-To show available options, consult the [table below](#configuration-command-line-options), or run:
+To show available options, consult the [table below](configuration-options), or run:
 
 ```bash
 python -m r5py --help
@@ -38,17 +38,41 @@ sys.argv.append(["--max-memory", "12G"])
 import r5py
 ```
 
-From the [table below](#configuration-command-line-options) , look up the available
+From the [table below](configuration-options) , look up the available
 options from the *command line argument* column.
 
 
-## Configuration/command line options
+:::{list-table}
+:header-rows: 1
+:name: configuration-options
 
-configuration file option | command line argument      | explanation                      | default value
-------------------------- | -------------------------- | -------------------------------- | ---------------------------------
-`max-memory: [value]`        | `--max-memory [value],`<br>`-m [value]` | Set the limit for the Java Virtual Machine’s heap size (`-Xmx`). This option accepts either absolute values (integer or decimal), optionally with a suffix to indicate Mibibytes, Gibibytes, or Tebibytes: `M`, `G`, `T`), or relative, expressed in a percentage of total memory, with a `%` suffix. | `80%`
-`r5-classpath: [classpath]` | `--r5-classpath [classpath],`<br>`-r [classpath]` | Point to R5’s JAR (or build directory) in case you want to use a custom R5 installation. | `/usr/share/java/r5/r5-all.jar`
-`verbose: [boolean]`        | `--verbose`, `-v`              | Show more detailed output        | `False` in configuration file, not specified on commandline
+* - configuration file option
+  - command line argument
+  - explanation
+  - default value
+
+* - `max-memory: [value]`
+  - `--max-memory [value]`, <br>
+    `-m [value]`
+  - Set the limit for the Java Virtual Machine’s heap size (`-Xmx`).
+    This option accepts either absolute values (integer or decimal),
+    optionally with a suffix to indicate Mibibytes, Gibibytes, or
+    Tebibytes: `M`, `G`, `T`), or relative, expressed in a percentage
+    of total memory, with a `%` suffix.
+  - `80%`
+
+* - `r5-classpath: [classpath]`
+  - `--r5-classpath [classpath]`, <br>
+    `-r [classpath]`
+  - Point to R5’s JAR (or build directory) in case you want to use a
+    custom R5 installation.
+  - `/usr/share/java/r5/r5-all.jar`
+
+* - `verbose: [boolean]`
+  - `--verbose`, `-v`
+  - Show more detailed output
+  - `False` in configuration file, not specified on commandline
+:::
 
 
 ## Setting the maximum Java heap size (memory use)

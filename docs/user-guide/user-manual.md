@@ -16,28 +16,58 @@ jupyter:
 
 ## Introduction
 
-**R5py** is a Python library for routing and calculating travel time matrices on multimodal transport networks (walk, bike, public transport and car).
-It provides a simple and friendly interface to R<sup>5</sup> (*the Rapid Realistic Routing on Real-world and Reimagined networks*) which is a [routing engine](https://github.com/conveyal/r5) developed by [Conveyal](https://conveyal.com/). `R5py` is designed to interact with [GeoPandas](https://geopandas.org) GeoDataFrames, and it is inspired by [r5r](https://ipeagit.github.io/r5r) which is a similar wrapper developed for R. `R5py` exposes some of R5’s functionality via its [Python API](reference.html), in a syntax similar to r5r’s. At the time of this writing, only the computation of travel time matrices has been fully implemented. Over time, `r5py` will be expanded to incorporate other functionalities from R5. 
+**R5py** is a Python library for routing and calculating travel time matrices
+on multimodal transport networks (walk, bike, public transport and car).  It
+provides a simple and friendly interface to R<sup>5</sup> (*the Rapid Realistic
+Routing on Real-world and Reimagined networks*) which is a [routing
+engine](https://github.com/conveyal/r5) developed by
+[Conveyal](https://conveyal.com/). `R5py` is designed to interact with
+[GeoPandas](https://geopandas.org) GeoDataFrames, and it is inspired by
+[r5r](https://ipeagit.github.io/r5r) which is a similar wrapper developed for
+R. `R5py` exposes some of R5’s functionality via its [Python
+API](../reference/reference), in a syntax similar to r5r’s. At the time of this
+writing, only the computation of travel time matrices has been fully
+implemented. Over time, `r5py` will be expanded to incorporate other
+functionalities from R5. 
 
-<!-- #region -->
 ## Data requirements
 
 ### Data for creating a routable network
 
-When calculating travel times with `r5py`, you typically need a couple of datasets: 
+When calculating travel times with `r5py`, you typically need a couple of
+datasets: 
 
-- **A road network dataset from OpenStreetMap** (OSM) in Protocolbuffer Binary (`.pbf`) format: 
-  - This data is used for finding the fastest routes and calculating the travel times based on walking, cycling and driving. In addition, this data is used for walking/cycling legs between stops when routing with transit. 
-  - *Hint*: Sometimes you might need modify the OSM data beforehand, e.g., by cropping the data or adding special costs for travelling (e.g., for considering slope when cycling/walking). When doing this, you should follow the instructions on the [Conveyal website](https://docs.conveyal.com/prepare-inputs#preparing-the-osm-data). For adding customized costs for pedestrian and cycling analyses, see [this repository](https://github.com/RSGInc/ladot_analysis_dataprep).
+- **A road network dataset from OpenStreetMap** (OSM) in Protocolbuffer Binary
+  (`.pbf`) format: 
+  - This data is used for finding the fastest routes and calculating the travel
+    times based on walking, cycling and driving. In addition, this data is used
+for walking/cycling legs between stops when routing with transit. 
+  - *Hint*: Sometimes you might need modify the OSM data beforehand, e.g., by
+    cropping the data or adding special costs for travelling (e.g., for
+    considering slope when cycling/walking). When doing this, you should follow
+    the instructions on the [Conveyal 
+    website](https://docs.conveyal.com/prepare-inputs#preparing-the-osm-data).
+    For adding customized costs for pedestrian and cycling analyses, see [this
+    repository](https://github.com/RSGInc/ladot_analysis_dataprep).
 
-- **A transit schedule dataset** in General Transit Feed Specification (GTFS.zip) format (optional):
-   - This data contains all the necessary information for calculating travel times based on public transport, such as stops, routes, trips and the schedules when the vehicles are passing a specific stop. You can read about the [GTFS standard here](https://developers.google.com/transit/gtfs/reference).
-   - *Hint*: `r5py` can also combine multiple GTFS files, as sometimes you might have different GTFS feeds representing, e.g., the bus and metro connections. 
+- **A transit schedule dataset** in General Transit Feed Specification
+  (GTFS.zip) format (optional):
+   - This data contains all the necessary information for calculating travel
+     times based on public transport, such as stops, routes, trips and the
+     schedules when the vehicles are passing a specific stop. You can read about
+     the [GTFS standard here](https://developers.google.com/transit/gtfs/reference).
+   - *Hint*: `r5py` can also combine multiple GTFS files, as sometimes you
+     might have different GTFS feeds representing, e.g., the bus and metro
+     connections. 
 
 
 ### Data for origin and destination locations
 
-In addition to OSM and GTFS datasets, you need data that represents the origin and destination locations (OD-data) for routings. This data is typically stored in one of the geospatial data formats, such as Shapefile, GeoJSON or GeoPackage. As `r5py` is built on top of `geopandas`, it is easy to read OD-data from various different data formats. 
+In addition to OSM and GTFS datasets, you need data that represents the origin
+and destination locations (OD-data) for routings. This data is typically stored
+in one of the geospatial data formats, such as Shapefile, GeoJSON or
+GeoPackage. As `r5py` is built on top of `geopandas`, it is easy to read
+OD-data from various different data formats. 
 
 
 ### Where to get these datasets?
@@ -68,12 +98,12 @@ In the following tutorial, we use various open source datasets:
 
 ## Installation
 
-Before you can start using `r5py`, you need to install it and a few libraries. Check [installation instructions](../installation.md) for more details. 
+Before you can start using `r5py`, you need to install it and a few libraries. Check [installation instructions](installation) for more details. 
 
 
 ## Configuring `r5py` before using it
 
-It is possible to configure `r5py` in a few different ways (see [configuration instructions](../configuration.md) for details). One of the options that you most likely want to adjust, is **configuring how much memory** (RAM) `r5py` will consume during the calculations. `r5py` runs a powerful Java engine under the hood, and by default it will use **80 % of the available memory** for doing the calculations. However, you can easily adjust this. 
+It is possible to configure `r5py` in a few different ways (see [configuration instructions](configuration) for details). One of the options that you most likely want to adjust, is **configuring how much memory** (RAM) `r5py` will consume during the calculations. `r5py` runs a powerful Java engine under the hood, and by default it will use **80 % of the available memory** for doing the calculations. However, you can easily adjust this. 
 
 If you want to allocate, e.g., a maximum of 5 Gb of RAM for the tool, you can do so by running:
 
@@ -162,7 +192,7 @@ A travel time matrix is a dataset detailing the travel costs (e.g., time) betwee
 - `origins`, which is a GeoDataFrame with one location that we created earlier (however, you can also use multiple locations as origins).
 - `destinations`, which is a GeoDataFrame representing the destinations (in our case, the `points` GeoDataFrame). 
 - `departure`, which should be Python's `datetime` object (in our case standing for "22nd of February 2022 at 08:30") to tell `r5py` that the schedules of this specific time and day should be used for doing the calculations. 
-   - *Note*: By default, `r5py` summarizes and calculates a median travel time from all possible connections within one hour from given depature time (with 1 minute frequency). It is possible to adjust this time window using `departure_time_window` parameter ([see details here]((https://r5py.readthedocs.io/en/stable/reference.html#r5py.RegionalTask))). 
+   - *Note*: By default, `r5py` summarizes and calculates a median travel time from all possible connections within one hour from given depature time (with 1 minute frequency). It is possible to adjust this time window using `departure_time_window` parameter ([see details here](../reference/reference.html#r5py.RegionalTask)). 
 - `transport_modes`, which determines the travel modes that will be used in the calculations. These can be passed using the options from the `TransitMode` and `LegMode` classes. 
   - *Hint*: To see all available options, run `help(TransitMode)` or `help(LegMode)`.  
 

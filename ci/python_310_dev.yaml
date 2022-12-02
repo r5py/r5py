@@ -20,15 +20,15 @@ dependencies:
     - folium
     - gitpython
     - jupyterlab
-    - jupytext=1.14.0
+    - jupyterlab-myst
+    - jupytext
     - mapclassify
     - matplotlib
     - myst-nb
-    - myst-parser
     - nbsphinx
     - nbstripout
-    - numpydoc
     - pytest
+    - pytest-asyncio
     - pytest-cov
     - pytest-lazy-fixture
     - shapely

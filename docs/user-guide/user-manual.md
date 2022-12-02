@@ -192,7 +192,7 @@ A travel time matrix is a dataset detailing the travel costs (e.g., time) betwee
 - `origins`, which is a GeoDataFrame with one location that we created earlier (however, you can also use multiple locations as origins).
 - `destinations`, which is a GeoDataFrame representing the destinations (in our case, the `points` GeoDataFrame).
 - `departure`, which should be Python's `datetime` object (in our case standing for "22nd of February 2022 at 08:30") to tell `r5py` that the schedules of this specific time and day should be used for doing the calculations.
-   - *Note*: By default, `r5py` summarizes and calculates a median travel time from all possible connections within one hour from given depature time (with 1 minute frequency). It is possible to adjust this time window using `departure_time_window` parameter ([see details here](../reference/reference.html#r5py.RegionalTask)).
+   - *Note*: By default, `r5py` summarizes and calculates a median travel time from all possible connections within one hour from given depature time (with 1 minute frequency). It is possible to adjust this time window using `departure_time_window` parameter ([see details here](r5py.RegionalTask)).
 - `transport_modes`, which determines the travel modes that will be used in the calculations. These can be passed using the options from the `TransitMode` and `LegMode` classes.
   - *Hint*: To see all available options, run `help(TransitMode)` or `help(LegMode)`.
 

@@ -1,3 +1,15 @@
+# sphinx + dependencies
+GitPython
+myst-nb
+sphinx
+sphinx-book-theme
+
+# Jupyterlab
+jupyterlab
+jupyterlab-git
+jupyterlab-myst
+jupytext
+
 # r5py:
 ConfigArgParse
 fiona
@@ -10,11 +22,11 @@ psutil
 requests
 
 # documentation:
+contextily
 folium
-GitPython
-jupytext
 mapclassify
 matplotlib
-myst-nb
-Sphinx
-sphinx-book-theme
+
+
+# https://github.com/ipython/ipython/issues/13845
+ipython!=8.7.0

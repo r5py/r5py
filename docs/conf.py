@@ -12,15 +12,14 @@ import sys
 # a notebook (when it runs for the first time)
 import matplotlib.pyplot
 
-from binder_ref import BINDER_REF
-
-
 # -- Add project paths -------------------------------------------------------
 sys.path = [
-    str(pathlib.Path().absolute().parent / "src"),
-    str(pathlib.Path().absolute().parent)
+    str(pathlib.Path().resolve().parent / "src"),
+    str(pathlib.Path().resolve())
 
 ] + sys.path
+
+from binder_ref import BINDER_REF
 
 
 # -- Project information -----------------------------------------------------
@@ -41,7 +40,12 @@ extensions = [
 ]
 
 templates_path = ["_templates"]
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = [
+    "_build",
+    "jupyter_execute",
+    "_static",
+]
+
 source_suffix = {
     ".rst": "restructuredtext",
     ".ipynb": "myst-nb",
@@ -86,9 +90,3 @@ nb_execution_mode = "force"
 nb_execution_timeout = 120  # needed, e.g., when matplotlib updates its font cache
 nb_execution_raise_on_error = True  # fail instead of hiding the error in logs
 nb_execution_show_tb = True  # and show the error
-
-exclude_patterns = [ 
-    "_build",
-    "jupyter_execute",
-    "_static"
-]

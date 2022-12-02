@@ -7,7 +7,7 @@
 import pathlib
 import sys
 
-# import matplotlib here, otherwise we get the 
+# import matplotlib here, otherwise we get the
 # ‘building font cache’ warning in the middle of
 # a notebook (when it runs for the first time)
 import matplotlib.pyplot
@@ -15,8 +15,7 @@ import matplotlib.pyplot
 # -- Add project paths -------------------------------------------------------
 sys.path = [
     str(pathlib.Path().resolve().parent / "src"),
-    str(pathlib.Path().resolve())
-
+    str(pathlib.Path().resolve()),
 ] + sys.path
 
 from binder_ref import BINDER_REF
@@ -50,11 +49,11 @@ source_suffix = {
     ".rst": "restructuredtext",
     ".ipynb": "myst-nb",
     ".myst": "myst-nb",
-}   
+}
 
 myst_enable_extensions = [
     "colon_fence",
-    "substitution"
+    "substitution",
 ]
 myst_heading_anchors = 3  # add #id to h1-h3
 

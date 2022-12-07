@@ -8,7 +8,7 @@ using [`pip`](https://pip.pypa.io/en/stable/getting-started/),
 instructions for each installation method.
 
 For **Windows** users, we generally recommend to use [`mamba` or `conda` to
-create a new dedicated *environment*](#install-using-mamba-conda) and install
+create a new dedicated *environment*](#install-using-mambaconda) and install
 **r5py** and its dependencies into it.
 
 On **Linux** and **MacOS**, depending on your use case, either approach might be
@@ -16,14 +16,14 @@ appropriate: If **r5py** is [installed via `pip`](#install-using-pip),
 system-wide resources can be re-used (and managed by the system package
 manager), lowering both disk and memory footprint - but you need manually ensure
 that a [Java environment](#dependencies) is installed. <br>
-If [installed via `conda`/`mamba`](#install-using-mamba-conda), **r5py** is as
+If [installed via `conda`/`mamba`](#install-using-mambaconda), **r5py** is as
 much a turnkey solution on Linux and MacOS as it is on Windows, at the expense
 of a slight performance decrease. However, as additional package managers,
 `conda` and `mamba` are not available from the default package sources on all
 distributions; Debian and Debian-based systems, such as Ubuntu or Mint, for
 instance, do not provide `conda` packages.
 
-:::{admonition}
+:::{admonition} Python package/environment managers
 :class: hint
 
 If you are new to the (sometimes confusing) world of Python package managers,

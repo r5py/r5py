@@ -19,8 +19,9 @@ package searches in the following paths:
 
 ## Configuration from the command line
 
-When running **r5py** from the command line, you can supply command line arguments.
-To show available options, consult the [table below](configuration-options), or run:
+When running **r5py** from the command line, you can supply command line
+arguments.  To show available options, consult the [table
+below](configuration-options), or run:
 
 ```bash
 python -m r5py --help
@@ -29,8 +30,9 @@ python -m r5py --help
 
 ## Using command line options in a script or notebook
 
-If you use **r5py** in a script, or run it from a notebook and don’t want to rely on a
-configuration file, you can set command line arguments ***before*** *importing r5py*:
+If you use **r5py** in a script, or run it from a notebook and don’t want to
+rely on a configuration file, you can set command line arguments ***before***
+*importing r5py*:
 
 ```python
 import sys
@@ -38,9 +40,13 @@ sys.argv.append(["--max-memory", "99%"])
 import r5py
 ```
 
-From the [table below](configuration-options), look up the available
-options from the *command line argument* column.
+To find available options, consult the *command line argument* column of the
+[table below](configuration-options).
 
+
+## Configuration options
+
+### Overview
 
 :::{list-table}
 :header-rows: 1
@@ -75,24 +81,26 @@ options from the *command line argument* column.
 :::
 
 
-## Setting the maximum Java heap size (memory use)
+### Setting the maximum Java heap size (memory use)
 
-A *Java Virtual Machine* (JVM) typically restricts the memory usage of programs it runs.
-More specifically, the *heap size* can be limited (see
-[this stackoverflow discussion](https://stackoverflow.com/questions/14763079/what-are-the-xms-and-xmx-parameters-when-starting-jvm)
+A *Java Virtual Machine* (JVM) typically restricts the memory usage of programs
+it runs.  More specifically, the *heap size* can be limited (see [this
+stackoverflow
+discussion](https://stackoverflow.com/questions/14763079/what-are-the-xms-and-xmx-parameters-when-starting-jvm)
 for details). 
 
-The tasks carried out by **R5** under the hood of **r5py** are fairly memory-intensive,
-which is why, by default, r5py allows the JVM to grant up to 80% of total memory to R5 
-(but always leaving at least 2 GiB to the system and other processes).
+The tasks carried out by **R5** under the hood of **r5py** are fairly
+memory-intensive, which is why, by default, r5py allows the JVM to grant up to
+80% of total memory to R5 (but always leaving at least 2 GiB to the system and
+other processes).
 
-You might want to lower this limit if you are running other tasks in parallel, or raise
-it, if you have a dedicated computer with large memory and small operating system
-requirements.
+You might want to lower this limit if you are running other tasks in parallel,
+or raise it, if you have a dedicated computer with large memory and small
+operating system requirements.
 
-As outlined above, you can either create a configuration file, and set `max-memory`
-there, specify the `--max-memory` or `-m` command line arguments, or add the same
-arguments to `sys.argv`.
+As outlined above, you can either create a configuration file, and set
+`max-memory` there, specify the `--max-memory` or `-m` command line arguments,
+or add the same arguments to `sys.argv`.
 
 For instance, to set the maximum heap size to a fixed 12 GiB, you can create a
 configuration file in the [location suitable for your operating
@@ -103,19 +111,19 @@ max-memory: 12G
 ```
 
 
-## Using a custom installation of R5
+### Using a custom installation of R5
 
-For some use cases, it can be useful to use a local copy of **R5**, rather than the one
-downloaded by **r5py**, for instance, in order to apply custom patches to extend or
-modify R5’s functionality, or to force the use of a certain version for longitudinal
-comparability. 
+For some use cases, it can be useful to use a local copy of **R5**, rather than
+the one downloaded by **r5py**, for instance, in order to apply custom patches
+to extend or modify R5’s functionality, or to force the use of a certain
+version for longitudinal comparability. 
 
 This can be achieved by either installing R5 into the default class path
-`/usr/share/java/r5/r5-all.jar`, or by using a configuration option or command line
-argument to change the class path. 
+`/usr/share/java/r5/r5-all.jar`, or by using a configuration option or command
+line argument to change the class path. 
 
-For example, to set a custom classpath inside a Python notebook, you can set `sys.argv`
-before importing `r5py`:
+For example, to set a custom classpath inside a Python notebook, you can set
+`sys.argv` before importing `r5py`:
 
 ```python
 import sys

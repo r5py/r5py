@@ -13,6 +13,18 @@ jupytext:
 
 # Quickstart
 
+:::{toctree}
+:maxdepth: 1
+:caption: User Manual
+:hidden:
+
+self
+data-requirements
+travel-time-matrices
+advanced-usage
+:::
+
+
 ```{code-cell}
 :tags: ["remove-input", "remove-output"]
 

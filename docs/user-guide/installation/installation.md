@@ -1,5 +1,13 @@
 # Installation
 
+:::{toctree}
+:maxdepth: 1
+:caption: Installation
+:hidden:
+
+troubleshooting
+:::
+
 **R5py** is available from [PyPi](https://pypi.org/project/r5py/) and
 [conda-forge](https://anaconda.org/conda-forge/r5py), and can be installed
 using [`pip`](https://pip.pypa.io/en/stable/getting-started/),

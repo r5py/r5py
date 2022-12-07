@@ -17,12 +17,12 @@ incorporate other functionalities from R5.
 
 :::{toctree}
 :caption: User guide
-:maxdepth: 2
+:maxdepth: 1
 :hidden:
 
-user-guide/installation
+user-guide/installation/installation
 user-guide/configuration
-user-guide/user-manual/user-manual
+User Manual <user-guide/user-manual/quickstart>
 user-guide/citation
 :::
 

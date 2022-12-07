@@ -1,16 +1,3 @@
----
-kernelspec:
-  name: python3
-  display_name: python3
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: '0.13'
-    jupytext_version: 1.14.1
----
-
-
 # Data requirements
 
 ## Data for creating a routable network

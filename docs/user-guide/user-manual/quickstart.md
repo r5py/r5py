@@ -73,11 +73,9 @@ origin = points.loc[points["id"] == 54].copy()
 origin.explore(color="blue", max_zoom=14, marker_kwds={"radius": 12})
 ```
 
-<!-- #region tags=[] -->
 ### Load transport network
 
 Virtually all operations of `r5py` require a transport network. In this example, we use data from Helsinki metropolitan area, which you can find in the source code repository of r5py in `docs/data/` [(see here)](https://github.com/r5py/r5py/tree/main/docs/data). To import the street and public transport networks, instantiate an `r5py.TransportNetwork` with the file paths to the OSM extract and the GTFS files:
-<!-- #endregion -->
 
 ```{code-cell}
 from r5py import TransportNetwork

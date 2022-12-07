@@ -22,6 +22,7 @@ be expanded to incorporate other functionalities from R5.
 user-guide/installation
 user-guide/configuration
 user-guide/user-manual
+user-guide/citation
 :::
 
 :::{toctree}
@@ -31,7 +32,6 @@ user-guide/user-manual
 
 contributing/CONTRIBUTING
 Code of conduct <contributing/CODE_OF_CONDUCT>
-contributing/citation
 :::
 
 :::{toctree}

@@ -11,114 +11,28 @@ jupytext:
 ---
 
 
-# User Manual
-
-
-## Introduction
-
-**R5py** is a Python library for routing and calculating travel time matrices
-on multimodal transport networks (walk, bike, public transport and car).  It
-provides a simple and friendly interface to R<sup>5</sup> (*the Rapid Realistic
-Routing on Real-world and Reimagined networks*) which is a [routing
-engine](https://github.com/conveyal/r5) developed by
-[Conveyal](https://conveyal.com/). `R5py` is designed to interact with
-[GeoPandas](https://geopandas.org) GeoDataFrames, and it is inspired by
-[r5r](https://ipeagit.github.io/r5r) which is a similar wrapper developed for
-R. `R5py` exposes some of R5’s functionality via its [Python
-API](../reference/reference), in a syntax similar to r5r’s. At the time of this
-writing, only the computation of travel time matrices has been fully
-implemented. Over time, `r5py` will be expanded to incorporate other
-functionalities from R5.
-
-
-## Data requirements
-
-### Data for creating a routable network
-
-When calculating travel times with `r5py`, you typically need a couple of
-datasets:
-
-- **A road network dataset from OpenStreetMap** (OSM) in Protocolbuffer Binary
-  (`.pbf`) format:
-  - This data is used for finding the fastest routes and calculating the travel
-    times based on walking, cycling and driving. In addition, this data is used
-for walking/cycling legs between stops when routing with transit.
-  - *Hint*: Sometimes you might need modify the OSM data beforehand, e.g., by
-    cropping the data or adding special costs for travelling (e.g., for
-    considering slope when cycling/walking). When doing this, you should follow
-    the instructions on the [Conveyal
-    website](https://docs.conveyal.com/prepare-inputs#preparing-the-osm-data).
-    For adding customized costs for pedestrian and cycling analyses, see [this
-    repository](https://github.com/RSGInc/ladot_analysis_dataprep).
-
-- **A transit schedule dataset** in General Transit Feed Specification
-  (GTFS.zip) format (optional):
-   - This data contains all the necessary information for calculating travel
-     times based on public transport, such as stops, routes, trips and the
-     schedules when the vehicles are passing a specific stop. You can read about
-     the [GTFS standard here](https://developers.google.com/transit/gtfs/reference).
-   - *Hint*: `r5py` can also combine multiple GTFS files, as sometimes you
-     might have different GTFS feeds representing, e.g., the bus and metro
-     connections.
-
-
-### Data for origin and destination locations
-
-In addition to OSM and GTFS datasets, you need data that represents the origin
-and destination locations (OD-data) for routings. This data is typically stored
-in one of the geospatial data formats, such as Shapefile, GeoJSON or
-GeoPackage. As `r5py` is built on top of `geopandas`, it is easy to read
-OD-data from various different data formats.
-
-
-### Where to get these datasets?
-
-Here are a few places from where you can download the datasets for creating the routable network:
-
-- **OpenStreetMap data in PBF-format**:
-
-  - [pyrosm](https://pyrosm.readthedocs.io/en/latest/basics.html#protobuf-file-what-is-it-and-how-to-get-one)  library. Allows downloading data directly from Python (based on GeoFabrik and BBBike).
-  - [pydriosm](https://pydriosm.readthedocs.io/en/latest/quick-start.html#download-data) library. Allows downloading data directly from Python (based on GeoFabrik and BBBike).
-  - [GeoFabrik](http://download.geofabrik.de/) website. Has data extracts for many pre-defined areas (countries, regions, etc).
-  - [BBBike](https://download.bbbike.org/osm/bbbike/) website. Has data extracts readily available for many cities across the world. Also supports downloading data by [specifying your own area or interest](https://extract.bbbike.org/).
-  - [Protomaps](https://protomaps.com/downloads/osm) website. Allows to download the data with custom extent by specifying your own area of interest.
-
-
-- **GTFS data**:
-  - [Transitfeeds](https://transitfeeds.com/) website. Easy to navigate and find GTFS data for different countries and cities. Includes current and historical GTFS data. Notice: The site will be deprecated in the future.
-  - [Mobility Database](https://database.mobilitydata.org) website. Will eventually replace TransitFeeds.
-  - [Transitland](https://www.transit.land/operators) website. Find data based on country, operator or feed name. Includes current and historical GTFS data.
-
-### Sample datasets
-
-In the following tutorial, we use various open source datasets:
-- The point dataset for Helsinki has been obtained from [Helsinki Region Environmental Services](https://www.hsy.fi/en/environmental-information/open-data/avoin-data---sivut/population-grid-of-helsinki-metropolitan-area/) (HSY) licensed under a Creative Commons By Attribution 4.0.
-- The street network for Helsinki is a cropped and filtered extract of OpenStreetMap (© OpenStreetMap contributors, [ODbL license](https://www.openstreetmap.org/copyright))
-- The GTFS transport schedule dataset for Helsinki is a cropped and minimised copy of Helsingin seudun liikenne’s (HSL) open dataset ([Creative Commons BY 4.0](https://www.hsl.fi/hsl/avoin-data#aineistojen-kayttoehdot)).
-<!-- #endregion -->
-
-## Installation
-
-Before you can start using `r5py`, you need to install it and a few libraries. Check [installation instructions](installation) for more details.
-
-
-## Configuring `r5py` before using it
-
-It is possible to configure `r5py` in a few different ways (see [configuration instructions](configuration) for details). One of the options that you most likely want to adjust, is **configuring how much memory** (RAM) `r5py` will consume during the calculations. `r5py` runs a powerful Java engine under the hood, and by default it will use **80 % of the available memory** for doing the calculations. However, you can easily adjust this.
-
-If you want to allocate, e.g., a maximum of 5 Gb of RAM for the tool, you can do so by running:
+# All-to-all Travel-Time Matrices
 
 ```{code-cell}
-import sys
-sys.argv.append(["--max-memory", "5G"])
+:tags: ["remove-input", "remove-output"]
+
+# this cell is hidden from output
+# it’s used to set sys.path to point to the local repo,
+# and to define a `DATA_DIRECTORY` pathlib.Path
+import pathlib
+import sys 
+
+NOTEBOOK_DIRECTORY = pathlib.Path().resolve()
+DOCS_DIRECTORY = NOTEBOOK_DIRECTORY.parent.parent
+DATA_DIRECTORY = DOCS_DIRECTORY / "_static" / "data"
+R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
+sys.path.insert(0, str(R5PY_DIRECTORY))
 ```
 
-By running this, `r5py` will use **at maximum** 5 Gb of memory. However, it does not mean that the tool will necessary use all of this memory if it does not need it.
-
-:::{important}
-Notice that changing the amount of allocated memory should alway be done as the first thing in your script, i.e. it should be run **before** importing `r5py`.
-:::
-
+```{code-cell}
+with open("/tmp/d", "w") as f:
+    print(DATA_DIRECTORY, file=f)
+```
 
 ## Getting started with `r5py`
 
@@ -156,20 +70,6 @@ origin.explore(color="blue", max_zoom=14, marker_kwds={"radius": 12})
 
 Virtually all operations of `r5py` require a transport network. In this example, we use data from Helsinki metropolitan area, which you can find in the source code repository of r5py in `docs/data/` [(see here)](https://github.com/r5py/r5py/tree/main/docs/data). To import the street and public transport networks, instantiate an `r5py.TransportNetwork` with the file paths to the OSM extract and the GTFS files:
 <!-- #endregion -->
-
-```{code-cell}
-:tags: ["remove-input", "remove-output"]
-
-# this cell is hidden from output
-# it’s used to set sys.path to point to the local repo
-import pathlib
-import sys
-
-NOTEBOOK_DIRECTORY = pathlib.Path().resolve()
-DATA_DIRECTORY = NOTEBOOK_DIRECTORY.parent / "_static" / "data"
-R5PY_DIRECTORY = NOTEBOOK_DIRECTORY.parent.parent / "src"
-sys.path.insert(0, str(R5PY_DIRECTORY))
-```
 
 ```{code-cell}
 from r5py import TransportNetwork

@@ -30,15 +30,15 @@ python -m r5py --help
 ## Using command line options in a script or notebook
 
 If you use **r5py** in a script, or run it from a notebook and don’t want to rely on a
-configuration file, you can set command line arguments *before* importing r5py::
+configuration file, you can set command line arguments ***before*** *importing r5py*:
 
 ```python
 import sys
-sys.argv.append(["--max-memory", "12G"])
+sys.argv.append(["--max-memory", "99%"])
 import r5py
 ```
 
-From the [table below](configuration-options) , look up the available
+From the [table below](configuration-options), look up the available
 options from the *command line argument* column.
 
 

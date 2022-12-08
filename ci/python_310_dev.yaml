@@ -21,12 +21,13 @@ dependencies:
     - gitpython
     - jupyterlab
     - jupyterlab-myst
-    - jupytext
+    - jupytext[myst]
     - mapclassify
     - matplotlib
     - myst-nb
     - nbsphinx
     - nbstripout
+    - openjdk
     - pytest
     - pytest-asyncio
     - pytest-cov

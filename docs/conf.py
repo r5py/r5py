@@ -89,3 +89,10 @@ nb_execution_mode = "force"
 nb_execution_timeout = 120  # needed, e.g., when matplotlib updates its font cache
 nb_execution_raise_on_error = True  # fail instead of hiding the error in logs
 nb_execution_show_tb = True  # and show the error
+
+
+# debugging rtd
+import json
+import os
+
+print(json.dumps(dict(os.environ), indent=4, sort_keys=True))

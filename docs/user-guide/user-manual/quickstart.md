@@ -1,17 +1,19 @@
 ---
-kernelspec:
-  name: python3
-  display_name: python3
 jupytext:
   text_representation:
     extension: .md
     format_name: myst
-    format_version: '0.13'
+    format_version: 0.13
     jupytext_version: 1.14.1
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
 ---
 
-
 # Quickstart
+
++++ {"jupyter": {"source_hidden": true}}
 
 :::{toctree}
 :maxdepth: 1
@@ -25,10 +27,12 @@ configuration
 advanced-usage
 :::
 
-
 ```{code-cell}
-:tags: ["remove-input", "remove-output"]
-
+---
+jupyter:
+  source_hidden: true
+tags: [remove-input, remove-output]
+---
 # this cell is hidden from output
 # it’s used to set sys.path to point to the local repo,
 # and to define a `DATA_DIRECTORY` pathlib.Path
@@ -43,8 +47,6 @@ R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
 sys.path.insert(0, str(R5PY_DIRECTORY))
 ```
 
-## Getting started with `r5py`
-
 Next, we will learn how to calculate travel times with `r5py` between locations spread around the city center area of Helsinki, Finland.
 
 ### Load the origin and destination data
@@ -54,7 +56,7 @@ Let's start by downloading a sample point dataset into a geopandas `GeoDataFrame
 ```{code-cell}
 import geopandas
 
-points_url = "https://github.com/r5py/r5py/raw/main/docs/data/Helsinki/population_points_2020.gpkg"
+points_url = "https://github.com/r5py/r5py/raw/main/docs/data/Helsinki/population_grid_2020.gpkg"
 points = geopandas.read_file(points_url)
 points.head()
 ```
@@ -64,13 +66,14 @@ The `points` GeoDataFrame contains a few columns, namely `id`, `population` and 
 To get a better sense of the data, let's create a map that shows the locations of the points and visualise the number of people living in each cell (the cells are represented by their centre point):
 
 ```{code-cell}
-points.explore("population", cmap="Reds", marker_kwds={"radius": 12})
+points.explore("population", cmap="Reds")
 ```
 
 Let's pick one of these points to represent our **origin** and store it in a separate GeoDataFrame:
 
 ```{code-cell}
 origin = points.loc[points["id"] == 54].copy()
+origin.geometry = origin.geometry.centroid
 origin.explore(color="blue", max_zoom=14, marker_kwds={"radius": 12})
 ```
 
@@ -120,7 +123,6 @@ travel_time_matrix_computer = TravelTimeMatrixComputer(
     departure=datetime.datetime(2022,2,22,8,30),
     transport_modes=[TransitMode.TRANSIT, LegMode.WALK]
 )
-
 ```
 
 Running this initializes the `TravelTimeMatrixComputer`, but any calculations were not done yet.
@@ -151,7 +153,6 @@ join.explore("travel_time", cmap="Greens", marker_kwds={"radius": 12})
 Running the calculations between all points in our sample dataset can be done in a similar manner as calculating the travel times from one origin to all destinations.
 Since, calculating these kind of all-to-all travel time matrices is quite typical when doing accessibility analyses, it is actually possible to calculate a cross-product between all points just by using the `origins` parameter (i.e. without needing to specify a separate set for destinations). `r5py` will use the same points as destinations and produce a full set of origins and destinations:
 
-
 ```{code-cell}
 travel_time_matrix_computer = TravelTimeMatrixComputer(
     transport_network,
@@ -173,7 +174,7 @@ len(travel_time_matrix_all)
 
 As we can see from the outputs above, now we have calculated travel times between all points (n=92) in the study area. Hence, the resulting DataFrame has almost 8500 rows (92x92=8464). Based on these results, we can for example calculate the median travel time to or from a certain point, which gives a good estimate of the overall accessibility of the location in relation to other points:
 
-```{code-cell} tags=[]
+```{code-cell}
 median_times = travel_time_matrix_all.groupby("from_id")["travel_time"].median()
 median_times
 ```
@@ -193,62 +194,4 @@ overall_access.head()
 
 ```{code-cell}
 overall_access.explore("travel_time", cmap="Blues", scheme="natural_breaks", k=4, marker_kwds={"radius": 12})
-```
-
-In our study area, there seems to be a bit poorer accessibility in the Southern areas and on the edges of the region (i.e. we witness a classic edge-effect here).
-
-
-## Advanced usage
-
-### Compute travel times with a detailed breakdown of the routing results
-
-
-In case you are interested in more detailed routing results, you can use a `DetailedItinerariesComputer` instead of the `TravelTimeMatrixComputer`. This will provide roughly the same information as in the previous examples, but it also brings more detailed information about the routes. `DetailedItinerariesComputer` produces information about the used routes for each origin-destination pair, as well as total time disaggregated by access, waiting, in-vehicle and transfer times:
-
-```{code-cell}
-from r5py import DetailedItinerariesComputer
-
-detailed_itineraries_computer = DetailedItinerariesComputer(
-    transport_network,
-    origins=origin,
-    destinations=points,
-    departure=datetime.datetime(2022,2,22,8,30),
-    transport_modes=[TransitMode.TRANSIT, LegMode.WALK],
-)
-travel_time_matrix_detailed = detailed_itineraries_computer.compute_travel_times()
-travel_time_matrix_detailed.head()
-```
-
-As you can see, the result contains much more information than earlier, see the following table for explanations:
-
-| Column        | Description                                                          | Data type |
-| ------------- | -------------------------------------------------------------------- | --------- |
-| **routes**        | The route-ids (lines) used during the trip                           | list      |
-| **board_stops**   | The stop-ids of the boarding stops                                   | list      |
-| **alight_stops**  | The stop-ids of the alighting stops                                  | list      |
-| **ride_times**    | In vehicle ride times of individual journey legs                     | list      |
-| **access_time**   | The time it takes for the "first mile" of a trip                     | float     |
-| **egress_time**   | The time it takes for the "last mile" of a trip                      | float     |
-| **transfer_time** | The time it takes to transfer from vechile to another                | float     |
-| **wait_times**    | The time(s) it take to wait for the vehicle at a stop                | list      |
-| **total_time**    | Sum(ride_times, access_time, egress_time, transfer_time, wait_times) | float     |
-| **n_iterations**  | Number of iterations used for calculating the travel times           | int       |
-
-
-
-### Compute travel times for different percentiles
-
-Because `r5py` calculates travel times for all possible transit departure possibilities within an hour (with one minute frequency), we basically get a distribution of travel times. It is possible to gather and return information about the travel times at different percentiles of this distribution based on all computed trips (sorted from the fastest to slowest connections). By default, the returned time in `r5py` is the median travel time (i.e. `50`). You can access these percentiles by using a parameter `percentiles` which accepts a list of integers representing different percentiles, such as `[25, 50, 75]` which returns the travel times at those percentiles:
-
-```{code-cell}
-travel_time_matrix_computer = TravelTimeMatrixComputer(
-    transport_network,
-    origins=origin,
-    destinations=points,
-    departure=datetime.datetime(2022,2,22,8,30),
-    transport_modes=[TransitMode.TRANSIT, LegMode.WALK],
-    percentiles=[25, 50, 75],
-)
-travel_time_matrix_detailed = travel_time_matrix_computer.compute_travel_times()
-travel_time_matrix_detailed.head()
 ```

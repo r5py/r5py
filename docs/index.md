@@ -21,7 +21,6 @@ incorporate other functionalities from R5.
 :hidden:
 
 user-guide/installation/installation
-user-guide/configuration
 User Manual <user-guide/user-manual/quickstart>
 user-guide/citation
 :::

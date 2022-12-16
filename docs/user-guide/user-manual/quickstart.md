@@ -21,6 +21,7 @@ jupytext:
 self
 data-requirements
 travel-time-matrices
+configuration
 advanced-usage
 :::
 

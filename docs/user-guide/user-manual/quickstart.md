@@ -46,7 +46,7 @@ sys.path.insert(0, str(R5PY_DIRECTORY))
 
 Next, we will learn how to calculate travel times with `r5py` between locations spread around the city center area of Helsinki, Finland.
 
-### Load the origin and destination data
+## Load the origin and destination data
 
 Let's start by downloading a sample point dataset into a geopandas `GeoDataFrame` that we can use as our origin and destination locations. For the sake of this exercise, we have prepared a grid of points covering parts of Helsinki. The point data also contains the number of residents of each 250 meter cell:
 
@@ -80,7 +80,7 @@ folium.Marker((RAILWAY_STATION.y, RAILWAY_STATION.x)).add_to(map)
 map
 ```
 
-### Load transport network
+## Load transport network
 
 Virtually all operations of `r5py` require a transport network. In this example, we use data from Helsinki metropolitan area, which you can find in the source code repository of r5py in `docs/data/` [(see here)](https://github.com/r5py/r5py/tree/main/docs/data). To import the street and public transport networks, instantiate an `r5py.TransportNetwork` with the file paths to the OSM extract and the GTFS files:
 
@@ -98,7 +98,7 @@ transport_network = TransportNetwork(
 At this stage, `r5py` has created the routable transport network and it is stored in the `transport_network` variable. We can now start using this network for doing the travel time calculations.
 
 
-### Compute travel time matrix from one to all locations
+## Compute travel time matrix from one to all locations
 
 A travel time matrix is a dataset detailing the travel costs (e.g., time) between given locations (origins and destinations) in a study area. To compute a travel time matrix with `r5py` based on public transportation, we first need to initialize an `r5py.TravelTimeMatrixComputer` object. As inputs, we pass following arguments for the `TravelTimeMatrixComputer`:
 - `transport_network`, which we created in the previous step representing the routable transport network.
@@ -163,7 +163,7 @@ Now we have the travel times attached to each point, and we can easily visualize
 join.explore("travel_time", cmap="Greens", marker_kwds={"radius": 12})
 ```
 
-### Compute travel time matrix from all to all locations
+## Compute travel time matrix from all to all locations
 
 Running the calculations between all points in our sample dataset can be done in a similar manner as calculating the travel times from one origin to all destinations.
 Since, calculating these kind of all-to-all travel time matrices is quite typical when doing accessibility analyses, it is actually possible to calculate a cross-product between all points just by using the `origins` parameter (i.e. without needing to specify a separate set for destinations). `r5py` will use the same points as destinations and produce a full set of origins and destinations:

@@ -87,5 +87,4 @@ autoclass_content = "init"
 
 nb_execution_mode = "force"
 nb_execution_timeout = 120  # needed, e.g., when matplotlib updates its font cache
-nb_execution_raise_on_error = True  # fail instead of hiding the error in logs
-nb_execution_show_tb = True  # and show the error
+nb_execution_show_tb = True  # show traceback in case of error

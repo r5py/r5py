@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.1
+    jupytext_version: 1.14.4
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -28,16 +28,13 @@ advanced-usage
 :::
 
 ```{code-cell}
----
-jupyter:
-  source_hidden: true
-tags: [remove-input, remove-output]
----
+:tags: [remove-input, remove-output]
+
 # this cell is hidden from output
 # it’s used to set sys.path to point to the local repo,
 # and to define a `DATA_DIRECTORY` pathlib.Path
 import pathlib
-import sys 
+import sys
 
 NOTEBOOK_DIRECTORY = pathlib.Path().resolve()
 DOCS_DIRECTORY = NOTEBOOK_DIRECTORY.parent.parent
@@ -56,9 +53,8 @@ Let's start by downloading a sample point dataset into a geopandas `GeoDataFrame
 ```{code-cell}
 import geopandas
 
-points_url = "https://github.com/r5py/r5py/raw/main/docs/data/Helsinki/population_grid_2020.gpkg"
-points = geopandas.read_file(points_url)
-points.head()
+population_grid = geopandas.read_file(DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg")
+population_grid.head()
 ```
 
 The `points` GeoDataFrame contains a few columns, namely `id`, `population` and `geometry`. The `id` column with unique values and `geometry` columns are required for `r5py` to work. If your input point dataset does not have an `id` column with unique values, `r5py` will throw an error.
@@ -66,15 +62,22 @@ The `points` GeoDataFrame contains a few columns, namely `id`, `population` and 
 To get a better sense of the data, let's create a map that shows the locations of the points and visualise the number of people living in each cell (the cells are represented by their centre point):
 
 ```{code-cell}
-points.explore("population", cmap="Reds")
+map = population_grid.explore("population", cmap="Reds")
+map
 ```
 
 Let's pick one of these points to represent our **origin** and store it in a separate GeoDataFrame:
 
 ```{code-cell}
-origin = points.loc[points["id"] == 54].copy()
-origin.geometry = origin.geometry.centroid
-origin.explore(color="blue", max_zoom=14, marker_kwds={"radius": 12})
+import shapely.geometry
+RAILWAY_STATION = shapely.geometry.Point(24.941521, 60.170666)
+```
+
+```{code-cell}
+import folium
+
+folium.Marker((RAILWAY_STATION.y, RAILWAY_STATION.x)).add_to(map)
+map
 ```
 
 ### Load transport network
@@ -85,9 +88,9 @@ Virtually all operations of `r5py` require a transport network. In this example,
 from r5py import TransportNetwork
 
 transport_network = TransportNetwork(
-    f"{DATA_DIRECTORY}/Helsinki/kantakaupunki.osm.pbf",
+    DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf",
     [
-        f"{DATA_DIRECTORY}/Helsinki/GTFS.zip"
+        DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
     ]
 )
 ```
@@ -113,15 +116,27 @@ Now, we will first create a `travel_time_matrix_computer` instance as described 
 
 ```{code-cell}
 import datetime
-from r5py import TravelTimeMatrixComputer, TransitMode, LegMode
+import r5py
 
+origins = geopandas.GeoDataFrame(
+        {
+            "id": [1],
+            "geometry": [RAILWAY_STATION]
+        },
+        crs="EPSG:4326",
+)
+destinations = population_grid
+destinations.geometry = destinations.geometry.centroid
 
-travel_time_matrix_computer = TravelTimeMatrixComputer(
+travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
     transport_network,
-    origins=origin,
-    destinations=points,
-    departure=datetime.datetime(2022,2,22,8,30),
-    transport_modes=[TransitMode.TRANSIT, LegMode.WALK]
+    origins=origins,
+    destinations=destinations,
+    departure=datetime.datetime(2022, 2, 22, 8, 30),
+    transport_modes=[
+        r5py.TransitMode.TRANSIT,
+        r5py.LegMode.WALK,
+    ],
 )
 ```
 

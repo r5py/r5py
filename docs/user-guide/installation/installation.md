@@ -90,11 +90,7 @@ run:
 
 ```{code} sh
 conda install --channel conda-forge r5py
-conda activate r5py-env
 ```
-
-After this, you can start using the `r5py` library in the environment, e.g., using
-[JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) (installed as part of the environment).
 
 
 ## Install using `pip`

@@ -2,7 +2,7 @@
 
 ## Configuration via config files
 
-**R5py** can be configured using a configuration file `r5py.yml`, for which the
+*R5py* can be configured using a configuration file `r5py.yml`, for which the
 package searches in the following paths:
 
 - On Unix-like operating systems (such as most Linux and BSD distributions,
@@ -19,7 +19,7 @@ package searches in the following paths:
 
 ## Configuration from the command line
 
-When running **r5py** from the command line, you can supply command line
+When running *r5py* from the command line, you can supply command line
 arguments.  To show available options, consult the [table
 below](configuration-options), or run:
 
@@ -30,7 +30,7 @@ python -m r5py --help
 
 ## Using command line options in a script or notebook
 
-If you use **r5py** in a script, or run it from a notebook and don’t want to
+If you use *r5py* in a script, or run it from a notebook and don’t want to
 rely on a configuration file, you can set command line arguments ***before***
 *importing r5py*:
 
@@ -89,7 +89,7 @@ stackoverflow
 discussion](https://stackoverflow.com/questions/14763079/what-are-the-xms-and-xmx-parameters-when-starting-jvm)
 for details). 
 
-The tasks carried out by **R5** under the hood of **r5py** are fairly
+The tasks carried out by *R5* under the hood of *r5py* are fairly
 memory-intensive, which is why, by default, r5py allows the JVM to grant up to
 80% of total memory to R5 (but always leaving at least 2 GiB to the system and
 other processes).
@@ -113,8 +113,8 @@ max-memory: 12G
 
 ### Using a custom installation of R5
 
-For some use cases, it can be useful to use a local copy of **R5**, rather than
-the one downloaded by **r5py**, for instance, in order to apply custom patches
+For some use cases, it can be useful to use a local copy of *R5*, rather than
+the one downloaded by *r5py*, for instance, in order to apply custom patches
 to extend or modify R5’s functionality, or to force the use of a certain
 version for longitudinal comparability. 
 

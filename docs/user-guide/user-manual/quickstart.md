@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.4
+    jupytext_version: 1.14.1
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -27,11 +27,11 @@ configuration
 advanced-usage
 :::
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [remove-input, remove-output]
 
-# this cell is hidden from output
-# it’s used to set sys.path to point to the local repo,
+# this cell is hidden from READTHEDOCS output
+# it’s used to set sys.path to point to the local r5py source code,
 # and to define a `DATA_DIRECTORY` pathlib.Path
 import pathlib
 import sys
@@ -44,13 +44,13 @@ R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
 sys.path.insert(0, str(R5PY_DIRECTORY))
 ```
 
-Next, we will learn how to calculate travel times with `r5py` between locations spread around the city center area of Helsinki, Finland.
+The core functionality of *r5py* is to compute travel time matrices for large extents, such as entire cities or countries. This page walks you through the - pleasantly few - steps to do so.
 
 ## Load the origin and destination data
 
 Let's start by downloading a sample point dataset into a geopandas `GeoDataFrame` that we can use as our origin and destination locations. For the sake of this exercise, we have prepared a grid of points covering parts of Helsinki. The point data also contains the number of residents of each 250 meter cell:
 
-```{code-cell}
+```{code-cell} ipython3
 import geopandas
 
 population_grid = geopandas.read_file(DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg")
@@ -61,19 +61,19 @@ The `points` GeoDataFrame contains a few columns, namely `id`, `population` and 
 
 To get a better sense of the data, let's create a map that shows the locations of the points and visualise the number of people living in each cell (the cells are represented by their centre point):
 
-```{code-cell}
+```{code-cell} ipython3
 map = population_grid.explore("population", cmap="Reds")
 map
 ```
 
 Let's pick one of these points to represent our **origin** and store it in a separate GeoDataFrame:
 
-```{code-cell}
+```{code-cell} ipython3
 import shapely.geometry
 RAILWAY_STATION = shapely.geometry.Point(24.941521, 60.170666)
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 import folium
 
 folium.Marker((RAILWAY_STATION.y, RAILWAY_STATION.x)).add_to(map)
@@ -84,7 +84,7 @@ map
 
 Virtually all operations of `r5py` require a transport network. In this example, we use data from Helsinki metropolitan area, which you can find in the source code repository of r5py in `docs/data/` [(see here)](https://github.com/r5py/r5py/tree/main/docs/data). To import the street and public transport networks, instantiate an `r5py.TransportNetwork` with the file paths to the OSM extract and the GTFS files:
 
-```{code-cell}
+```{code-cell} ipython3
 from r5py import TransportNetwork
 
 transport_network = TransportNetwork(
@@ -114,19 +114,20 @@ A travel time matrix is a dataset detailing the travel costs (e.g., time) betwee
 
 Now, we will first create a `travel_time_matrix_computer` instance as described above:
 
-```{code-cell}
+```{code-cell} ipython3
 import datetime
 import r5py
 
-origins = geopandas.GeoDataFrame(
+origins = population_grid.copy()
+origins.geometry = origins.geometry.centroid
+
+destinations = geopandas.GeoDataFrame(
         {
             "id": [1],
             "geometry": [RAILWAY_STATION]
         },
         crs="EPSG:4326",
 )
-destinations = population_grid
-destinations.geometry = destinations.geometry.centroid
 
 travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
     transport_network,
@@ -143,70 +144,22 @@ travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
 Running this initializes the `TravelTimeMatrixComputer`, but any calculations were not done yet.
 To actually run the computations, we need to call `.compute_travel_times()` on the instance, which will calculate the travel times between all points:
 
-```{code-cell}
-travel_time_matrix = travel_time_matrix_computer.compute_travel_times()
-travel_time_matrix.head()
+```{code-cell} ipython3
+travel_times = travel_time_matrix_computer.compute_travel_times()
+travel_times.head()
 ```
 
 As a result, this returns a `pandas.DataFrame` which we stored in the `travel_time_matrix` variable. The values in the `travel_time` column are travel times in minutes between the points identified by `from_id` and `to_id`. As you can see, the `id` value in the `from_id` column is the same for all rows because we only used one origin location as input.
 
 To get a better sense of the results, let's create a travel time map based on our results. We can do this easily by making a table join between the `points` GeoDataFrame and the `travel_time_matrix`. The key in the `travel_time_matrix` table is the column `to_id` and the corresponding key in `points` GeoDataFrame is the column `id`:
 
-```{code-cell}
-join = points.merge(travel_time_matrix, left_on="id", right_on="to_id")
-join.head()
+```{code-cell} ipython3
+travel_times = population_grid.merge(travel_times, left_on="id", right_on="from_id")
+travel_times.head()
 ```
 
 Now we have the travel times attached to each point, and we can easily visualize them on a map:
 
-```{code-cell}
-join.explore("travel_time", cmap="Greens", marker_kwds={"radius": 12})
-```
-
-## Compute travel time matrix from all to all locations
-
-Running the calculations between all points in our sample dataset can be done in a similar manner as calculating the travel times from one origin to all destinations.
-Since, calculating these kind of all-to-all travel time matrices is quite typical when doing accessibility analyses, it is actually possible to calculate a cross-product between all points just by using the `origins` parameter (i.e. without needing to specify a separate set for destinations). `r5py` will use the same points as destinations and produce a full set of origins and destinations:
-
-```{code-cell}
-travel_time_matrix_computer = TravelTimeMatrixComputer(
-    transport_network,
-    origins=points,
-    departure=datetime.datetime(2022,2,22,8,30),
-    transport_modes=[TransitMode.TRANSIT, LegMode.WALK]
-)
-travel_time_matrix_all = travel_time_matrix_computer.compute_travel_times()
-travel_time_matrix_all.head()
-```
-
-```{code-cell}
-travel_time_matrix_all.tail()
-```
-
-```{code-cell}
-len(travel_time_matrix_all)
-```
-
-As we can see from the outputs above, now we have calculated travel times between all points (n=92) in the study area. Hence, the resulting DataFrame has almost 8500 rows (92x92=8464). Based on these results, we can for example calculate the median travel time to or from a certain point, which gives a good estimate of the overall accessibility of the location in relation to other points:
-
-```{code-cell}
-median_times = travel_time_matrix_all.groupby("from_id")["travel_time"].median()
-median_times
-```
-
-To estimate, how long does it take in general to travel between locations in our study area (i.e. what is the baseline accessibility in the area), we can calculate the mean (or median) of the median travel times showing that it is approximately 22 minutes:
-
-```{code-cell}
-median_times.mean()
-```
-
-Naturally, we can also visualize these values on a map:
-
-```{code-cell}
-overall_access = points.merge(median_times.reset_index(), left_on="id", right_on="from_id")
-overall_access.head()
-```
-
-```{code-cell}
-overall_access.explore("travel_time", cmap="Blues", scheme="natural_breaks", k=4, marker_kwds={"radius": 12})
+```{code-cell} ipython3
+travel_times.explore("travel_time", cmap="Greens")
 ```

@@ -66,6 +66,7 @@ html_title = ""
 html_short_title = "r5py"
 
 html_static_path = ["_static"]
+html_css_files = ["custom.css"]
 html_last_updated_fmt = "%d %B %Y"
 
 html_theme = "sphinx_book_theme"

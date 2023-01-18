@@ -20,8 +20,8 @@ incorporate other functionalities from R5.
 :maxdepth: 1
 :hidden:
 
-user-guide/installation/installation
 User Manual <user-guide/user-manual/quickstart>
+user-guide/installation/installation
 user-guide/citation
 :::
 

@@ -33,9 +33,11 @@ author = "r5py contributors"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.napoleon",
     "myst_nb",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
+    "sphinxcontrib.images",
 ]
 
 templates_path = ["_templates"]
@@ -61,7 +63,8 @@ myst_heading_anchors = 3  # add #id to h1-h3
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_logo = "_static/r5py_blue.svg"
+html_logo = "_static/images/r5py_blue.svg"
+html_favicon = "_static/images/favicon.png"
 html_title = ""
 html_short_title = "r5py"
 
@@ -85,6 +88,13 @@ html_theme_options = {
 
 # include __init__() in API doc
 autoclass_content = "init"
+
+intersphinx_mapping = {
+    "geopandas": ("https://geopandas.org/en/stable/", None),
+    "pandas": ("https://pandas.pydata.org/docs/", None),
+    "python": ("https://docs.python.org/3/", None),
+    "shapely": ("https://shapely.readthedocs.io/en/stable/", None),
+}
 
 nb_execution_mode = "force"
 nb_execution_timeout = 120  # needed, e.g., when matplotlib updates its font cache

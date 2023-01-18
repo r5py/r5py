@@ -35,3 +35,4 @@ dependencies:
     - shapely
     - sphinx
     - sphinx-book-theme
+    - sphinxcontrib-images

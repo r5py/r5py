@@ -1,4 +1,13 @@
-# r5py: rapid realistic routing with Python
+# *R⁵py* – rapid realistic routing with Python
+
+
+:::{thumbnail} _static/images/HowWellDoesPublicTransportWorkForSlowWalkers_1200x720px.png
+:alt: A map showing the Helsinki metropolitan area, and how walking slowly changes the efficieny of the public transport network.
+:title: A travel time matrix made with <em>r5py</em>
+:show_caption: 1
+:class: align-default
+:::
+
 
 **R5py** is a Python library for rapid realistic routing on multimodal
 transport networks (walk, bike, public transport and car).  It provides a

@@ -64,7 +64,12 @@ import shapely.geometry
 RAILWAY_STATION = shapely.geometry.Point(24.941521, 60.170666)
 ```
 
-The core functionality of *r5py* is to compute travel time matrices for large extents, such as entire cities or countries. This page walks you through the - pleasantly few - steps to do so. In our example below, we work with data from Helsinki, the capital of Finland. We calculate the travel times on public transport or on foot from the centre points of a population grid data set to the city’s main railway stations. 
+One of the core functionalities of *r5py* is to compute travel time matrices for
+large extents, such as entire cities or countries. This page walks you through
+the - pleasantly few - steps to do so. In our example below, we work with data
+from Helsinki, the capital of Finland. We calculate the travel times on public
+transport or on foot from the centre points of a population grid data set to the
+city’s main railway stations.
 
 ## Origins and destination
 
@@ -137,7 +142,7 @@ needed:
   departure points of routes, 
 - `destinations`, a `geopandas.GeoDataFrame` with one or more points
   representing the destinations of routes, 
-- `departure`, a [`datetime.datetime`](docs.python.org/3/library/datetime.html)
+- `departure`, a [`datetime.datetime`](https://docs.python.org/3/library/datetime.html)
   refering to the departure date and time for routing, and
 - `transport_modes`, a list of `r5py.TransitMode`s and `r5py.LegMode`s which
   determines the travel modes that will be used in the calculations. 

@@ -48,6 +48,10 @@ To find available options, consult the *command line argument* column of the
 
 ### Overview
 
+% IDEA: would it be good to use executablebook’s ‘option lists’?
+% https://raw.githubusercontent.com/executablebooks/sphinx-book-theme/master/docs/reference/kitchen-sink/lists.rst
+% https://sphinx-book-theme.readthedocs.io/en/stable/reference/kitchen-sink/lists-and-tables.html#option-lists
+
 :::{list-table}
 :header-rows: 1
 :name: configuration-options

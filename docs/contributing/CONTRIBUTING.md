@@ -1,4 +1,4 @@
-# Contributing to r5py
+# Contributing to *r5py*
 
 Contributions of any kind to r5py are more than welcome. That does not mean
 new code only, but also improvements of documentation and user guide, additional

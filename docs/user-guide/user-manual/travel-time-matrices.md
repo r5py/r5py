@@ -11,7 +11,7 @@ jupytext:
 ---
 
 
-# Travel-Time Matrices
+# Travel-time matrices
 
 ```{code-cell}
 :tags: ["remove-input", "remove-output"]

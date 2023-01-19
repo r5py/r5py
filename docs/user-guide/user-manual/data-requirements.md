@@ -2,39 +2,61 @@
 
 ## Data for creating a routable network
 
-When calculating travel times with `r5py`, you typically need a couple of
+When calculating travel times with *r5py*, you typically need two types of
 datasets:
 
-- **A road network dataset from OpenStreetMap** (OSM) in Protocolbuffer Binary
-  (`.pbf`) format:
-  - This data is used for finding the fastest routes and calculating the travel
-    times based on walking, cycling and driving. In addition, this data is used
+:::::{grid} 1 1 2 2
+
+::::{grid-item-card}
+a **road network** dataset from [OpenStreetMap
+(OSM)](https://wiki.openstreetmap.org/wiki/Data) in [*Protocol Buffer Binary*
+(`.pbf`)](https://wiki.openstreetmap.org/wiki/PBF_Format) format:
+
+These data are used for finding the fastest routes and calculating the travel
+times for walking, cycling and driving. In addition, these data are used
 for walking/cycling legs between stops when routing with transit.
-  - *Hint*: Sometimes you might need modify the OSM data beforehand, e.g., by
-    cropping the data or adding special costs for travelling (e.g., for
-    considering slope when cycling/walking). When doing this, you should follow
-    the instructions on the [Conveyal
-    website](https://docs.conveyal.com/prepare-inputs#preparing-the-osm-data).
-    For adding customized costs for pedestrian and cycling analyses, see [this
-    repository](https://github.com/RSGInc/ladot_analysis_dataprep).
+::::
 
-- **A transit schedule dataset** in General Transit Feed Specification
-  (GTFS.zip) format (optional):
-   - This data contains all the necessary information for calculating travel
-     times based on public transport, such as stops, routes, trips and the
-     schedules when the vehicles are passing a specific stop. You can read about
-     the [GTFS standard here](https://developers.google.com/transit/gtfs/reference).
-   - *Hint*: `r5py` can also combine multiple GTFS files, as sometimes you
-     might have different GTFS feeds representing, e.g., the bus and metro
-     connections.
+::::{grid-item-card}
+a **transit schedule** dataset in [*General Transit Feed
+Specification*](https://en.wikipedia.org/wiki/GTFS) format (optional):
+
+These data contain all information necessary to calculate travel times on
+public transport, such as the stops, routes, trips and schedules of busses,
+trams, trains, and other vehicles.
+::::
+
+::::{grid-item}
+:columns: 12
+
+:::{admonition} Data pre-processing
+:class: hint
+
+Often, it is useful to *crop an [OSM extract](#where-to-get-these-datasets)*
+beforehand, or to *add other cost factors* to the data (e.g., to account for
+slope). Check the detailed instructions for data preparation on the [Conveyal
+website](https://docs.conveyal.com/prepare-inputs#preparing-the-osm-data), and
+use the tools in [this
+repository](https://github.com/RSGInc/ladot_analysis_dataprep) to add
+customised costs for pedestrian and cycling analyses.
+
+*r5py* can *combine multiple GTFS data sets*. This is useful when you study
+areas covered by more than one transport authority, or when data from different
+modes of transport, such as bus and metro, are available in separate GTFS
+feeds, only.
+:::
+::::
+
+:::::
 
 
-## Data for origin and destination locations
+
+## Origin and destination locations
 
 In addition to OSM and GTFS datasets, you need data that represents the origin
 and destination locations (OD-data) for routings. This data is typically stored
 in one of the geospatial data formats, such as Shapefile, GeoJSON or
-GeoPackage. As `r5py` is built on top of `geopandas`, it is easy to read
+GeoPackage. As *r5py* is built on top of `geopandas`, it is easy to read
 OD-data from various different data formats.
 
 

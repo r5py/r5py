@@ -14,6 +14,7 @@ dependencies:
     - pandas
     - psutil
     - requests
+
     # testing / dev / docs related
     - black
     - codecov
@@ -35,4 +36,5 @@ dependencies:
     - shapely
     - sphinx
     - sphinx-book-theme
+    - sphinx-design
     - sphinxcontrib-images

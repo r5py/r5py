@@ -69,10 +69,11 @@ RAILWAY_STATION = shapely.geometry.Point(24.941521, 60.170666)
 
 One of the core functionalities of *r5py* is to compute travel time matrices for
 large extents, such as entire cities or countries. This page walks you through
-the - pleasantly few - steps to do so. In our example below, we work with data
-from Helsinki, the capital of Finland. We calculate the travel times on public
-transport or on foot from the centre points of a population grid data set to the
-city’s main railway stations.
+the - pleasantly few - steps to do so.
+
+In our example below, we work with data from Helsinki, the capital of Finland.
+We calculate the travel times on public transport or on foot from the centre
+points of a population grid data set to the city’s main railway stations.
 
 
 ## Origins and destination
@@ -89,6 +90,7 @@ from the [Helsinki Region Environmental Services
 [`shapely.Point`](https://shapely.readthedocs.io/en/stable/reference/shapely.Point.html),
 its coordinates refer to Helsinki’s main railway station in the
 [`EPSG:4326`](https://spatialreference.org/ref/epsg/4326/) reference system.
+
 
 ```{code-cell}
 import folium
@@ -111,11 +113,12 @@ Virtually all operations of *r5py* require a transport network.
   [GTFS](https://en.wikipedia.org/wiki/GTFS) file.
 
 For the quickstart example, you find sample data sets in the `DATA_DIRECTORY`
-(`/docs/_static/data` in the source code repository).
+([`docs/_static/data`](https://github.com/r5py/r5py/tree/main/docs/_static/data/)
+in the source code repository).
 
 To import the street and public transport networks, instantiate an
-`r5py.TransportNetwork` with the file paths to the OSM extract and the GTFS
-files:
+{class}`r5py.TransportNetwork` with the file paths to the OSM extract and the
+GTFS files:
 
 ```{code-cell}
 import r5py
@@ -129,36 +132,32 @@ transport_network = r5py.TransportNetwork(
 ```
 
 At this stage, *r5py* has created a routable transport network, that is refered
-to by the `transport_network` variable. We can now start using this network for
-travel time calculations.
+to by the `transport_network` variable. We can now use this network for travel
+time calculations.
 
 
 ## Compute a travel time matrix
 
 A travel time matrix is a dataset of the travel costs (typically, time) between
 given locations (origins and destinations) in a study area.  In *r5py*,
-{class}`r5py.TravelTimeMatrixComputer`s
-calculate these matrices. A `TravelTimeMatrixComputer`, once initialised, can
-be used multiple times with adjusted parameters, such as a different departure
-time.
+{class}`r5py.TravelTimeMatrixComputer`s calculate these matrices. A
+{class}`TravelTimeMatrixComputer<r5py.TravelTimeComputer>`, once initialised,
+can be used multiple times with adjusted parameters, such as a different
+departure time.
 
-To initialise a `TravelTimeMatrixComputer`, the following input arguments are
-needed:
-- a `transport_network`, such as the one we just created,
-- `origins`, a {class}`geopandas.GeoDataFrame` with one or more points representing the
-  departure points of routes, 
+A {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` needs (at least)
+the following input arguments:
+- a `transport_network` ({class}`r5py.TransportNetwork`), such as the one we
+  just created,
+- `origins`, a {class}`geopandas.GeoDataFrame` with one or more points
+  representing the departure points of routes, 
 - `destinations`, a {class}`geopandas.GeoDataFrame` with one or more points
   representing the destinations of routes, 
 - `departure`, a {class}`datetime.datetime`
   refering to the departure date and time for routing, and
-- `transport_modes`, a list of {class}`r5py.TransitMode`s and {class}`r5py.LegMode`s which
-  determines the travel modes that will be used in the calculations. 
+- `transport_modes`, a list of {class}`r5py.TransitMode`s and
+  {class}`r5py.LegMode`s: the travel modes that will be used in the calculations
 
-:::{tip}
-
-To show all available transport modes, run `help(r5py.TransitMode)` or
-`help(r5py.LegMode)` in a Python console
-:::
 
 ```{code-cell}
 :tags: ["remove-output"]
@@ -192,9 +191,17 @@ travel_times = travel_time_matrix_computer.compute_travel_times()
 travel_times.head()
 ```
 
-The result is a {class}`pandas.DataFrame`. The values in the `travel_time` column are travel times in minutes between the points identified by `from_id` and `to_id` (the IDs of the origins and destinations, respectively). As you can see, the `id` value in the `to_id` column is the same for all rows because our example used only one destination point (the railway stations).
+The result of {meth}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>` is a
+{class}`pandas.DataFrame`. The values in its `travel_time` column are travel
+times in minutes between the points identified by `from_id` and `to_id` (the
+IDs of the origins and destinations, respectively). As you can see, the `id`
+value in the `to_id` column is the same for all rows because our example used
+only one destination point (the railway station).
 
-To plot the results in a map, *join* the `travel_times` with the input data set `population_grid`:
+To quickly plot the results in a map, *join* the `travel_times` with the input
+data set `population_grid` and
+{meth}`explore()<geopandas.GeoDataFrame.explore()>` the joint data frame’s
+data.
 
 ```{code-cell}
 travel_times = population_grid.merge(travel_times, left_on="id", right_on="from_id")

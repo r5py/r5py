@@ -3,6 +3,7 @@ GitPython
 myst-nb
 sphinx
 sphinx-book-theme
+sphinx-design
 sphinxcontrib-images
 
 # Jupyterlab

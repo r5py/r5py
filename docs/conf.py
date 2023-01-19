@@ -38,6 +38,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
     "sphinxcontrib.images",
+    "sphinx_design",
 ]
 
 templates_path = ["_templates"]

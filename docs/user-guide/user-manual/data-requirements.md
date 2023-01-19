@@ -40,7 +40,7 @@ use the tools in [this
 repository](https://github.com/RSGInc/ladot_analysis_dataprep) to add
 customised costs for pedestrian and cycling analyses.
 
-*r5py* can *combine multiple GTFS data sets*. This is useful when you study
+*R5py* can *combine multiple GTFS data sets*. This is useful when you study
 areas covered by more than one transport authority, or when data from different
 modes of transport, such as bus and metro, are available in separate GTFS
 feeds, only.
@@ -49,18 +49,7 @@ feeds, only.
 
 :::::
 
-
-
-## Origin and destination locations
-
-In addition to OSM and GTFS datasets, you need data that represents the origin
-and destination locations (OD-data) for routings. This data is typically stored
-in one of the geospatial data formats, such as Shapefile, GeoJSON or
-GeoPackage. As *r5py* is built on top of `geopandas`, it is easy to read
-OD-data from various different data formats.
-
-
-## Where to get these datasets?
+### Where to obtain such datasets?
 
 Here are a few places from where you can download the datasets for creating the routable network:
 
@@ -77,6 +66,16 @@ Here are a few places from where you can download the datasets for creating the 
   - [Transitfeeds](https://transitfeeds.com/) website. Easy to navigate and find GTFS data for different countries and cities. Includes current and historical GTFS data. Notice: The site will be deprecated in the future.
   - [Mobility Database](https://database.mobilitydata.org) website. Will eventually replace TransitFeeds.
   - [Transitland](https://www.transit.land/operators) website. Find data based on country, operator or feed name. Includes current and historical GTFS data.
+
+
+## Origin and destination locations
+
+In addition to OSM and GTFS datasets, you need data that represents the origin
+and destination locations (OD-data) for routings. This data is typically stored
+in one of the geospatial data formats, such as Shapefile, GeoJSON or
+GeoPackage. As *r5py* is built on top of `geopandas`, it is easy to read
+OD-data from various different data formats.
+
 
 ## Sample datasets
 

@@ -97,10 +97,10 @@ you are aware of.
 ## Origin and destination locations
 
 In addition to OSM and GTFS datasets, you need data that represents the origin
-and destination locations (OD-data) of routes. These data, if stored in one of
-the many geospatial data formats, such as *GeoPackage*, *GeoJSON*, or *ESRI
-Shapefile*, can be read by {meth}`geopandas<geopandas.read_file()>` that can be
-used directly in *r5py*.
+and destination locations (OD-data) of routes. *R5py* accepts data sets as
+{class}`geopandas.GeoDataFrame`s. Use {func}`geopandas.read_file()` to read data
+sets from files in one of the many geospatial data formats, such as *GeoPackage*,
+*GeoJSON*, or *ESRI Shapefile*.
 
 
 ## Sample datasets

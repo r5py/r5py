@@ -32,7 +32,7 @@ trams, trains, and other vehicles.
 :::{admonition} Data pre-processing
 :class: hint
 
-Often, it is useful to *crop an [OSM extract](#where-to-get-these-datasets)*
+Often, it is useful to *crop an [OSM extract](#where-to-obtain-such-datasets)*
 beforehand, or to *add other cost factors* to the data (e.g., to account for
 slope). Check the detailed instructions for data preparation on the [Conveyal
 website](https://docs.conveyal.com/prepare-inputs#preparing-the-osm-data), and

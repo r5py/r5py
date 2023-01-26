@@ -52,9 +52,11 @@ feeds, only.
 ### Where to obtain such datasets?
 
 Here are a few places from where you can download the datasets for creating the
-routable network:
+routable network. This list is of course by no means comprehensive, and [you are
+very welcome to add additional data sources](/contributing/CONTRIBUTING) that
+you are aware of.
 
-#### OpenStreetMap data in PBF-format
+#### OpenStreetMap data in PBF format
 
 - [pydriosm](https://pydriosm.readthedocs.io/en/latest/quick-start.html#download-data)
   is a Python package for downloading OSM extracts from GeoFabrik and BBBike.
@@ -73,9 +75,9 @@ routable network:
   interactive map, or taken from an uploaded polygon feature.
 
 
-#### GTFS data
+#### Public transport schedules in GTFS format
 
-  - **Your local transit authority, city works, or public transport company**:
+  - *Your local transit authority, city works, or public transport company*:
     most of the time, you will find the most accurate and most up-to-date GTFS
     schedule files available locally, usually as an open-data download. If you
     cannot find a download, ask nicely, many transport authorities are happy to

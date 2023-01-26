@@ -73,7 +73,7 @@ the - pleasantly few - steps to do so.
 
 In our example below, we work with data from Helsinki, the capital of Finland.
 We calculate the travel times on public transport or on foot from the centre
-points of a population grid data set to the city’s main railway stations.
+points of all cells in a population grid data set to the city’s main railway stations.
 
 
 ## Origins and destination
@@ -94,6 +94,8 @@ its coordinates refer to Helsinki’s main railway station in the
 
 ```{code-cell}
 import folium
+import geopandas
+import shapely
 
 overview_map = population_grid.explore("population", cmap="Reds")
 folium.Marker((RAILWAY_STATION.y, RAILWAY_STATION.x)).add_to(overview_map)
@@ -117,8 +119,8 @@ For the quickstart example, you find sample data sets in the `DATA_DIRECTORY`
 in the source code repository).
 
 To import the street and public transport networks, instantiate an
-{class}`r5py.TransportNetwork` with the file paths to the OSM extract and the
-GTFS files:
+{class}`r5py.TransportNetwork` with the file paths to the OSM extract and to
+zero or more GTFS files:
 
 ```{code-cell}
 import r5py
@@ -126,7 +128,7 @@ import r5py
 transport_network = r5py.TransportNetwork(
     DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf",
     [
-        DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
+        DATA_DIRECTORY / "Helsinki" / "GTFS.zip",
     ]
 )
 ```
@@ -141,7 +143,7 @@ time calculations.
 A travel time matrix is a dataset of the travel costs (typically, time) between
 given locations (origins and destinations) in a study area.  In *r5py*,
 {class}`r5py.TravelTimeMatrixComputer`s calculate these matrices. A
-{class}`TravelTimeMatrixComputer<r5py.TravelTimeComputer>`, once initialised,
+{class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`, once initialised,
 can be used multiple times with adjusted parameters, such as a different
 departure time.
 

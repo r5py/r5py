@@ -124,6 +124,7 @@ To import the street and public transport networks, instantiate an
 zero or more GTFS files:
 
 ```{code-cell}
+:tags: ["remove-output"]
 import r5py
 
 transport_network = r5py.TransportNetwork(

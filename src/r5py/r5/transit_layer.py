@@ -37,12 +37,6 @@ class TransitLayer:
             self._start_date
         except AttributeError:
             try:
-                print(
-                    [
-                        parse_int_date(service.calendar.start_date)
-                        for service in self._transit_layer.services
-                    ]
-                )
                 self._start_date = min(
                     [
                         parse_int_date(service.calendar.start_date)

@@ -56,6 +56,7 @@ source_suffix = {
 
 myst_enable_extensions = [
     "colon_fence",
+    "deflist",
     "substitution",
 ]
 myst_heading_anchors = 3  # add #id to h1-h3
@@ -92,6 +93,7 @@ autoclass_content = "init"
 
 intersphinx_mapping = {
     "geopandas": ("https://geopandas.org/en/stable/", None),
+    "gtfslite": ("https://gtfs-lite.readthedocs.io/en/stable/", None),
     "pandas": ("https://pandas.pydata.org/docs/", None),
     "python": ("https://docs.python.org/3/", None),
     "shapely": ("https://shapely.readthedocs.io/en/stable/", None),

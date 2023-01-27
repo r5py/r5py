@@ -180,3 +180,23 @@ overall_access.explore("travel_time", cmap="Blues", scheme="natural_breaks", k=4
 ```
 
 In our study area, there seems to be a bit poorer accessibility in the Southern areas and on the edges of the region (i.e. we witness a classic edge-effect here).
+
+
+## Compute travel times for different percentiles
+
+Because `r5py` calculates travel times for all possible transit departure possibilities within an hour (with one minute frequency), we basically get a distribution of travel times. It is possible to gather and return information about the travel times at different percentiles of this distribution based on all computed trips (sorted from the fastest to slowest connections). By default, the returned time in `r5py` is the median travel time (i.e. `50`). You can access these percentiles by using a parameter `percentiles` which accepts a list of integers representing different percentiles, such as `[25, 50, 75]` which returns the travel times at those percentiles:
+
+```{code-cell}
+from r5py import TravelTimeMatrixComputer
+
+travel_time_matrix_computer = TravelTimeMatrixComputer(
+    transport_network,
+    origins=origin,
+    destinations=points,
+    departure=datetime.datetime(2022,2,22,8,30),
+    transport_modes=[TransitMode.TRANSIT, LegMode.WALK],
+    percentiles=[25, 50, 75],
+)
+travel_time_matrix_detailed = travel_time_matrix_computer.compute_travel_times()
+travel_time_matrix_detailed.head()
+```

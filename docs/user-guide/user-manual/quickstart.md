@@ -25,6 +25,7 @@ kernelspec:
 self
 data-requirements
 travel-time-matrices
+Detailed itineraries <detailed-itineraries>
 configuration
 advanced-usage
 :::
@@ -61,8 +62,8 @@ sys.path.insert(0, str(R5PY_DIRECTORY))
 import geopandas
 population_grid = geopandas.read_file(DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg")
 
-import shapely.geometry
-RAILWAY_STATION = shapely.geometry.Point(24.941521, 60.170666)
+import shapely
+RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
 ```
 
 

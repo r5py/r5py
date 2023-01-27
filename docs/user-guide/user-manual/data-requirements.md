@@ -94,13 +94,42 @@ you are aware of.
     cities. *Deprecated: will be replaced by* Mobility Database.
 
 
+:::{admonition} Check GTFS files
+:class: tip
+
+At times, it is worth to spot-check GTFS data sets downloaded from third-party
+websites for validity, and to assert that they cover the time period and
+geographic extent of a study area. 
+
+*MobilityData*’s [GTFS
+Validator](https://github.com/MobilityData/gtfs-validator) is a cross-platform
+Java tool to check file integrity, data types, and compliance with the GTFS
+standard.
+
+[*GTFS-Lite*](https://gtfs-lite.readthedocs.io/) is a Python package to read
+GTFS data sets into {class}`gtfslite.gtfs.GTFS` objects that store the
+information on stops, routes, fares, etc., in {class}`pandas.DataFrame`s. Use
+{meth}`GTFS.routes_summary()<gtfslite.gtfs.GTFS.routes_summary()>`,
+{meth}`GTFS.stops_summary()<gtfslite.gtfs.GTFS.stops_summary()>`, and
+{meth}`GTFS.summary()<gtfslite.gtfs.GTFS.summary()>` to gain a quick overview
+of the scope of a GTFS data set.
+
+:::
+
+
 ## Origin and destination locations
 
 In addition to OSM and GTFS datasets, you need data that represents the origin
 and destination locations (OD-data) of routes. *R5py* accepts data sets as
-{class}`geopandas.GeoDataFrame`s. Use {func}`geopandas.read_file()` to read data
-sets from files in one of the many geospatial data formats, such as *GeoPackage*,
-*GeoJSON*, or *ESRI Shapefile*.
+{class}`geopandas.GeoDataFrame`s.
+
+Use {func}`geopandas.read_file()` to read data sets from files in one of the
+many geospatial data formats, such as *GeoPackage*, *GeoJSON*, or *ESRI
+Shapefile*.
+
+If your data is in a non-spatial file format, such as spreadsheets, or CSV files
+with columns representing the latitude and longitude coordinates, [follow these
+instructions] to convert them into a {class}`geopandas.GeoDataFrame`.
 
 
 ## Sample datasets

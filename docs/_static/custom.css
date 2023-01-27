@@ -11,3 +11,8 @@
 figcaption {
     font-size: var(--sbt-font-size-small-1);
 }
+
+div.code-block-caption {
+  font-size: x-small;
+  color: var(--fbc-secondary-text);
+}

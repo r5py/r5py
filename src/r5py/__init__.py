@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Python wrapper for R5."""
+"""Python wrapper for the R5 routing analysis engine."""
 
 __version__ = "0.0.4"
 

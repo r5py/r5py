@@ -61,9 +61,8 @@ instance, specify `--max-memory=12G` as `max-memory: 12G`).
 :::{admonition} Template configuration file
 :class: info
 
-Upon first run, *r5py* copies a template configuration file to the locations it
-searches in, if no previous file exists and if it has write-access to the
-containing directory.
+When it is run for the first time, *r5py* creates template configuration files
+in all valid locations to which it has write-access.
 :::
 
 

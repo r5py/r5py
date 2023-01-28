@@ -38,4 +38,7 @@ dependencies:
     - sphinx
     - sphinx-book-theme
     - sphinx-design
-    - sphinxcontrib-images
+
+    - pip
+    - pip:
+        - sphinxcontrib-images

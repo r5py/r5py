@@ -1,0 +1,44 @@
+name: r5py
+
+channels:
+    - conda-forge
+
+dependencies:
+    - python=3.11
+    - configargparse
+    - fiona
+    - geopandas
+    - importlib_resources
+    - joblib
+    - jpype1
+    - numpy
+    - pandas
+    - psutil
+    - requests
+
+    # testing / dev / docs related
+    - black
+    - codecov
+    - folium
+    - gitpython
+    - jupyterlab
+    - jupyterlab-myst
+    - jupytext[myst]
+    - mapclassify
+    - matplotlib
+    - myst-nb
+    - nbsphinx
+    - nbstripout
+    - openjdk
+    - pytest
+    - pytest-asyncio
+    - pytest-cov
+    - pytest-lazy-fixture
+    - shapely
+    - sphinx
+    - sphinx-book-theme
+    - sphinx-design
+
+    - pip
+    - pip:
+        - sphinxcontrib-images

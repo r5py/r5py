@@ -7,7 +7,7 @@ If you use *r5py* for scientific research, please cite it in your publications:
 :::{card}
 :link: https://doi.org/10.5281/zenodo.7060437
 Fink, C., Klumpenhouwer, W., Saraiva, M., Pereira, R., &amp; Tenkanen,
-H., 2022: *r5py: Rapid Realistic Routing with R5 in Python*.
+H., 2022: *r5py: Rapid Realistic Routing with R⁵ in Python*.
 [DOI:10.5281/zenodo.7060437](https://doi.org/10.5281/zenodo.7060437)
 :::
 

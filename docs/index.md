@@ -17,12 +17,12 @@ engine](https://github.com/conveyal/r5) developed by Conveyal. *r5py* is
 inspired by [r5r, a wrapper for R](https://ipeagit.github.io/r5r/), and it is
 designed to interact with [GeoPandas](https://geopandas.org/) GeoDataFrames.
 
-*R5py* offers a simple way to run R5 locally with Python, allowing the users to
+*R5py* offers a simple way to run R⁵ locally with Python, allowing the users to
 calculate travel time matrices and accessibility by different travel modes.  To
 get started, take a look at the [user
 manual](user-guide/user-manual/quickstart) that includes a detailed
 demonstration of *r5py* in action.  Over time, *r5py* will be expanded to
-incorporate other functionalities from R5.
+incorporate other functionalities from R⁵.
 
 :::{toctree}
 :caption: User guide

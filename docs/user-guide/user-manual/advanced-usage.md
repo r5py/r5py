@@ -8,9 +8,9 @@ stackoverflow
 discussion](https://stackoverflow.com/questions/14763079/what-are-the-xms-and-xmx-parameters-when-starting-jvm)
 for a detailed explanation). 
 
-The tasks carried out by *R5* under the hood of *r5py* are fairly
+The tasks carried out by *R⁵* under the hood of *r5py* are fairly
 memory-intensive, which is why, by default, *r5py* allows the JVM to grant up to
-80% of total memory to R5 (but ensures to always leave at least 2 GiB to the
+80% of total memory to R⁵ (but ensures to always leave at least 2 GiB to the
 system and other processes).
 
 You want to lower this limit if you are running other tasks in parallel, or
@@ -33,14 +33,14 @@ max-memory: 12G
 ```
 
 
-## Using a custom installation of R5
+## Using a custom installation of R⁵
 
-For some use cases, it can be useful to use a local copy of *R5*, rather than
+For some use cases, it can be useful to use a local copy of R⁵, rather than
 the one downloaded by *r5py*, for instance, in order to apply custom patches
-to extend or modify R5’s functionality, or to force the use of a certain
+to extend or modify R⁵’s functionality, or to force the use of a certain
 version for longitudinal comparability. 
 
-This can be achieved by either installing R5 into the default class path
+This can be achieved by either installing R⁵ into the default class path
 `/usr/share/java/r5/r5-all.jar`, or by using a configuration option or command
 line argument to change the class path. 
 

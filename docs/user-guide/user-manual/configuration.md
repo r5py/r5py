@@ -28,8 +28,8 @@ the configuration files the leading dash(es) are omitted (see
               a ``%`` suffix. Default: ``80%``
 
 --r5-classpath=classpath, -r classpath
-              Point to R5’s JAR (or build directory) in case you want to use a
-              `custom R5 installation <advanced-usage.html#using-a-custom-installation-of-r5>`_.
+              Point to R⁵’s JAR (or build directory) in case you want to use a
+              `custom R⁵ installation <advanced-usage.html#using-a-custom-installation-of-r⁵>`_.
               Default: ``/usr/share/java/r5/r5-all.jar``
 
 --verbose, -v

@@ -37,6 +37,7 @@ multiobjective optimization method to account for cost constraints in public
 transit accessibility metrics*. International Journal of Geographical
 Information Science 33(9).
 [DOI:10.1080/13658816.2019.1605075](https://doi.org/10.1080/13658816.2019.1605075)
+:::
 
 
 ## License

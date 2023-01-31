@@ -45,6 +45,7 @@ jobs:
           - windows-latest
           - macos-latest
         env:
+          - ci/python_311.yaml
           - ci/python_310.yaml
           - ci/python_39.yaml
           - ci/python_38.yaml

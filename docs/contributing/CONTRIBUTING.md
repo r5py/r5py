@@ -60,9 +60,9 @@ An easy way to create a r5py development environment is as follows:
 - Make sure that you have **cloned the r5py repository**
 - `cd` to the *r5py* source directory (the root folder)
 
-Tell `mamba` to create a new environment from a [YAML file](https://github.com/r5py/r5py/blob/main/ci/python_310_dev.yaml) inside `ci` directory, by running:
+Tell `mamba` to create a new environment from a [YAML file](https://github.com/r5py/r5py/blob/main/ci/python_311_dev.yaml) inside `ci` directory, by running:
 
-      mamba env create -f ci/python_310_dev.yaml
+      mamba env create -f ci/python_311_dev.yaml
 
 This will create a new environment called `r5py`, and not touch any of your existing environments,
 nor existing python installations. The environment includes all necessary dependencies for r5py, 

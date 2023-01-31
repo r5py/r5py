@@ -19,10 +19,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Install Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
       - name: Install black and flake8
         run: python -m pip install black flake8
       - name: Lint using black
@@ -45,6 +41,7 @@ jobs:
           - windows-latest
           - macos-latest
         env:
+          - ci/python_311.yaml
           - ci/python_310.yaml
           - ci/python_39.yaml
           - ci/python_38.yaml

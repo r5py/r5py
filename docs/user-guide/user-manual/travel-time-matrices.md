@@ -41,7 +41,7 @@ points = geopandas.read_file(points_url)
 points.head()
 ```
 
-The `points` GeoDataFrame contains a few columns, namely `id`, `population` and `geometry`. The `id` column with unique values and `geometry` columns are required for `r5py` to work. If your input point dataset does not have an `id` column with unique values, `r5py` will throw an error.
+The `points` GeoDataFrame contains a few columns, namely `id`, `population` and `geometry`. The `id` column with unique values and `geometry` columns are required for *r5py* to work. If your input point dataset does not have an `id` column with unique values, *r5py* will throw an error.
 
 To get a better sense of the data, let's create a map that shows the locations of the points and visualise the number of people living in each cell (the cells are represented by their centre point):
 
@@ -59,7 +59,7 @@ origin.explore(color="blue", max_zoom=14, marker_kwds={"radius": 12})
 <!-- #region tags=[] -->
 ## Load transport network
 
-Virtually all operations of `r5py` require a transport network. In this example, we use data from Helsinki metropolitan area, which you can find in the source code repository of r5py in `docs/data/` [(see here)](https://github.com/r5py/r5py/tree/main/docs/data). To import the street and public transport networks, instantiate an `r5py.TransportNetwork` with the file paths to the OSM extract and the GTFS files:
+Virtually all operations of *r5py* require a transport network. In this example, we use data from Helsinki metropolitan area, which you can find in the source code repository of *r5py* in `docs/data/` [(see here)](https://github.com/r5py/r5py/tree/main/docs/data). To import the street and public transport networks, instantiate an `r5py.TransportNetwork` with the file paths to the OSM extract and the GTFS files:
 <!-- #endregion -->
 
 ```{code-cell}
@@ -73,17 +73,17 @@ transport_network = TransportNetwork(
 )
 ```
 
-At this stage, `r5py` has created the routable transport network and it is stored in the `transport_network` variable. We can now start using this network for doing the travel time calculations.
+At this stage, *r5py* has created the routable transport network and it is stored in the `transport_network` variable. We can now start using this network for doing the travel time calculations.
 
 
 ## Compute travel time matrix from one to all locations
 
-A travel time matrix is a dataset detailing the travel costs (e.g., time) between given locations (origins and destinations) in a study area. To compute a travel time matrix with `r5py` based on public transportation, we first need to initialize an `r5py.TravelTimeMatrixComputer` object. As inputs, we pass following arguments for the `TravelTimeMatrixComputer`:
+A travel time matrix is a dataset detailing the travel costs (e.g., time) between given locations (origins and destinations) in a study area. To compute a travel time matrix with *r5py* based on public transportation, we first need to initialize an `r5py.TravelTimeMatrixComputer` object. As inputs, we pass following arguments for the `TravelTimeMatrixComputer`:
 - `transport_network`, which we created in the previous step representing the routable transport network.
 - `origins`, which is a GeoDataFrame with one location that we created earlier (however, you can also use multiple locations as origins).
 - `destinations`, which is a GeoDataFrame representing the destinations (in our case, the `points` GeoDataFrame).
-- `departure`, which should be Python's `datetime` object (in our case standing for "22nd of February 2022 at 08:30") to tell `r5py` that the schedules of this specific time and day should be used for doing the calculations.
-   - *Note*: By default, `r5py` summarizes and calculates a median travel time from all possible connections within one hour from given depature time (with 1 minute frequency). It is possible to adjust this time window using `departure_time_window` parameter ([see details here](r5py.RegionalTask)).
+- `departure`, which should be Python's `datetime` object (in our case standing for "22nd of February 2022 at 08:30") to tell *r5py* that the schedules of this specific time and day should be used for doing the calculations.
+   - *Note*: By default, *r5py* summarizes and calculates a median travel time from all possible connections within one hour from given depature time (with 1 minute frequency). It is possible to adjust this time window using `departure_time_window` parameter ([see details here](r5py.RegionalTask)).
 - `transport_modes`, which determines the travel modes that will be used in the calculations. These can be passed using the options from the `TransitMode` and `LegMode` classes.
   - *Hint*: To see all available options, run `help(TransitMode)` or `help(LegMode)`.
 
@@ -133,7 +133,7 @@ join.explore("travel_time", cmap="Greens", marker_kwds={"radius": 12})
 ## Compute travel time matrix from all to all locations
 
 Running the calculations between all points in our sample dataset can be done in a similar manner as calculating the travel times from one origin to all destinations.
-Since, calculating these kind of all-to-all travel time matrices is quite typical when doing accessibility analyses, it is actually possible to calculate a cross-product between all points just by using the `origins` parameter (i.e. without needing to specify a separate set for destinations). `r5py` will use the same points as destinations and produce a full set of origins and destinations:
+Since, calculating these kind of all-to-all travel time matrices is quite typical when doing accessibility analyses, it is actually possible to calculate a cross-product between all points just by using the `origins` parameter (i.e. without needing to specify a separate set for destinations). *r5py* will use the same points as destinations and produce a full set of origins and destinations:
 
 
 ```{code-cell}
@@ -184,7 +184,7 @@ In our study area, there seems to be a bit poorer accessibility in the Southern 
 
 ## Compute travel times for different percentiles
 
-Because `r5py` calculates travel times for all possible transit departure possibilities within an hour (with one minute frequency), we basically get a distribution of travel times. It is possible to gather and return information about the travel times at different percentiles of this distribution based on all computed trips (sorted from the fastest to slowest connections). By default, the returned time in `r5py` is the median travel time (i.e. `50`). You can access these percentiles by using a parameter `percentiles` which accepts a list of integers representing different percentiles, such as `[25, 50, 75]` which returns the travel times at those percentiles:
+Because *r5py* calculates travel times for all possible transit departure possibilities within an hour (with one minute frequency), we basically get a distribution of travel times. It is possible to gather and return information about the travel times at different percentiles of this distribution based on all computed trips (sorted from the fastest to slowest connections). By default, the returned time in *r5py* is the median travel time (i.e. `50`). You can access these percentiles by using a parameter `percentiles` which accepts a list of integers representing different percentiles, such as `[25, 50, 75]` which returns the travel times at those percentiles:
 
 ```{code-cell}
 from r5py import TravelTimeMatrixComputer

@@ -37,7 +37,7 @@ advanced-usage
 :tags: [remove-input, remove-output]
 
 # this cell is hidden from READTHEDOCS output
-# it’s used to set sys.path to point to the local r5py source code,
+# it’s used to set sys.path to point to the local *r5py* source code,
 # and to define a `DATA_DIRECTORY` pathlib.Path
 import pathlib
 import sys

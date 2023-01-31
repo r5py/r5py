@@ -9,7 +9,7 @@ discussion](https://stackoverflow.com/questions/14763079/what-are-the-xms-and-xm
 for a detailed explanation). 
 
 The tasks carried out by *R5* under the hood of *r5py* are fairly
-memory-intensive, which is why, by default, r5py allows the JVM to grant up to
+memory-intensive, which is why, by default, *r5py* allows the JVM to grant up to
 80% of total memory to R5 (but ensures to always leave at least 2 GiB to the
 system and other processes).
 

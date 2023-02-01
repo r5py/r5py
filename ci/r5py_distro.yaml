@@ -4,10 +4,11 @@ channels:
     - conda-forge
 
 dependencies:
-    - python=3.10
+    - python=3.11
     - folium
     - fiona
     - geopandas
+    - importlib_resources
     - matplotlib
     - mapclassify
     - numpy

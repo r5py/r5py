@@ -18,7 +18,9 @@ dependencies:
   - backcall=0.2.0
   - backports=1.0
   - backports.functools_lru_cache=1.6.4
-  - beautifulsoup4=4.11.1
+  - beautifulsoup4=4.11.2
+  - black=23.1.0
+  - black-jupyter=23.1.0
   - bleach=6.0.0
   - blosc=1.21.3
   - boost-cpp=1.78.0
@@ -197,6 +199,7 @@ dependencies:
   - mpg123=1.31.2
   - munch=2.5.0
   - munkres=1.1.4
+  - mypy_extensions=0.4.3
   - mysql-common=8.0.32
   - mysql-libs=8.0.32
   - myst-nb=0.17.1
@@ -225,6 +228,7 @@ dependencies:
   - pandoc=2.19.2
   - pandocfilters=1.5.0
   - parso=0.8.3
+  - pathspec=0.11.0
   - pcre2=10.40
   - pexpect=4.8.0
   - pickleshare=0.7.5
@@ -302,6 +306,7 @@ dependencies:
   - tiledb=2.13.2
   - tinycss2=1.2.1
   - tk=8.6.12
+  - tokenize-rt=5.0.0
   - toml=0.10.2
   - tomli=2.0.1
   - tornado=6.2
@@ -346,8 +351,4 @@ dependencies:
   - zlib=1.2.13
   - zstd=1.5.2
   - pip:
-    - black==23.1.0
-    - mypy-extensions==0.4.3
-    - pathspec==0.11.0
     - sphinxcontrib-images==0.9.4
-    - tokenize-rt==5.0.0

@@ -187,7 +187,7 @@ class DetailedItinerariesComputer(TravelTimeMatrixComputer):
         od_matrix["from_id"] = details[0]
         od_matrix["to_id"] = details[1]
 
-        for (column_name, column_type, column_data) in zip(
+        for column_name, column_type, column_data in zip(
             DATA_COLUMNS.keys(),
             DATA_COLUMNS.values(),
             details[2:],

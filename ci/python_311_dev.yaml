@@ -17,8 +17,8 @@ dependencies:
     - requests
 
     # testing / dev / docs related
-    # - black  # see issue #249
-    # - black-jupyter
+    - black
+    - black-jupyter
     - codecov
     - folium
     - gitpython
@@ -43,5 +43,3 @@ dependencies:
     - pip
     - pip:
         - sphinxcontrib-images
-        - black  # issue #249
-        - black[jupyter]  # issue #249

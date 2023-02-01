@@ -72,7 +72,7 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
         od_matrix["to_id"] = self.destinations.id
         od_matrix["from_id"] = from_id
 
-        for (p, percentile) in enumerate(self.request.percentiles):
+        for p, percentile in enumerate(self.request.percentiles):
             travel_times = results.travelTimes.getValues()[p]
             od_matrix[f"travel_time_p{percentile:d}"] = travel_times
 

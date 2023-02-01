@@ -1,0 +1,17 @@
+name: r5py-env
+
+channels:
+    - conda-forge
+
+dependencies:
+    - python=3.11
+    - folium
+    - fiona
+    - geopandas
+    - importlib_resources
+    - matplotlib
+    - mapclassify
+    - numpy
+    - pandas
+    - r5py
+    - shapely

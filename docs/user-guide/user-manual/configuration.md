@@ -19,7 +19,7 @@ the configuration files the leading dash(es) are omitted (see
 
 ```{eval-rst}
 --max-memory=value, -m value
-              `Set the limit for the Java Virtual Machine’s heap
+              `Set the limit for the *Java Virtual Machine*’s heap
               size <advanced-usage.html#setting-the-maximum-java-heap-size-memory-use>`_
               (``-Xmx``).  This option accepts either absolute values
               (integer or decimal), optionally with a suffix to indicate

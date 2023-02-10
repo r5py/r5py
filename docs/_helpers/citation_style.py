@@ -82,7 +82,7 @@ class ApaMiscDoiStyle(pybtex.plugin.find_plugin("pybtex.style.formatting", "apa7
             return pybtex.style.formatting.toplevel[
                 self.format_names("author"),
                 self.format_date(e),
-                pybtex.style.template.optional[self.format_btitle(e, "title")],
+                pybtex.style.template.optional[self.format_title(e, "title")],
                 pybtex.style.template.sentence[
                     pybtex.style.template.optional_field("note")
                 ],

@@ -16,6 +16,7 @@ import matplotlib.pyplot
 sys.path = [
     str(pathlib.Path().resolve().parent / "src"),
     str(pathlib.Path().resolve()),
+    str(pathlib.Path().resolve() / "_extensions"),
 ] + sys.path
 
 from _helpers.binder_ref import BINDER_REF
@@ -34,13 +35,14 @@ author = "r5py contributors"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    "bibliography_as_sphinxdesign_cards",
     "myst_nb",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
+    "sphinx_design",
     "sphinxcontrib.bibtex",
     "sphinxcontrib.images",
-    "sphinx_design",
 ]
 
 templates_path = ["_templates"]
@@ -111,3 +113,4 @@ bibtex_bibfiles = ["_static/references.bib"]
 bibtex_default_style = R5PY_CITATION_STYLE
 bibtex_reference_style = R5PY_REFERENCE_STYLE
 bibtex_cite_id = "{key}"
+suppress_warnings = ["bibtex.duplicate_label"]

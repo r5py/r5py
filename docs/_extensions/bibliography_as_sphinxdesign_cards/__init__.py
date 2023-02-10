@@ -77,6 +77,13 @@ class CitationsToSphinxDesignCardsTransformer(
         old_paragraph = node[node.first_child_matching_class(docutils.nodes.paragraph)]
         new_paragraph.children = old_paragraph.children
 
+        # convert <tt> (docutils.nodes.literal) into more nicely formatted titles
+        # (see also format_title() in ../_helpers/citation_style.py)
+        for tt in new_paragraph.findall(docutils.nodes.literal):
+            span = docutils.nodes.inline(classes=["article-title"])
+            span += tt.children
+            new_paragraph.replace(tt, span)
+
         if r := new_paragraph.first_child_matching_class(docutils.nodes.reference):
             old_reference = new_paragraph[r]
             new_reference = sphinx_design.shared.PassthroughTextElement()

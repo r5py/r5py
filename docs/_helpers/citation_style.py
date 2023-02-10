@@ -67,6 +67,16 @@ R5PY_REFERENCE_STYLE = "author_year_apa7_full_link"
 class ApaMiscDoiStyle(pybtex.plugin.find_plugin("pybtex.style.formatting", "apa7")):
     name = R5PY_CITATION_STYLE
 
+    def format_date(self, e):
+        return pybtex.style.template.join[
+            "(",
+            pybtex.style.template.first_of[
+                pybtex.style.template.optional[pybtex.style.template.field("year")],
+                "n.d.",
+            ],
+            "):",
+        ]
+
     def format_doi(self, e):
         return pybtex.style.template.href[
             pybtex.style.template.join[
@@ -76,6 +86,17 @@ class ApaMiscDoiStyle(pybtex.plugin.find_plugin("pybtex.style.formatting", "apa7
                 "DOI:", pybtex.style.template.field("doi", raw=True)
             ],
         ]
+
+    def format_title(self, e, which_field, as_sentence=True):
+        formatted_title = pybtex.style.template.tag("tt")[
+            pybtex.style.template.field(
+                which_field, apply_func=lambda text: text.capitalize()
+            )
+        ]
+        if as_sentence:
+            return pybtex.style.template.sentence[formatted_title]
+        else:
+            return formatted_title
 
     def get_misc_template(self, e):
         if "author" in e.persons:

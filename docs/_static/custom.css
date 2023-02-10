@@ -16,3 +16,7 @@ div.code-block-caption {
   font-size: x-small;
   color: var(--fbc-secondary-text);
 }
+
+span.article-title {
+    font-weight: 600;
+}

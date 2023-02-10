@@ -1,9 +1,11 @@
 # sphinx + dependencies
 GitPython
 myst-nb
+pybtex-apa7-style
 sphinx
 sphinx-book-theme
 sphinx-design
+sphinxcontrib-bibtex
 sphinxcontrib-images
 
 # Jupyterlab

@@ -67,9 +67,9 @@ class Test_TransportNetwork:
             (pytest.lazy_fixture("transport_network_from_test_directory"),),
         ],
     )
-    def test_street_layer_java_object(self, transport_network):
+    def test_street_layer(self, transport_network):
         assert isinstance(
-            transport_network.street_layer, com.conveyal.r5.streets.StreetLayer
+            transport_network.street_layer, r5py.r5.StreetLayer
         )
 
     @pytest.mark.parametrize(

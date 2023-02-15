@@ -5,7 +5,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.14.4
+      jupytext_version: 1.14.0
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -152,10 +152,6 @@ transport_network = TransportNetwork(
 )
 ```
 
-```python
-#points.geometry = transport_network.snap_to_network(points.geometry)
-```
-
 At this stage, `r5py` has created the routable transport network and it is stored in the `transport_network` variable. We can now start using this network for doing the travel time calculations. 
 
 
@@ -182,10 +178,10 @@ from r5py import TravelTimeMatrixComputer, TransitMode, LegMode
 
 travel_time_matrix_computer = TravelTimeMatrixComputer(
     transport_network,
-    origins=points,
+    origins=origin,
+    destinations=points,
     departure=datetime.datetime(2022,2,22,8,30),
-    transport_modes=[TransitMode.TRANSIT, LegMode.WALK],
-    #breakdown=True
+    transport_modes=[TransitMode.TRANSIT, LegMode.WALK]
 )
 
 ```
@@ -196,32 +192,6 @@ To actually run the computations, we need to call `.compute_travel_times()` on t
 ```python
 travel_time_matrix = travel_time_matrix_computer.compute_travel_times()
 travel_time_matrix.head()
-```
-
-```python tags=[]
-rt = travel_time_matrix_computer.request._regional_task
-rt2 = rt.clone()
-rt == rt2
-```
-
-```python tags=[]
-d = travel_time_matrix_computer.request.__dict__
-d
-```
-
-```python tags=[]
-[k for k,v in d.items()]
-```
-
-```python tags=[]
-import copy
-request = travel_time_matrix_computer.request
-new_request = copy.deepcopy(request)
-request._regional_task == new_request._regional_task
-```
-
-```python tags=[]
-travel_time_matrix[travel_time_matrix.from_id == travel_time_matrix.to_id].describe()
 ```
 
 As a result, this returns a `pandas.DataFrame` which we stored in the `travel_time_matrix` variable. The values in the `travel_time` column are travel times in minutes between the points identified by `from_id` and `to_id`. As you can see, the `id` value in the `from_id` column is the same for all rows because we only used one origin location as input. 
@@ -333,7 +303,7 @@ As you can see, the result contains much more information than earlier, see the 
 
 Because `r5py` calculates travel times for all possible transit departure possibilities within an hour (with one minute frequency), we basically get a distribution of travel times. It is possible to gather and return information about the travel times at different percentiles of this distribution based on all computed trips (sorted from the fastest to slowest connections). By default, the returned time in `r5py` is the median travel time (i.e. `50`). You can access these percentiles by using a parameter `percentiles` which accepts a list of integers representing different percentiles, such as `[25, 50, 75]` which returns the travel times at those percentiles:
 
-```python tags=[]
+```python
 travel_time_matrix_computer = TravelTimeMatrixComputer(
     transport_network,
     origins=origin,

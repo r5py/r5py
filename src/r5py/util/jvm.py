@@ -37,6 +37,9 @@ def start_jvm():
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",
             "-Xcheck:jni",
+            "-Duser.language=en",  # setting a default locale, …
+            "-Duser.country=US",  # … as R5 formats numeric return …
+            "-Duser.variant=",  # … values as a localised string
             classpath=[R5_CLASSPATH],
         )
 

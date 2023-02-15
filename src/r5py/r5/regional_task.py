@@ -165,6 +165,19 @@ class RegionalTask:
         self._regional_task.monteCarloDraws = 60
         self._regional_task.recordAccessibility = False
 
+    def __copy__(self):
+        """Override `copy.copy()` to properly handle Java classes."""
+        # remember all __dict__ except `_regional_task`, which is a Java `Clonable`
+        _dict = {k: v for k, v in self.__dict__.items() if k != "_regional_task"}
+        # add a clone of the Java object
+        _dict["_regional_task"] = self._regional_task.clone()
+
+        # create a new instance, copy over the __dict__ created above
+        clone = super().__new__(self.__class__)
+        clone.__dict__ = _dict
+
+        return clone
+
     @property
     def access_modes(self):
         """Route with these modes of transport to reach public transport (r5py.LegMode)."""

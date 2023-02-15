@@ -2,6 +2,7 @@
 
 """Calculate travel times between many origins and destinations."""
 
+import copy
 import math
 import multiprocessing
 
@@ -155,11 +156,11 @@ class BaseTravelTimeMatrixComputer:
         self._origins = origins.to_crs("EPSG:4326")
 
     def _travel_times_per_origin(self, from_id):
-        # TODO: check whether this following line could cause race conditions
-        self.request.origin = self.origins[self.origins.id == from_id].geometry
+        request = copy.copy(self.request)
+        request.origin = self.origins[self.origins.id == from_id].geometry
 
         travel_time_computer = com.conveyal.r5.analyst.TravelTimeComputer(
-            self.request, self.transport_network
+            request, self.transport_network
         )
         results = travel_time_computer.computeTravelTimes()
 

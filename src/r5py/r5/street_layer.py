@@ -64,7 +64,7 @@ class StreetLayer:
         ):
             return shapely.Point(
                 split.fixedLon / com.conveyal.r5.streets.VertexStore.FIXED_FACTOR,
-                split.fixedLat / com.conveyal.r5.streets.VertexStore.FIXED_FACTOR
+                split.fixedLat / com.conveyal.r5.streets.VertexStore.FIXED_FACTOR,
             )
         else:
             return shapely.Point()

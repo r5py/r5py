@@ -4,6 +4,7 @@
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
 
+import functools
 import pathlib
 import shutil
 import time
@@ -129,17 +130,14 @@ class TransportNetwork:
         """Exit context."""
         return False
 
-    @property
+    @functools.cached_property
     def _cache_directory(self):
-        try:
-            self.__cache_dir
-        except AttributeError:
-            self.__cache_dir = (
-                pathlib.Path(Config().CACHE_DIR)
-                / f"{self.__class__.__name__:s}_{hash(self):x}"
-            )
-            self.__cache_dir.mkdir(exist_ok=True)
-        return self.__cache_dir
+        cache_dir = (
+            pathlib.Path(Config().CACHE_DIR)
+            / f"{self.__class__.__name__:s}_{hash(self):x}"
+        )
+        cache_dir.mkdir(exist_ok=True)
+        return cache_dir
 
     def _working_copy(self, input_file):
         """Create a copy or link of an input file in a cache directory.
@@ -187,16 +185,13 @@ class TransportNetwork:
         """Determine the timezone of the GTFS data."""
         return self._transport_network.getTimeZone()
 
-    @property
+    @functools.cached_property
     def transit_layer(self):
         """Expose the `TransportNetwork`’s `transitLayer` to Python."""
-        try:
-            self._transit_layer
-        except AttributeError:
-            self._transit_layer = TransitLayer.from_r5_transit_layer(
-                self._transport_network.transitLayer
-            )
-        return self._transit_layer
+        transit_layer = TransitLayer.from_r5_transit_layer(
+            self._transport_network.transitLayer
+        )
+        return transit_layer
 
 
 @jpype._jcustomizer.JConversion(

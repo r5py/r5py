@@ -5,6 +5,8 @@
 
 
 import datetime
+import functools
+
 import jpype
 import jpype.types
 
@@ -30,49 +32,36 @@ class TransitLayer:
         instance._transit_layer = transit_layer
         return instance
 
-    @property
+    @functools.cached_property
     def start_date(self):
         """The earliest date the loaded GTFS data covers."""
         try:
-            self._start_date
-        except AttributeError:
-            try:
-                print(
-                    [
-                        parse_int_date(service.calendar.start_date)
-                        for service in self._transit_layer.services
-                    ]
-                )
-                self._start_date = min(
-                    [
-                        parse_int_date(service.calendar.start_date)
-                        for service in self._transit_layer.services
-                    ]
-                )
-            except (AttributeError, ValueError) as exception:
-                raise ValueError("No GTFS data set loaded") from exception
-        return self._start_date
+            start_date = min(
+                [
+                    parse_int_date(service.calendar.start_date)
+                    for service in self._transit_layer.services
+                ]
+            )
+        except (AttributeError, ValueError) as exception:
+            raise ValueError("No GTFS data set loaded") from exception
+        return start_date
 
-    @property
+    @functools.cached_property
     def end_date(self):
         """The latest date the loaded GTFS data covers."""
         try:
-            self._end_date
-        except AttributeError:
-            try:
-                end_date = max(
-                    [
-                        parse_int_date(service.calendar.end_date)
-                        for service in self._transit_layer.services
-                    ]
-                )
-                end_date += datetime.timedelta(
-                    hours=23, minutes=59, seconds=59
-                )  # *end* of day
-                self._end_date = end_date
-            except (AttributeError, ValueError) as exception:
-                raise ValueError("No GTFS data set loaded") from exception
-        return self._end_date
+            end_date = max(
+                [
+                    parse_int_date(service.calendar.end_date)
+                    for service in self._transit_layer.services
+                ]
+            )
+            end_date += datetime.timedelta(
+                hours=23, minutes=59, seconds=59
+            )  # *end* of day
+        except (AttributeError, ValueError) as exception:
+            raise ValueError("No GTFS data set loaded") from exception
+        return end_date
 
     def covers(self, point_in_time):
         """Check whether `point_in_time` is covered by GTFS data sets."""

@@ -2,6 +2,7 @@
 
 """Handle configuration options and command line options."""
 
+import functools
 import os
 import pathlib
 import sys
@@ -63,45 +64,41 @@ class Config:
             argparser = configargparse.get_argument_parser()
         return argparser
 
-    @property
+    @functools.cached_property
     def CACHE_DIR(self):
-        try:
-            self._cache_dir
-        except AttributeError:
-            self._cache_dir = (
-                pathlib.Path(
-                    os.environ.get("LOCALAPPDATA")
-                    or os.environ.get("XDG_CACHE_HOME")
-                    or (pathlib.Path(os.environ["HOME"]) / ".cache")
-                )
-                / PACKAGE
+        cache_dir = (
+            pathlib.Path(
+                os.environ.get("LOCALAPPDATA")
+                or os.environ.get("XDG_CACHE_HOME")
+                or (pathlib.Path(os.environ["HOME"]) / ".cache")
             )
-            self._cache_dir.mkdir(parents=True, exist_ok=True)
-        return self._cache_dir
+            / PACKAGE
+        )
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        return cache_dir
 
-    @property
+    @functools.cached_property
     def CONFIG_FILES(self):
-        try:
-            self._config_files
-        except AttributeError:
-            config_files = [
-                pathlib.Path(f"/etc/{PACKAGE}.yml"),
+        config_files = [
+            f"/etc/{PACKAGE}.yml",
+            str(
                 pathlib.Path(
                     os.environ.get("APPDATA")
                     or os.environ.get("XDG_CONFIG_HOME")
                     or (pathlib.Path(os.environ["HOME"]) / ".config")
                 )
-                / f"{PACKAGE}.yml",
-            ]
+                / f"{PACKAGE}.yml"
+            ),
+        ]
 
-            # write a template configuration file to possible locations
-            for config_file in config_files:
-                self._copy_config_file_template(config_file)
+        # write a template configuration file to possible locations
+        for config_file in config_files:
+            self._copy_config_file_template(config_file)
 
-            # argparse does not understand pathlib.Path
-            self._config_files = [str(config_file) for config_file in config_files]
+        # argparse does not understand pathlib.Path
+        config_files = [str(config_file) for config_file in config_files]
 
-        return self._config_files
+        return config_files
 
     @staticmethod
     def _copy_config_file_template(destination_path):

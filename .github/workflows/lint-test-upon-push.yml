@@ -45,7 +45,6 @@ jobs:
           - ci/python_310.yaml
           - ci/python_39.yaml
           - ci/python_38.yaml
-          - ci/python_37.yaml
         jdk_from:
           - conda-forge
           - system

@@ -80,15 +80,13 @@ class Config:
     @functools.cached_property
     def CONFIG_FILES(self):
         config_files = [
-            f"/etc/{PACKAGE}.yml",
-            str(
-                pathlib.Path(
-                    os.environ.get("APPDATA")
-                    or os.environ.get("XDG_CONFIG_HOME")
-                    or (pathlib.Path(os.environ["HOME"]) / ".config")
-                )
-                / f"{PACKAGE}.yml"
-            ),
+            pathlib.Path(f"/etc/{PACKAGE}.yml"),
+            pathlib.Path(
+                os.environ.get("APPDATA")
+                or os.environ.get("XDG_CONFIG_HOME")
+                or (pathlib.Path(os.environ["HOME"]) / ".config")
+            )
+            / f"{PACKAGE}.yml"
         ]
 
         # write a template configuration file to possible locations

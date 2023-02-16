@@ -4,10 +4,12 @@
 
 import math
 import multiprocessing
+import warnings
 
 import joblib
 import numpy
 import pandas
+import shapely
 
 from ..util import check_od_data_set, Config
 from .regional_task import RegionalTask
@@ -36,6 +38,7 @@ class BaseTravelTimeMatrixComputer:
         transport_network,
         origins,
         destinations=None,
+        snap_to_network=False,
         **kwargs,
     ):
         """
@@ -56,6 +59,11 @@ class BaseTravelTimeMatrixComputer:
             Places to find a route _to_
             Has to have a point geometry, and at least an `id` column
             If omitted, use same data set as for origins
+        snap_to_network : bool or int, default False
+            Should origin an destination points be snapped to the street network
+            before routing? If `True`, the default search radius (defined in
+            `com.conveyal.r5.streets.StreetLayer.LINK_RADIUS_METERS`) is used,
+            if `int`, use `snap_to_network` meters as the search radius.
         **kwargs : mixed
             Any arguments than can be passed to r5py.RegionalTask:
             ``departure``, ``departure_time_window``, ``percentiles``, ``transport_modes``,
@@ -66,6 +74,8 @@ class BaseTravelTimeMatrixComputer:
         if not isinstance(transport_network, TransportNetwork):
             transport_network = TransportNetwork(*transport_network)
         self.transport_network = transport_network
+
+        self.snap_to_network = snap_to_network
 
         self.origins = origins
         if destinations is None:
@@ -123,7 +133,21 @@ class BaseTravelTimeMatrixComputer:
     @destinations.setter
     def destinations(self, destinations):
         check_od_data_set(destinations)
-        self._destinations = destinations.to_crs("EPSG:4326")
+        self._destinations_crs = destinations.crs
+        self._destinations = destinations.to_crs("EPSG:4326").copy()
+        if self.snap_to_network:
+            self._destinations.geometry = self.transport_network.snap_to_network(
+                self._destinations.geometry
+            )
+            if len(self._destinations[self._destinations.geometry == shapely.Point()]):
+                # if there are destinations for which no snapped point could be found
+                warnings.warn(
+                    "Some destination points could not be snapped to the street network",
+                    RuntimeWarning,
+                )
+                self._destinations = self._destinations[
+                    self._destinations.geometry != shapely.Point()
+                ].copy()
 
     def _fill_nulls(self, data_set):
         """
@@ -152,7 +176,20 @@ class BaseTravelTimeMatrixComputer:
     def origins(self, origins):
         check_od_data_set(origins)
         self._origins_crs = origins.crs
-        self._origins = origins.to_crs("EPSG:4326")
+        self._origins = origins.to_crs("EPSG:4326").copy()
+        if self.snap_to_network:
+            self._origins.geometry = self.transport_network.snap_to_network(
+                self._origins.geometry
+            )
+            if len(self._origins[self._origins.geometry == shapely.Point()]):
+                # if there are origins for which no snapped point could be found
+                warnings.warn(
+                    "Some origin points could not be snapped to the street network",
+                    RuntimeWarning,
+                )
+                self._origins = self._origins[
+                    self._origins.geometry != shapely.Point()
+                ].copy()
 
     def _travel_times_per_origin(self, from_id):
         # TODO: check whether this following line could cause race conditions

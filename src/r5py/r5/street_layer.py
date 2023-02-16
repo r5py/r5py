@@ -51,7 +51,7 @@ class StreetLayer:
             Find a location close to this point
         radius : float
             Search radius around `point`
-        street_mode : travel mode that the closest street should allow
+        street_mode : travel mode that the snapped-to street should allow
 
         Returns
         -------

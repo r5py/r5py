@@ -86,7 +86,7 @@ class Config:
                 or os.environ.get("XDG_CONFIG_HOME")
                 or (pathlib.Path(os.environ["HOME"]) / ".config")
             )
-            / f"{PACKAGE}.yml"
+            / f"{PACKAGE}.yml",
         ]
 
         # write a template configuration file to possible locations

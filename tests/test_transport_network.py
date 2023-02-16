@@ -142,6 +142,5 @@ class Test_TransportNetwork:
         population_grid_points,
         snapped_population_grid_points,
     ):
-        assert transport_network.snap_to_network(
-            population_grid_points.geometry
-        ).equals(snapped_population_grid_points.geometry)
+        snapped = transport_network.snap_to_network(population_grid_points.geometry)
+        assert snapped.geometry.equals(snapped_population_grid_points.geometry)

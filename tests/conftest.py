@@ -12,6 +12,7 @@ import pathlib
 # explicitly importing fiona before geopandas fixes issue #156
 import fiona  # noqa: F401
 import geopandas
+import pandas
 import pytest  # noqa: F401
 
 # test_data
@@ -42,6 +43,8 @@ R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
 SNAPPED_POPULATION_GRID_POINTS = (
     DATA_DIRECTORY / "test_data" / "test_snapped_population_grid_centroids.geojson"
 )
+WALKING_TIMES_SNAPPED = (DATA_DIRECTORY / "test_data" / "test_walking_times_snapped.csv")
+WALKING_TIMES_NOT_SNAPPED = (DATA_DIRECTORY / "test_data" / "test_walking_times_not_snapped.csv")
 
 
 @pytest.fixture(scope="session")
@@ -186,3 +189,13 @@ def transport_network_from_test_files_without_gtfs():
 
     transport_network = r5py.TransportNetwork(OSM_PBF, [])
     yield transport_network
+
+
+@pytest.fixture(scope="session")
+def walking_times_snapped():
+    yield pandas.read_csv(WALKING_TIMES_SNAPPED)
+
+
+@pytest.fixture(scope="session")
+def walking_times_not_snapped():
+    yield pandas.read_csv(WALKING_TIMES_NOT_SNAPPED)

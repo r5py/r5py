@@ -269,3 +269,36 @@ class TestTravelTimeMatrixComputer:
             transport_network_, origins, snap_to_network=snap_to_network
         )
         assert travel_time_matrix_computer.snap_to_network == expected_snap_to_network
+
+    @pytest.mark.parametrize(
+        [
+            "transport_network_",
+            "origins",
+            "snap_to_network",
+            "expected_travel_times",
+        ],
+        [
+            (
+                pytest.lazy_fixture("transport_network"),
+                pytest.lazy_fixture("population_grid_points"),
+                True,
+                pytest.lazy_fixture("walking_times_snapped"),
+            ),
+            (
+                pytest.lazy_fixture("transport_network"),
+                pytest.lazy_fixture("population_grid_points"),
+                False,
+                pytest.lazy_fixture("walking_times_not_snapped"),
+            ),
+        ],
+    )
+    def test_snap_to_network(
+        self, transport_network_, origins, snap_to_network, expected_travel_times
+    ):
+        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+            transport_network_, origins, snap_to_network=snap_to_network, transport_modes=[r5py.LegMode.WALK]
+        )
+        travel_times = travel_time_matrix_computer.compute_travel_times()
+
+        print((travel_times["travel_time"] - expected_travel_times["travel_time"]).describe())
+        assert travel_times.equals(expected_travel_times)

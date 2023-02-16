@@ -18,7 +18,7 @@ import pytest  # noqa: F401
 DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
 OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
 GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
-POPULATION_GRID_POINTS = DATA_DIRECTORY / "Helsinki" / "population_points_2020.gpkg"
+POPULATION_GRID = DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg"
 
 
 ORIGINS_INVALID_NO_ID = (
@@ -39,17 +39,20 @@ R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
     "14aa2347be79c280e4d0fd3a137fb8f5bf2863261a1e48e1a122df1a52a0f453"
 )
 
+SNAPPED_POPULATION_GRID_POINTS = (
+    DATA_DIRECTORY / "test_data" / "test_snapped_population_grid_centroids.geojson"
+)
+
 
 @pytest.fixture(scope="session")
-def blank_regional_task():
+def blank_regional_task(population_grid_points):
     import r5py
 
     transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
-    grid_points = geopandas.read_file(POPULATION_GRID_POINTS)
     regional_task = r5py.RegionalTask(
         transport_network,
-        grid_points.at[1, "geometry"],
-        grid_points,
+        population_grid_points.at[1, "geometry"],
+        population_grid_points,
     )
     yield regional_task
 
@@ -102,8 +105,17 @@ def origins_valid_ids():
 
 
 @pytest.fixture(scope="session")
-def population_points():
-    yield geopandas.read_file(POPULATION_GRID_POINTS)
+def population_grid():
+    yield geopandas.read_file(POPULATION_GRID)
+
+
+@pytest.fixture(scope="session")
+def population_grid_points(population_grid):
+    population_grid_points = population_grid.copy()
+    population_grid_points.geometry = population_grid_points.geometry.to_crs(
+        "EPSG:3067"
+    ).centroid.to_crs("EPSG:4326")
+    yield population_grid_points
 
 
 @pytest.fixture(scope="session")
@@ -138,9 +150,19 @@ def r5_jar_url():
     yield R5_JAR_URL
 
 
+@pytest.fixture(scope="session")
+def snapped_population_grid_points():
+    yield geopandas.read_file(SNAPPED_POPULATION_GRID_POINTS)
+
+
 @pytest.fixture
 def transport_network_files_tuple(scope="session"):
     yield OSM_PBF, [GTFS]
+
+
+@pytest.fixture(scope="session")
+def transport_network(transport_network_from_test_files):
+    yield transport_network_from_test_files
 
 
 @pytest.fixture(scope="session")

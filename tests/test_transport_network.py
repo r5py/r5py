@@ -68,9 +68,7 @@ class Test_TransportNetwork:
         ],
     )
     def test_street_layer(self, transport_network):
-        assert isinstance(
-            transport_network.street_layer, r5py.r5.StreetLayer
-        )
+        assert isinstance(transport_network.street_layer, r5py.r5.StreetLayer)
 
     @pytest.mark.parametrize(
         ["transport_network"],
@@ -137,3 +135,13 @@ class Test_TransportNetwork:
                     temp_directory
                 )
                 del transport_network
+
+    def test_snap_to_network(
+        self,
+        transport_network,
+        population_grid_points,
+        snapped_population_grid_points,
+    ):
+        assert transport_network.snap_to_network(
+            population_grid_points.geometry
+        ).equals(snapped_population_grid_points.geometry)

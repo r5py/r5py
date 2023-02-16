@@ -2,6 +2,7 @@
 
 """Handle configuration options and command line options."""
 
+import functools
 import os
 import pathlib
 import sys
@@ -55,38 +56,32 @@ class Config:
                 self._argparser = configargparse.get_argument_parser()
         return self._argparser
 
-    @property
+    @functools.cached_property
     def CACHE_DIR(self):
-        try:
-            self._cache_dir
-        except AttributeError:
-            self._cache_dir = (
-                pathlib.Path(
-                    os.environ.get("LOCALAPPDATA")
-                    or os.environ.get("XDG_CACHE_HOME")
-                    or (pathlib.Path(os.environ["HOME"]) / ".cache")
-                )
-                / self.PACKAGE
+        cache_dir = (
+            pathlib.Path(
+                os.environ.get("LOCALAPPDATA")
+                or os.environ.get("XDG_CACHE_HOME")
+                or (pathlib.Path(os.environ["HOME"]) / ".cache")
             )
-            self._cache_dir.mkdir(parents=True, exist_ok=True)
-        return self._cache_dir
+            / self.PACKAGE
+        )
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        return cache_dir
 
-    @property
+    @functools.cached_property
     def CONFIG_FILES(self):
-        try:
-            self._config_files
-        except AttributeError:
-            self._config_files = [
-                f"/etc/{self.PACKAGE}.yml",
-                str(
-                    pathlib.Path(
-                        os.environ.get("APPDATA")
-                        or os.environ.get("XDG_CONFIG_HOME")
-                        or (pathlib.Path(os.environ["HOME"]) / ".config")
-                    )
-                    / f"{self.PACKAGE}.yml",
-                ),
-            ]
-        return self._config_files
+        config_files = [
+            f"/etc/{self.PACKAGE}.yml",
+            str(
+                pathlib.Path(
+                    os.environ.get("APPDATA")
+                    or os.environ.get("XDG_CONFIG_HOME")
+                    or (pathlib.Path(os.environ["HOME"]) / ".config")
+                )
+                / f"{self.PACKAGE}.yml",
+            ),
+        ]
+        return config_files
 
     PACKAGE = __package__.split(".")[0]

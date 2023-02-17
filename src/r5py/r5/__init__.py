@@ -7,6 +7,7 @@ from .detailed_itineraries_computer import DetailedItinerariesComputer
 from .leg_mode import LegMode
 from .regional_task import RegionalTask
 from .scenario import Scenario
+from .street_layer import StreetLayer
 from .street_mode import StreetMode
 from .transit_mode import TransitMode
 from .transport_network import TransportNetwork
@@ -19,6 +20,7 @@ __all__ = [
     "RegionalTask",
     "Scenario",
     "SpeedConfig",
+    "StreetLayer",
     "StreetMode",
     "TransitMode",
     "TransportNetwork",

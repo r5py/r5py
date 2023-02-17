@@ -43,8 +43,10 @@ R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
 SNAPPED_POPULATION_GRID_POINTS = (
     DATA_DIRECTORY / "test_data" / "test_snapped_population_grid_centroids.geojson"
 )
-WALKING_TIMES_SNAPPED = (DATA_DIRECTORY / "test_data" / "test_walking_times_snapped.csv")
-WALKING_TIMES_NOT_SNAPPED = (DATA_DIRECTORY / "test_data" / "test_walking_times_not_snapped.csv")
+WALKING_TIMES_SNAPPED = DATA_DIRECTORY / "test_data" / "test_walking_times_snapped.csv"
+WALKING_TIMES_NOT_SNAPPED = (
+    DATA_DIRECTORY / "test_data" / "test_walking_times_not_snapped.csv"
+)
 
 
 @pytest.fixture(scope="session")

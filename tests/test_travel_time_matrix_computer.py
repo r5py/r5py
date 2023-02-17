@@ -296,9 +296,16 @@ class TestTravelTimeMatrixComputer:
         self, transport_network_, origins, snap_to_network, expected_travel_times
     ):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
-            transport_network_, origins, snap_to_network=snap_to_network, transport_modes=[r5py.LegMode.WALK]
+            transport_network_,
+            origins,
+            snap_to_network=snap_to_network,
+            transport_modes=[r5py.LegMode.WALK],
         )
         travel_times = travel_time_matrix_computer.compute_travel_times()
 
-        print((travel_times["travel_time"] - expected_travel_times["travel_time"]).describe())
+        travel_times = travel_times.set_index(["from_id", "to_id"]).sort_index()
+        expected_travel_times = expected_travel_times.set_index(
+            ["from_id", "to_id"]
+        ).sort_index()
+
         assert travel_times.equals(expected_travel_times)

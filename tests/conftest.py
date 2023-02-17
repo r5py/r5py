@@ -7,20 +7,24 @@
 # transport network) here.
 
 
-import pathlib
-
 # explicitly importing fiona before geopandas fixes issue #156
 import fiona  # noqa: F401
 import geopandas
-import pytest  # noqa: F401
+import pandas
+import pathlib
+import pytest
+import shapely
+
 
 # test_data
 DATA_DIRECTORY = (
     pathlib.Path(__file__).resolve().parent.parent / "docs" / "_static" / "data"
 )
+
+
 OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
 GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
-POPULATION_GRID_POINTS = DATA_DIRECTORY / "Helsinki" / "population_points_2020.gpkg"
+POPULATION_GRID = DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg"
 
 
 ORIGINS_INVALID_NO_ID = (
@@ -34,6 +38,7 @@ SINGLE_VALID_ORIGIN = (
     DATA_DIRECTORY / "test_data" / "test_valid_single_point_data.geojson"
 )
 
+
 R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.9/r5-v6.9-all.jar"
 R5_JAR_SHA256 = "a7e1c5ff8786a9fb9191073b8f31a6933b862f44b9ff85b2c00a68c85491274d"
 R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
@@ -42,16 +47,24 @@ R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
 )
 
 
+SNAPPED_POPULATION_GRID_POINTS = (
+    DATA_DIRECTORY / "test_data" / "test_snapped_population_grid_centroids.geojson"
+)
+WALKING_TIMES_SNAPPED = DATA_DIRECTORY / "test_data" / "test_walking_times_snapped.csv"
+WALKING_TIMES_NOT_SNAPPED = (
+    DATA_DIRECTORY / "test_data" / "test_walking_times_not_snapped.csv"
+)
+
+
 @pytest.fixture(scope="session")
-def blank_regional_task():
+def blank_regional_task(population_grid_points):
     import r5py
 
     transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
-    grid_points = geopandas.read_file(POPULATION_GRID_POINTS)
     regional_task = r5py.RegionalTask(
         transport_network,
-        grid_points.at[1, "geometry"],
-        grid_points,
+        population_grid_points.at[1, "geometry"],
+        population_grid_points,
     )
     yield regional_task
 
@@ -114,8 +127,17 @@ def osm_pbf_file_path():
 
 
 @pytest.fixture(scope="session")
-def population_points():
-    yield geopandas.read_file(POPULATION_GRID_POINTS)
+def population_grid():
+    yield geopandas.read_file(POPULATION_GRID)
+
+
+@pytest.fixture(scope="session")
+def population_grid_points(population_grid):
+    population_grid_points = population_grid.copy()
+    population_grid_points.geometry = population_grid_points.geometry.to_crs(
+        "EPSG:3067"
+    ).centroid.to_crs("EPSG:4326")
+    yield population_grid_points
 
 
 @pytest.fixture(scope="session")
@@ -150,9 +172,19 @@ def r5_jar_url():
     yield R5_JAR_URL
 
 
+@pytest.fixture(scope="session")
+def snapped_population_grid_points():
+    yield geopandas.read_file(SNAPPED_POPULATION_GRID_POINTS)
+
+
 @pytest.fixture
 def transport_network_files_tuple(scope="session"):
     yield OSM_PBF, [GTFS]
+
+
+@pytest.fixture(scope="session")
+def transport_network(transport_network_from_test_files):
+    yield transport_network_from_test_files
 
 
 @pytest.fixture(scope="session")
@@ -176,3 +208,27 @@ def transport_network_from_test_files_without_gtfs():
 
     transport_network = r5py.TransportNetwork(OSM_PBF, [])
     yield transport_network
+
+
+@pytest.fixture(scope="session")
+def unsnappable_points():
+    yield geopandas.GeoDataFrame(
+        {
+            "id": [1, 2],
+            "geometry": [
+                shapely.Point(48.20, 16.36),  # far away from Helsinki
+                shapely.Point(-0.22, -78.51),  # even further
+            ],
+        },
+        crs="EPSG:4326",
+    )
+
+
+@pytest.fixture(scope="session")
+def walking_times_snapped():
+    yield pandas.read_csv(WALKING_TIMES_SNAPPED)
+
+
+@pytest.fixture(scope="session")
+def walking_times_not_snapped():
+    yield pandas.read_csv(WALKING_TIMES_NOT_SNAPPED)

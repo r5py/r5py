@@ -6,6 +6,7 @@ import pathlib
 import shutil
 
 import pytest
+import shapely
 
 from .temporary_directory import TemporaryDirectory
 
@@ -144,3 +145,9 @@ class Test_TransportNetwork:
     ):
         snapped = transport_network.snap_to_network(population_grid_points.geometry)
         assert snapped.geometry.equals(snapped_population_grid_points.geometry)
+
+    def test_snap_to_network_with_unsnappable_points(
+        self, transport_network, unsnappable_points
+    ):
+        snapped = transport_network.snap_to_network(unsnappable_points.geometry)
+        assert snapped.geometry.unique() == [shapely.Point()]

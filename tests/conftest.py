@@ -7,16 +7,18 @@
 # transport network) here.
 
 
-import pathlib
-
 # explicitly importing fiona before geopandas fixes issue #156
 import fiona  # noqa: F401
 import geopandas
 import pandas
-import pytest  # noqa: F401
+import pathlib
+import pytest
+import shapely
 
-# test_data
+
 DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
+
+
 OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
 GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
 POPULATION_GRID = DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg"
@@ -33,12 +35,14 @@ SINGLE_VALID_ORIGIN = (
     DATA_DIRECTORY / "test_data" / "test_valid_single_point_data.geojson"
 )
 
+
 R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.9/r5-v6.9-all.jar"
 R5_JAR_SHA256 = "a7e1c5ff8786a9fb9191073b8f31a6933b862f44b9ff85b2c00a68c85491274d"
 R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
 R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
     "14aa2347be79c280e4d0fd3a137fb8f5bf2863261a1e48e1a122df1a52a0f453"
 )
+
 
 SNAPPED_POPULATION_GRID_POINTS = (
     DATA_DIRECTORY / "test_data" / "test_snapped_population_grid_centroids.geojson"
@@ -191,6 +195,20 @@ def transport_network_from_test_files_without_gtfs():
 
     transport_network = r5py.TransportNetwork(OSM_PBF, [])
     yield transport_network
+
+
+@pytest.fixture(scope="session")
+def unsnappable_points():
+    yield geopandas.GeoDataFrame(
+        {
+            "id": [1, 2],
+            "geometry": [
+                shapely.Point(48.20, 16.36),  # far away from Helsinki
+                shapely.Point(-0.22, -78.51),  # even further
+            ],
+        },
+        crs="EPSG:4326",
+    )
 
 
 @pytest.fixture(scope="session")

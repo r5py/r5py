@@ -309,3 +309,26 @@ class TestTravelTimeMatrixComputer:
         ).sort_index()
 
         assert travel_times.equals(expected_travel_times)
+
+    def test_snap_to_network_with_unsnappable_origins(
+        self, transport_network, unsnappable_points
+    ):
+        with pytest.warns(RuntimeWarning):
+            _ = r5py.TravelTimeMatrixComputer(
+                transport_network,
+                unsnappable_points,
+                snap_to_network=True,
+                transport_modes=[r5py.LegMode.WALK],
+            )
+
+    def test_snap_to_network_with_unsnappable_destinations(
+        self, transport_network, population_grid_points, unsnappable_points
+    ):
+        with pytest.warns(RuntimeWarning):
+            _ = r5py.TravelTimeMatrixComputer(
+                transport_network,
+                origins=population_grid_points,
+                destinations=unsnappable_points,
+                snap_to_network=True,
+                transport_modes=[r5py.LegMode.WALK],
+            )

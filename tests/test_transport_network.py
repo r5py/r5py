@@ -6,6 +6,7 @@ import pathlib
 import shutil
 
 import pytest
+import shapely
 
 from .temporary_directory import TemporaryDirectory
 
@@ -67,10 +68,8 @@ class Test_TransportNetwork:
             (pytest.lazy_fixture("transport_network_from_test_directory"),),
         ],
     )
-    def test_street_layer_java_object(self, transport_network):
-        assert isinstance(
-            transport_network.street_layer, com.conveyal.r5.streets.StreetLayer
-        )
+    def test_street_layer(self, transport_network):
+        assert isinstance(transport_network.street_layer, r5py.r5.StreetLayer)
 
     @pytest.mark.parametrize(
         ["transport_network"],
@@ -137,3 +136,18 @@ class Test_TransportNetwork:
                     temp_directory
                 )
                 del transport_network
+
+    def test_snap_to_network(
+        self,
+        transport_network,
+        population_grid_points,
+        snapped_population_grid_points,
+    ):
+        snapped = transport_network.snap_to_network(population_grid_points.geometry)
+        assert snapped.geometry.equals(snapped_population_grid_points.geometry)
+
+    def test_snap_to_network_with_unsnappable_points(
+        self, transport_network, unsnappable_points
+    ):
+        snapped = transport_network.snap_to_network(unsnappable_points.geometry)
+        assert snapped.geometry.unique() == [shapely.Point()]

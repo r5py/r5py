@@ -10,12 +10,12 @@ import r5py.util.exceptions
 
 class TestDetailedItinerariesComputer:
     def test_detailed_itineraries_initialization(
-        self, transport_network_from_test_files, population_points, origin_point
+        self, transport_network, population_grid_points, origin_point
     ):
         detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
-            transport_network_from_test_files,
+            transport_network,
             origins=origin_point,
-            destinations=population_points,
+            destinations=population_grid_points,
             departure=datetime.datetime(2022, 2, 22, 8, 30),
             transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
         )
@@ -29,16 +29,17 @@ class TestDetailedItinerariesComputer:
 
         assert detailed_itineraries_computer.origins.shape == origin_point.shape
         assert (
-            detailed_itineraries_computer.destinations.shape == population_points.shape
+            detailed_itineraries_computer.destinations.shape
+            == population_grid_points.shape
         )
 
     def test_detailed_itineraries_initialization_with_files(
-        self, transport_network_files_tuple, population_points, origin_point
+        self, transport_network_files_tuple, population_grid_points, origin_point
     ):
         detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
             transport_network_files_tuple,
             origins=origin_point,
-            destinations=population_points,
+            destinations=population_grid_points,
             departure=datetime.datetime(2022, 2, 22, 8, 30),
             transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
         )
@@ -48,15 +49,15 @@ class TestDetailedItinerariesComputer:
 
     def test_one_to_all_with_breakdown(
         self,
-        transport_network_from_test_files,
-        population_points,
+        transport_network,
+        population_grid_points,
         origin_point,
         data_columns_with_breakdown,
     ):
         detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
-            transport_network_from_test_files,
+            transport_network,
             origins=origin_point,
-            destinations=population_points,
+            destinations=population_grid_points,
             departure=datetime.datetime(2022, 2, 22, 8, 30),
             transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
         )

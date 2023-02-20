@@ -5,7 +5,7 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.14.0
+      jupytext_version: 1.14.4
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -100,7 +100,8 @@ Let's start by downloading a sample point dataset into a geopandas `GeoDataFrame
 ```python
 import geopandas 
 
-points_url = "https://github.com/r5py/r5py/raw/main/docs/data/Helsinki/population_points_2020.gpkg"
+# temporary fix, this is not getting published as such, anyway, but only after PR #238 is merged
+points_url = "https://github.com/r5py/r5py/raw/stable/docs/data/Helsinki/population_points_2020.gpkg"
 points = geopandas.read_file(points_url)
 points.head()
 ```

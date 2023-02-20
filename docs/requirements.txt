@@ -8,12 +8,6 @@ sphinx-design
 sphinxcontrib-bibtex
 sphinxcontrib-images
 
-# Jupyterlab
-jupyterlab
-jupyterlab-git
-jupyterlab-myst
-jupytext
-
 # r5py:
 ConfigArgParse
 fiona
@@ -31,7 +25,3 @@ contextily
 folium
 mapclassify
 matplotlib
-
-
-# https://github.com/ipython/ipython/issues/13845
-ipython!=8.7.0

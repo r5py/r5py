@@ -18,6 +18,17 @@ def intermediate_results():
     yield []
 
 
+# Python 3.10+
+def pairwise(iterable):
+    """pairwise("ABCDEFG") --> AB BC CD DE EF FG ."""
+    try:
+        return itertools.pairwise(iterable)
+    except AttributeError:  # Python<3.10
+        a, b = itertools.tee(iterable)
+        next(b, None)
+        return zip(a, b)
+
+
 class TestDeterministicBehaviour:
     @pytest.mark.parametrize("iteration", range(10))
     def test_public_transport_travel_time_matrices(
@@ -31,7 +42,7 @@ class TestDeterministicBehaviour:
 
         intermediate_results.append(travel_times)
 
-        for matrix_a, matrix_b in itertools.pairwise(intermediate_results):
+        for matrix_a, matrix_b in pairwise(intermediate_results):
             assert (
                 matrix_a.set_index(["from_id", "to_id"])
                 .sort_index()

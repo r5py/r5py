@@ -242,62 +242,60 @@ class TestTravelTimeMatrixComputer:
 
     @pytest.mark.parametrize(
         [
-            "transport_network_",
-            "origins",
             "snap_to_network",
             "expected_snap_to_network",
         ],
         [
             (
-                pytest.lazy_fixture("transport_network"),
-                pytest.lazy_fixture("population_grid_points"),
                 True,
                 True,
             ),
             (
-                pytest.lazy_fixture("transport_network"),
-                pytest.lazy_fixture("population_grid_points"),
                 False,
                 False,
             ),
         ],
     )
     def test_snap_to_network_parameter(
-        self, transport_network_, origins, snap_to_network, expected_snap_to_network
+        self,
+        transport_network,
+        population_grid_points,
+        snap_to_network,
+        expected_snap_to_network,
     ):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
-            transport_network_, origins, snap_to_network=snap_to_network
+            transport_network,
+            population_grid_points,
+            snap_to_network=snap_to_network,
         )
         assert travel_time_matrix_computer.snap_to_network == expected_snap_to_network
 
     @pytest.mark.parametrize(
         [
-            "transport_network_",
-            "origins",
             "snap_to_network",
             "expected_travel_times",
         ],
         [
             (
-                pytest.lazy_fixture("transport_network"),
-                pytest.lazy_fixture("population_grid_points"),
                 True,
                 pytest.lazy_fixture("walking_times_snapped"),
             ),
             (
-                pytest.lazy_fixture("transport_network"),
-                pytest.lazy_fixture("population_grid_points"),
                 False,
                 pytest.lazy_fixture("walking_times_not_snapped"),
             ),
         ],
     )
     def test_snap_to_network(
-        self, transport_network_, origins, snap_to_network, expected_travel_times
+        self,
+        transport_network,
+        population_grid_points,
+        snap_to_network,
+        expected_travel_times,
     ):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
-            transport_network_,
-            origins,
+            transport_network,
+            origins=population_grid_points,
             snap_to_network=snap_to_network,
             transport_modes=[r5py.LegMode.WALK],
         )
@@ -311,7 +309,9 @@ class TestTravelTimeMatrixComputer:
         assert travel_times.equals(expected_travel_times)
 
     def test_snap_to_network_with_unsnappable_origins(
-        self, transport_network, unsnappable_points
+        self,
+        transport_network,
+        unsnappable_points,
     ):
         with pytest.warns(RuntimeWarning):
             _ = r5py.TravelTimeMatrixComputer(
@@ -322,7 +322,10 @@ class TestTravelTimeMatrixComputer:
             )
 
     def test_snap_to_network_with_unsnappable_destinations(
-        self, transport_network, population_grid_points, unsnappable_points
+        self,
+        transport_network,
+        population_grid_points,
+        unsnappable_points,
     ):
         with pytest.warns(RuntimeWarning):
             _ = r5py.TravelTimeMatrixComputer(
@@ -333,14 +336,18 @@ class TestTravelTimeMatrixComputer:
                 transport_modes=[r5py.LegMode.WALK],
             )
 
+    @pytest.mark.parametrize("snap_to_network", [True, False])
     def test_travel_time_between_identical_from_and_to_ids(
-        self, transport_network, population_grid_points
+        self,
+        transport_network,
+        population_grid_points,
+        snap_to_network,
     ):
         travel_time_matrix = r5py.TravelTimeMatrixComputer(
             transport_network,
             origins=population_grid_points,
             transport_modes=[r5py.LegMode.WALK],
-            snap_to_network=True,
+            snap_to_network=snap_to_network,
         ).compute_travel_times()
 
         assert (

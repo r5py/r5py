@@ -13,6 +13,8 @@ import warnings
 import jpype
 import jpype.types
 
+from .street_layer import StreetLayer
+from .street_mode import StreetMode
 from .transit_layer import TransitLayer
 from ..util import Config, contains_gtfs_data, start_jvm
 
@@ -48,6 +50,9 @@ class TransportNetwork:
             java.lang.String(str(osm_pbf)),
             java.util.ArrayList.of(gtfs),
         )
+        self._transport_network.streetLayer.buildEdgeLists()
+        self._transport_network.streetLayer.indexStreets()
+        self._transport_network.rebuildTransientIndexes()
         self._transport_network.transitLayer.buildDistanceTables(None)
 
         # attempt to remove temporary files created by R5 during import
@@ -175,10 +180,41 @@ class TransportNetwork:
         """Expose the `TransportNetwork`’s `linkageCache` to Python."""
         return self._transport_network.linkageCache
 
+    def snap_to_network(
+        self,
+        points,
+        radius=com.conveyal.r5.streets.StreetLayer.LINK_RADIUS_METERS,
+        street_mode=StreetMode.WALK,
+    ):
+        """
+        Snap `points` to valid locations on the network.
+
+        Arguments
+        ---------
+        points : geopandas.GeoSeries
+            point geometries that will be snapped to the network
+        radius : float
+            Search radius around each `point`
+        street_mode : travel mode that the snapped-to street should allow
+
+        Returns
+        -------
+        geopandas.GeoSeries
+            point geometries that have been snapped to the network,
+            using the same index and order as the input `points`
+        """
+        return points.apply(
+            functools.partial(
+                self.street_layer.find_split,
+                radius=radius,
+                street_mode=street_mode,
+            )
+        )
+
     @property
     def street_layer(self):
         """Expose the `TransportNetwork`’s `streetLayer` to Python."""
-        return self._transport_network.streetLayer
+        return StreetLayer.from_r5_street_layer(self._transport_network.streetLayer)
 
     @property
     def timezone(self):

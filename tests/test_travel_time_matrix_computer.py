@@ -34,16 +34,10 @@ class TestTravelTimeMatrixInputValidation:
             )
             del travel_time_matrix_computer
 
-    @pytest.mark.parametrize(
-        [
-            "origins",
-        ],
-        [(pytest.lazy_fixture("origins_valid_ids"),)],
-    )
-    def test_origins_valid_data(self, transport_network, origins):
+    def test_origins_valid_data(self, transport_network, origins_valid_ids):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
             transport_network,
-            origins=origins,
+            origins=origins_valid_ids,
         )
         del travel_time_matrix_computer
 
@@ -77,7 +71,7 @@ class TestTravelTimeMatrixInputValidation:
         ],
     )
     def test_origins_and_destinations_invalid_data(
-        self, transport_network, origins, destinations, expected_error
+        self, transport_network, origins, destinations, expected_error,
     ):
         with pytest.raises(expected_error):
             travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
@@ -100,7 +94,7 @@ class TestTravelTimeMatrixInputValidation:
         ],
     )
     def test_origins_and_destinations_valid_data(
-        self, transport_network, origins, destinations
+        self, transport_network, origins, destinations,
     ):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
             transport_network,
@@ -112,7 +106,7 @@ class TestTravelTimeMatrixInputValidation:
 
 class TestTravelTimeMatrixComputer:
     def test_travel_time_matrix_initialization(
-        self, transport_network, population_grid_points, origin_point
+        self, transport_network, population_grid_points, origin_point,
     ):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
             transport_network,
@@ -242,62 +236,60 @@ class TestTravelTimeMatrixComputer:
 
     @pytest.mark.parametrize(
         [
-            "transport_network_",
-            "origins",
             "snap_to_network",
             "expected_snap_to_network",
         ],
         [
             (
-                pytest.lazy_fixture("transport_network"),
-                pytest.lazy_fixture("population_grid_points"),
                 True,
                 True,
             ),
             (
-                pytest.lazy_fixture("transport_network"),
-                pytest.lazy_fixture("population_grid_points"),
                 False,
                 False,
             ),
         ],
     )
     def test_snap_to_network_parameter(
-        self, transport_network_, origins, snap_to_network, expected_snap_to_network
+        self,
+        transport_network,
+        population_grid_points,
+        snap_to_network,
+        expected_snap_to_network,
     ):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
-            transport_network_, origins, snap_to_network=snap_to_network
+            transport_network,
+            population_grid_points,
+            snap_to_network=snap_to_network,
         )
         assert travel_time_matrix_computer.snap_to_network == expected_snap_to_network
 
     @pytest.mark.parametrize(
         [
-            "transport_network_",
-            "origins",
             "snap_to_network",
             "expected_travel_times",
         ],
         [
             (
-                pytest.lazy_fixture("transport_network"),
-                pytest.lazy_fixture("population_grid_points"),
                 True,
                 pytest.lazy_fixture("walking_times_snapped"),
             ),
             (
-                pytest.lazy_fixture("transport_network"),
-                pytest.lazy_fixture("population_grid_points"),
                 False,
                 pytest.lazy_fixture("walking_times_not_snapped"),
             ),
         ],
     )
     def test_snap_to_network(
-        self, transport_network_, origins, snap_to_network, expected_travel_times
+        self,
+        transport_network,
+        population_grid_points,
+        snap_to_network,
+        expected_travel_times,
     ):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
-            transport_network_,
-            origins,
+            transport_network,
+            origins=population_grid_points,
             snap_to_network=snap_to_network,
             transport_modes=[r5py.LegMode.WALK],
         )
@@ -311,7 +303,9 @@ class TestTravelTimeMatrixComputer:
         assert travel_times.equals(expected_travel_times)
 
     def test_snap_to_network_with_unsnappable_origins(
-        self, transport_network, unsnappable_points
+        self,
+        transport_network,
+        unsnappable_points,
     ):
         with pytest.warns(RuntimeWarning):
             _ = r5py.TravelTimeMatrixComputer(
@@ -322,7 +316,10 @@ class TestTravelTimeMatrixComputer:
             )
 
     def test_snap_to_network_with_unsnappable_destinations(
-        self, transport_network, population_grid_points, unsnappable_points
+        self,
+        transport_network,
+        population_grid_points,
+        unsnappable_points,
     ):
         with pytest.warns(RuntimeWarning):
             _ = r5py.TravelTimeMatrixComputer(
@@ -332,3 +329,24 @@ class TestTravelTimeMatrixComputer:
                 snap_to_network=True,
                 transport_modes=[r5py.LegMode.WALK],
             )
+
+    @pytest.mark.parametrize("snap_to_network", [True, False])
+    def test_travel_time_between_identical_from_and_to_ids(
+        self,
+        transport_network,
+        population_grid_points,
+        snap_to_network,
+    ):
+        travel_time_matrix = r5py.TravelTimeMatrixComputer(
+            transport_network,
+            origins=population_grid_points,
+            transport_modes=[r5py.LegMode.WALK],
+            snap_to_network=snap_to_network,
+        ).compute_travel_times()
+
+        assert (
+            travel_time_matrix[
+                travel_time_matrix["from_id"] == travel_time_matrix["to_id"]
+            ].travel_time.max()
+            == 0
+        )

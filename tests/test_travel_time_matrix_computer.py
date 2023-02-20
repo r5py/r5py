@@ -332,3 +332,20 @@ class TestTravelTimeMatrixComputer:
                 snap_to_network=True,
                 transport_modes=[r5py.LegMode.WALK],
             )
+
+    def test_travel_time_between_identical_from_and_to_ids(
+        self, transport_network, population_grid_points
+    ):
+        travel_time_matrix = r5py.TravelTimeMatrixComputer(
+            transport_network,
+            origins=population_grid_points,
+            transport_modes=[r5py.LegMode.WALK],
+            snap_to_network=True,
+        ).compute_travel_times()
+
+        assert (
+            travel_time_matrix[
+                travel_time_matrix["from_id"] == travel_time_matrix["to_id"]
+            ].travel_time.max()
+            == 0
+        )

@@ -57,7 +57,7 @@ WALKING_TIMES_NOT_SNAPPED = (
 
 
 @pytest.fixture(scope="session")
-def blank_regional_task(population_grid_points):
+def regional_task(population_grid_points):
     import r5py
 
     transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
@@ -86,6 +86,16 @@ def data_columns_with_breakdown(scope="session"):
         "total_time",
         "n_iterations",
     ]
+
+
+@pytest.fixture()
+def gtfs_file():
+    yield GTFS
+
+
+@pytest.fixture()
+def not_a_gtfs_file():
+    yield OSM_PBF
 
 
 @pytest.fixture

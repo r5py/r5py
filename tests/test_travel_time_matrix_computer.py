@@ -71,7 +71,11 @@ class TestTravelTimeMatrixInputValidation:
         ],
     )
     def test_origins_and_destinations_invalid_data(
-        self, transport_network, origins, destinations, expected_error,
+        self,
+        transport_network,
+        origins,
+        destinations,
+        expected_error,
     ):
         with pytest.raises(expected_error):
             travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
@@ -94,7 +98,10 @@ class TestTravelTimeMatrixInputValidation:
         ],
     )
     def test_origins_and_destinations_valid_data(
-        self, transport_network, origins, destinations,
+        self,
+        transport_network,
+        origins,
+        destinations,
     ):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
             transport_network,
@@ -106,7 +113,10 @@ class TestTravelTimeMatrixInputValidation:
 
 class TestTravelTimeMatrixComputer:
     def test_travel_time_matrix_initialization(
-        self, transport_network, population_grid_points, origin_point,
+        self,
+        transport_network,
+        population_grid_points,
+        origin_point,
     ):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
             transport_network,

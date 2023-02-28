@@ -27,15 +27,29 @@ def start_jvm():
     if not jpype.isJVMStarted():
         # preload signal handling; this, among other things, prevents some of
         # the warning messages we have been seeing
-        # (cf. https://stackoverflow.com/questions/
-        #   15790403/what-does-consider-using-jsig-library-mean )
+        # (cf. https://stackoverflow.com/q/15790403 and
+        #  https://docs.oracle.com/en/java/javase/19/vm/signal-chaining.html )
         JVM_PATH = pathlib.Path(jpype.getDefaultJVMPath()).resolve()
-        LIBJSIG = str(JVM_PATH.parent / "libjsig.so")
-        os.environ["LD_PRELOAD"] = LIBJSIG  # Linux
-        os.environ["DYLD_INSERT_LIBRARIES"] = LIBJSIG  # MacOS
+        if sys.platform == "linux":
+            try:
+                LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.so"))
+                os.environ["LD_PRELOAD"] = str(LIBJSIG)
+            except StopIteration:
+                pass  # don’t fail completely if libjsig not found
+        elif sys.platform == "darwin":
+            try:
+                LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.dylib"))
+                os.environ["DYLD_INSERT_LIBRARIES"] = str(LIBJSIG)
+            except StopIteration:
+                pass  # don’t fail completely if libjsig not found
 
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",
+            "-Xcheck:jni",
+            "-Xrs",  # https://stackoverflow.com/q/34951812
+            "-Duser.language=en",  # Set a default locale, …
+            "-Duser.country=US",  # … as R5 formats numeric return …
+            "-Duser.variant=",  # … values as a localised string
             classpath=[R5_CLASSPATH],
             interrupt=True,
         )
@@ -61,7 +75,7 @@ def start_jvm():
                     ch.qos.logback.classic.Level.valueOf("OFF")
                 )
 
-            if os.name == "nt":  # Windows
+            if sys.platform == "win32":  # Windows
                 null_stream = java.io.PrintStream("NUL")
             else:
                 null_stream = java.io.PrintStream("/dev/null")

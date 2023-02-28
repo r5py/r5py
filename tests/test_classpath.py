@@ -33,7 +33,8 @@ class TestClassPath:
 
         with pytest.warns(RuntimeWarning):
             r5_classpath = find_r5_classpath(Config().arguments)
-        digest = hashlib.sha256(open(r5_classpath, "rb").read()).hexdigest()
+        with open(r5_classpath, "rb") as r5_jar:
+            digest = hashlib.sha256(r5_jar.read()).hexdigest()
         assert digest == r5_jar_sha256
 
     def test_use_classpath_from_local_file(
@@ -46,7 +47,8 @@ class TestClassPath:
 
         r5_classpath = find_r5_classpath(Config().arguments)
 
-        digest = hashlib.sha256(open(r5_classpath, "rb").read()).hexdigest()
+        with open(r5_classpath, "rb") as r5_jar:
+            digest = hashlib.sha256(r5_jar.read()).hexdigest()
 
         assert digest == r5_jar_sha256
         assert r5_classpath == r5_jar_cached
@@ -56,5 +58,6 @@ class TestClassPath:
     ):
         sys.argv.extend(["--r5-classpath", r5_jar_cached_invalid])
         r5_classpath = find_r5_classpath(Config().arguments)
-        digest = hashlib.sha256(open(r5_classpath, "rb").read()).hexdigest()
+        with open(r5_classpath, "rb") as r5_jar:
+            digest = hashlib.sha256(r5_jar.read()).hexdigest()
         assert digest == r5_jar_sha256

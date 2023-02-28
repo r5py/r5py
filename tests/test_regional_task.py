@@ -235,12 +235,8 @@ class TestRegionalTask:
     @pytest.mark.parametrize(
         ["percentiles"],
         [
-            (
-                [10, 20, 30, 40, 50, 60, 70, 90],
-            ),
-            (
-                [i for i in range(101)],
-            ),
+            ([10, 20, 30, 40, 50, 60, 70, 90],),
+            ([i for i in range(101)],),
         ],
     )
     def test_out_of_range_percentiles(self, regional_task, percentiles):
@@ -304,12 +300,8 @@ class TestRegionalTask:
     @pytest.mark.parametrize(
         ["origin"],
         [
-            (
-                shapely.geometry.Point(60, 24),
-            ),
-            (
-                shapely.geometry.Point(61, 25),
-            ),
+            (shapely.geometry.Point(60, 24),),
+            (shapely.geometry.Point(61, 25),),
         ],
     )
     def test_origin_setter_getter(self, regional_task, origin):

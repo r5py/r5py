@@ -8,6 +8,7 @@ import warnings
 
 from .config import Config
 from .validating_requests_session import ValidatingRequestsSession
+from .warnings import R5pyWarning
 
 
 # update these to use a newer R5 version if no R5 available locally
@@ -42,7 +43,7 @@ def find_r5_classpath(arguments):
             if arguments.verbose:
                 warnings.warn(
                     "Could not find R5 jar, trying to download it from upstream",
-                    RuntimeWarning,
+                    R5pyWarning,
                 )
             with ValidatingRequestsSession() as session, session.get(
                 R5_JAR_URL, R5_JAR_SHA256
@@ -51,7 +52,7 @@ def find_r5_classpath(arguments):
             if arguments.verbose:
                 warnings.warn(
                     f"Successfully downloaded {pathlib.Path(R5_JAR_URL).name}",
-                    RuntimeWarning,
+                    R5pyWarning,
                 )
     return r5_classpath
 

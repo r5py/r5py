@@ -56,7 +56,12 @@ omit = ["tests/*"]
 "docs/md/" = "md"
 
 [tool.pytest.ini_options]
-addopts = "-p no:faulthandler -r s --cov=./src/r5py --cov-append --cov-report term-missing --cov-report xml"
+addopts = "-p no:faulthandler --cov --cov-report term-missing"
+filterwarnings = [
+    "error",
+    "ignore:Could not find R5 jar, trying to download it from upstream",
+    "ignore:Successfully downloaded r5-"
+]
 pythonpath = ["src"]
 testpaths = ["tests"]
 asyncio_mode = "auto"

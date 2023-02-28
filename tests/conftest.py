@@ -9,6 +9,8 @@
 
 # explicitly importing fiona before geopandas fixes issue #156
 import fiona  # noqa: F401
+
+import datetime
 import geopandas
 import pandas
 import pathlib
@@ -62,6 +64,7 @@ def regional_task(population_grid_points):
         transport_network,
         population_grid_points.at[1, "geometry"],
         population_grid_points,
+        departure=datetime.datetime(2022, 2, 22, 8, 30),
     )
     yield regional_task
 

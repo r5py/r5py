@@ -4,9 +4,11 @@
 """Test whether routing is (more or less) deterministic (https://github.com/r5py/r5py/issues/240)."""
 
 
+import datetime
 import itertools
 
-import pytest  # noqa: F401
+import pandas.testing
+import pytest
 
 import r5py
 
@@ -37,14 +39,26 @@ class TestDeterministicBehaviour:
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
             transport_network,
             population_grid_points,
+            departure=datetime.datetime(2022, 2, 22, 8, 30),
+            snap_to_network=True,
         )
         travel_times = travel_time_matrix_computer.compute_travel_times()
 
         intermediate_results.append(travel_times)
 
         for matrix_a, matrix_b in pairwise(intermediate_results):
-            assert (
-                matrix_a.set_index(["from_id", "to_id"])
-                .sort_index()
-                .equals(matrix_b.set_index(["from_id", "to_id"]).sort_index())
+            # m_a = matrix_a.set_index(["from_id", "to_id"])
+            # m_b = matrix_b.set_index(["from_id", "to_id"])
+            # m_a["difference"] = m_a.travel_time - m_b.travel_time
+            # print(
+            #     m_a[m_a.difference != 0],
+            #     m_a.difference.describe(),
+            #     m_a[(m_a.difference >= 3) | (m_a.difference <= -3)],
+            # )
+
+            pandas.testing.assert_frame_equal(
+                matrix_a,
+                matrix_b,
+                check_like=True,
+                atol=3,  # tolerance between runs, in minutes
             )

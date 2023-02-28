@@ -31,7 +31,7 @@ class TestClassPath:
         except FileNotFoundError:
             pass
 
-        with pytest.warns(RuntimeWarning):
+        with pytest.warns(RuntimeWarning, match="Could not find R5 jar"):
             r5_classpath = find_r5_classpath(Config().arguments)
         with open(r5_classpath, "rb") as r5_jar:
             digest = hashlib.sha256(r5_jar.read()).hexdigest()

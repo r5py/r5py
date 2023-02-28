@@ -4,6 +4,7 @@
 import pytest  # noqa: F401
 
 import hashlib
+import os
 import pathlib
 import sys
 
@@ -58,3 +59,14 @@ class TestClassPath:
         r5_classpath = find_r5_classpath(Config().arguments)
         digest = hashlib.sha256(open(r5_classpath, "rb").read()).hexdigest()
         assert digest == r5_jar_sha256
+
+    @pytest.mark.skipif(
+        sys.platform == "win32", reason="No signal chaining library for Windows"
+    )
+    def test_signal_chaining(self):
+        if sys.platform == "linux":
+            assert "LD_PRELOAD" in os.environ
+            assert pathlib.Path(os.environ["LD_PRELOAD"]).exists()
+        elif sys.platform == "darwin":
+            assert "DYLD_INSERT_LIBRARIES" in os.environ
+            assert pathlib.Path(os.environ["DYLD_INSERT_LIBRARIES"]).exists()

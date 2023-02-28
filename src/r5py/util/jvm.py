@@ -46,9 +46,7 @@ def start_jvm():
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",
             "-Xcheck:jni",
-
             "-Xrs",  # https://stackoverflow.com/q/34951812
-
             "-Duser.language=en",  # Set a default locale, …
             "-Duser.country=US",  # … as R5 formats numeric return …
             "-Duser.variant=",  # … values as a localised string

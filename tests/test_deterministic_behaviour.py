@@ -4,7 +4,6 @@
 """Test whether routing is (more or less) deterministic (https://github.com/r5py/r5py/issues/240)."""
 
 
-import datetime
 import itertools
 
 import pandas.testing
@@ -34,12 +33,17 @@ def pairwise(iterable):
 class TestDeterministicBehaviour:
     @pytest.mark.parametrize("iteration", range(10))
     def test_public_transport_travel_time_matrices(
-        self, transport_network, population_grid_points, intermediate_results, iteration
+        self,
+        transport_network,
+        population_grid_points,
+        departure_datetime,
+        intermediate_results,
+        iteration,
     ):
         travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
             transport_network,
             population_grid_points,
-            departure=datetime.datetime(2022, 2, 22, 8, 30),
+            departure=departure_datetime,
             snap_to_network=True,
         )
         travel_times = travel_time_matrix_computer.compute_travel_times()

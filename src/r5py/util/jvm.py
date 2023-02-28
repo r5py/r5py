@@ -28,20 +28,24 @@ def start_jvm():
         # preload signal handling; this, among other things, prevents some of
         # the warning messages we have been seeing
         # (cf. https://stackoverflow.com/q/15790403)
-        try:
-            JVM_PATH = pathlib.Path(jpype.getDefaultJVMPath()).resolve()
-
+        JVM_PATH = pathlib.Path(jpype.getDefaultJVMPath()).resolve()
+        if sys.platform == "linux":
+            try:
+                LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.so"))
+                os.environ["LD_PRELOAD"] = str(LIBJSIG)
+            except StopIteration:
+                pass
+        elif sys.platform == "darwin":
             # debugging issue #243
             print(
                 "Found libjsig in the following locations: ",
-                [path for path in JVM_PATH.parent.glob("**/libjsig.so")],
+                [path for path in JVM_PATH.parent.glob("**/libjsig.*")],
             )
-
-            LIBJSIG = str(next(JVM_PATH.parent.glob("**/libjsig.so")))
-            os.environ["LD_PRELOAD"] = LIBJSIG  # Linux
-            os.environ["DYLD_INSERT_LIBRARIES"] = LIBJSIG  # MacOS
-        except StopIteration:
-            pass
+            try:
+                LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.dylib"))
+                os.environ["DYLD_INSERT_LIBRARIES"] = str(LIBJSIG)
+            except StopIteration:
+                pass
 
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",

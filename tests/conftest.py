@@ -55,6 +55,25 @@ WALKING_TIMES_NOT_SNAPPED = (
 )
 
 
+@pytest.fixture
+def data_columns_with_breakdown(scope="session"):
+    yield [
+        "from_id",
+        "to_id",
+        "travel_time",
+        "routes",
+        "board_stops",
+        "alight_stops",
+        "ride_times",
+        "access_time",
+        "egress_time",
+        "transfer_time",
+        "wait_times",
+        "total_time",
+        "n_iterations",
+    ]
+
+
 @pytest.fixture()
 def departure_datetime():
     yield datetime.datetime(2022, 2, 22, 8, 30)

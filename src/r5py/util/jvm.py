@@ -50,6 +50,7 @@ def start_jvm():
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",
             "-Xcheck:jni",
+            "-Xrs",  # https://stackoverflow.com/q/34951812
             classpath=[R5_CLASSPATH],
         )
 

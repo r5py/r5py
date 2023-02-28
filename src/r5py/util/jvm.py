@@ -37,11 +37,6 @@ def start_jvm():
             except StopIteration:
                 pass
         elif sys.platform == "darwin":
-            # debugging issue #243
-            print(
-                "Found libjsig in the following locations: ",
-                [path for path in JVM_PATH.parent.glob("**/libjsig.*")],
-            )
             try:
                 LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.dylib"))
                 os.environ["DYLD_INSERT_LIBRARIES"] = str(LIBJSIG)

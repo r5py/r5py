@@ -127,9 +127,11 @@ Use {func}`geopandas.read_file()` to read data sets from files in one of the
 many geospatial data formats, such as *GeoPackage*, *GeoJSON*, or *ESRI
 Shapefile*.
 
-If your data is in a non-spatial file format, such as spreadsheets, or CSV files
-with columns representing the latitude and longitude coordinates, [follow these
-instructions] to convert them into a {class}`geopandas.GeoDataFrame`.
+If your data is in a non-spatial file format, such as spreadsheets, or CSV
+files with columns representing the latitude and longitude coordinates, [follow
+these
+instructions](https://geopandas.org/en/stable/gallery/create_geopandas_from_pandas.html)
+to convert them into a {class}`geopandas.GeoDataFrame`.
 
 
 ## Sample datasets

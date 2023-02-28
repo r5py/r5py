@@ -29,10 +29,22 @@ def start_jvm():
         # the warning messages we have been seeing
         # (cf. https://stackoverflow.com/questions/
         #   15790403/what-does-consider-using-jsig-library-mean )
-        JVM_PATH = pathlib.Path(jpype.getDefaultJVMPath()).resolve()
-        LIBJSIG = str(JVM_PATH.parent / "libjsig.so")
-        os.environ["LD_PRELOAD"] = LIBJSIG  # Linux
-        os.environ["DYLD_INSERT_LIBRARIES"] = LIBJSIG  # MacOS
+        try:
+            JVM_PATH = pathlib.Path(jpype.getDefaultJVMPath()).resolve()
+
+            # debugging issue #243
+            print(
+                "Found libjsig in the following locations: ",
+                [path for path in JVM_PATH.parent.glob("**/libjsig.so")]
+            )
+
+            LIBJSIG = str(
+                next(JVM_PATH.parent.glob("**/libjsig.so"))
+            )
+            os.environ["LD_PRELOAD"] = LIBJSIG  # Linux
+            os.environ["DYLD_INSERT_LIBRARIES"] = LIBJSIG  # MacOS
+        except StopIteration:
+            pass
 
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",

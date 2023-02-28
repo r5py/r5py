@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 import geopandas
-import datetime
-import pytest  # noqa: F401
 
 import r5py
 import r5py.util.exceptions
@@ -60,7 +58,7 @@ class TestDetailedItinerariesComputer:
         transport_network,
         population_grid_points,
         origin_point,
-        departue_datetime,
+        departure_datetime,
         data_columns_with_breakdown,
     ):
         detailed_itineraries_computer = r5py.DetailedItinerariesComputer(

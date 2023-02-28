@@ -35,12 +35,10 @@ def start_jvm():
             # debugging issue #243
             print(
                 "Found libjsig in the following locations: ",
-                [path for path in JVM_PATH.parent.glob("**/libjsig.so")]
+                [path for path in JVM_PATH.parent.glob("**/libjsig.so")],
             )
 
-            LIBJSIG = str(
-                next(JVM_PATH.parent.glob("**/libjsig.so"))
-            )
+            LIBJSIG = str(next(JVM_PATH.parent.glob("**/libjsig.so")))
             os.environ["LD_PRELOAD"] = LIBJSIG  # Linux
             os.environ["DYLD_INSERT_LIBRARIES"] = LIBJSIG  # MacOS
         except StopIteration:

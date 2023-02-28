@@ -76,7 +76,7 @@ def start_jvm():
                     ch.qos.logback.classic.Level.valueOf("OFF")
                 )
 
-            if os.name == "nt":  # Windows
+            if sys.platform == "win32":  # Windows
                 null_stream = java.io.PrintStream("NUL")
             else:
                 null_stream = java.io.PrintStream("/dev/null")

@@ -27,8 +27,7 @@ def start_jvm():
     if not jpype.isJVMStarted():
         # preload signal handling; this, among other things, prevents some of
         # the warning messages we have been seeing
-        # (cf. https://stackoverflow.com/questions/
-        #   15790403/what-does-consider-using-jsig-library-mean )
+        # (cf. https://stackoverflow.com/q/15790403)
         try:
             JVM_PATH = pathlib.Path(jpype.getDefaultJVMPath()).resolve()
 

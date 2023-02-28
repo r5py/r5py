@@ -35,13 +35,13 @@ def start_jvm():
                 LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.so"))
                 os.environ["LD_PRELOAD"] = str(LIBJSIG)
             except StopIteration:
-                pass
+                pass  # don’t fail completely if libjsig not found
         elif sys.platform == "darwin":
             try:
                 LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.dylib"))
                 os.environ["DYLD_INSERT_LIBRARIES"] = str(LIBJSIG)
             except StopIteration:
-                pass
+                pass  # don’t fail completely if libjsig not found
 
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",

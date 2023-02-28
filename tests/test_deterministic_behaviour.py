@@ -31,12 +31,15 @@ def pairwise(iterable):
 
 
 class TestDeterministicBehaviour:
-    @pytest.mark.parametrize("transport_modes", [
-        (r5py.TransitMode.TRANSIT, r5py.LegMode.WALK),
-        (r5py.LegMode.WALK,),
-        (r5py.LegMode.BICYCLE,),
-        (r5py.LegMode.CAR,),
-    ])
+    @pytest.mark.parametrize(
+        "transport_modes",
+        [
+            (r5py.TransitMode.TRANSIT, r5py.LegMode.WALK),
+            (r5py.LegMode.WALK,),
+            (r5py.LegMode.BICYCLE,),
+            (r5py.LegMode.CAR,),
+        ],
+    )
     @pytest.mark.parametrize("iteration", range(5))
     def test_public_transport_travel_time_matrices(
         self,

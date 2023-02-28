@@ -27,7 +27,11 @@ class TestTravelTimeMatrixInputValidation:
         ],
     )
     def test_origins_invalid_data(
-        self, transport_network, origins, departure_datetime, expected_error
+        self,
+        transport_network,
+        origins,
+        departure_datetime,
+        expected_error,
     ):
         with pytest.raises(expected_error):
             travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(

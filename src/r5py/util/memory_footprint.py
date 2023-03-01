@@ -8,6 +8,7 @@ import re
 import warnings
 
 from .config import Config
+from .warnings import R5pyWarning
 
 
 __all__ = ["MAX_JVM_MEMORY"]
@@ -170,7 +171,7 @@ def _get_max_memory(max_memory):
         warnings.warn(
             f"Requested maximum JVM heap size is too low for R5, "
             f"setting to minimum value {ABSOLUTE_MINIMUM_MEMORY:d} bytes.",
-            RuntimeWarning,
+            R5pyWarning,
         )
 
     return max_memory

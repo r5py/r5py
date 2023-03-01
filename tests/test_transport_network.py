@@ -17,7 +17,9 @@ import java.time
 
 class Test_TransportNetwork:
     def test_init_from_files_and_dir_cover_same_extent(
-        self, transport_network_from_test_files, transport_network_from_test_directory
+        self,
+        transport_network_from_test_files,
+        transport_network_from_test_directory,
     ):
         assert (
             transport_network_from_test_files._transport_network.getEnvelope()
@@ -147,7 +149,9 @@ class Test_TransportNetwork:
         assert snapped.geometry.equals(snapped_population_grid_points.geometry)
 
     def test_snap_to_network_with_unsnappable_points(
-        self, transport_network, unsnappable_points
+        self,
+        transport_network,
+        unsnappable_points,
     ):
         snapped = transport_network.snap_to_network(unsnappable_points.geometry)
         assert snapped.geometry.unique() == [shapely.Point()]

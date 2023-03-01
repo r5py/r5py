@@ -1,22 +1,52 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = ["setuptools>=50.0.0", "wheel"]
+requires = ["setuptools>=61.0.0", "wheel"]
 
 [project]
 name = "r5py"
-dynamic = [
-    "authors",
-    "classifiers",
-    "description",
-    "license",
-    "readme",
-    "requires-python",
-    "urls",
-    "version",
+description = "Python wrapper for the R5 routing analysis engine"
+readme = "README.md"
+
+authors = [
+    { name = "Christoph Fink", email = "christoph.fink@helsinki.fi" },
+    { name = "Willem Klumpenhouwer" },
+    { name = "Marcus Sairava" },
+    { name = "Rafael Pereira" },
+    { name = "Henrikki Tenkanen" }
 ]
+
+dependencies = [
+    "ConfigArgParse",
+    "fiona",
+    "geopandas",
+    "joblib",
+    "jpype1",
+    "numpy",
+    "pandas",
+    "psutil",
+    "requests"
+]
+requires-python = ">=3.8"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+keywords = ["accessibility", "transport", "routing", "research"]
+license = {text = "GPL-3.0-or-later or MIT"}
+
+dynamic = ["version"]
 
 [project.optional-dependencies]
 tests = ["pytest", "pytest-asyncio", "pytest-cov", "pytest-lazy-fixture"]
+
+[project.urls]
+Documentation = "https://r5py.readthedocs.org/"
+Repository = "https://github.com/r5py/r5py.git"
+"Change log" = "https://github.com/r5py/r5py/blob/main/CHANGELOG.md"
+"Bug tracker" = "https://github.com/r5py/r5py/issues"
 
 [tool.coverage.run]
 omit = ["tests/*"]
@@ -26,7 +56,15 @@ omit = ["tests/*"]
 "docs/md/" = "md"
 
 [tool.pytest.ini_options]
-addopts = "-p no:faulthandler -r s --cov=./src/r5py --cov-append --cov-report term-missing --cov-report xml"
+addopts = "-p no:faulthandler --cov --cov-report term-missing"
+filterwarnings = [
+    "error",
+    "ignore:Could not find R5 jar, trying to download it from upstream",
+    "ignore:Successfully downloaded r5-"
+]
 pythonpath = ["src"]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+[tool.setuptools.dynamic]
+version = {attr = "r5py.__version__"}

@@ -9,6 +9,8 @@
 
 # explicitly importing fiona before geopandas fixes issue #156
 import fiona  # noqa: F401
+
+import datetime
 import geopandas
 import pandas
 import pathlib
@@ -56,19 +58,6 @@ WALKING_TIMES_NOT_SNAPPED = (
 )
 
 
-@pytest.fixture(scope="session")
-def regional_task(population_grid_points):
-    import r5py
-
-    transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
-    regional_task = r5py.RegionalTask(
-        transport_network,
-        population_grid_points.at[1, "geometry"],
-        population_grid_points,
-    )
-    yield regional_task
-
-
 @pytest.fixture
 def data_columns_with_breakdown(scope="session"):
     yield [
@@ -88,12 +77,17 @@ def data_columns_with_breakdown(scope="session"):
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
+def departure_datetime():
+    yield datetime.datetime(2022, 2, 22, 8, 30)
+
+
+@pytest.fixture
 def gtfs_file():
     yield GTFS
 
 
-@pytest.fixture()
+@pytest.fixture
 def not_a_gtfs_file():
     yield OSM_PBF
 
@@ -180,6 +174,20 @@ def r5_jar_sha256_github_error_message_when_posting():
 @pytest.fixture(scope="session")
 def r5_jar_url():
     yield R5_JAR_URL
+
+
+@pytest.fixture
+def regional_task(population_grid_points, departure_datetime):
+    import r5py
+
+    transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
+    regional_task = r5py.RegionalTask(
+        transport_network,
+        population_grid_points.at[1, "geometry"],
+        population_grid_points,
+        departure=departure_datetime,
+    )
+    yield regional_task
 
 
 @pytest.fixture(scope="session")

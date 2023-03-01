@@ -74,17 +74,17 @@ def data_columns_with_breakdown(scope="session"):
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def departure_datetime():
     yield datetime.datetime(2022, 2, 22, 8, 30)
 
 
-@pytest.fixture()
+@pytest.fixture
 def gtfs_file():
     yield GTFS
 
 
-@pytest.fixture()
+@pytest.fixture
 def not_a_gtfs_file():
     yield OSM_PBF
 
@@ -163,7 +163,7 @@ def r5_jar_url():
     yield R5_JAR_URL
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def regional_task(population_grid_points, departure_datetime):
     import r5py
 

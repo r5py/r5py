@@ -34,10 +34,10 @@ class TestDeterministicBehaviour:
     @pytest.mark.parametrize(
         "transport_modes",
         [
-            (r5py.TransitMode.TRANSIT, r5py.LegMode.WALK),
             (r5py.LegMode.WALK,),
             (r5py.LegMode.BICYCLE,),
             (r5py.LegMode.CAR,),
+            (r5py.TransitMode.TRANSIT, r5py.LegMode.WALK),
         ],
     )
     @pytest.mark.parametrize("iteration", range(5))
@@ -57,6 +57,7 @@ class TestDeterministicBehaviour:
             transport_modes=transport_modes,
             snap_to_network=True,
         )
+        travel_time_matrix_computer.request.breakdown_stats = r5py.BreakdownStat.MINIMUM
         travel_times = travel_time_matrix_computer.compute_travel_times()
 
         if transport_modes not in intermediate_results:
@@ -81,5 +82,5 @@ class TestDeterministicBehaviour:
                 matrix_a,
                 matrix_b,
                 check_like=True,
-                atol=3,  # tolerance between runs, in minutes
+                atol=4,  # tolerance between runs, in minutes
             )

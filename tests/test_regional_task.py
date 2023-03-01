@@ -88,7 +88,10 @@ class TestRegionalTask:
         ],
     )
     def test_max_bicycle_traffic_stress_setter(
-        self, regional_task, bicycle_stress, expected
+        self,
+        regional_task,
+        bicycle_stress,
+        expected,
     ):
         regional_task.max_bicycle_traffic_stress = bicycle_stress
         assert regional_task.max_bicycle_traffic_stress == expected
@@ -104,7 +107,10 @@ class TestRegionalTask:
         ],
     )
     def test_max_public_transport_rides_setter(
-        self, regional_task, max_pt_rides, expected
+        self,
+        regional_task,
+        max_pt_rides,
+        expected,
     ):
         regional_task.max_public_transport_rides = max_pt_rides
         assert regional_task.max_public_transport_rides == expected
@@ -130,7 +136,13 @@ class TestRegionalTask:
             ),
         ],
     )
-    def test_max_time_setter(self, regional_task, max_time, expected, expected_java):
+    def test_max_time_setter(
+        self,
+        regional_task,
+        max_time,
+        expected,
+        expected_java,
+    ):
         regional_task.max_time = max_time
         assert regional_task.max_time == expected
         assert regional_task._regional_task.streetTime == expected_java
@@ -158,7 +170,11 @@ class TestRegionalTask:
         ],
     )
     def test_max_time_cycling_setter(
-        self, regional_task, max_time_cycling, expected, expected_java
+        self,
+        regional_task,
+        max_time_cycling,
+        expected,
+        expected_java,
     ):
         regional_task.max_time_cycling = max_time_cycling
         assert regional_task.max_time_cycling == expected
@@ -185,7 +201,11 @@ class TestRegionalTask:
         ],
     )
     def test_max_time_driving_setter(
-        self, regional_task, max_time_driving, expected, expected_java
+        self,
+        regional_task,
+        max_time_driving,
+        expected,
+        expected_java,
     ):
         regional_task.max_time_driving = max_time_driving
         assert regional_task.max_time_driving == expected
@@ -212,7 +232,11 @@ class TestRegionalTask:
         ],
     )
     def test_max_time_walking_setter(
-        self, regional_task, max_time_walking, expected, expected_java
+        self,
+        regional_task,
+        max_time_walking,
+        expected,
+        expected_java,
     ):
         regional_task.max_time_walking = max_time_walking
         assert regional_task.max_time_walking == expected
@@ -235,12 +259,8 @@ class TestRegionalTask:
     @pytest.mark.parametrize(
         ["percentiles"],
         [
-            (
-                [10, 20, 30, 40, 50, 60, 70, 90],
-            ),
-            (
-                [i for i in range(101)],
-            ),
+            ([10, 20, 30, 40, 50, 60, 70, 90],),
+            ([i for i in range(101)],),
         ],
     )
     def test_out_of_range_percentiles(self, regional_task, percentiles):
@@ -268,7 +288,11 @@ class TestRegionalTask:
         ],
     )
     def test_speed_cycling_setter(
-        self, regional_task, speed_cycling, expected, expected_java
+        self,
+        regional_task,
+        speed_cycling,
+        expected,
+        expected_java,
     ):
         regional_task.speed_cycling = speed_cycling
         assert regional_task.speed_cycling == expected
@@ -284,7 +308,11 @@ class TestRegionalTask:
         ],
     )
     def test_speed_walking_setter(
-        self, regional_task, speed_walking, expected, expected_java
+        self,
+        regional_task,
+        speed_walking,
+        expected,
+        expected_java,
     ):
         regional_task.speed_walking = speed_walking
         assert regional_task.speed_walking == expected
@@ -304,12 +332,8 @@ class TestRegionalTask:
     @pytest.mark.parametrize(
         ["origin"],
         [
-            (
-                shapely.geometry.Point(60, 24),
-            ),
-            (
-                shapely.geometry.Point(61, 25),
-            ),
+            (shapely.geometry.Point(60, 24),),
+            (shapely.geometry.Point(61, 25),),
         ],
     )
     def test_origin_setter_getter(self, regional_task, origin):

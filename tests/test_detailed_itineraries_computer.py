@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 import geopandas
-import datetime
-import pytest  # noqa: F401
 
 import r5py
 import r5py.util.exceptions
@@ -10,13 +8,17 @@ import r5py.util.exceptions
 
 class TestDetailedItinerariesComputer:
     def test_detailed_itineraries_initialization(
-        self, transport_network, population_grid_points, origin_point
+        self,
+        transport_network,
+        population_grid_points,
+        origin_point,
+        departure_datetime,
     ):
         detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
             transport_network,
             origins=origin_point,
             destinations=population_grid_points,
-            departure=datetime.datetime(2022, 2, 22, 8, 30),
+            departure=departure_datetime,
             transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
         )
         assert isinstance(
@@ -34,13 +36,17 @@ class TestDetailedItinerariesComputer:
         )
 
     def test_detailed_itineraries_initialization_with_files(
-        self, transport_network_files_tuple, population_grid_points, origin_point
+        self,
+        transport_network_files_tuple,
+        population_grid_points,
+        origin_point,
+        departure_datetime,
     ):
         detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
             transport_network_files_tuple,
             origins=origin_point,
             destinations=population_grid_points,
-            departure=datetime.datetime(2022, 2, 22, 8, 30),
+            departure=departure_datetime,
             transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
         )
         assert isinstance(
@@ -52,13 +58,14 @@ class TestDetailedItinerariesComputer:
         transport_network,
         population_grid_points,
         origin_point,
+        departure_datetime,
         data_columns_with_breakdown,
     ):
         detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
             transport_network,
             origins=origin_point,
             destinations=population_grid_points,
-            departure=datetime.datetime(2022, 2, 22, 8, 30),
+            departure=departure_datetime,
             transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
         )
         detailed_itineraries = detailed_itineraries_computer.compute_travel_times()

@@ -13,6 +13,7 @@ from .scenario import Scenario
 from .street_mode import StreetMode
 from .transit_mode import TransitMode
 from ..util import start_jvm
+from ..util.modes import MODE_STRING_TO_ENUM
 
 import java.io
 import java.time
@@ -82,11 +83,11 @@ class RegionalTask:
             Return the travel time for these percentiles of all computed trips,
             by travel time. By default, return the median travel time.
             Default: [50]
-        transport_modes : list[r5py.TransitMode | r5py.LegMode]
-            The mode of transport to use for routing.
+        transport_modes : list[r5py.TransitMode | r5py.LegMode] or list[str]
+            The mode of transport to use for routing. Can be a r5py mode enumerable, or a string representation (e.g. "TRANSIT")
             Default: [r5py.TransitMode.TRANSIT] (all public transport)
-        access_modes : list[r5py.LegMode]
-            Mode of transport to public transport stops.
+        access_modes : list[r5py.LegMode] or list[str]
+            Mode of transport to public transport stops. Can be a r5py mode object, or a string representation (e.g. "WALK")
             Default: [r5py.LegMode.WALK]
         egress_modes : list[r5py.LegMode]
             Mode of transport from public transport stops.
@@ -186,6 +187,11 @@ class RegionalTask:
     @access_modes.setter
     def access_modes(self, access_modes):
         access_modes = set(access_modes)
+        # If they are strings, convert them to the correct ENUM using the provided utility
+        access_modes = {
+            MODE_STRING_TO_ENUM[mode] if isinstance(mode, str) else mode
+            for mode in access_modes
+        }
         self._access_modes = access_modes
         self._regional_task.accessModes = RegionalTask._enum_set(
             access_modes, com.conveyal.r5.api.util.LegMode
@@ -308,6 +314,11 @@ class RegionalTask:
     @egress_modes.setter
     def egress_modes(self, egress_modes):
         egress_modes = set(egress_modes)
+        # If they are strings, convert them to the correct ENUM using the provided utility
+        egress_modes = {
+            MODE_STRING_TO_ENUM[mode] if isinstance(mode, str) else mode
+            for mode in egress_modes
+        }
         self._egress_modes = egress_modes
         self._regional_task.egressModes = RegionalTask._enum_set(
             egress_modes, com.conveyal.r5.api.util.LegMode
@@ -479,6 +490,11 @@ class RegionalTask:
     @transport_modes.setter
     def transport_modes(self, transport_modes):
         transport_modes = set(transport_modes)
+        # Convert strings to enums as needed
+        transport_modes = {
+            MODE_STRING_TO_ENUM[mode] if isinstance(mode, str) else mode
+            for mode in transport_modes
+        }
         self._transport_modes = transport_modes
 
         # split them up into direct and transit modes,

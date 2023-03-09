@@ -110,7 +110,7 @@ standard.
 GTFS data sets into {class}`gtfslite.gtfs.GTFS` objects that store the
 information on stops, routes, fares, etc., in {class}`pandas.DataFrame`s. Use
 {meth}`GTFS.routes_summary()<gtfslite.gtfs.GTFS.routes_summary()>`,
-{meth}`GTFS.stops_summary()<gtfslite.gtfs.GTFS.stops_summary()>`, and
+{meth}`GTFS.stop_summary()<gtfslite.gtfs.GTFS.stop_summary()>`, and
 {meth}`GTFS.summary()<gtfslite.gtfs.GTFS.summary()>` to gain a quick overview
 of the scope of a GTFS data set.
 

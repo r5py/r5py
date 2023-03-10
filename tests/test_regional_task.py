@@ -50,6 +50,40 @@ class TestRegionalTask:
         )
 
     @pytest.mark.parametrize(
+        ["access_modes", "expected"],
+        [
+            (
+                ["WALK"],
+                set([r5py.LegMode.WALK]),
+            ),
+            (
+                ["BICYCLE"],
+                set([r5py.LegMode.BICYCLE]),
+            ),
+            (
+                ["CAR"],
+                set([r5py.LegMode.CAR]),
+            ),
+            (
+                ["WALK", "BICYCLE"],
+                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE]),
+            ),
+            (
+                ["WALK", "BICYCLE", "CAR"],
+                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE, r5py.LegMode.CAR]),
+            ),
+        ],
+    )
+    def test_access_mode_setter_with_strings(
+        self, regional_task, access_modes, expected
+    ):
+        regional_task.access_modes = access_modes
+        assert regional_task.access_modes == expected
+        assert regional_task._regional_task.accessModes == r5py.RegionalTask._enum_set(
+            expected, com.conveyal.r5.api.util.LegMode
+        )
+
+    @pytest.mark.parametrize(
         [
             "departure",
             "expected",
@@ -77,6 +111,72 @@ class TestRegionalTask:
         assert regional_task.departure == expected
         assert regional_task._regional_task.date == expected_java_date
         assert regional_task._regional_task.fromTime == expected_java_from_time
+
+    @pytest.mark.parametrize(
+        ["egress_modes", "expected"],
+        [
+            (
+                [r5py.LegMode.WALK],
+                set([r5py.LegMode.WALK]),
+            ),
+            (
+                [r5py.LegMode.BICYCLE],
+                set([r5py.LegMode.BICYCLE]),
+            ),
+            (
+                [r5py.LegMode.CAR],
+                set([r5py.LegMode.CAR]),
+            ),
+            (
+                [r5py.LegMode.WALK, r5py.LegMode.BICYCLE],
+                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE]),
+            ),
+            (
+                [r5py.LegMode.WALK, r5py.LegMode.BICYCLE, r5py.LegMode.CAR],
+                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE, r5py.LegMode.CAR]),
+            ),
+        ],
+    )
+    def test_egress_mode_setter(self, regional_task, egress_modes, expected):
+        regional_task.egress_modes = egress_modes
+        assert regional_task.egress_modes == expected
+        assert regional_task._regional_task.egressModes == r5py.RegionalTask._enum_set(
+            expected, com.conveyal.r5.api.util.LegMode
+        )
+
+    @pytest.mark.parametrize(
+        ["egress_modes", "expected"],
+        [
+            (
+                ["WALK"],
+                set([r5py.LegMode.WALK]),
+            ),
+            (
+                ["BICYCLE"],
+                set([r5py.LegMode.BICYCLE]),
+            ),
+            (
+                ["CAR"],
+                set([r5py.LegMode.CAR]),
+            ),
+            (
+                ["WALK", "BICYCLE"],
+                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE]),
+            ),
+            (
+                ["WALK", "BICYCLE", "CAR"],
+                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE, r5py.LegMode.CAR]),
+            ),
+        ],
+    )
+    def test_egress_mode_setter_with_strings(
+        self, regional_task, egress_modes, expected
+    ):
+        regional_task.egress_modes = egress_modes
+        assert regional_task.egress_modes == expected
+        assert regional_task._regional_task.egressModes == r5py.RegionalTask._enum_set(
+            expected, com.conveyal.r5.api.util.LegMode
+        )
 
     @pytest.mark.parametrize(
         ["bicycle_stress", "expected"],
@@ -339,5 +439,28 @@ class TestRegionalTask:
     def test_origin_setter_getter(self, regional_task, origin):
         regional_task.origin = origin
         assert regional_task.origin == origin
+
+    @pytest.mark.parametrize(
+        ["transport_modes", "expected"],
+        [
+            (
+                ["WALK"],
+                set([r5py.LegMode.WALK]),
+            ),
+            (
+                ["TRANSIT", "WALK"],
+                set([r5py.TransitMode.TRANSIT, r5py.LegMode.WALK]),
+            ),
+            (
+                ["GONDOLA", "SUBWAY"],
+                set([r5py.TransitMode.GONDOLA, r5py.TransitMode.SUBWAY]),
+            ),
+        ],
+    )
+    def test_transport_modes_setter_with_strings(
+        self, regional_task, transport_modes, expected
+    ):
+        regional_task.transport_modes = transport_modes
+        assert regional_task.transport_modes == expected
 
     # TODO: all other methods and attributes!

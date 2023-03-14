@@ -6,6 +6,7 @@ import functools
 import os
 import pathlib
 import sys
+import tempfile
 
 import configargparse
 
@@ -83,5 +84,10 @@ class Config:
             ),
         ]
         return config_files
+
+    @functools.cached_property
+    def TEMP_DIR(self):
+        temp_dir = pathlib.Path(tempfile.mkdtemp(prefix=self.PACKAGE))
+        return temp_dir
 
     PACKAGE = __package__.split(".")[0]

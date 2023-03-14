@@ -34,3 +34,4 @@ docs/jupyter_execute/
 .tox
 .coverage
 coverage.xml
+.vscode/*

@@ -24,7 +24,8 @@ dependencies = [
     "numpy",
     "pandas",
     "psutil",
-    "requests"
+    "requests",
+    "shapely>=2.0"
 ]
 requires-python = ">=3.8"
 

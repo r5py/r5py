@@ -6,6 +6,7 @@ import functools
 import os
 import pathlib
 import sys
+import tempfile
 
 import configargparse
 import importlib_resources
@@ -126,3 +127,10 @@ class Config:
     def get_arguments(self, ignore_help_args=False):
         """Parse arguments passed from command line or config file."""
         return self.argparser.parse_known_args(ignore_help_args=ignore_help_args)[0]
+
+    @functools.cached_property
+    def TEMP_DIR(self):
+        temp_dir = pathlib.Path(tempfile.mkdtemp(prefix=self.PACKAGE))
+        return temp_dir
+
+    PACKAGE = __package__.split(".")[0]

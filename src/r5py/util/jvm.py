@@ -4,6 +4,7 @@
 
 import os
 import pathlib
+import shutil
 import sys
 
 import jpype
@@ -43,6 +44,8 @@ def start_jvm():
             except StopIteration:
                 pass  # don’t fail completely if libjsig not found
 
+        TEMP_DIR = Config().TEMP_DIR
+
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",
             "-Xcheck:jni",
@@ -50,8 +53,22 @@ def start_jvm():
             "-Duser.language=en",  # Set a default locale, …
             "-Duser.country=US",  # … as R5 formats numeric return …
             "-Duser.variant=",  # … values as a localised string
+            f"-Djava.io.tmpdir={TEMP_DIR}",
             classpath=[R5_CLASSPATH],
             interrupt=True,
+        )
+
+        # Add shutdown hook that cleans up the temporary directory
+        @jpype.JImplements("java.lang.Runnable")
+        class ShutdownHookToCleanUpTempDir:
+            @jpype.JOverride
+            def run(self):
+                shutil.rmtree(TEMP_DIR)
+
+        import java.lang
+
+        java.lang.Runtime.getRuntime().addShutdownHook(
+            java.lang.Thread(ShutdownHookToCleanUpTempDir())
         )
 
         if not Config().arguments.verbose:

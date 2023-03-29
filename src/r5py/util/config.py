@@ -17,7 +17,7 @@ __all__ = ["Config"]
 
 PACKAGE = __package__.split(".")[0]
 CONFIG_FILE_TEMPLATE = importlib_resources.files(f"{PACKAGE}.util").joinpath(
-    "r5py.yml.template"
+    f"{PACKAGE}.yml.template"
 )
 
 if "HOME" not in os.environ:  # e.g., testing environment or container
@@ -133,4 +133,4 @@ class Config:
         temp_dir = pathlib.Path(tempfile.mkdtemp(prefix=self.PACKAGE))
         return temp_dir
 
-    PACKAGE = __package__.split(".")[0]
+    PACKAGE = PACKAGE

@@ -55,19 +55,6 @@ class TransportNetwork:
         self._transport_network.rebuildTransientIndexes()
         self._transport_network.transitLayer.buildDistanceTables(None)
 
-        # attempt to remove temporary files created by R5 during import
-        # (potentially frees up RAM)
-        for temp_file in osm_pbf.parent.glob(f"{osm_pbf.name}.mapdb*"):
-            try:
-                temp_file.unlink()
-            except (OSError, PermissionError):
-                # it does not really matter if we cannot delete temp files now,
-                # as they will be deleted, at latest, in __del__()
-
-                # (e.g., on Windows there seem to occur race conditions between
-                # here and the Java garbage collector, that prevent us from deleting)
-                pass
-
     @classmethod
     def from_directory(cls, path):
         """
@@ -114,18 +101,6 @@ class TransportNetwork:
         ]
 
         return cls(osm_pbf, gtfs)
-
-    def __del__(self):
-        """Remove cache directory when done."""
-        del self._transport_network
-
-        MAX_TRIES = 10
-        for _ in range(MAX_TRIES):
-            try:
-                shutil.rmtree(str(self._cache_directory))
-                break
-            except PermissionError:
-                time.sleep(1)  # wait for Java VM to garbage-collect
 
     def __enter__(self):
         """Provide a context."""

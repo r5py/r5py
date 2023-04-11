@@ -22,6 +22,7 @@ dependencies:
   - backports.functools_lru_cache=1.6.4
   - beautifulsoup4=4.12.2
   - black=23.3.0
+  - black-jupyter=23.3.0
   - bleach=6.0.0
   - blosc=1.21.3
   - boost-cpp=1.78.0
@@ -319,6 +320,7 @@ dependencies:
   - tiledb=2.13.2
   - tinycss2=1.2.1
   - tk=8.6.12
+  - tokenize-rt=5.0.0
   - toml=0.10.2
   - tomli=2.0.1
   - tornado=6.2

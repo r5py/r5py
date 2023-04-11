@@ -19,6 +19,7 @@ dependencies:
 
     # testing / dev / docs related
     - black
+    - black-jupyter
     - codecov
     - folium
     - gitpython

@@ -6,6 +6,7 @@ channels:
 dependencies:
     - python=3.10
     - configargparse
+    - filelock
     - fiona
     - geopandas
     - importlib_resources
@@ -30,7 +31,6 @@ dependencies:
     - nbsphinx
     - nbstripout
     - openjdk
-    - pybtex-apa7-style
     - pytest
     - pytest-asyncio
     - pytest-cov
@@ -42,4 +42,5 @@ dependencies:
 
     - pip
     - pip:
+        - pybtex-apa7-style
         - sphinxcontrib-images

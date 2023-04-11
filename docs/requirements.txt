@@ -10,7 +10,9 @@ sphinxcontrib-images
 
 # r5py:
 ConfigArgParse
-fiona
+contextily
+filelock
+folium
 geopandas
 importlib_resources
 joblib

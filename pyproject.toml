@@ -17,6 +17,7 @@ authors = [
 
 dependencies = [
     "ConfigArgParse",
+    "filelock",
     "fiona",
     "geopandas",
     "joblib",

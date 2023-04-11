@@ -1,5 +1,6 @@
 ConfigArgParse
 contextily
+filelock
 folium
 geopandas
 gitpython

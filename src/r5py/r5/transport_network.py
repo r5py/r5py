@@ -7,9 +7,9 @@
 import functools
 import pathlib
 import shutil
-import time
 import warnings
 
+import filelock
 import jpype
 import jpype.types
 
@@ -54,19 +54,6 @@ class TransportNetwork:
         self._transport_network.streetLayer.indexStreets()
         self._transport_network.rebuildTransientIndexes()
         self._transport_network.transitLayer.buildDistanceTables(None)
-
-        # attempt to remove temporary files created by R5 during import
-        # (potentially frees up RAM)
-        for temp_file in osm_pbf.parent.glob(f"{osm_pbf.name}.mapdb*"):
-            try:
-                temp_file.unlink()
-            except (OSError, PermissionError):
-                # it does not really matter if we cannot delete temp files now,
-                # as they will be deleted, at latest, in __del__()
-
-                # (e.g., on Windows there seem to occur race conditions between
-                # here and the Java garbage collector, that prevent us from deleting)
-                pass
 
     @classmethod
     def from_directory(cls, path):
@@ -115,18 +102,6 @@ class TransportNetwork:
 
         return cls(osm_pbf, gtfs)
 
-    def __del__(self):
-        """Remove cache directory when done."""
-        del self._transport_network
-
-        MAX_TRIES = 10
-        for _ in range(MAX_TRIES):
-            try:
-                shutil.rmtree(str(self._cache_directory))
-                break
-            except PermissionError:
-                time.sleep(1)  # wait for Java VM to garbage-collect
-
     def __enter__(self):
         """Provide a context."""
         return self
@@ -139,7 +114,7 @@ class TransportNetwork:
     def _cache_directory(self):
         cache_dir = (
             pathlib.Path(Config().TEMP_DIR)
-            / f"{self.__class__.__name__:s}_{hash(self):x}"
+            / f"{self.__class__.__name__:s}_{id(self):x}"
         )
         cache_dir.mkdir(exist_ok=True)
         return cache_dir
@@ -169,10 +144,15 @@ class TransportNetwork:
         destination_file = pathlib.Path(
             self._cache_directory / input_file.name
         ).absolute()
-        try:
-            destination_file.symlink_to(input_file)
-        except OSError:
-            shutil.copyfile(str(input_file), str(destination_file))
+
+        with filelock.FileLock(
+            destination_file.parent / f"{destination_file.name}.lock"
+        ):
+            if not destination_file.exists():
+                try:
+                    destination_file.symlink_to(input_file)
+                except OSError:
+                    shutil.copyfile(str(input_file), str(destination_file))
         return destination_file
 
     @property

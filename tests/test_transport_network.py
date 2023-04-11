@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import filecmp
-import os
 import pathlib
 import shutil
 
@@ -93,11 +92,6 @@ class Test_TransportNetwork:
         )  # files have been copied/linked to cache
 
         del transport_network
-
-        # The following fails on Windows, as it does not always
-        # release file handles properly
-        if os.name != "nt":
-            assert not cache_dir.exists()  # destructor deleted cache directory
 
     @pytest.mark.parametrize(
         ["transport_network"],

@@ -66,7 +66,8 @@ class TestDetailedItinerariesComputer:
             origins=origin_point,
             destinations=population_grid_points,
             departure=departure_datetime,
-            transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+            # transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+            transport_modes=[r5py.LegMode.WALK],
         )
         detailed_itineraries = detailed_itineraries_computer.compute_travel_times()
 

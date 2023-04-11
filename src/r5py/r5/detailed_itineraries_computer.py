@@ -2,10 +2,15 @@
 
 """Calculate detailed itineraries between many origins and destinations."""
 
+import copy
+
 import pandas
 
 from .breakdown_stat import BreakdownStat
 from .travel_time_matrix_computer import TravelTimeMatrixComputer
+
+import com.conveyal.r5
+import java.lang
 
 
 __all__ = ["DetailedItinerariesComputer"]
@@ -142,6 +147,9 @@ class DetailedItinerariesComputer(TravelTimeMatrixComputer):
         )
         od_matrix = pandas.DataFrame(columns)
 
+        print(results)
+        return od_matrix
+
         # R5 returns multiple rows per O/D-pair, in a nested array
         # (first dimension == to_id, second dimension == different
         # routes for O/D pair, third dimension == data records)
@@ -213,5 +221,41 @@ class DetailedItinerariesComputer(TravelTimeMatrixComputer):
                 ]
 
             od_matrix[column_name] = column_data
+
+        return od_matrix
+
+    def _travel_times_per_origin(self, from_id):
+        origin_id = self.origins[self.origins.id == from_id]["id"].item()
+        origin_geometry = self.origins[self.origins.id == from_id]["geometry"].item()
+        for _, destination in self.destinations.iterrows():
+            destination_id = destination.id
+            destination_geometry = destination.geometry
+            request = copy.copy(self.request)
+            # request.origin = origin
+            # request.destination = destination["geometry"]
+            #request._regional_task.fromId = origin_id
+            #request._regional_task.fromLat = origin_geometry.y
+            #request._regional_task.fromLon = origin_geometry.x
+            request.origin = self.origins[self.origins.id == from_id]["geometry"].item()
+            # request._regional_task.toId = destination_id
+            request._regional_task.toLat = destination_geometry.y
+            request._regional_task.toLon = destination_geometry.x
+
+            point_to_point_query = com.conveyal.r5.point_to_point.builder.PointToPointQuery(
+                self.transport_network
+            )
+            try:
+                response = point_to_point_query.getPlan(request)
+            except java.lang.IllegalStateException as exception:
+                with open("/tmp/ptpq", "a") as f:
+                    print(exception, file=f)
+                continue
+            with open("/tmp/ptpq", "a") as f:
+                print(response, file=f)
+                for o in response.getOptions():
+                    print(o, file=f)
+
+        results = pandas.DataFrame([])
+        od_matrix = self._parse_results(from_id, results)
 
         return od_matrix

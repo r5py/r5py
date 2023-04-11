@@ -22,7 +22,6 @@ dependencies:
   - backports.functools_lru_cache=1.6.4
   - beautifulsoup4=4.12.2
   - black=23.3.0
-  - black-jupyter=23.3.0
   - bleach=6.0.0
   - blosc=1.21.3
   - boost-cpp=1.78.0
@@ -275,12 +274,12 @@ dependencies:
   - pytest-asyncio=0.21.0
   - pytest-cov=4.0.0
   - pytest-lazy-fixture=0.6.3
-  - python=3.11.3
+  - python=3.10.10
   - python-dateutil=2.8.2
   - python-fastjsonschema=2.16.3
   - python-json-logger=2.0.7
   - python-tzdata=2023.3
-  - python_abi=3.11
+  - python_abi=3.10
   - pytz=2023.3
   - pyyaml=6.0
   - pyzmq=25.0.2
@@ -320,7 +319,6 @@ dependencies:
   - tiledb=2.13.2
   - tinycss2=1.2.1
   - tk=8.6.12
-  - tokenize-rt=5.0.0
   - toml=0.10.2
   - tomli=2.0.1
   - tornado=6.2
@@ -329,6 +327,7 @@ dependencies:
   - typing_extensions=4.5.0
   - tzcode=2023c
   - tzdata=2023c
+  - unicodedata2=15.0.0
   - urllib3=1.26.15
   - wcwidth=0.2.6
   - webencodings=0.5.1
@@ -369,4 +368,7 @@ dependencies:
   - zlib=1.2.13
   - zstd=1.5.2
   - pip:
+      - latexcodec==2.0.1
+      - pybtex==0.24.0
+      - pybtex-apa7-style==0.1.3
       - sphinxcontrib-images==0.9.4

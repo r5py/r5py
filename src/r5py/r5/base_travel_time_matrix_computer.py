@@ -194,7 +194,7 @@ class BaseTravelTimeMatrixComputer:
 
     def _travel_times_per_origin(self, from_id):
         request = copy.copy(self.request)
-        request.origin = self.origins.loc[self.origins.id == from_id, "geometry"].item()
+        request.origin = self.origins[self.origins.id == from_id].geometry.item()
 
         travel_time_computer = com.conveyal.r5.analyst.TravelTimeComputer(
             request, self.transport_network

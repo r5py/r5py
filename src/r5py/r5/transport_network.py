@@ -9,6 +9,7 @@ import pathlib
 import shutil
 import warnings
 
+import filelock
 import jpype
 import jpype.types
 
@@ -113,7 +114,7 @@ class TransportNetwork:
     def _cache_directory(self):
         cache_dir = (
             pathlib.Path(Config().TEMP_DIR)
-            / f"{self.__class__.__name__:s}_{hash(self):x}"
+            / f"{self.__class__.__name__:s}_{id(self):x}"
         )
         cache_dir.mkdir(exist_ok=True)
         return cache_dir
@@ -143,10 +144,14 @@ class TransportNetwork:
         destination_file = pathlib.Path(
             self._cache_directory / input_file.name
         ).absolute()
-        try:
-            destination_file.symlink_to(input_file)
-        except OSError:
-            shutil.copyfile(str(input_file), str(destination_file))
+
+        with filelock.FileLock(
+            destination_file.parent / f"{destination_file.name}.lock"
+        ):
+            try:
+                destination_file.symlink_to(input_file)
+            except OSError:
+                shutil.copyfile(str(input_file), str(destination_file))
         return destination_file
 
     @property

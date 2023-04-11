@@ -148,10 +148,11 @@ class TransportNetwork:
         with filelock.FileLock(
             destination_file.parent / f"{destination_file.name}.lock"
         ):
-            try:
-                destination_file.symlink_to(input_file)
-            except OSError:
-                shutil.copyfile(str(input_file), str(destination_file))
+            if not destination_file.exists():
+                try:
+                    destination_file.symlink_to(input_file)
+                except OSError:
+                    shutil.copyfile(str(input_file), str(destination_file))
         return destination_file
 
     @property

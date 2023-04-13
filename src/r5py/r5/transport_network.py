@@ -50,9 +50,10 @@ class TransportNetwork:
             java.lang.String(str(osm_pbf)),
             java.util.ArrayList.of(gtfs),
         )
-        self._transport_network.streetLayer.buildEdgeLists()
         self._transport_network.streetLayer.indexStreets()
-        self._transport_network.rebuildTransientIndexes()
+        self._transport_network.streetLayer.associateStops(self._transport_network.transitLayer)
+        self._transport_network.streetLayer.buildEdgeLists()
+        self._transport_network.transitLayer.rebuildTransientIndexes()
         self._transport_network.transitLayer.buildDistanceTables(None)
 
     @classmethod

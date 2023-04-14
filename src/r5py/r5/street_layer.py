@@ -8,7 +8,7 @@ import jpype
 import jpype.types
 import shapely
 
-from .street_mode import StreetMode
+from .transport_mode import TransportMode
 from ..util import start_jvm
 
 import com.conveyal.r5
@@ -40,7 +40,7 @@ class StreetLayer:
         self,
         point,
         radius=com.conveyal.r5.streets.StreetLayer.LINK_RADIUS_METERS,
-        street_mode=StreetMode.WALK,
+        street_mode=TransportMode.WALK,
     ):
         """
         Find a location on an existing street near `point`.

@@ -485,7 +485,7 @@ class RegionalTask:
         self._transport_modes = transport_modes
 
         # split them up into direct and transit modes,
-        transit_modes = [mode for mode in transport_modes if mode.is_transport_mode]
+        transit_modes = [mode for mode in transport_modes if mode.is_transit_mode]
         direct_modes = [mode for mode in transport_modes if mode.is_street_mode]
 
         # the different modes underlie certain rules

@@ -14,8 +14,8 @@ import jpype
 import jpype.types
 
 from .street_layer import StreetLayer
-from .street_mode import StreetMode
 from .transit_layer import TransitLayer
+from .transport_mode import TransportMode
 from ..util import Config, contains_gtfs_data, start_jvm
 
 import com.conveyal.r5
@@ -165,7 +165,7 @@ class TransportNetwork:
         self,
         points,
         radius=com.conveyal.r5.streets.StreetLayer.LINK_RADIUS_METERS,
-        street_mode=StreetMode.WALK,
+        street_mode=TransportMode.WALK,
     ):
         """
         Snap `points` to valid locations on the network.

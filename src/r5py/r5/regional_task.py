@@ -8,12 +8,9 @@ import warnings
 
 import jpype
 
-from .leg_mode import LegMode
 from .scenario import Scenario
-from .street_mode import StreetMode
-from .transit_mode import TransitMode
+from .transport_mode import TransportMode
 from ..util import start_jvm
-from ..util.modes import MODE_STRING_TO_ENUM
 
 import java.io
 import java.time
@@ -37,8 +34,8 @@ class RegionalTask:
         departure=datetime.datetime.now(),
         departure_time_window=datetime.timedelta(hours=1),
         percentiles=[50],
-        transport_modes=[TransitMode.TRANSIT],
-        access_modes=[LegMode.WALK],
+        transport_modes=[TransportMode.TRANSIT],
+        access_modes=[TransportMode.WALK],
         egress_modes=None,  # default: access_modes
         max_time=datetime.timedelta(hours=2),
         max_time_walking=datetime.timedelta(hours=2),
@@ -83,13 +80,13 @@ class RegionalTask:
             Return the travel time for these percentiles of all computed trips,
             by travel time. By default, return the median travel time.
             Default: [50]
-        transport_modes : list[r5py.TransitMode | r5py.LegMode] or list[str]
+        transport_modes : list[r5py.TransportMode] or list[str]
             The mode of transport to use for routing. Can be a r5py mode enumerable, or a string representation (e.g. "TRANSIT")
-            Default: [r5py.TransitMode.TRANSIT] (all public transport)
-        access_modes : list[r5py.LegMode] or list[str]
+            Default: [r5py.TransportMode.TRANSIT] (all public transport)
+        access_modes : list[r5py.TransportMode] or list[str]
             Mode of transport to public transport stops. Can be a r5py mode object, or a string representation (e.g. "WALK")
-            Default: [r5py.LegMode.WALK]
-        egress_modes : list[r5py.LegMode]
+            Default: [r5py.TransportMode.WALK]
+        egress_modes : list[r5py.TransportMode]
             Mode of transport from public transport stops.
             Default: access_modes
         max_time : datetime.timedelta
@@ -181,17 +178,13 @@ class RegionalTask:
 
     @property
     def access_modes(self):
-        """Route with these modes of transport to reach public transport (r5py.LegMode)."""
+        """Route with these modes of transport to reach public transport (r5py.TransportMode)."""
         return self._access_modes
 
     @access_modes.setter
     def access_modes(self, access_modes):
-        access_modes = set(access_modes)
-        # If they are strings, convert them to the correct ENUM using the provided utility
-        access_modes = {
-            MODE_STRING_TO_ENUM[mode] if isinstance(mode, str) else mode
-            for mode in access_modes
-        }
+        # eliminate duplicates, cast to TransportMode (converts str values)
+        access_modes = set([TransportMode(mode) for mode in set(access_modes)])
         self._access_modes = access_modes
         self._regional_task.accessModes = RegionalTask._enum_set(
             access_modes, com.conveyal.r5.api.util.LegMode
@@ -226,10 +219,12 @@ class RegionalTask:
 
     @departure.setter
     def departure(self, departure):
+        # fmt: off
         if (
-            TransitMode.TRANSIT in self.transport_modes
+            [mode for mode in self.transport_modes if mode.is_transit_mode]
             and not self.transport_network.transit_layer.covers(departure)
         ):
+            # fmt: on
             warnings.warn(
                 f"Departure time {departure} is outside of the time range "
                 "covered by currently loaded GTFS data sets.",
@@ -312,17 +307,13 @@ class RegionalTask:
 
     @property
     def egress_modes(self):
-        """Route with these modes of transport to reach the destination from public transport (r5py.LegMode)."""
+        """Route with these modes of transport to reach the destination from public transport (r5py.TransportMode)."""
         return self._egress_modes
 
     @egress_modes.setter
     def egress_modes(self, egress_modes):
-        egress_modes = set(egress_modes)
-        # If they are strings, convert them to the correct ENUM using the provided utility
-        egress_modes = {
-            MODE_STRING_TO_ENUM[mode] if isinstance(mode, str) else mode
-            for mode in egress_modes
-        }
+        # eliminate duplicates, cast to TransportMode (converts str values)
+        egress_modes = set([TransportMode(mode) for mode in set(egress_modes)])
         self._egress_modes = egress_modes
         self._regional_task.egressModes = RegionalTask._enum_set(
             egress_modes, com.conveyal.r5.api.util.LegMode
@@ -488,37 +479,31 @@ class RegionalTask:
         """
         Get/set the transport modes used to route the main leg of trips.
 
-        (list[r5py.TransitMode | r5py.LegMode])
+        (list[r5py.TransportMode])
         """
         return self._transport_modes
 
     @transport_modes.setter
     def transport_modes(self, transport_modes):
-        transport_modes = set(transport_modes)
-        # Convert strings to enums as needed
-        transport_modes = {
-            MODE_STRING_TO_ENUM[mode] if isinstance(mode, str) else mode
-            for mode in transport_modes
-        }
+        # eliminate duplicates, cast to TransportMode (converts str values)
+        transport_modes = set([TransportMode(mode) for mode in set(transport_modes)])
         self._transport_modes = transport_modes
 
         # split them up into direct and transit modes,
-        transit_modes = [
-            mode for mode in transport_modes if isinstance(mode, TransitMode)
-        ]
-        direct_modes = [mode for mode in transport_modes if isinstance(mode, LegMode)]
+        transit_modes = [mode for mode in transport_modes if mode.is_transit_mode]
+        direct_modes = [mode for mode in transport_modes if mode.is_street_mode]
 
         # the different modes underlie certain rules
         # e.g., some direct modes require certain access modes
         # see https://github.com/ipeaGIT/r5r/blob/2e8b9acfd81834f185d95ce53dc5c34beb1315f2/r-package/R/utils.R#L86
         if transit_modes:  # public transport:
             egress_modes = self.egress_modes
-            if TransitMode.TRANSIT in transport_modes:
-                transit_modes = list(TransitMode)  # all of them
+            if TransportMode.TRANSIT in transport_modes:
+                transit_modes = [mode for mode in TransportMode if mode.is_transit_mode]
             if not direct_modes:
                 # only public transport modes passed in,
                 # let people walk to and from the stops
-                access_modes = direct_modes = [LegMode.WALK]
+                access_modes = direct_modes = [TransportMode.WALK]
             else:
                 # otherwise, use the supplied direct modes as access (weird, still!)
                 access_modes = direct_modes
@@ -543,7 +528,7 @@ class RegionalTask:
                     self.transport_network.linkage_cache.getLinkage(
                         destination_point_set,
                         self.transport_network.street_layer,
-                        StreetMode[mode.name].value,
+                        mode,
                     )
 
     @staticmethod
@@ -551,7 +536,7 @@ class RegionalTask:
         # helper function to construct a Java EnumSet out of a list of enum.Enum
         enum_set = java.util.EnumSet.noneOf(java_class)
         for mode in values:
-            enum_set.add(mode.value)
+            enum_set.add(java_class.valueOf(mode.value))
         return enum_set
 
 

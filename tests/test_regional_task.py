@@ -46,7 +46,7 @@ class TestRegionalTask:
         regional_task.access_modes = access_modes
         assert regional_task.access_modes == expected
         assert regional_task._regional_task.accessModes == r5py.RegionalTask._enum_set(
-            expected, com.conveyal.r5.api.util.TransportMode
+            expected, com.conveyal.r5.api.util.LegMode
         )
 
     @pytest.mark.parametrize(
@@ -80,7 +80,7 @@ class TestRegionalTask:
         regional_task.access_modes = access_modes
         assert regional_task.access_modes == expected
         assert regional_task._regional_task.accessModes == r5py.RegionalTask._enum_set(
-            expected, com.conveyal.r5.api.util.TransportMode
+            expected, com.conveyal.r5.api.util.LegMode
         )
 
     @pytest.mark.parametrize(
@@ -141,7 +141,7 @@ class TestRegionalTask:
         regional_task.egress_modes = egress_modes
         assert regional_task.egress_modes == expected
         assert regional_task._regional_task.egressModes == r5py.RegionalTask._enum_set(
-            expected, com.conveyal.r5.api.util.TransportMode
+            expected, com.conveyal.r5.api.util.LegMode
         )
 
     @pytest.mark.parametrize(
@@ -175,7 +175,7 @@ class TestRegionalTask:
         regional_task.egress_modes = egress_modes
         assert regional_task.egress_modes == expected
         assert regional_task._regional_task.egressModes == r5py.RegionalTask._enum_set(
-            expected, com.conveyal.r5.api.util.TransportMode
+            expected, com.conveyal.r5.api.util.LegMode
         )
 
     @pytest.mark.parametrize(

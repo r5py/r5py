@@ -60,7 +60,7 @@ class StreetLayer:
             such location could be found within `radius`
         """
         if split := self._street_layer.findSplit(
-            point.y, point.x, radius, street_mode.value
+            point.y, point.x, radius, street_mode
         ):
             return shapely.Point(
                 split.fixedLon / com.conveyal.r5.streets.VertexStore.FIXED_FACTOR,

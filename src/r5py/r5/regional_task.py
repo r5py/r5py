@@ -184,7 +184,7 @@ class RegionalTask:
     @access_modes.setter
     def access_modes(self, access_modes):
         # eliminate duplicates, cast to TransportMode (converts str values)
-        access_modes = [TransportMode(mode) for mode in set(access_modes)]
+        access_modes = set([TransportMode(mode) for mode in set(access_modes)])
         self._access_modes = access_modes
         self._regional_task.accessModes = RegionalTask._enum_set(
             access_modes, com.conveyal.r5.api.util.LegMode
@@ -309,7 +309,7 @@ class RegionalTask:
     @egress_modes.setter
     def egress_modes(self, egress_modes):
         # eliminate duplicates, cast to TransportMode (converts str values)
-        egress_modes = [TransportMode(mode) for mode in set(egress_modes)]
+        egress_modes = set([TransportMode(mode) for mode in set(egress_modes)])
         self._egress_modes = egress_modes
         self._regional_task.egressModes = RegionalTask._enum_set(
             egress_modes, com.conveyal.r5.api.util.LegMode
@@ -481,7 +481,7 @@ class RegionalTask:
     @transport_modes.setter
     def transport_modes(self, transport_modes):
         # eliminate duplicates, cast to TransportMode (converts str values)
-        transport_modes = [TransportMode(mode) for mode in set(transport_modes)]
+        transport_modes = set([TransportMode(mode) for mode in set(transport_modes)])
         self._transport_modes = transport_modes
 
         # split them up into direct and transit modes,

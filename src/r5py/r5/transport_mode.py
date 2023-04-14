@@ -96,7 +96,7 @@ class TransportMode(enum.Enum):
 @jpype._jcustomizer.JConversion("com.conveyal.r5.api.util.LegMode", exact=TransportMode)
 def _cast_LegMode(java_class, object_):
     if object_.name in LEG_MODES:
-        return com.conveyal.r5.api.util.LegMode.valueOf("object_.name")
+        return com.conveyal.r5.api.util.LegMode.valueOf(object_.name)
     else:
         raise ValueError(f"{object_.name} is not a valid R5 LegMode")
 
@@ -106,7 +106,7 @@ def _cast_LegMode(java_class, object_):
 )
 def _cast_StreetMode(java_class, object_):
     if object_.name in STREET_MODES:
-        return com.conveyal.r5.profile.StreetMode.valueOf("object_.name")
+        return com.conveyal.r5.profile.StreetMode.valueOf(object_.name)
     else:
         raise ValueError(f"{object_.name} is not a valid R5 StreetMode")
 
@@ -116,6 +116,6 @@ def _cast_StreetMode(java_class, object_):
 )
 def _cast_TransitMode(java_class, object_):
     if object_.name in TRANSIT_MODES:
-        return com.conveyal.r5.api.util.TransitModes.valueOf("object_.name")
+        return com.conveyal.r5.api.util.TransitModes.valueOf(object_.name)
     else:
         raise ValueError(f"{object_.name} is not a valid R5 TransitModes")

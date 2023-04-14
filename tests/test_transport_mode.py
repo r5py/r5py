@@ -21,15 +21,15 @@ class TestTransportMode:
             (r5py.TransportMode.TRAM, "TRAM", com.conveyal.r5.api.util.TransitModes),
             (r5py.TransportMode.TRANSIT, "TRANSIT", com.conveyal.r5.api.util.TransitModes),
 
-            (r5py.TransportMode.BICYCLE, "BICYCLE", com.conveyal.r5.profile.TransportMode),
-            (r5py.TransportMode.CAR, "CAR", com.conveyal.r5.profile.TransportMode),
-            (r5py.TransportMode.WALK, "WALK", com.conveyal.r5.profile.TransportMode),
+            (r5py.TransportMode.BICYCLE, "BICYCLE", com.conveyal.r5.profile.StreetMode),
+            (r5py.TransportMode.CAR, "CAR", com.conveyal.r5.profile.StreetMode),
+            (r5py.TransportMode.WALK, "WALK", com.conveyal.r5.profile.StreetMode),
 
-            (r5py.TransportMode.BICYCLE, "BICYCLE", com.conveyal.r5.api.util.TransportMode),
-            (r5py.TransportMode.CAR, "CAR", com.conveyal.r5.api.util.TransportMode),
-            (r5py.TransportMode.WALK, "WALK", com.conveyal.r5.api.util.TransportMode),
-            (r5py.TransportMode.BICYCLE_RENT, "BICYCLE_RENT", com.conveyal.r5.api.util.TransportMode),
-            (r5py.TransportMode.CAR_PARK, "CAR_PARK", com.conveyal.r5.api.util.TransportMode),
+            (r5py.TransportMode.BICYCLE, "BICYCLE", com.conveyal.r5.api.util.LegMode),
+            (r5py.TransportMode.CAR, "CAR", com.conveyal.r5.api.util.LegMode),
+            (r5py.TransportMode.WALK, "WALK", com.conveyal.r5.api.util.LegMode),
+            (r5py.TransportMode.BICYCLE_RENT, "BICYCLE_RENT", com.conveyal.r5.api.util.LegMode),
+            (r5py.TransportMode.CAR_PARK, "CAR_PARK", com.conveyal.r5.api.util.LegMode),
 
         ],
     )

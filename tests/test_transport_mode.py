@@ -9,7 +9,7 @@ import com.conveyal.r5
 
 class TestTransportMode:
     @pytest.mark.parametrize(
-        ["enum_member", "enum_name"],
+        ["enum_member", "enum_name", "java_type"],
         [
             (r5py.TransportMode.AIR, "AIR", com.conveyal.r5.api.util.TransitModes),
             (r5py.TransportMode.BUS, "BUS", com.conveyal.r5.api.util.TransitModes),

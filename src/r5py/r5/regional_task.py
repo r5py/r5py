@@ -545,7 +545,7 @@ class RegionalTask:
         # helper function to construct a Java EnumSet out of a list of enum.Enum
         enum_set = java.util.EnumSet.noneOf(java_class)
         for mode in values:
-            enum_set.add(mode.value)
+            enum_set.add(java_class.valueOf(mode.value))
         return enum_set
 
 

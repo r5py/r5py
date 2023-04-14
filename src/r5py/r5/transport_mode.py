@@ -102,7 +102,7 @@ def _cast_LegMode(java_class, object_):
 
 
 @jpype._jcustomizer.JConversion(
-    "com.conveyal.r5.api.util.StreetMode", exact=TransportMode
+    "com.conveyal.r5.profile.StreetMode", exact=TransportMode
 )
 def _cast_StreetMode(java_class, object_):
     if object_.name in STREET_MODES:

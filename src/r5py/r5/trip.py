@@ -78,7 +78,9 @@ class Trip:
     @property
     def travel_time(self):
         """Overall travel_time of this trip (datetime.timedelta)."""
-        return sum([leg.travel_time for leg in self.legs], datetime.timedelta(seconds=0))
+        return sum(
+            [leg.travel_time for leg in self.legs], datetime.timedelta(seconds=0)
+        )
 
     @property
     def wait_time(self):

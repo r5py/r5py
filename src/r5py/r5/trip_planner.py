@@ -4,6 +4,7 @@
 """Find detailed routes between two points."""
 
 
+import collections
 import warnings
 
 from .direct_leg import DirectLeg
@@ -64,50 +65,69 @@ class TripPlanner:
         ]
 
         for transport_mode in direct_modes:
-            street_router = com.conveyal.r5.streets.StreetRouter(
-                self.transport_network.street_layer
-            )
-            street_router.profileRequest = self.request
-            street_router.streetMode = transport_mode
-
-            # TODO: street_router.timeLimitSeconds
-
-            # fmt: off
+            # short-circuit identical from_id and to_id:
             if (
-                street_router.setOrigin(self.request.fromLat, self.request.fromLon)
-                and street_router.setDestination(self.request.toLat, self.request.toLon)
+                self.request.fromLat == self.request.toLat
+                and self.request.fromLon == self.request.toLon
             ):
-                # fmt: on
-                street_router.route()
-                router_state = street_router.getState(street_router.getDestinationSplit())
-                try:
-                    street_path = com.conveyal.r5.profile.StreetPath(
-                        router_state,
-                        self.transport_network,
-                        False,
-                    )
-                except java.util.NoSuchElementException:
-                    continue
-                street_segment = com.conveyal.r5.api.util.StreetSegment(
-                    street_path,
-                    transport_mode,
-                    self.transport_network.street_layer,
-                )
-
+                lat = self.request.fromLat
+                lon = self.request.fromLon
                 direct_paths.append(
-                    Trip([
-                        DirectLeg(transport_mode, street_segment),
-                    ])
+                    Trip(
+                        [
+                            DirectLeg(
+                                transport_mode,
+                                collections.namedtuple(
+                                    "StreetSegment",
+                                    ["distance", "duration", "geometry"],
+                                )(0.0, 0.0, f"LINESTRING({lon} {lat}, {lon} {lat})"),
+                            )
+                        ]
+                    )
                 )
             else:
-                warnings.warn(
-                    RuntimeWarning,
-                    (
-                        f"Could not find "
-                        f"origin ({self.request.fromLon}, {self.request.fromLat}) "
-                        f"or destination ({self.request.to_lon}, {self.request.toLat})"
-                    )
+                street_router = com.conveyal.r5.streets.StreetRouter(
+                    self.transport_network.street_layer
                 )
+                street_router.profileRequest = self.request
+                street_router.streetMode = transport_mode
+
+                # fmt: off
+                if (
+                    street_router.setOrigin(self.request.fromLat, self.request.fromLon)
+                    and street_router.setDestination(self.request.toLat, self.request.toLon)
+                ):
+                    # fmt: on
+                    street_router.route()
+                    router_state = street_router.getState(street_router.getDestinationSplit())
+                    try:
+                        street_path = com.conveyal.r5.profile.StreetPath(
+                            router_state,
+                            self.transport_network,
+                            False,
+                        )
+                    except java.util.NoSuchElementException:
+                        continue
+                    street_segment = com.conveyal.r5.api.util.StreetSegment(
+                        street_path,
+                        transport_mode,
+                        self.transport_network.street_layer,
+                    )
+
+                    direct_paths.append(
+                        Trip([
+                            DirectLeg(transport_mode, street_segment),
+                        ])
+                    )
+                else:
+                    warnings.warn(
+                        RuntimeWarning,
+                        (
+                            f"Could not find "
+                            f"origin ({self.request.fromLon}, {self.request.fromLat}) "
+                            f"or destination ({self.request.to_lon}, {self.request.toLat})"
+                        )
+                    )
         return direct_paths
 
     def _find_transit_paths(self):

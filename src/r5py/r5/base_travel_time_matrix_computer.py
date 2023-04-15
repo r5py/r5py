@@ -2,21 +2,16 @@
 
 """Calculate travel times between many origins and destinations."""
 
-import copy
 import math
 import multiprocessing
 import warnings
 
-import joblib
 import numpy
-import pandas
 import shapely
 
 from ..util import check_od_data_set, Config
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork
-
-import com.conveyal.r5
 
 
 __all__ = ["BaseTravelTimeMatrixComputer"]
@@ -33,6 +28,10 @@ NUM_THREADS = math.ceil(multiprocessing.cpu_count() * 0.75)
 
 class BaseTravelTimeMatrixComputer:
     """Base class for travel time computers between many origins and destinations."""
+
+    MAX_INT32 = MAX_INT32
+
+    NUM_THREADS = NUM_THREADS
 
     def __init__(
         self,
@@ -85,47 +84,12 @@ class BaseTravelTimeMatrixComputer:
 
         self.request = RegionalTask(
             transport_network,
-            origins.iloc[0].geometry,  # any one origin (potentially overriden later)
-            #destinations,
+            origin=None,
+            destinations=None,
             **kwargs,
         )
 
         self.verbose = Config().arguments.verbose
-
-    def compute_travel_times(self):
-        """
-        Compute travel times from all origins to all destinations.
-
-        Returns
-        -------
-        pandas.DataFrame
-            A data frame containing the columns ``from_id``, ``to_id``, and
-            ``travel_time``, where ``travel_time`` is the median calculated
-            travel time between ``from_id`` and ``to_id`` or ``numpy.nan``
-            if no connection with the given parameters was found.
-            If non-default ``percentiles`` were requested: one or more columns
-            ``travel_time_p{:02d}`` representing the particular percentile of
-            travel time.
-        """
-        # loop over all origins, modify the request, and compute the times
-        # to all destinations.
-        with joblib.Parallel(
-            prefer="threads",
-            verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
-            n_jobs=NUM_THREADS,
-        ) as parallel:
-            od_matrix = pandas.concat(
-                parallel(
-                    joblib.delayed(self._travel_times_per_origin)(from_id)
-                    for from_id in self.origins.id
-                )
-            )
-
-        try:
-            od_matrix = od_matrix.to_crs(self._origins_crs)
-        except AttributeError:  # (not a GeoDataFrame)
-            pass
-        return od_matrix
 
     @property
     def destinations(self):
@@ -191,16 +155,3 @@ class BaseTravelTimeMatrixComputer:
                 self._origins = self._origins[
                     self._origins.geometry != shapely.Point()
                 ].copy()
-
-    def _travel_times_per_origin(self, from_id):
-        request = copy.copy(self.request)
-        request.origin = self.origins[self.origins.id == from_id].geometry.item()
-
-        travel_time_computer = com.conveyal.r5.analyst.TravelTimeComputer(
-            request, self.transport_network
-        )
-        results = travel_time_computer.computeTravelTimes()
-
-        od_matrix = self._parse_results(from_id, results)
-
-        return od_matrix

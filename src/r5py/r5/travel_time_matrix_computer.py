@@ -2,11 +2,21 @@
 
 """Calculate travel times between many origins and destinations."""
 
+import copy
+
+import joblib
 import pandas
 
 from .base_travel_time_matrix_computer import BaseTravelTimeMatrixComputer
+from ..util import start_jvm
+
+import com.conveyal.r5
+
 
 __all__ = ["TravelTimeMatrixComputer"]
+
+
+start_jvm()
 
 
 class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
@@ -27,7 +37,26 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
             ``travel_time_p{:02d}`` representing the particular percentile of
             travel time.
         """
-        return super().compute_travel_times()
+        # loop over all origins, modify the request, and compute the times
+        # to all destinations.
+        with joblib.Parallel(
+            prefer="threads",
+            verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
+            n_jobs=self.NUM_THREADS,
+        ) as parallel:
+            od_matrix = pandas.concat(
+                parallel(
+                    joblib.delayed(self._travel_times_per_origin)(from_id)
+                    for from_id in self.origins.id
+                ),
+                ignore_index=True,
+            )
+
+        try:
+            od_matrix = od_matrix.to_crs(self._origins_crs)
+        except AttributeError:  # (not a GeoDataFrame)
+            pass
+        return od_matrix
 
     def _parse_results(self, from_id, results):
         """
@@ -85,5 +114,18 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
 
         # re-index (and don’t keep the old index as a new column)
         od_matrix = od_matrix.reset_index(drop=True)
+
+        return od_matrix
+
+    def _travel_times_per_origin(self, from_id):
+        request = copy.copy(self.request)
+        request.origin = self.origins[self.origins.id == from_id].geometry.item()
+
+        travel_time_computer = com.conveyal.r5.analyst.TravelTimeComputer(
+            request, self.transport_network
+        )
+        results = travel_time_computer.computeTravelTimes()
+
+        od_matrix = self._parse_results(from_id, results)
 
         return od_matrix

@@ -18,12 +18,15 @@ from .transit_layer import TransitLayer
 from .transport_mode import TransportMode
 from ..util import Config, contains_gtfs_data, start_jvm
 
+import com.conveyal.gtfs
+import com.conveyal.osmlib
 import com.conveyal.r5
-import java.lang
-import java.util.ArrayList
 
 
 __all__ = ["TransportNetwork"]
+
+
+PACKAGE = __package__.split(".")[0]
 
 
 start_jvm()
@@ -46,15 +49,36 @@ class TransportNetwork:
         osm_pbf = self._working_copy(pathlib.Path(osm_pbf)).absolute()
         gtfs = [str(self._working_copy(path).absolute()) for path in gtfs]
 
-        self._transport_network = com.conveyal.r5.transit.TransportNetwork.fromFiles(
-            java.lang.String(str(osm_pbf)),
-            java.util.ArrayList.of(gtfs),
-        )
-        self._transport_network.streetLayer.indexStreets()
-        self._transport_network.streetLayer.associateStops(self._transport_network.transitLayer)
-        self._transport_network.streetLayer.buildEdgeLists()
-        self._transport_network.transitLayer.rebuildTransientIndexes()
-        self._transport_network.transitLayer.buildDistanceTables(None)
+        transport_network = com.conveyal.r5.transit.TransportNetwork()
+        transport_network.scenarioId = PACKAGE
+
+        osm_file = com.conveyal.osmlib.OSM(f"{osm_pbf}.mapdb")
+        osm_file.intersectionDetection = True
+        osm_file.readFromFile(f"{osm_pbf}")
+        transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
+        transport_network.streetLayer.loadFromOsm(osm_file)
+        transport_network.streetLayer.parentNetwork = transport_network
+        transport_network.streetLayer.indexStreets()
+
+        transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
+        for gtfs_file in gtfs:
+            gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(gtfs_file)
+            transport_network.transitLayer.loadFromGtfs(gtfs_feed)
+            gtfs_feed.close()
+        transport_network.transitLayer.parentNetwork = transport_network
+
+        transport_network.streetLayer.associateStops(transport_network.transitLayer)
+        transport_network.streetLayer.buildEdgeLists()
+
+        transport_network.transitLayer.rebuildTransientIndexes()
+
+        transfer_finder = com.conveyal.r5.transit.TransferFinder(transport_network)
+        transfer_finder.findTransfers()
+        transfer_finder.findParkRideTransfer()
+
+        transport_network.transitLayer.buildDistanceTables(None)
+
+        self._transport_network = transport_network
 
     @classmethod
     def from_directory(cls, path):

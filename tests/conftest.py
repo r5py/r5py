@@ -53,6 +53,10 @@ WALKING_TIMES_SNAPPED = DATA_DIRECTORY / "test_data" / "test_walking_times_snapp
 WALKING_TIMES_NOT_SNAPPED = (
     DATA_DIRECTORY / "test_data" / "test_walking_times_not_snapped.csv"
 )
+WALKING_DETAILS_SNAPPED = DATA_DIRECTORY / "test_data" / "test_walking_details_snapped.csv"
+WALKING_DETAILS_NOT_SNAPPED = (
+    DATA_DIRECTORY / "test_data" / "test_walking_details_not_snapped.csv"
+)
 
 
 @pytest.fixture
@@ -227,6 +231,16 @@ def unsnappable_points():
         },
         crs="EPSG:4326",
     )
+
+
+@pytest.fixture(scope="session")
+def walking_details_snapped():
+    yield pandas.read_csv(WALKING_DETAILS_SNAPPED)
+
+
+@pytest.fixture(scope="session")
+def walking_details_not_snapped():
+    yield pandas.read_csv(WALKING_DETAILS_NOT_SNAPPED)
 
 
 @pytest.fixture(scope="session")

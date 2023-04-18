@@ -26,9 +26,10 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
     def __init__(
         self,
         transport_network,
-        origins,
+        origins=None,
         destinations=None,
         snap_to_network=False,
+        force_all_to_all=False,
         **kwargs,
     ):
         """
@@ -54,6 +55,14 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
             before routing? If `True`, the default search radius (defined in
             `com.conveyal.r5.streets.StreetLayer.LINK_RADIUS_METERS`) is used,
             if `int`, use `snap_to_network` meters as the search radius.
+        force_all_to_all : bool, default False
+            If ``origins`` and ``destinations`` have the same length, by
+            default, ``DetailedItinerariesComputer`` finds routes between pairs
+            of origins and destinations, i.e., it routes from origin #1 to
+            destination #1, origin #2 to destination #2, ... .
+            Set ``all_to_all=True`` to route from each origin to all
+            destinations (this is the default, if ``origins`` and ``destinations``
+            have different lengths, or if ``destinations`` is omitted)
         **kwargs : mixed
             Any arguments than can be passed to r5py.RegionalTask:
             ``departure``, ``departure_time_window``, ``percentiles``, ``transport_modes``,
@@ -71,27 +80,17 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
             **kwargs,
         )
 
-        if destinations is None or len(origins) != len(destinations):
-            # in case no destinations were specified, super().__init__() copied origins over to destinations
-
-            # manually create a list of all all-to-all permutations
-            self.od_pairs = self.origins[["id"]].join(
-                self.destinations[["id"]],
-                how="cross",
-                lsuffix="_origin",
-                rsuffix="_destination",
-            )
-
-            if destinations is not None and len(origins) != len(destinations):
+        if destinations is None:
+            self.all_to_all = True
+        elif len(origins) != len(destinations):
+            self.all_to_all = True
+            if self.verbose:
                 warnings.warn(
-                    RuntimeWarning,
                     "Origins and destinations are of different length, computing an all-to-all matrix",
+                    RuntimeWarning,
                 )
         else:
-            # origins and destinations are same length, run one-to-one routing
-            self.od_pairs = pandas.DataFrame(
-                {"id_origin": self.origins.id, "id_destination": self.destinations.id}
-            )
+            self.all_to_all = force_all_to_all
 
     def compute_travel_details(self):
         """
@@ -102,6 +101,9 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
         pandas.DataFrame
             TODO: Add description of output data frame columns and format
         """
+
+        self._prepare_origins_destinations()
+
         # loop over all origin/destination pairs, modify the request, and
         # compute times, distance, and other details for each trip
         with joblib.Parallel(
@@ -123,6 +125,31 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
             pass
         return od_matrix
 
+    def _prepare_origins_destinations(self):
+        """
+        Make sure we received enough information to route from origins to
+        destinations.
+        """
+
+        super()._prepare_origins_destinations()
+
+        if self.all_to_all:
+            # manually create a list of all all-to-all permutations
+            self.od_pairs = self.origins[["id"]].join(
+                self.destinations[["id"]],
+                how="cross",
+                lsuffix="_origin",
+                rsuffix="_destination",
+            )
+        else:
+            # origins and destinations are same length, run one-to-one routing
+            self.od_pairs = pandas.DataFrame(
+                {
+                    "id_origin": self.origins.id.values,
+                    "id_destination": self.destinations.id.values,
+                }
+            )
+
     def _travel_details_per_od_pair(self, from_id, to_id):
         origin = self.origins[self.origins.id == from_id]
         destination = self.destinations[self.destinations.id == to_id]
@@ -135,10 +162,6 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
 
         trip_planner = TripPlanner(self.transport_network, request)
         trips = trip_planner.plan()
-
-        # for option, trip in enumerate(trips):
-        #     for segment in trip:
-        #         [option] + segment
 
         # fmt: off
         trips = [

@@ -37,6 +37,8 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
             ``travel_time_p{:02d}`` representing the particular percentile of
             travel time.
         """
+        self._prepare_origins_destinations()
+
         # loop over all origins, modify the request, and compute the times
         # to all destinations.
         with joblib.Parallel(

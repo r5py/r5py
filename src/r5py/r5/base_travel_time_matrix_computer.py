@@ -36,7 +36,7 @@ class BaseTravelTimeMatrixComputer:
     def __init__(
         self,
         transport_network,
-        origins,
+        origins=None,
         destinations=None,
         snap_to_network=False,
         **kwargs,
@@ -78,8 +78,6 @@ class BaseTravelTimeMatrixComputer:
         self.snap_to_network = snap_to_network
 
         self.origins = origins
-        if destinations is None:
-            destinations = origins
         self.destinations = destinations
 
         self.request = RegionalTask(
@@ -97,22 +95,10 @@ class BaseTravelTimeMatrixComputer:
 
     @destinations.setter
     def destinations(self, destinations):
-        check_od_data_set(destinations)
-        self._destinations_crs = destinations.crs
-        self._destinations = destinations.to_crs("EPSG:4326").copy()
-        if self.snap_to_network:
-            self._destinations.geometry = self.transport_network.snap_to_network(
-                self._destinations.geometry
-            )
-            if len(self._destinations[self._destinations.geometry == shapely.Point()]):
-                # if there are destinations for which no snapped point could be found
-                warnings.warn(
-                    "Some destination points could not be snapped to the street network",
-                    RuntimeWarning,
-                )
-                self._destinations = self._destinations[
-                    self._destinations.geometry != shapely.Point()
-                ].copy()
+        if destinations is not None:
+            check_od_data_set(destinations)
+            self._destinations_crs = destinations.crs
+            self._destinations = destinations.to_crs("EPSG:4326").copy()
 
     def _fill_nulls(self, data_set):
         """
@@ -133,25 +119,49 @@ class BaseTravelTimeMatrixComputer:
         """
         return data_set.applymap(lambda x: numpy.nan if x == MAX_INT32 else x)
 
+    def _prepare_origins_destinations(self):
+        """
+        Make sure we received enough information to route from origins to
+        destinations.
+        """
+        try:
+            self.origins
+        except AttributeError as exception:
+            raise ValueError("No routing origins defined") from exception
+
+        try:
+            self.destinations
+        except AttributeError:
+            self.destinations = self.origins
+            if self.verbose:
+                warnings.warn("No routing destinations defined, using origins as destinations, too.", RuntimeError)
+
+        if self.snap_to_network:
+            for which_end in ("origins", "destinations"):
+                points = getattr(self, f"_{which_end}")
+                points.geometry = self.transport_network.snap_to_network(points.geometry)
+                if len(points[points.geometry == shapely.Point()]):
+                    # if there are origins/destinations for which no snapped point could be found
+                    points = points[points.geometry != shapely.Point()]
+                    warnings.warn(
+                        f"Some {which_end[:-1]} points could not be snapped to the street network",
+                        RuntimeWarning,
+                    )
+
+                    if points.empty:
+                        raise ValueError(f"After snapping, no valid {which_end[:-1]} points remain")
+
+                setattr(self, f"_{which_end}", points.copy())
+
+            self.snap_to_network = False  # prevent repeated snapping on same point sets
+
     @property
     def origins(self):
         return self._origins
 
     @origins.setter
     def origins(self, origins):
-        check_od_data_set(origins)
-        self._origins_crs = origins.crs
-        self._origins = origins.to_crs("EPSG:4326").copy()
-        if self.snap_to_network:
-            self._origins.geometry = self.transport_network.snap_to_network(
-                self._origins.geometry
-            )
-            if len(self._origins[self._origins.geometry == shapely.Point()]):
-                # if there are origins for which no snapped point could be found
-                warnings.warn(
-                    "Some origin points could not be snapped to the street network",
-                    RuntimeWarning,
-                )
-                self._origins = self._origins[
-                    self._origins.geometry != shapely.Point()
-                ].copy()
+        if origins is not None:
+            check_od_data_set(origins)
+            self._origins_crs = origins.crs
+            self._origins = origins.to_crs("EPSG:4326").copy()

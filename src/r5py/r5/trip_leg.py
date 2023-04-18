@@ -98,7 +98,7 @@ class TripLeg:
             f"{self.__class__.__name__}: "
             f"{self.transport_mode}, "
             f"{self.distance}m, "
-            f"{self.duration.total_seconds():0.1f}s, "
+            f"{self.travel_time.total_seconds():0.1f}s, "
             f"{first_point} -> {last_point}"
             ">"
         )

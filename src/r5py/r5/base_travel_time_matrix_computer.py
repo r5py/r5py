@@ -134,12 +134,17 @@ class BaseTravelTimeMatrixComputer:
         except AttributeError:
             self.destinations = self.origins
             if self.verbose:
-                warnings.warn("No routing destinations defined, using origins as destinations, too.", RuntimeError)
+                warnings.warn(
+                    "No routing destinations defined, using origins as destinations, too.",
+                    RuntimeError,
+                )
 
         if self.snap_to_network:
             for which_end in ("origins", "destinations"):
                 points = getattr(self, f"_{which_end}")
-                points.geometry = self.transport_network.snap_to_network(points.geometry)
+                points.geometry = self.transport_network.snap_to_network(
+                    points.geometry
+                )
                 if len(points[points.geometry == shapely.Point()]):
                     # if there are origins/destinations for which no snapped point could be found
                     points = points[points.geometry != shapely.Point()]
@@ -149,7 +154,9 @@ class BaseTravelTimeMatrixComputer:
                     )
 
                     if points.empty:
-                        raise ValueError(f"After snapping, no valid {which_end[:-1]} points remain")
+                        raise ValueError(
+                            f"After snapping, no valid {which_end[:-1]} points remain"
+                        )
 
                 setattr(self, f"_{which_end}", points.copy())
 

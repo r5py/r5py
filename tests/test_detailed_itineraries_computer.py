@@ -151,11 +151,12 @@ class TestDetailedItinerariesComputerInputValidation:
             departure=departure_datetime,
         )
         _ = detailed_itineraries_computer.compute_travel_details()
-        assert detailed_itineraries_computer.origins.equals(detailed_itineraries_computer.destinations)
+        assert detailed_itineraries_computer.origins.equals(
+            detailed_itineraries_computer.destinations
+        )
 
 
 class TestDetailedItinerariesComputer:
-
     @pytest.fixture()
     def population_grid_points_first_three(self, population_grid_points):
         yield population_grid_points[0:3]
@@ -197,7 +198,13 @@ class TestDetailedItinerariesComputer:
         )
 
     @pytest.mark.parametrize(
-        ["origins", "destinations", "force_all_to_all", "expected_all_to_all", "expected_od_pairs_len",],
+        [
+            "origins",
+            "destinations",
+            "force_all_to_all",
+            "expected_all_to_all",
+            "expected_od_pairs_len",
+        ],
         [
             (
                 pytest.lazy_fixture("population_grid_points_first_three"),
@@ -227,7 +234,7 @@ class TestDetailedItinerariesComputer:
                 True,
                 12,
             ),
-        ]
+        ],
     )
     def test_od_pairs_all_to_all(
         self,
@@ -347,16 +354,22 @@ class TestDetailedItinerariesComputer:
         snap_to_network,
         expected_travel_details,
     ):
+        # subset to keep test comparison data sets small
+        origins = population_grid_points[::5]
         detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
             transport_network,
-            origins=population_grid_points[::5],  # subset to keep test comparison data sets small
+            origins=origins,
             departure=departure_datetime,
             snap_to_network=snap_to_network,
             transport_modes=[r5py.TransportMode.WALK],
         )
         travel_details = detailed_itineraries_computer.compute_travel_details()
 
-        travel_details = travel_details.groupby(["from_id", "to_id", "option"]).sum(["travel_time", "distance"]).reset_index()
+        travel_details = (
+            travel_details.groupby(["from_id", "to_id", "option"])
+            .sum(["travel_time", "distance"])
+            .reset_index()
+        )
 
         travel_details = travel_details.set_index(["from_id", "to_id"]).sort_index()
         expected_travel_details = expected_travel_details.set_index(
@@ -372,8 +385,13 @@ class TestDetailedItinerariesComputer:
         population_grid_points,
         departure_datetime,
     ):
-        origins = pandas.concat([population_grid_points[-3:], unsnappable_points]).reset_index(drop=False)
-        with pytest.warns(RuntimeWarning, match="Some destination points could not be snapped to the street network"):
+        origins = pandas.concat(
+            [population_grid_points[-3:], unsnappable_points]
+        ).reset_index(drop=False)
+        with pytest.warns(
+            RuntimeWarning,
+            match="Some destination points could not be snapped to the street network",
+        ):
             travel_time_matrix = r5py.TravelTimeMatrixComputer(
                 transport_network,
                 origins,
@@ -389,8 +407,13 @@ class TestDetailedItinerariesComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        with pytest.raises(ValueError, match="After snapping, no valid origin points remain"):
-            with pytest.warns(RuntimeWarning, match="Some origin points could not be snapped to the street network"):
+        with pytest.raises(
+            ValueError, match="After snapping, no valid origin points remain"
+        ):
+            with pytest.warns(
+                RuntimeWarning,
+                match="Some origin points could not be snapped to the street network",
+            ):
                 travel_time_matrix = r5py.TravelTimeMatrixComputer(
                     transport_network,
                     unsnappable_points,
@@ -407,8 +430,13 @@ class TestDetailedItinerariesComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        destinations = pandas.concat([population_grid_points[-3:], unsnappable_points]).reset_index(drop=False)
-        with pytest.warns(RuntimeWarning, match="Some destination points could not be snapped to the street network"):
+        destinations = pandas.concat(
+            [population_grid_points[-3:], unsnappable_points]
+        ).reset_index(drop=False)
+        with pytest.warns(
+            RuntimeWarning,
+            match="Some destination points could not be snapped to the street network",
+        ):
             travel_time_matrix = r5py.TravelTimeMatrixComputer(
                 transport_network,
                 origins=population_grid_points,
@@ -426,8 +454,13 @@ class TestDetailedItinerariesComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        with pytest.raises(ValueError, match="After snapping, no valid destination points remain"):
-            with pytest.warns(RuntimeWarning, match="Some destination points could not be snapped to the street network"):
+        with pytest.raises(
+            ValueError, match="After snapping, no valid destination points remain"
+        ):
+            with pytest.warns(
+                RuntimeWarning,
+                match="Some destination points could not be snapped to the street network",
+            ):
                 travel_time_matrix = r5py.TravelTimeMatrixComputer(
                     transport_network,
                     origins=population_grid_points,
@@ -454,9 +487,6 @@ class TestDetailedItinerariesComputer:
             snap_to_network=snap_to_network,
         ).compute_travel_details()
 
-        assert (
-            detailed_itineraries[
-                detailed_itineraries["from_id"] == detailed_itineraries["to_id"]
-            ].travel_time.max()
-            == datetime.timedelta(seconds=0)
-        )
+        assert detailed_itineraries[
+            detailed_itineraries["from_id"] == detailed_itineraries["to_id"]
+        ].travel_time.max() == datetime.timedelta(seconds=0)

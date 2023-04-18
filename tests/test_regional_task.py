@@ -37,8 +37,18 @@ class TestRegionalTask:
                 set([r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE]),
             ),
             (
-                [r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE, r5py.TransportMode.CAR],
-                set([r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE, r5py.TransportMode.CAR]),
+                [
+                    r5py.TransportMode.WALK,
+                    r5py.TransportMode.BICYCLE,
+                    r5py.TransportMode.CAR,
+                ],
+                set(
+                    [
+                        r5py.TransportMode.WALK,
+                        r5py.TransportMode.BICYCLE,
+                        r5py.TransportMode.CAR,
+                    ]
+                ),
             ),
         ],
     )
@@ -70,7 +80,13 @@ class TestRegionalTask:
             ),
             (
                 ["WALK", "BICYCLE", "CAR"],
-                set([r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE, r5py.TransportMode.CAR]),
+                set(
+                    [
+                        r5py.TransportMode.WALK,
+                        r5py.TransportMode.BICYCLE,
+                        r5py.TransportMode.CAR,
+                    ]
+                ),
             ),
         ],
     )
@@ -132,8 +148,18 @@ class TestRegionalTask:
                 set([r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE]),
             ),
             (
-                [r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE, r5py.TransportMode.CAR],
-                set([r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE, r5py.TransportMode.CAR]),
+                [
+                    r5py.TransportMode.WALK,
+                    r5py.TransportMode.BICYCLE,
+                    r5py.TransportMode.CAR,
+                ],
+                set(
+                    [
+                        r5py.TransportMode.WALK,
+                        r5py.TransportMode.BICYCLE,
+                        r5py.TransportMode.CAR,
+                    ]
+                ),
             ),
         ],
     )
@@ -165,7 +191,13 @@ class TestRegionalTask:
             ),
             (
                 ["WALK", "BICYCLE", "CAR"],
-                set([r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE, r5py.TransportMode.CAR]),
+                set(
+                    [
+                        r5py.TransportMode.WALK,
+                        r5py.TransportMode.BICYCLE,
+                        r5py.TransportMode.CAR,
+                    ]
+                ),
             ),
         ],
     )

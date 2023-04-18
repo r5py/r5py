@@ -53,7 +53,9 @@ WALKING_TIMES_SNAPPED = DATA_DIRECTORY / "test_data" / "test_walking_times_snapp
 WALKING_TIMES_NOT_SNAPPED = (
     DATA_DIRECTORY / "test_data" / "test_walking_times_not_snapped.csv"
 )
-WALKING_DETAILS_SNAPPED = DATA_DIRECTORY / "test_data" / "test_walking_details_snapped.csv"
+WALKING_DETAILS_SNAPPED = (
+    DATA_DIRECTORY / "test_data" / "test_walking_details_snapped.csv"
+)
 WALKING_DETAILS_NOT_SNAPPED = (
     DATA_DIRECTORY / "test_data" / "test_walking_details_not_snapped.csv"
 )

@@ -151,7 +151,9 @@ class TestTravelTimeMatrixInputValidation:
             departure=departure_datetime,
         )
         _ = travel_time_matrix_computer.compute_travel_times()
-        assert travel_time_matrix_computer.origins.equals(travel_time_matrix_computer.destinations)
+        assert travel_time_matrix_computer.origins.equals(
+            travel_time_matrix_computer.destinations
+        )
 
 
 class TestTravelTimeMatrixComputer:
@@ -391,8 +393,13 @@ class TestTravelTimeMatrixComputer:
         population_grid_points,
         departure_datetime,
     ):
-        origins = pandas.concat([population_grid_points[-3:], unsnappable_points]).reset_index(drop=False)
-        with pytest.warns(RuntimeWarning, match="Some destination points could not be snapped to the street network"):
+        origins = pandas.concat(
+            [population_grid_points[-3:], unsnappable_points]
+        ).reset_index(drop=False)
+        with pytest.warns(
+            RuntimeWarning,
+            match="Some destination points could not be snapped to the street network",
+        ):
             travel_time_matrix = r5py.TravelTimeMatrixComputer(
                 transport_network,
                 origins,
@@ -408,16 +415,20 @@ class TestTravelTimeMatrixComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        with pytest.raises(ValueError, match="After snapping, no valid origin points remain"):
-            with pytest.warns(RuntimeWarning, match="Some origin points could not be snapped to the street network"):
-                travel_time_matrix = r5py.TravelTimeMatrixComputer(
-                    transport_network,
-                    unsnappable_points,
-                    departure=departure_datetime,
-                    snap_to_network=True,
-                    transport_modes=[r5py.TransportMode.WALK],
-                )
-                _ = travel_time_matrix.compute_travel_times()
+        with pytest.raises(
+            ValueError, match="After snapping, no valid origin points remain"
+        ), pytest.warns(
+            RuntimeWarning,
+            match="Some origin points could not be snapped to the street network",
+        ):
+            travel_time_matrix = r5py.TravelTimeMatrixComputer(
+                transport_network,
+                unsnappable_points,
+                departure=departure_datetime,
+                snap_to_network=True,
+                transport_modes=[r5py.TransportMode.WALK],
+            )
+            _ = travel_time_matrix.compute_travel_times()
 
     def test_snap_to_network_with_unsnappable_destinations(
         self,
@@ -426,8 +437,13 @@ class TestTravelTimeMatrixComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        destinations = pandas.concat([population_grid_points[-3:], unsnappable_points]).reset_index(drop=False)
-        with pytest.warns(RuntimeWarning, match="Some destination points could not be snapped to the street network"):
+        destinations = pandas.concat(
+            [population_grid_points[-3:], unsnappable_points]
+        ).reset_index(drop=False)
+        with pytest.warns(
+            RuntimeWarning,
+            match="Some destination points could not be snapped to the street network",
+        ):
             travel_time_matrix = r5py.TravelTimeMatrixComputer(
                 transport_network,
                 origins=population_grid_points,
@@ -445,17 +461,21 @@ class TestTravelTimeMatrixComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        with pytest.raises(ValueError, match="After snapping, no valid destination points remain"):
-            with pytest.warns(RuntimeWarning, match="Some destination points could not be snapped to the street network"):
-                travel_time_matrix = r5py.TravelTimeMatrixComputer(
-                    transport_network,
-                    origins=population_grid_points,
-                    destinations=unsnappable_points,
-                    departure=departure_datetime,
-                    snap_to_network=True,
-                    transport_modes=[r5py.TransportMode.WALK],
-                )
-                _ = travel_time_matrix.compute_travel_times()
+        with pytest.raises(
+            ValueError, match="After snapping, no valid destination points remain"
+        ), pytest.warns(
+            RuntimeWarning,
+            match="Some destination points could not be snapped to the street network",
+        ):
+            travel_time_matrix = r5py.TravelTimeMatrixComputer(
+                transport_network,
+                origins=population_grid_points,
+                destinations=unsnappable_points,
+                departure=departure_datetime,
+                snap_to_network=True,
+                transport_modes=[r5py.TransportMode.WALK],
+            )
+            _ = travel_time_matrix.compute_travel_times()
 
     @pytest.mark.parametrize("snap_to_network", [True, False])
     def test_travel_time_between_identical_from_and_to_ids(

@@ -490,3 +490,47 @@ class TestDetailedItinerariesComputer:
         assert detailed_itineraries[
             detailed_itineraries["from_id"] == detailed_itineraries["to_id"]
         ].travel_time.max() == datetime.timedelta(seconds=0)
+
+    @pytest.mark.parametrize(
+        [
+            "transport_mode",
+            "expected_travel_details",
+        ],
+        [
+            (
+                r5py.TransportMode.BICYCLE,
+                pytest.lazy_fixture("detailed_itineraries_bicycle"),
+            ),
+            (
+                r5py.TransportMode.CAR,
+                pytest.lazy_fixture("detailed_itineraries_car"),
+            ),
+            # (
+            #     r5py.TransportMode.TRANSIT,
+            #     pytest.lazy_fixture("detailed_itineraries_transit"),
+            # ),
+            (
+                r5py.TransportMode.WALK,
+                pytest.lazy_fixture("detailed_itineraries_walking"),
+            ),
+        ],
+    )
+    def test_transport_modes(
+        self,
+        transport_network,
+        population_grid_points,
+        departure_datetime,
+        transport_mode,
+        expected_travel_details,
+    ):
+        # subset to keep test comparison data sets small
+        origins = population_grid_points[::5]
+        detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+            transport_network,
+            origins=origins,
+            departure=departure_datetime,
+            transport_modes=[transport_mode],
+        )
+        travel_details = detailed_itineraries_computer.compute_travel_details()
+
+        assert travel_details.equals(expected_travel_details)

@@ -505,11 +505,27 @@ class RegionalTask:
                 # let people walk to and from the stops
                 access_modes = direct_modes = [TransportMode.WALK]
             else:
-                # otherwise, use the supplied direct modes as access (weird, still!)
-                access_modes = direct_modes
+                # otherwise, include the supplied direct modes into access_modes
+                access_modes = set(list(self.access_modes) + direct_modes)
 
-            self.access_modes = access_modes
-            self.egress_modes = egress_modes
+        else:  # no public transport
+            egress_modes = []  # ignore egress (why?)
+
+            #     # this is weird (the following is the logic implemented in r5r)
+            #     # I reckon this is trying to keep the fastest mode only, and
+            #     # assumes that car is always faster that bike is always faster than walking
+            #     if TransportMode.CAR in transport_modes:
+            #         access_modes = direct_modes = [TransportMode.CAR]
+            #     elif TransportMode.BICYCLE in transport_modes:
+            #         access_modes = direct_modes = [TransportMode.BICYCLE]
+            #     elif TransportMode.WALK in transport_modes:
+            #         access_modes = direct_modes = [TransportMode.WALK]
+
+            # let’s do that differently (even if potentially more expensive, computationally)
+            access_modes = direct_modes
+
+        self.access_modes = access_modes
+        self.egress_modes = egress_modes
 
         self._regional_task.transitModes = RegionalTask._enum_set(
             transit_modes, com.conveyal.r5.api.util.TransitModes

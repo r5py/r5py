@@ -60,6 +60,11 @@ WALKING_DETAILS_NOT_SNAPPED = (
     DATA_DIRECTORY / "test_data" / "test_walking_details_not_snapped.csv"
 )
 
+DETAILED_ITINERARIES_BICYCLE = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_bicycle.pickle"
+DETAILED_ITINERARIES_CAR = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_car.pickle"
+DETAILED_ITINERARIES_TRANSIT = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_transit.pickle"
+DETAILED_ITINERARIES_WALKING = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_walking.pickle"
+
 
 @pytest.fixture
 def data_columns_with_breakdown(scope="session"):
@@ -83,6 +88,26 @@ def data_columns_with_breakdown(scope="session"):
 @pytest.fixture
 def departure_datetime():
     yield datetime.datetime(2022, 2, 22, 8, 30)
+
+
+@pytest.fixture(scope="session")
+def detailed_itineraries_bicycle():
+    yield pandas.read_pickle(DETAILED_ITINERARIES_BICYCLE)
+
+
+@pytest.fixture(scope="session")
+def detailed_itineraries_car():
+    yield pandas.read_pickle(DETAILED_ITINERARIES_CAR)
+
+
+@pytest.fixture(scope="session")
+def detailed_itineraries_transit():
+    yield pandas.read_pickle(DETAILED_ITINERARIES_TRANSIT)
+
+
+@pytest.fixture(scope="session")
+def detailed_itineraries_walking():
+    yield pandas.read_pickle(DETAILED_ITINERARIES_WALKING)
 
 
 @pytest.fixture

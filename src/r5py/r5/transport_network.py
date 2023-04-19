@@ -52,7 +52,10 @@ class TransportNetwork:
         transport_network = com.conveyal.r5.transit.TransportNetwork()
         transport_network.scenarioId = PACKAGE
 
-        osm_file = com.conveyal.osmlib.OSM(f"{osm_pbf}.mapdb")
+        osm_file = pathlib.Path(f"{osm_pbf}.mapdb")
+        if osm_file.exists():
+            osm_file.unlink()
+        osm_file = com.conveyal.osmlib.OSM(f"{osm_file}")
         osm_file.intersectionDetection = True
         osm_file.readFromFile(f"{osm_pbf}")
         transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()

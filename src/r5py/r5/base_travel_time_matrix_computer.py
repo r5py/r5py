@@ -132,11 +132,11 @@ class BaseTravelTimeMatrixComputer:
         try:
             self.destinations
         except AttributeError:
-            self.destinations = self.origins
+            self.destinations = self.origins.copy()
             if self.verbose:
                 warnings.warn(
                     "No routing destinations defined, using origins as destinations, too.",
-                    RuntimeError,
+                    RuntimeWarning,
                 )
 
         if self.snap_to_network:

@@ -60,10 +60,10 @@ WALKING_DETAILS_NOT_SNAPPED = (
     DATA_DIRECTORY / "test_data" / "test_walking_details_not_snapped.csv"
 )
 
-DETAILED_ITINERARIES_BICYCLE = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_bicycle.pickle"
-DETAILED_ITINERARIES_CAR = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_car.pickle"
-DETAILED_ITINERARIES_TRANSIT = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_transit.pickle"
-DETAILED_ITINERARIES_WALKING = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_walking.pickle"
+DETAILED_ITINERARIES_BICYCLE = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_bicycle.gpkg.zip"
+DETAILED_ITINERARIES_CAR = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_car.gpkg.zip"
+DETAILED_ITINERARIES_TRANSIT = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_transit.gpkg.zip"
+DETAILED_ITINERARIES_WALK = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_walk.gpkg.zip"
 
 
 @pytest.fixture
@@ -92,22 +92,22 @@ def departure_datetime():
 
 @pytest.fixture(scope="session")
 def detailed_itineraries_bicycle():
-    yield pandas.read_pickle(DETAILED_ITINERARIES_BICYCLE)
+    yield geopandas.read_file(DETAILED_ITINERARIES_BICYCLE)
 
 
 @pytest.fixture(scope="session")
 def detailed_itineraries_car():
-    yield pandas.read_pickle(DETAILED_ITINERARIES_CAR)
+    yield geopandas.read_file(DETAILED_ITINERARIES_CAR)
 
 
 @pytest.fixture(scope="session")
 def detailed_itineraries_transit():
-    yield pandas.read_pickle(DETAILED_ITINERARIES_TRANSIT)
+    yield geopandas.read_file(DETAILED_ITINERARIES_TRANSIT)
 
 
 @pytest.fixture(scope="session")
-def detailed_itineraries_walking():
-    yield pandas.read_pickle(DETAILED_ITINERARIES_WALKING)
+def detailed_itineraries_walk():
+    yield geopandas.read_file(DETAILED_ITINERARIES_WALK)
 
 
 @pytest.fixture

@@ -8,7 +8,7 @@ import jpype
 import jpype.types
 import shapely
 
-from .street_mode import StreetMode
+from .transport_mode import TransportMode
 from ..util import start_jvm
 
 import com.conveyal.r5
@@ -40,7 +40,7 @@ class StreetLayer:
         self,
         point,
         radius=com.conveyal.r5.streets.StreetLayer.LINK_RADIUS_METERS,
-        street_mode=StreetMode.WALK,
+        street_mode=TransportMode.WALK,
     ):
         """
         Find a location on an existing street near `point`.
@@ -59,9 +59,7 @@ class StreetLayer:
             Closest location on the street network or `POINT EMPTY` if no
             such location could be found within `radius`
         """
-        if split := self._street_layer.findSplit(
-            point.y, point.x, radius, street_mode.value
-        ):
+        if split := self._street_layer.findSplit(point.y, point.x, radius, street_mode):
             return shapely.Point(
                 split.fixedLon / com.conveyal.r5.streets.VertexStore.FIXED_FACTOR,
                 split.fixedLat / com.conveyal.r5.streets.VertexStore.FIXED_FACTOR,

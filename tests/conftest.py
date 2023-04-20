@@ -56,6 +56,25 @@ WALKING_TIMES_SNAPPED = DATA_DIRECTORY / "test_data" / "test_walking_times_snapp
 WALKING_TIMES_NOT_SNAPPED = (
     DATA_DIRECTORY / "test_data" / "test_walking_times_not_snapped.csv"
 )
+WALKING_DETAILS_SNAPPED = (
+    DATA_DIRECTORY / "test_data" / "test_walking_details_snapped.csv"
+)
+WALKING_DETAILS_NOT_SNAPPED = (
+    DATA_DIRECTORY / "test_data" / "test_walking_details_not_snapped.csv"
+)
+
+DETAILED_ITINERARIES_BICYCLE = (
+    DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_bicycle.gpkg.zip"
+)
+DETAILED_ITINERARIES_CAR = (
+    DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_car.gpkg.zip"
+)
+DETAILED_ITINERARIES_TRANSIT = (
+    DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_transit.gpkg.zip"
+)
+DETAILED_ITINERARIES_WALK = (
+    DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_walk.gpkg.zip"
+)
 
 
 @pytest.fixture
@@ -80,6 +99,26 @@ def data_columns_with_breakdown(scope="session"):
 @pytest.fixture
 def departure_datetime():
     yield datetime.datetime(2022, 2, 22, 8, 30)
+
+
+@pytest.fixture(scope="session")
+def detailed_itineraries_bicycle():
+    yield geopandas.read_file(DETAILED_ITINERARIES_BICYCLE)
+
+
+@pytest.fixture(scope="session")
+def detailed_itineraries_car():
+    yield geopandas.read_file(DETAILED_ITINERARIES_CAR)
+
+
+@pytest.fixture(scope="session")
+def detailed_itineraries_transit():
+    yield geopandas.read_file(DETAILED_ITINERARIES_TRANSIT)
+
+
+@pytest.fixture(scope="session")
+def detailed_itineraries_walk():
+    yield geopandas.read_file(DETAILED_ITINERARIES_WALK)
 
 
 @pytest.fixture
@@ -243,6 +282,16 @@ def unsnappable_points():
         },
         crs="EPSG:4326",
     )
+
+
+@pytest.fixture(scope="session")
+def walking_details_snapped():
+    yield pandas.read_csv(WALKING_DETAILS_SNAPPED)
+
+
+@pytest.fixture(scope="session")
+def walking_details_not_snapped():
+    yield pandas.read_csv(WALKING_DETAILS_NOT_SNAPPED)
 
 
 @pytest.fixture(scope="session")

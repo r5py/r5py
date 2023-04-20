@@ -2,21 +2,16 @@
 
 """Calculate travel times between many origins and destinations."""
 
-import copy
 import math
 import multiprocessing
 import warnings
 
-import joblib
 import numpy
-import pandas
 import shapely
 
 from ..util import check_od_data_set, Config
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork
-
-import com.conveyal.r5
 
 
 __all__ = ["BaseTravelTimeMatrixComputer"]
@@ -34,10 +29,14 @@ NUM_THREADS = math.ceil(multiprocessing.cpu_count() * 0.75)
 class BaseTravelTimeMatrixComputer:
     """Base class for travel time computers between many origins and destinations."""
 
+    MAX_INT32 = MAX_INT32
+
+    NUM_THREADS = NUM_THREADS
+
     def __init__(
         self,
         transport_network,
-        origins,
+        origins=None,
         destinations=None,
         snap_to_network=False,
         **kwargs,
@@ -79,53 +78,16 @@ class BaseTravelTimeMatrixComputer:
         self.snap_to_network = snap_to_network
 
         self.origins = origins
-        if destinations is None:
-            destinations = origins
         self.destinations = destinations
 
         self.request = RegionalTask(
             transport_network,
-            origins.iloc[0].geometry,  # any one origin (potentially overriden later)
-            destinations,
+            origin=None,
+            destinations=None,
             **kwargs,
         )
 
         self.verbose = Config().arguments.verbose
-
-    def compute_travel_times(self):
-        """
-        Compute travel times from all origins to all destinations.
-
-        Returns
-        -------
-        pandas.DataFrame
-            A data frame containing the columns ``from_id``, ``to_id``, and
-            ``travel_time``, where ``travel_time`` is the median calculated
-            travel time between ``from_id`` and ``to_id`` or ``numpy.nan``
-            if no connection with the given parameters was found.
-            If non-default ``percentiles`` were requested: one or more columns
-            ``travel_time_p{:02d}`` representing the particular percentile of
-            travel time.
-        """
-        # loop over all origins, modify the request, and compute the times
-        # to all destinations.
-        with joblib.Parallel(
-            prefer="threads",
-            verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
-            n_jobs=NUM_THREADS,
-        ) as parallel:
-            od_matrix = pandas.concat(
-                parallel(
-                    joblib.delayed(self._travel_times_per_origin)(from_id)
-                    for from_id in self.origins.id
-                )
-            )
-
-        try:
-            od_matrix = od_matrix.to_crs(self._origins_crs)
-        except AttributeError:  # (not a GeoDataFrame)
-            pass
-        return od_matrix
 
     @property
     def destinations(self):
@@ -133,22 +95,10 @@ class BaseTravelTimeMatrixComputer:
 
     @destinations.setter
     def destinations(self, destinations):
-        check_od_data_set(destinations)
-        self._destinations_crs = destinations.crs
-        self._destinations = destinations.to_crs("EPSG:4326").copy()
-        if self.snap_to_network:
-            self._destinations.geometry = self.transport_network.snap_to_network(
-                self._destinations.geometry
-            )
-            if len(self._destinations[self._destinations.geometry == shapely.Point()]):
-                # if there are destinations for which no snapped point could be found
-                warnings.warn(
-                    "Some destination points could not be snapped to the street network",
-                    RuntimeWarning,
-                )
-                self._destinations = self._destinations[
-                    self._destinations.geometry != shapely.Point()
-                ].copy()
+        if destinations is not None:
+            check_od_data_set(destinations)
+            self._destinations_crs = destinations.crs
+            self._destinations = destinations.to_crs("EPSG:4326").copy()
 
     def _fill_nulls(self, data_set):
         """
@@ -169,38 +119,56 @@ class BaseTravelTimeMatrixComputer:
         """
         return data_set.applymap(lambda x: numpy.nan if x == MAX_INT32 else x)
 
+    def _prepare_origins_destinations(self):
+        """
+        Make sure we received enough information to route from origins to
+        destinations.
+        """
+        try:
+            self.origins
+        except AttributeError as exception:
+            raise ValueError("No routing origins defined") from exception
+
+        try:
+            self.destinations
+        except AttributeError:
+            self.destinations = self.origins.copy()
+            if self.verbose:
+                warnings.warn(
+                    "No routing destinations defined, using origins as destinations, too.",
+                    RuntimeWarning,
+                )
+
+        if self.snap_to_network:
+            for which_end in ("origins", "destinations"):
+                points = getattr(self, f"_{which_end}")
+                points.geometry = self.transport_network.snap_to_network(
+                    points.geometry
+                )
+                if len(points[points.geometry == shapely.Point()]):
+                    # if there are origins/destinations for which no snapped point could be found
+                    points = points[points.geometry != shapely.Point()]
+                    warnings.warn(
+                        f"Some {which_end[:-1]} points could not be snapped to the street network",
+                        RuntimeWarning,
+                    )
+
+                    if points.empty:
+                        raise ValueError(
+                            f"After snapping, no valid {which_end[:-1]} points remain"
+                        )
+
+                setattr(self, f"_{which_end}", points.copy())
+
+            self.snap_to_network = False  # prevent repeated snapping on same point sets
+
     @property
     def origins(self):
         return self._origins
 
     @origins.setter
     def origins(self, origins):
-        check_od_data_set(origins)
-        self._origins_crs = origins.crs
-        self._origins = origins.to_crs("EPSG:4326").copy()
-        if self.snap_to_network:
-            self._origins.geometry = self.transport_network.snap_to_network(
-                self._origins.geometry
-            )
-            if len(self._origins[self._origins.geometry == shapely.Point()]):
-                # if there are origins for which no snapped point could be found
-                warnings.warn(
-                    "Some origin points could not be snapped to the street network",
-                    RuntimeWarning,
-                )
-                self._origins = self._origins[
-                    self._origins.geometry != shapely.Point()
-                ].copy()
-
-    def _travel_times_per_origin(self, from_id):
-        request = copy.copy(self.request)
-        request.origin = self.origins[self.origins.id == from_id].geometry.item()
-
-        travel_time_computer = com.conveyal.r5.analyst.TravelTimeComputer(
-            request, self.transport_network
-        )
-        results = travel_time_computer.computeTravelTimes()
-
-        od_matrix = self._parse_results(from_id, results)
-
-        return od_matrix
+        if origins is not None:
+            check_od_data_set(origins)
+            self._origins_crs = origins.crs
+            self._origins = origins.to_crs("EPSG:4326").copy()

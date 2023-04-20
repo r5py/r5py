@@ -541,4 +541,7 @@ class TestDetailedItinerariesComputer:
         travel_details.replace(to_replace=[None], value=numpy.nan, inplace=True)
         travel_details = geopandas.GeoDataFrame(travel_details)
 
+        if not travel_details.equals(expected_travel_details):
+            print(travel_details.compare(expected_travel_details))
+
         assert travel_details.equals(expected_travel_details)

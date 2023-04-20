@@ -54,14 +54,16 @@ transport_network = r5py.TransportNetwork(
 
 # Compute travel times with a detailed breakdown of the routing results
 
+In case you are interested in more detailed routing results, you can use
+`DetailedItinerariesComputer`. In contrast to `TravelTimeMatrixComputer`, it
+reports individual trip segments, and possibly multiple options for each trip. 
 
-In case you are interested in more detailed routing results, you can use a
-`DetailedItinerariesComputer` instead of the `TravelTimeMatrixComputer`. This
-will provide roughly the same information as in the previous examples, but it
-also brings more detailed information about the routes.
-`DetailedItinerariesComputer` produces information about the used routes for
-each origin-destination pair, as well as total time disaggregated by access,
-waiting, in-vehicle and transfer times:
+As such, `DetailedItinerariesComputer`’s output is structured in a different
+way, too. It provides one row per trip segment, multiple trip segments together
+constitute a trip option, of which there might be several per `from_id`/`to_id`
+pair. The results also include information on the public transport routes (e.g.,
+bus line numbers) used on the trip, as well as a {class}`shapely.geometry` for
+each segment.
 
 
 ```{code-cell}
@@ -70,8 +72,7 @@ waiting, in-vehicle and transfer times:
 import datetime
 import r5py
 
-
-origins = population_grid.copy()
+origins = population_grid.sample(10).copy()
 origins.geometry = origins.geometry.centroid
 
 destinations = geopandas.GeoDataFrame(
@@ -92,13 +93,15 @@ detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
 ```
 
 ```{code-cell}
-travel_time_matrix_detailed = detailed_itineraries_computer.compute_travel_times()
+travel_time_matrix_detailed = detailed_itineraries_computer.compute_travel_details()
 travel_time_matrix_detailed.head()
 ```
 
 
 As you can see, the result contains much more information than earlier, see the
 following table for explanations:
+
+% TODO: update columns
 
 `routes` ({class}`list`)
 : The public transport lines (route IDs in the GTFS data set) used during the

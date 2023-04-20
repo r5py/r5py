@@ -141,7 +141,7 @@ class TestTravelTimeMatrixComputer:
             origins=origin_point,
             destinations=population_grid_points,
             departure=departure_datetime,
-            transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+            transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
         assert isinstance(
             travel_time_matrix_computer.transport_network, r5py.TransportNetwork
@@ -169,7 +169,7 @@ class TestTravelTimeMatrixComputer:
             origins=origin_point,
             destinations=population_grid_points,
             departure=departure_datetime,
-            transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+            transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
         assert isinstance(
             travel_time_matrix_computer.transport_network, r5py.TransportNetwork
@@ -185,7 +185,7 @@ class TestTravelTimeMatrixComputer:
             transport_network,
             origins=population_grid_points,
             departure=departure_datetime,
-            transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+            transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
         travel_time_matrix = travel_time_matrix_computer.compute_travel_times()
 
@@ -214,7 +214,7 @@ class TestTravelTimeMatrixComputer:
             origins=origin_point,
             destinations=population_grid_points,
             departure=departure_datetime,
-            transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+            transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
         travel_time_matrix = travel_time_matrix_computer.compute_travel_times()
         assert travel_time_matrix.shape == (92, 3)
@@ -236,7 +236,7 @@ class TestTravelTimeMatrixComputer:
             origins=origin_point,
             destinations=population_grid_points,
             departure=departure_datetime,
-            transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+            transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
             percentiles=[25, 50, 75],
         )
         travel_time_matrix = travel_time_matrix_computer.compute_travel_times()
@@ -268,7 +268,7 @@ class TestTravelTimeMatrixComputer:
                 origins=origin_point,
                 destinations=population_grid_points,
                 departure=datetime.datetime(2021, 2, 22, 8, 30),  # not in GTFS data set
-                transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+                transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
             )
             del travel_time_matrix_computer
 
@@ -288,7 +288,7 @@ class TestTravelTimeMatrixComputer:
                 origins=origin_point,
                 destinations=population_grid_points,
                 departure=departure_datetime,
-                transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+                transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
             )
             del travel_time_matrix_computer
 
@@ -353,7 +353,7 @@ class TestTravelTimeMatrixComputer:
             origins=population_grid_points,
             departure=departure_datetime,
             snap_to_network=snap_to_network,
-            transport_modes=[r5py.LegMode.WALK],
+            transport_modes=[r5py.TransportMode.WALK],
         )
         travel_times = travel_time_matrix_computer.compute_travel_times()
 
@@ -376,7 +376,7 @@ class TestTravelTimeMatrixComputer:
                 unsnappable_points,
                 departure=departure_datetime,
                 snap_to_network=True,
-                transport_modes=[r5py.LegMode.WALK],
+                transport_modes=[r5py.TransportMode.WALK],
             )
 
     def test_snap_to_network_with_unsnappable_destinations(
@@ -393,7 +393,7 @@ class TestTravelTimeMatrixComputer:
                 destinations=unsnappable_points,
                 departure=departure_datetime,
                 snap_to_network=True,
-                transport_modes=[r5py.LegMode.WALK],
+                transport_modes=[r5py.TransportMode.WALK],
             )
 
     @pytest.mark.parametrize("snap_to_network", [True, False])
@@ -407,7 +407,7 @@ class TestTravelTimeMatrixComputer:
         travel_time_matrix = r5py.TravelTimeMatrixComputer(
             transport_network,
             origins=population_grid_points,
-            transport_modes=[r5py.LegMode.WALK],
+            transport_modes=[r5py.TransportMode.WALK],
             departure=departure_datetime,
             snap_to_network=snap_to_network,
         ).compute_travel_times()

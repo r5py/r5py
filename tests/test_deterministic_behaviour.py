@@ -34,10 +34,10 @@ class TestDeterministicBehaviour:
     @pytest.mark.parametrize(
         "transport_modes",
         [
-            (r5py.LegMode.WALK,),
-            (r5py.LegMode.BICYCLE,),
-            (r5py.LegMode.CAR,),
-            (r5py.TransitMode.TRANSIT, r5py.LegMode.WALK),
+            (r5py.TransportMode.WALK,),
+            (r5py.TransportMode.BICYCLE,),
+            (r5py.TransportMode.CAR,),
+            (r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK),
         ],
     )
     @pytest.mark.parametrize("iteration", range(5))

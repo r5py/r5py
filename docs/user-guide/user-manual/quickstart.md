@@ -159,8 +159,8 @@ the following input arguments:
   representing the destinations of routes, 
 - `departure`, a {class}`datetime.datetime`
   refering to the departure date and time for routing, and
-- `transport_modes`, a list of {class}`r5py.TransitMode`s and
-  {class}`r5py.LegMode`s: the travel modes that will be used in the calculations
+- `transport_modes`, a list of {class}`r5py.TransportMode`s: the travel modes
+  that will be used in the calculations
 
 Once instantiated, call
 {meth}`TravelTimeMatrixComputer.compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`
@@ -187,8 +187,8 @@ travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
     destinations=destinations,
     departure=datetime.datetime(2022, 2, 22, 8, 30),
     transport_modes=[
-        r5py.TransitMode.TRANSIT,
-        r5py.LegMode.WALK,
+        r5py.TransportMode.TRANSIT,
+        r5py.TransportMode.WALK,
     ],
 )
 

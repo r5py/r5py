@@ -88,7 +88,7 @@ detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
     origins=origins,
     destinations=destinations,
     departure=datetime.datetime(2022,2,22,8,30),
-    transport_modes=[r5py.TransitMode.TRANSIT, r5py.LegMode.WALK],
+    transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
 )
 ```
 
@@ -122,12 +122,12 @@ order
 `access_time` ({class}`float`)
 : The time to reach the first public transport stop (with
 {class}`access_modes<r5py.RegionalTask>`, default
-{class}`r5py.LegMode.WALK<r5py.LegMode>`): the ‘first mile’
+{class}`r5py.TransportMode.WALK<r5py.TransportMode>`): the ‘first mile’
 
 `egress_time` ({class}`float`)
 : The time from the last public transport stop (with
 {class}`egress_modes<r5py.RegionalTask>`, default
-{class}`r5py.LegMode.WALK<r5py.LegMode>`): the ‘last mile’
+{class}`r5py.TransportMode.WALK<r5py.TransportMode>`): the ‘last mile’
 
 `transfer_time` ({class}`float`)
 : The total time spent transfering from one vehicle to another (e.g., walking

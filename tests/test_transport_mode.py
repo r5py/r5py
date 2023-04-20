@@ -72,7 +72,6 @@ class TestTransportMode:
             ("WALK", r5py.TransportMode.WALK),
             ("BICYCLE_RENT", r5py.TransportMode.BICYCLE_RENT),
             ("CAR_PARK", r5py.TransportMode.CAR_PARK),
-
             ("air", r5py.TransportMode.AIR),
             ("bus", r5py.TransportMode.BUS),
             ("cable_car", r5py.TransportMode.CABLE_CAR),
@@ -88,7 +87,6 @@ class TestTransportMode:
             ("walk", r5py.TransportMode.WALK),
             ("bicycle_rent", r5py.TransportMode.BICYCLE_RENT),
             ("car_park", r5py.TransportMode.CAR_PARK),
-
             ("AiR", r5py.TransportMode.AIR),
             ("bUs", r5py.TransportMode.BUS),
             ("CaBlE_CaR", r5py.TransportMode.CABLE_CAR),
@@ -104,7 +102,7 @@ class TestTransportMode:
             ("wAlK", r5py.TransportMode.WALK),
             ("bIcYcLe_ReNt", r5py.TransportMode.BICYCLE_RENT),
             ("CaR_PaRk", r5py.TransportMode.CAR_PARK),
-        ]
+        ],
     )
     def test_str_transportmode(self, str_transport_mode, expected_transport_mode):
         assert r5py.TransportMode(str_transport_mode) == expected_transport_mode
@@ -112,8 +110,12 @@ class TestTransportMode:
     @pytest.mark.parametrize(
         ["invalid_transport_mode"],
         [
-            ("Helicopter",), ("adsffoobar",), (13,), (None,), ("1234",),
-        ]
+            ("Helicopter",),
+            ("adsffoobar",),
+            (13,),
+            (None,),
+            ("1234",),
+        ],
     )
     def test_invalid_transportmode(self, invalid_transport_mode):
         with pytest.raises(ValueError, match="is not a valid TransportMode"):

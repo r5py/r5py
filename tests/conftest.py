@@ -60,10 +60,18 @@ WALKING_DETAILS_NOT_SNAPPED = (
     DATA_DIRECTORY / "test_data" / "test_walking_details_not_snapped.csv"
 )
 
-DETAILED_ITINERARIES_BICYCLE = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_bicycle.gpkg.zip"
-DETAILED_ITINERARIES_CAR = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_car.gpkg.zip"
-DETAILED_ITINERARIES_TRANSIT = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_transit.gpkg.zip"
-DETAILED_ITINERARIES_WALK = DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_walk.gpkg.zip"
+DETAILED_ITINERARIES_BICYCLE = (
+    DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_bicycle.gpkg.zip"
+)
+DETAILED_ITINERARIES_CAR = (
+    DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_car.gpkg.zip"
+)
+DETAILED_ITINERARIES_TRANSIT = (
+    DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_transit.gpkg.zip"
+)
+DETAILED_ITINERARIES_WALK = (
+    DATA_DIRECTORY / "test_data" / "test_detailed_itineraries_walk.gpkg.zip"
+)
 
 
 @pytest.fixture

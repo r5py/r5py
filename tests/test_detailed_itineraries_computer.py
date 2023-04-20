@@ -535,8 +535,12 @@ class TestDetailedItinerariesComputer:
         )
         travel_details = detailed_itineraries_computer.compute_travel_details()
 
-        travel_details.travel_time = travel_details.travel_time.apply(lambda t: t.total_seconds())
-        travel_details.transport_mode = travel_details.transport_mode.apply(lambda t: t.value)
+        travel_details.travel_time = travel_details.travel_time.apply(
+            lambda t: t.total_seconds()
+        )
+        travel_details.transport_mode = travel_details.transport_mode.apply(
+            lambda t: t.value
+        )
 
         travel_details.replace(to_replace=[None], value=numpy.nan, inplace=True)
         travel_details = geopandas.GeoDataFrame(travel_details)

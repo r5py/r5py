@@ -547,5 +547,6 @@ class TestDetailedItinerariesComputer:
 
         if not travel_details.equals(expected_travel_details):
             print(travel_details.compare(expected_travel_details))
+            print(travel_details.describe(), expected_travel_details.describe())
 
         assert travel_details.equals(expected_travel_details)

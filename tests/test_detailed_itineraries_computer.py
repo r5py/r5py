@@ -544,15 +544,9 @@ class TestDetailedItinerariesComputer:
         )
 
         travel_details.replace(to_replace=[None], value=numpy.nan, inplace=True)
+
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
 
-        travel_details.to_file(f"/tmp/test_detailed_itineraries_{transport_mode.value.lower()}.gpkg")
-
-        if not travel_details.equals(expected_travel_details):
-            print(travel_details.compare(expected_travel_details))
-            print(travel_details.describe(), expected_travel_details.describe())
-
-        # assert travel_details.equals(expected_travel_details)
         geopandas.testing.assert_geodataframe_equal(
             travel_details,
             expected_travel_details,

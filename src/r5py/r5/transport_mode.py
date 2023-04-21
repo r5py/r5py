@@ -59,6 +59,14 @@ class TransportMode(enum.Enum):
     TransportMode.BICYCLE_RENT, TransportMode.CAR_PARK (translate into R5’s LegMode)
     """
 
+    @classmethod
+    def _missing_(cls, value):
+        value = str(value).upper()
+        for member in cls:
+            if value == member.value:
+                return member
+        return None
+
     @property
     def is_leg_mode(self):
         """Can this TransportMode function as a LegMode?"""

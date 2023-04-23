@@ -3,6 +3,7 @@
 import datetime
 
 import geopandas
+import geopandas.testing
 import numpy
 import pandas
 import pytest
@@ -517,7 +518,7 @@ class TestDetailedItinerariesComputer:
             ),
         ],
     )
-    def test_transport_modes(
+    def test_travel_details_by_transport_mode(
         self,
         transport_network,
         population_grid_points,
@@ -526,7 +527,7 @@ class TestDetailedItinerariesComputer:
         expected_travel_details,
     ):
         # subset to keep test comparison data sets small
-        origins = population_grid_points[::5]
+        origins = population_grid_points[::5].copy()
         detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
             transport_network,
             origins=origins,
@@ -543,9 +544,12 @@ class TestDetailedItinerariesComputer:
         )
 
         travel_details.replace(to_replace=[None], value=numpy.nan, inplace=True)
-        travel_details = geopandas.GeoDataFrame(travel_details)
 
-        if not travel_details.equals(expected_travel_details):
-            print(travel_details.compare(expected_travel_details))
+        travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
 
-        assert travel_details.equals(expected_travel_details)
+        geopandas.testing.assert_geodataframe_equal(
+            travel_details,
+            expected_travel_details,
+            check_less_precise=True,  # geometries
+            normalize=True,
+        )

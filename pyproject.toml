@@ -58,7 +58,7 @@ omit = ["tests/*"]
 "docs/md/" = "md"
 
 [tool.pytest.ini_options]
-addopts = "-p no:faulthandler --cov --cov-report term-missing"
+addopts = "-p no:faulthandler --cov --cov-report term-missing --cov-report xml"
 filterwarnings = [
     "error",
     "ignore:Could not find R5 jar, trying to download it from upstream",

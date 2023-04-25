@@ -75,7 +75,7 @@ class TripLeg:
             other.legs = [self] + other.legs
             return other
         else:
-            raise NotImplementedError(
+            raise ValueError(
                 f"Cannot use operator '+' on '{type(other)}' and '{type(self)}'"
             )
 

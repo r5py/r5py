@@ -2,6 +2,7 @@
 
 import datetime
 
+import pytest
 import shapely
 
 import r5py
@@ -64,6 +65,31 @@ class TestTripLeg:
         trip = trip_leg2 + trip
         assert isinstance(trip, r5py.r5.trip.Trip)
         assert trip.legs == [trip_leg2, trip_leg1]
+
+    @pytest.mark.parametrize(
+        ["invalid_other",],
+        [
+            (123.0,),
+            (1,),
+            ("asdfasdf",),
+            ({},),
+        ]
+    )
+    def test_add_invalid_type(self, invalid_other):
+        trip_leg = r5py.r5.trip_leg.TripLeg(
+            r5py.TransportMode.TRANSIT,
+            datetime.datetime(2023, 4, 25, 15, 30),
+            98.76,
+            datetime.timedelta(minutes=30),
+            datetime.timedelta(minutes=5),
+            "54A",
+            shapely.LineString([[2, 2], [34, 34]]),
+        )
+        with pytest.raises(ValueError, match="Cannot use operator"):
+            _ = trip_leg + invalid_other
+
+        with pytest.raises(ValueError, match="Cannot use operator"):
+            _ = invalid_other + trip_leg
 
     def test_as_table_row(self):
         trip_leg = r5py.r5.trip_leg.TripLeg(

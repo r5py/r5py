@@ -171,17 +171,17 @@ def population_grid_points(population_grid):
 
 
 @pytest.fixture()
-def population_grid_points_first_three(self, population_grid_points):
+def population_grid_points_first_three(population_grid_points):
     yield population_grid_points[0:3]
 
 
 @pytest.fixture()
-def population_grid_points_second_three(self, population_grid_points):
+def population_grid_points_second_three(population_grid_points):
     yield population_grid_points[4:7]
 
 
 @pytest.fixture()
-def population_grid_points_four(self, population_grid_points):
+def population_grid_points_four(population_grid_points):
     yield population_grid_points[10:14]
 
 

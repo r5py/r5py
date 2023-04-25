@@ -39,7 +39,7 @@ class Trip:
         return (
             f"<{self.__class__.__name__}: "
             f"{self.distance}m, "
-            f"{self.duration.total_seconds()}s, "
+            f"{self.travel_time.total_seconds()}s, "
             f"{legs}>"
         )
 
@@ -68,12 +68,12 @@ class Trip:
     @property
     def routes(self):
         """The public transport route(s) used on this trip."""
-        return set([leg.route for leg in self.legs])
+        return [leg.route for leg in self.legs]
 
     @property
     def transport_modes(self):
         """The transport mode(s) used on this trip."""
-        return set([leg.transport_mode for leg in self.legs])
+        return [leg.transport_mode for leg in self.legs]
 
     @property
     def travel_time(self):

@@ -71,6 +71,9 @@ class TripLeg:
         if isinstance(other, self.__class__):
             trip = Trip([self, other])
             return trip
+        elif isinstance(other, Trip):
+            other.legs = [self] + other.legs
+            return other
         else:
             raise NotImplementedError(
                 f"Cannot use operator '+' on '{type(other)}' and '{type(self)}'"
@@ -79,18 +82,15 @@ class TripLeg:
     def __radd__(self, other):
         from .trip import Trip
 
-        if isinstance(other, Trip):
+        if other == 0:  # first iteration of sum()
+            return self
+        elif isinstance(other, Trip):
             other.legs.append(self)
             return other
-        elif isinstance(other, self.__class__):
-            trip = Trip([other, self])
-            return trip
         else:
-            raise NotImplementedError(
-                f"Cannot use operator '+' on '{type(self)}' and '{type(other)}'"
-            )
+            return self.__add__(other)
 
-    def __str__(self):
+    def __repr__(self):
         first_point = self.geometry.coords[0]
         last_point = self.geometry.coords[-1]
         return (

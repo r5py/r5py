@@ -120,3 +120,45 @@ class TestTransportMode:
     def test_invalid_transportmode(self, invalid_transport_mode):
         with pytest.raises(ValueError, match="is not a valid TransportMode"):
             _ = r5py.TransportMode(invalid_transport_mode)
+
+    @pytest.mark.parametrize(
+        ["mode", "expected"],
+        [
+            ("CAR", True),
+            ("BICYCLE", True),
+            (r5py.TransportMode.WALK, True),
+            (r5py.TransportMode.BICYCLE_RENT, True),
+            (r5py.TransportMode.BUS, False),
+            ("TRANSIT", False),
+        ],
+    )
+    def test_is_leg_mode(self, mode, expected):
+        assert r5py.TransportMode(mode).is_leg_mode == expected
+
+    @pytest.mark.parametrize(
+        ["mode", "expected"],
+        [
+            ("CAR", True),
+            ("BICYCLE", True),
+            (r5py.TransportMode.WALK, True),
+            (r5py.TransportMode.BICYCLE_RENT, False),
+            (r5py.TransportMode.BUS, False),
+            ("TRANSIT", False),
+        ],
+    )
+    def test_is_street_mode(self, mode, expected):
+        assert r5py.TransportMode(mode).is_street_mode == expected
+
+    @pytest.mark.parametrize(
+        ["mode", "expected"],
+        [
+            ("CAR", False),
+            ("BICYCLE", False),
+            (r5py.TransportMode.WALK, False),
+            (r5py.TransportMode.BICYCLE_RENT, False),
+            (r5py.TransportMode.BUS, True),
+            ("TRANSIT", True),
+        ],
+    )
+    def test_is_transit_mode(self, mode, expected):
+        assert r5py.TransportMode(mode).is_transit_mode == expected

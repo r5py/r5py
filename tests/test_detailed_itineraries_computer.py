@@ -160,18 +160,6 @@ class TestDetailedItinerariesComputerInputValidation:
 
 
 class TestDetailedItinerariesComputer:
-    @pytest.fixture()
-    def population_grid_points_first_three(self, population_grid_points):
-        yield population_grid_points[0:3]
-
-    @pytest.fixture()
-    def population_grid_points_second_three(self, population_grid_points):
-        yield population_grid_points[4:7]
-
-    @pytest.fixture()
-    def population_grid_points_four(self, population_grid_points):
-        yield population_grid_points[10:14]
-
     def test_detailed_itineraries_initialization(
         self,
         transport_network,

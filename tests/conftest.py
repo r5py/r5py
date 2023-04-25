@@ -170,6 +170,21 @@ def population_grid_points(population_grid):
     yield population_grid_points
 
 
+@pytest.fixture()
+def population_grid_points_first_three(self, population_grid_points):
+    yield population_grid_points[0:3]
+
+
+@pytest.fixture()
+def population_grid_points_second_three(self, population_grid_points):
+    yield population_grid_points[4:7]
+
+
+@pytest.fixture()
+def population_grid_points_four(self, population_grid_points):
+    yield population_grid_points[10:14]
+
+
 @pytest.fixture(scope="session")
 def r5_jar_cached():
     from r5py.util.config import Config

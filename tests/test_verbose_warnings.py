@@ -34,3 +34,41 @@ class TestVerboseWarnings:
                 transport_network,
                 regional_task,
             ).plan()
+
+    def test_detailed_itineraries_warn_diff_length_all_to_all(
+        self,
+        transport_network,
+        population_grid_points_first_three,
+        population_grid_points_four,
+        departure_datetime,
+        setup_verbose_mode,
+    ):
+        with pytest.warns(
+            RuntimeWarning,
+            match="Origins and destinations are of different length, computing an all-to-all matrix"
+        ):
+            print(transport_network)
+            r5py.DetailedItinerariesComputer(
+                transport_network=transport_network,
+                origins=population_grid_points_first_three,
+                destinations=population_grid_points_four,
+                departure=departure_datetime,
+                transport_modes=[r5py.TransportMode.WALK],
+            ).compute_travel_details()
+
+    def test_travel_time_matrix_warn_no_destinations(
+        self,
+        transport_network,
+        population_grid_points_first_three,
+        departure_datetime,
+        setup_verbose_mode,
+    ):
+        with pytest.warns(
+            RuntimeWarning,
+            match="No routing destinations defined, using origins as destinations, too."
+        ):
+            r5py.TravelTimeMatrixComputer(
+                transport_network,
+                origins=population_grid_points_first_three,
+                departure=departure_datetime,
+            ).compute_travel_times()

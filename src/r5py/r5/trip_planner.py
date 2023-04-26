@@ -94,8 +94,8 @@ class TripPlanner:
 
                 # fmt: off
                 if (
-                    street_router.setOrigin(self.request.fromLat, self.request.fromLon)
-                    and street_router.setDestination(self.request.toLat, self.request.toLon)
+                    street_router.setOrigin(self.request._regional_task.fromLat, self.request._regional_task.fromLon)
+                    and street_router.setDestination(self.request._regional_task.toLat, self.request._regional_task.toLon)
                 ):
                     # fmt: on
                     street_router.route()

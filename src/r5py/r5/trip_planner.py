@@ -67,11 +67,11 @@ class TripPlanner:
         for transport_mode in direct_modes:
             # short-circuit identical from_id and to_id:
             if (
-                self.request.fromLat == self.request.toLat
-                and self.request.fromLon == self.request.toLon
+                self.request._regional_task.fromLat == self.request._regional_task.toLat
+                and self.request._regional_task.fromLon == self.request._regional_task.toLon
             ):
-                lat = self.request.fromLat
-                lon = self.request.fromLon
+                lat = self.request._regional_task.fromLat
+                lon = self.request._regional_task.fromLon
                 direct_paths.append(
                     Trip(
                         [
@@ -121,12 +121,12 @@ class TripPlanner:
                     )
                 else:
                     warnings.warn(
-                        RuntimeWarning,
                         (
                             f"Could not find "
                             f"origin ({self.request.fromLon}, {self.request.fromLat}) "
-                            f"or destination ({self.request.to_lon}, {self.request.toLat})"
-                        )
+                            f"or destination ({self.request.toLon}, {self.request.toLat})"
+                        ),
+                        RuntimeWarning,
                     )
         return direct_paths
 

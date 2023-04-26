@@ -155,10 +155,10 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
         destination = self.destinations[self.destinations.id == to_id]
 
         request = copy.copy(self.request)
-        request.fromLat = origin.geometry.item().y
-        request.fromLon = origin.geometry.item().x
-        request.toLat = destination.geometry.item().y
-        request.toLon = destination.geometry.item().x
+        request._regional_task.fromLat = origin.geometry.item().y
+        request._regional_task.fromLon = origin.geometry.item().x
+        request._regional_task.toLat = destination.geometry.item().y
+        request._regional_task.toLon = destination.geometry.item().x
 
         trip_planner = TripPlanner(self.transport_network, request)
         trips = trip_planner.plan()

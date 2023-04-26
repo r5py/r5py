@@ -67,9 +67,7 @@ class TestTripLeg:
         assert trip.legs == [trip_leg2, trip_leg1]
 
     @pytest.mark.parametrize(
-        [
-            "invalid_other",
-        ],
+        ["invalid_other"],
         [
             (123.0,),
             (1,),

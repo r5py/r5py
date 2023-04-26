@@ -14,12 +14,8 @@ class TestDataValidation:
     def geodataframe_with_all_required_columns(self):
         df = geopandas.GeoDataFrame(
             {
-                "id": [
-                    1,
-                ],
-                "geometry": [
-                    shapely.Point(),
-                ],
+                "id": [1],
+                "geometry": [shapely.Point()],
             },
             crs="EPSG:4326",
         )
@@ -44,12 +40,8 @@ class TestDataValidation:
     def geodataframe_without_crs(self, geodataframe_with_all_required_columns):
         df = geopandas.GeoDataFrame(
             {
-                "id": [
-                    1,
-                ],
-                "geometry": [
-                    shapely.Point(),
-                ],
+                "id": [1],
+                "geometry": [shapely.Point()],
             }
         )
         yield df

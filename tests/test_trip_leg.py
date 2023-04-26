@@ -67,13 +67,15 @@ class TestTripLeg:
         assert trip.legs == [trip_leg2, trip_leg1]
 
     @pytest.mark.parametrize(
-        ["invalid_other",],
+        [
+            "invalid_other",
+        ],
         [
             (123.0,),
             (1,),
             ("asdfasdf",),
             ({},),
-        ]
+        ],
     )
     def test_add_invalid_type(self, invalid_other):
         trip_leg = r5py.r5.trip_leg.TripLeg(

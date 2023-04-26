@@ -68,7 +68,8 @@ class TripPlanner:
             # short-circuit identical from_id and to_id:
             if (
                 self.request._regional_task.fromLat == self.request._regional_task.toLat
-                and self.request._regional_task.fromLon == self.request._regional_task.toLon
+                and self.request._regional_task.fromLon
+                == self.request._regional_task.toLon
             ):
                 lat = self.request._regional_task.fromLat
                 lon = self.request._regional_task.fromLon

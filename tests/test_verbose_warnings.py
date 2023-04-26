@@ -45,7 +45,7 @@ class TestVerboseWarnings:
     ):
         with pytest.warns(
             RuntimeWarning,
-            match="Origins and destinations are of different length, computing an all-to-all matrix"
+            match="Origins and destinations are of different length, computing an all-to-all matrix",
         ):
             print(transport_network)
             r5py.DetailedItinerariesComputer(
@@ -65,7 +65,7 @@ class TestVerboseWarnings:
     ):
         with pytest.warns(
             RuntimeWarning,
-            match="No routing destinations defined, using origins as destinations, too."
+            match="No routing destinations defined, using origins as destinations, too.",
         ):
             r5py.TravelTimeMatrixComputer(
                 transport_network,

@@ -20,17 +20,15 @@ class TestJavaCasting:
             (r5py.TransportMode.SUBWAY, com.conveyal.r5.api.util.TransitModes),
             (r5py.TransportMode.TRAM, com.conveyal.r5.api.util.TransitModes),
             (r5py.TransportMode.TRANSIT, com.conveyal.r5.api.util.TransitModes),
-
             (r5py.TransportMode.BICYCLE, com.conveyal.r5.profile.StreetMode),
             (r5py.TransportMode.CAR, com.conveyal.r5.profile.StreetMode),
             (r5py.TransportMode.WALK, com.conveyal.r5.profile.StreetMode),
-
             (r5py.TransportMode.BICYCLE, com.conveyal.r5.api.util.LegMode),
             (r5py.TransportMode.CAR, com.conveyal.r5.api.util.LegMode),
             (r5py.TransportMode.WALK, com.conveyal.r5.api.util.LegMode),
             (r5py.TransportMode.BICYCLE_RENT, com.conveyal.r5.api.util.LegMode),
             (r5py.TransportMode.CAR_PARK, com.conveyal.r5.api.util.LegMode),
-        ]
+        ],
     )
     def test_transport_modes_cast(self, python_object, java_class):
         # see https://jpype.readthedocs.io/en/latest/quickguide.html#classes-objects
@@ -42,15 +40,13 @@ class TestJavaCasting:
             (r5py.TransportMode.WALK, com.conveyal.r5.api.util.TransitModes),
             (r5py.TransportMode.CAR, com.conveyal.r5.api.util.TransitModes),
             (r5py.TransportMode.BICYCLE_RENT, com.conveyal.r5.api.util.TransitModes),
-
             (r5py.TransportMode.TRAM, com.conveyal.r5.profile.StreetMode),
             (r5py.TransportMode.BUS, com.conveyal.r5.profile.StreetMode),
             (r5py.TransportMode.CAR_PARK, com.conveyal.r5.profile.StreetMode),
-
             (r5py.TransportMode.TRANSIT, com.conveyal.r5.api.util.LegMode),
             (r5py.TransportMode.FUNICULAR, com.conveyal.r5.api.util.LegMode),
             (r5py.TransportMode.GONDOLA, com.conveyal.r5.api.util.LegMode),
-        ]
+        ],
     )
     def test_transport_modes_invalid_cast(self, python_object, java_class):
         # see https://jpype.readthedocs.io/en/latest/quickguide.html#classes-objects

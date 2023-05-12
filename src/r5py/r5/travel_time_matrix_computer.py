@@ -38,6 +38,7 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
             travel time.
         """
         self._prepare_origins_destinations()
+        self.request.destinations = self.destinations
 
         # loop over all origins, modify the request, and compute the times
         # to all destinations.
@@ -122,7 +123,6 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
     def _travel_times_per_origin(self, from_id):
         request = copy.copy(self.request)
         request.origin = self.origins[self.origins.id == from_id].geometry.item()
-        request.destinations = self.destinations
 
         travel_time_computer = com.conveyal.r5.analyst.TravelTimeComputer(
             request, self.transport_network

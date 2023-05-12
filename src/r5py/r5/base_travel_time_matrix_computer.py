@@ -131,7 +131,8 @@ class BaseTravelTimeMatrixComputer:
 
         try:
             self.destinations
-        except AttributeError:
+            assert self.destinations is not None
+        except (AssertionError, AttributeError):
             self.destinations = self.origins.copy()
             if self.verbose:
                 warnings.warn(

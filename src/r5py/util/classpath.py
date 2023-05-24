@@ -26,12 +26,12 @@ config.argparser.add(
     "-r",
     "--r5-classpath",
     help="R5’s class path, can point to r5-all.jar",
-    default="/usr/share/java/r5/r5-all.jar",
+    default="",
 )
 
 
 def find_r5_classpath(arguments):
-    if pathlib.Path(arguments.r5_classpath).exists():
+    if arguments.r5_classpath and pathlib.Path(arguments.r5_classpath).exists():
         # do not test local files’ checksums, as they might be customly compiled
         r5_classpath = arguments.r5_classpath
     else:

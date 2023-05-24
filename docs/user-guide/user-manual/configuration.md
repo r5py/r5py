@@ -30,7 +30,7 @@ the configuration files the leading dash(es) are omitted (see
 --r5-classpath=classpath, -r classpath
               Point to R⁵’s JAR (or build directory) in case you want to use a
               `custom R⁵ installation <advanced-usage.html#using-a-custom-installation-of-r⁵>`_.
-              Default: ``/usr/share/java/r5/r5-all.jar``
+              Default: ``""`` (download latest compatible version of R5)
 
 --verbose, -v
               Show more detailed output.

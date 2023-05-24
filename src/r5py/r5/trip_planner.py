@@ -4,6 +4,8 @@
 """Find detailed routes between two points."""
 
 
+import copy
+import datetime
 import collections
 import warnings
 
@@ -25,6 +27,9 @@ class TripPlanner:
     """
     Find detailed routes between two points.
     """
+
+    MAX_ACCESS_TIME = datetime.timedelta(hours=1)
+    MAX_EGRESS_TIME = MAX_ACCESS_TIME
 
     def __init__(self, transport_network, request):
         """
@@ -132,4 +137,48 @@ class TripPlanner:
         return direct_paths
 
     def _find_transit_paths(self):
+        access_paths = self._find_transit_access_paths()
+        print(
+            access_paths,
+            #[list(v.keys()) for v in access_paths.values()],
+            #[list(v.values()) for v in access_paths.values()]
+        )
         return []
+
+    def _find_transit_access_paths(self):
+        access_paths = {}
+
+        request = copy.copy(self.request)
+        request._regional_task.reverseSearch = False
+
+        street_router = com.conveyal.r5.streets.StreetRouter(
+            self.transport_network.street_layer
+        )
+        street_router.profileRequest = self.request
+
+        for mode in request.access_modes:
+            access_paths[mode] = {}
+
+            street_router.streetMode = mode
+            street_router.transitStopSearch = True
+            street_router.timeLimitSeconds = round(self.MAX_ACCESS_TIME.total_seconds())
+
+            if street_router.setOrigin(
+                self.request._regional_task.fromLat,
+                self.request._regional_task.fromLon,
+            ):
+                street_router.route()
+                #access_paths[mode] = street_router.getReachedStops()
+                reached_stops = street_router.getReachedStops()
+                for stop, seconds in zip(reached_stops.keys(), reached_stops.values()):
+                    access_paths[mode][stop] = datetime.timedelta(seconds=seconds)
+
+            else:
+                warnings.warn(
+                    (
+                        f"Could not find "
+                        f"origin ({self.request.fromLon}, {self.request.fromLat}) "
+                    ),
+                    RuntimeWarning,
+                )
+        return access_paths

@@ -27,7 +27,7 @@ system](configuration.md#configuration-via-config-files), and add the following 
 
 ```{code-block} yaml
 :name: conf-yml-memory
-:caption: r5py.yml
+:caption: ~/.config/r5py.yml
 
 max-memory: 12G
 ```

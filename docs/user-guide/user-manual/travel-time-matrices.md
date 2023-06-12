@@ -61,6 +61,40 @@ Economic Research (IPEA, e.g., {cite:t}`braga_evaluating_2023`,
 :::
 
 
+As briefly visited in [Quickstart](quickstart) and dicussed in detail in [Data
+Requirements](data-requirements), fundamentally, two types of input data are
+required for computing a travel time matrix:
+
+- a transport network, and 
+- a set of origins and destinations
+
+First, create a {class}`TransportNetwork<r5py.TransportNetwork>` and load an
+OpenStreetMap extract of the Helsinki city centre as well as a public transport
+schedule in GTFS format covering the same area:
+
+```{code-cell}
+:tags: ["remove-output"]
+import r5py
+
+transport_network = r5py.TransportNetwork(
+    DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf",
+    [
+        DATA_DIRECTORY / "Helsinki" / "GTFS.zip",
+    ]
+)
+```
+
+Studies that compare accessibility (*potential* mobility) between different
+neighbourhoods tend to use a regular grid of points that covers the study area
+as origins or destinations. Recently, hexagonal grids, such as Uber’s [H3
+indexing system](https://h3geo.org/) have gained popularity, as they assure
+equidistant neighbourhood relationships (all neighbouring grid cells’ centroids
+are at the same distance; in a grid of squares, the diagonal neighbours are
+roughly 41% further than the horizontal and vertical ones).
+
+
+
+
 
 ## Bibliography
 

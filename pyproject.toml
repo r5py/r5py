@@ -42,6 +42,9 @@ license = {text = "GPL-3.0-or-later or MIT"}
 dynamic = ["version"]
 
 [project.optional-dependencies]
+docs = ["contextily", "folium", "GitPython", "h3", "mapclassify", "matplotlib",
+        "myst-nb", "pybtex-apa7-style", "sphinx", "sphinx-book-theme",
+        "sphinx-design", "sphinxcontrib-bibtex", "sphinxcontrib-images"]
 tests = ["pytest", "pytest-asyncio", "pytest-cov", "pytest-lazy-fixture"]
 
 [project.urls]

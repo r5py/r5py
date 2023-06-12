@@ -25,5 +25,6 @@ requests
 # documentation:
 contextily
 folium
+h3
 mapclassify
 matplotlib

@@ -20,7 +20,7 @@ jupytext:
 # it’s used to set sys.path to point to the local repo,
 # and to define a `DATA_DIRECTORY` pathlib.Path
 import pathlib
-import sys 
+import sys
 
 NOTEBOOK_DIRECTORY = pathlib.Path().resolve()
 DOCS_DIRECTORY = NOTEBOOK_DIRECTORY.parent.parent
@@ -35,7 +35,7 @@ sys.path.insert(0, str(R5PY_DIRECTORY))
 A travel time matrix is a tool and data set that allows researchers to study how
 easily people can reach different destination within and beyond cities, and how
 accessibility is influenced by factors such as the quality of public transport
-systems, street networks, and land use patterns. 
+systems, street networks, and land use patterns.
 
 Typically, a travel time matrix is a table that shows the travel time (or other
 travel costs) between all pairs of a set of locations in an urban area. The
@@ -51,8 +51,15 @@ sustainable, and foster a good quality of life for their residents.
 
 Successful recent research that either used or produced travel time matrices
 include the work of the Digital Geography Lab at the University of Helsinki
-(e.g., {cite:t}`tenkanen_longitudinal_2020}`, {cite:t}`salonen_modelling_2013`,
-or {cite:t}`jarv_dynamic_2018`), the TODO: ADD SOME MORE GROUPS AND RESEARCH
+(e.g., {cite:t}`tenkanen_longitudinal_2020`, {cite:t}`salonen_modelling_2013`,
+or {cite:t}`jarv_dynamic_2018`), the Mobility Network at the University of
+Toronto (e.g., {cite:t}`farber_dynamic_pt_2017`,
+{cite:t}`farber_temporal_variablity_2014`), and the Institute for Applied
+Economic Research (IPEA, e.g., {cite:t}`braga_evaluating_2023`,
+{cite:t}`herszenhut_impact_2022`).
+
+TODO: ADD SOME MORE GROUPS AND
+RESEARCH
 HERE!
 :::
 

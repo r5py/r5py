@@ -91,5 +91,5 @@ import r5py  # noqa: F401
 ```
 
 To find available options, consult the *command line argument* column of the
-[table below](#configuration-options).
+[table above](#configuration-options).
 

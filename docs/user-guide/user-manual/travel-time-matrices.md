@@ -31,6 +31,7 @@ sys.path.insert(0, str(R5PY_DIRECTORY))
 
 
 :::{dropdown} What is a travel time matrix?
+:open:
 
 A travel time matrix is a tool and data set that allows researchers to study how
 easily people can reach different destination within and beyond cities, and how
@@ -57,13 +58,11 @@ Toronto (e.g., {cite:t}`farber_dynamic_pt_2017`,
 {cite:t}`farber_temporal_variablity_2014`), and the Institute for Applied
 Economic Research (IPEA, e.g., {cite:t}`braga_evaluating_2023`,
 {cite:t}`herszenhut_impact_2022`).
-
-TODO: ADD SOME MORE GROUPS AND
-RESEARCH
-HERE!
 :::
 
 
+
+## Bibliography
 
 :::{bibliography}
 :filter: docname in docnames

@@ -1,20 +1,21 @@
 ---
-kernelspec:
-  name: python3
-  display_name: python3
 jupytext:
+  formats: md:myst
   text_representation:
     extension: .md
     format_name: myst
-    format_version: '0.13'
-    jupytext_version: 1.14.1
+    format_version: 0.13
+    jupytext_version: 1.14.6
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
 ---
-
 
 # Travel-time matrices
 
-```{code-cell}
-:tags: ["remove-input", "remove-output"]
+```{code-cell} ipython3
+:tags: [remove-input, remove-output]
 
 # this cell is hidden from output
 # it’s used to set sys.path to point to the local repo,
@@ -28,7 +29,6 @@ DATA_DIRECTORY = DOCS_DIRECTORY / "_static" / "data"
 R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
 sys.path.insert(0, str(R5PY_DIRECTORY))
 ```
-
 
 :::{dropdown} What is a travel time matrix?
 :open:
@@ -72,8 +72,9 @@ First, create a {class}`TransportNetwork<r5py.TransportNetwork>` and load an
 OpenStreetMap extract of the Helsinki city centre as well as a public transport
 schedule in GTFS format covering the same area:
 
-```{code-cell}
-:tags: ["remove-output"]
+```{code-cell} ipython3
+:tags: [remove-output]
+
 import r5py
 
 transport_network = r5py.TransportNetwork(
@@ -92,9 +93,22 @@ equidistant neighbourhood relationships (all neighbouring grid cells’ centroid
 are at the same distance; in a grid of squares, the diagonal neighbours are
 roughly 41% further than the horizontal and vertical ones).
 
+```{code-cell} ipython3
+import h3
+import shapely
 
+HELSINKI_CENTRE = shapely.box(24.9318, 60.1550, 24.9535, 60.1751)
+```
 
+```{code-cell} ipython3
+dir(h3)
+```
 
+```{code-cell} ipython3
+dir(HELSINKI_CENTRE)
+list(HELSINKI_CENTRE.exterior.coords)
+h3.Polygon(list(HELSINKI_CENTRE.exterior.coords))
+```
 
 ## Bibliography
 

@@ -141,8 +141,8 @@ class TripPlanner:
         access_paths = self._find_transit_access_paths()
         print(
             access_paths,
-            #[list(v.keys()) for v in access_paths.values()],
-            #[list(v.values()) for v in access_paths.values()]
+            # [list(v.keys()) for v in access_paths.values()],
+            # [list(v.values()) for v in access_paths.values()]
         )
         return []
 
@@ -172,9 +172,8 @@ class TripPlanner:
             ):
                 street_router.route()
                 reached_stops = street_router.getReachedStops()
-                for stop, seconds in zip(reached_stops.keys(), reached_stops.values()):
-                    travel_time = datetime.timedelta(seconds=seconds)
 
+                for stop in reached_stops.keys():
                     router_state = street_router.getStateAtVertex(
                         transit_layer.get_street_vertex_for_stop(stop)
                     )
@@ -185,7 +184,15 @@ class TripPlanner:
                             False,
                         )
                     except java.util.NoSuchElementException:
+                        warnings.warn(
+                            (
+                                f"Failed to look up street path/street segment "
+                                f"to access public transport stop {stop}, skipping."
+                            ),
+                            RuntimeWarning
+                        )
                         continue
+
                     street_segment = com.conveyal.r5.api.util.StreetSegment(
                         street_path,
                         transport_mode,
@@ -193,7 +200,7 @@ class TripPlanner:
                     )
 
                     access_paths[transport_mode][stop] = TransferLeg(
-                        transport_mode, street_segment, travel_time
+                        transport_mode, street_segment
                     )
 
             else:

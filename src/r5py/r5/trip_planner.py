@@ -10,6 +10,7 @@ import collections
 import warnings
 
 from .direct_leg import DirectLeg
+from .transfer_leg import TransferLeg
 from .trip import Trip
 from ..util import start_jvm
 
@@ -156,10 +157,12 @@ class TripPlanner:
         )
         street_router.profileRequest = self.request
 
-        for mode in request.access_modes:
-            access_paths[mode] = {}
+        transit_layer = self.transport_network.transit_layer
 
-            street_router.streetMode = mode
+        for transport_mode in request.access_modes:
+            access_paths[transport_mode] = {}
+
+            street_router.streetMode = transport_mode
             street_router.transitStopSearch = True
             street_router.timeLimitSeconds = round(self.MAX_ACCESS_TIME.total_seconds())
 
@@ -168,10 +171,30 @@ class TripPlanner:
                 self.request._regional_task.fromLon,
             ):
                 street_router.route()
-                #access_paths[mode] = street_router.getReachedStops()
                 reached_stops = street_router.getReachedStops()
                 for stop, seconds in zip(reached_stops.keys(), reached_stops.values()):
-                    access_paths[mode][stop] = datetime.timedelta(seconds=seconds)
+                    travel_time = datetime.timedelta(seconds=seconds)
+
+                    router_state = street_router.getStateAtVertex(
+                        transit_layer.get_street_vertex_for_stop(stop)
+                    )
+                    try:
+                        street_path = com.conveyal.r5.profile.StreetPath(
+                            router_state,
+                            self.transport_network,
+                            False,
+                        )
+                    except java.util.NoSuchElementException:
+                        continue
+                    street_segment = com.conveyal.r5.api.util.StreetSegment(
+                        street_path,
+                        transport_mode,
+                        self.transport_network.street_layer,
+                    )
+
+                    access_paths[transport_mode][stop] = TransferLeg(
+                        transport_mode, street_segment, travel_time
+                    )
 
             else:
                 warnings.warn(

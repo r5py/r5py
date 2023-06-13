@@ -5,8 +5,9 @@
 
 
 import copy
-import datetime
 import collections
+import datetime
+import functools
 import warnings
 
 from .direct_leg import DirectLeg
@@ -46,7 +47,8 @@ class TripPlanner:
         self.transport_network = transport_network
         self.request = request
 
-    def plan(self):
+    @property
+    def trips(self):
         """
         Find detailed routes between two points.
 
@@ -56,14 +58,11 @@ class TripPlanner:
             Detailed routes that meet the requested parameters
         """
         # TODO: catch from_id == to_id cases and short-circuit them
-        trips = []
-        if [mode for mode in self.request.transport_modes if mode.is_street_mode]:
-            trips += self._find_direct_paths()
-        if [mode for mode in self.request.transport_modes if mode.is_transit_mode]:
-            trips += self._find_transit_paths()
+        trips = self.direct_paths + self.transit_paths
         return trips
 
-    def _find_direct_paths(self):
+    @property
+    def direct_paths(self):
         direct_paths = []
 
         direct_modes = [
@@ -137,16 +136,16 @@ class TripPlanner:
                     )
         return direct_paths
 
-    def _find_transit_paths(self):
-        access_paths = self._find_transit_access_paths()
-        print(
-            access_paths,
-            # [list(v.keys()) for v in access_paths.values()],
-            # [list(v.values()) for v in access_paths.values()]
-        )
+    @functools.cached_property
+    def transit_paths(self):
+        print({
+            "ACCESS": self.transit_access_paths,
+            "EGRESS:": self.transit_egress_paths,
+        })
         return []
 
-    def _find_transit_access_paths(self):
+    @functools.cached_property
+    def transit_access_paths(self):
         access_paths = {}
 
         request = copy.copy(self.request)
@@ -212,3 +211,71 @@ class TripPlanner:
                     RuntimeWarning,
                 )
         return access_paths
+
+    @property
+    def transit_egress_paths(self):
+        egress_paths = {}
+
+        request = copy.copy(self.request)
+        request._regional_task.reverseSearch = True
+
+        street_router = com.conveyal.r5.streets.StreetRouter(
+            self.transport_network.street_layer
+        )
+        street_router.profileRequest = self.request
+
+        transit_layer = self.transport_network.transit_layer
+
+        for transport_mode in request.egress_modes:
+            egress_paths[transport_mode] = {}
+
+            street_router.streetMode = transport_mode
+            street_router.transitStopSearch = True
+            street_router.timeLimitSeconds = round(self.MAX_EGRESS_TIME.total_seconds())
+
+            if street_router.setOrigin(
+                self.request._regional_task.toLat,
+                self.request._regional_task.toLon,
+            ):
+                street_router.route()
+                reached_stops = street_router.getReachedStops()
+
+                for stop in reached_stops.keys():
+                    router_state = street_router.getStateAtVertex(
+                        transit_layer.get_street_vertex_for_stop(stop)
+                    )
+                    try:
+                        street_path = com.conveyal.r5.profile.StreetPath(
+                            router_state,
+                            self.transport_network,
+                            False,
+                        )
+                    except java.util.NoSuchElementException:
+                        warnings.warn(
+                            (
+                                f"Failed to look up street path/street segment "
+                                f"to egress public transport stop {stop}, skipping."
+                            ),
+                            RuntimeWarning
+                        )
+                        continue
+
+                    street_segment = com.conveyal.r5.api.util.StreetSegment(
+                        street_path,
+                        transport_mode,
+                        self.transport_network.street_layer,
+                    )
+
+                    egress_paths[transport_mode][stop] = TransferLeg(
+                        transport_mode, street_segment
+                    )
+
+            else:
+                warnings.warn(
+                    (
+                        f"Could not find "
+                        f"origin ({self.request.fromLon}, {self.request.fromLat}) "
+                    ),
+                    RuntimeWarning,
+                )
+        return egress_paths

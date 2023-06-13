@@ -161,7 +161,7 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
         request._regional_task.toLon = destination.geometry.item().x
 
         trip_planner = TripPlanner(self.transport_network, request)
-        trips = trip_planner.plan()
+        trips = trip_planner.trips
 
         # fmt: off
         trips = [

@@ -138,10 +138,12 @@ class TripPlanner:
 
     @functools.cached_property
     def transit_paths(self):
-        print({
-            "ACCESS": self.transit_access_paths,
-            "EGRESS:": self.transit_egress_paths,
-        })
+        print(
+            {
+                "ACCESS": self.transit_access_paths,
+                "EGRESS:": self.transit_egress_paths,
+            }
+        )
         return []
 
     @functools.cached_property
@@ -188,7 +190,7 @@ class TripPlanner:
                                 f"Failed to look up street path/street segment "
                                 f"to access public transport stop {stop}, skipping."
                             ),
-                            RuntimeWarning
+                            RuntimeWarning,
                         )
                         continue
 
@@ -256,7 +258,7 @@ class TripPlanner:
                                 f"Failed to look up street path/street segment "
                                 f"to egress public transport stop {stop}, skipping."
                             ),
-                            RuntimeWarning
+                            RuntimeWarning,
                         )
                         continue
 

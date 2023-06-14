@@ -6,6 +6,7 @@
 
 import functools
 import pathlib
+import random
 import shutil
 import warnings
 
@@ -142,7 +143,7 @@ class TransportNetwork:
     def _cache_directory(self):
         cache_dir = (
             pathlib.Path(Config().TEMP_DIR)
-            / f"{self.__class__.__name__:s}_{id(self):x}"
+            / f"{self.__class__.__name__:s}_{id(self):x}_{random.randrange(16**5):07x}"
         )
         cache_dir.mkdir(exist_ok=True)
         return cache_dir

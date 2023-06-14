@@ -30,10 +30,10 @@ class TestVerboseWarnings:
         regional_task.toLon = -78.5
 
         with pytest.warns(RuntimeWarning, match="Could not find"):
-            r5py.r5.trip_planner.TripPlanner(
+            _ = r5py.r5.trip_planner.TripPlanner(
                 transport_network,
                 regional_task,
-            ).plan()
+            ).trips
 
     def test_detailed_itineraries_warn_diff_length_all_to_all(
         self,
@@ -47,7 +47,6 @@ class TestVerboseWarnings:
             RuntimeWarning,
             match="Origins and destinations are of different length, computing an all-to-all matrix",
         ):
-            print(transport_network)
             r5py.DetailedItinerariesComputer(
                 transport_network=transport_network,
                 origins=population_grid_points_first_three,

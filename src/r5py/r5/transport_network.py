@@ -139,6 +139,12 @@ class TransportNetwork:
         """Exit context."""
         return False
 
+    @property
+    def extent(self):
+        # TODO: figure out how to get the extent of the GTFS schedule,
+        # then find the smaller extent of the two (or the larger one?)
+        return self.street_layer.extent
+
     @functools.cached_property
     def _cache_directory(self):
         cache_dir = (

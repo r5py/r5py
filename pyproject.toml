@@ -25,6 +25,7 @@ dependencies = [
     "numpy",
     "pandas",
     "psutil",
+    "pyproj",
     "requests",
     "shapely>=2.0"
 ]

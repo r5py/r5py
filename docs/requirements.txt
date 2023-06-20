@@ -20,6 +20,7 @@ nbsphinx
 numpy
 numpydoc
 pandas
+pyproj
 psutil
 rasterio>=1.3a3
 shapely

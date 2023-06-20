@@ -130,7 +130,7 @@ class TestDetailedItinerariesComputerInputValidation:
         )
         with pytest.warns(
             RuntimeWarning,
-            match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`"
+            match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`",
         ):
             _ = detailed_itineraries_computer_computer.compute_travel_details()
 
@@ -159,7 +159,7 @@ class TestDetailedItinerariesComputerInputValidation:
         )
         with pytest.warns(
             RuntimeWarning,
-            match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`"
+            match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`",
         ):
             _ = detailed_itineraries_computer.compute_travel_details()
         assert detailed_itineraries_computer.origins.equals(

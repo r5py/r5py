@@ -33,7 +33,6 @@ class GoodEnoughEquidistantCrs(pyproj.CRS):
         """
 
         if GoodEnoughEquidistantCrs._is_plausible_in_epsg4326(extent):
-
             # default CRS in case we do not find any better match
             crs = pyproj.CRS.from_epsg(3857)
 
@@ -47,12 +46,16 @@ class GoodEnoughEquidistantCrs(pyproj.CRS):
                 )
                 for candidate_crs in crsinfo:
                     area_of_use = shapely.box(*candidate_crs.area_of_use.bounds)
-                    coverage = shapely.intersection(extent, area_of_use).area / extent.area
+                    coverage = (
+                        shapely.intersection(extent, area_of_use).area / extent.area
+                    )
 
                     if coverage > 0.5:
                         # more than half of extent covered by crs’ area of use
                         # -> good enough
-                        crs = pyproj.CRS.from_authority(candidate_crs.auth_name, candidate_crs.code)
+                        crs = pyproj.CRS.from_authority(
+                            candidate_crs.auth_name, candidate_crs.code
+                        )
                         break
 
             except (AttributeError, IndexError):

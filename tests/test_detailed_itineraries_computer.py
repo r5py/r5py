@@ -128,7 +128,11 @@ class TestDetailedItinerariesComputerInputValidation:
             destinations=destinations,
             departure=departure_datetime,
         )
-        _ = detailed_itineraries_computer_computer.compute_travel_details()
+        with pytest.warns(
+            RuntimeWarning,
+            match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`"
+        ):
+            _ = detailed_itineraries_computer_computer.compute_travel_details()
 
     def test_try_to_route_without_origins(
         self,
@@ -153,7 +157,11 @@ class TestDetailedItinerariesComputerInputValidation:
             origins=population_grid_points[0:3],
             departure=departure_datetime,
         )
-        _ = detailed_itineraries_computer.compute_travel_details()
+        with pytest.warns(
+            RuntimeWarning,
+            match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`"
+        ):
+            _ = detailed_itineraries_computer.compute_travel_details()
         assert detailed_itineraries_computer.origins.equals(
             detailed_itineraries_computer.destinations
         )

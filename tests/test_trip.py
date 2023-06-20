@@ -48,7 +48,7 @@ class TestTrip:
         trip = trip_leg1 + trip_leg2
 
         assert trip.distance == pytest.approx(111.10)
-        assert trip.geometry.wkt == "MULTILINESTRING ((0 0, 1 1, 2 2), (2 2, 34 34))"
+        assert trip.geometry.wkt == "LINESTRING (0 0, 1 1, 2 2, 34 34)"
         assert trip.routes == ["56A", "54A"]
         assert trip.transport_modes == [
             r5py.TransportMode.TRANSIT,

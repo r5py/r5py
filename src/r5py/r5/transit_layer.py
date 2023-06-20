@@ -88,6 +88,14 @@ class TransitLayer:
         street_vertex = self._transit_layer.streetVertexForStop.get(stop)
         return street_vertex
 
+    @functools.cached_property
+    def routes(self):
+        return list(self._transit_layer.routes)
+
+    @functools.cached_property
+    def trip_patterns(self):
+        return list(self._transit_layer.tripPatterns)
+
 
 @jpype._jcustomizer.JConversion(
     "com.conveyal.r5.transit.TransitLayer", exact=TransitLayer

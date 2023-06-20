@@ -79,6 +79,30 @@ class TripLeg:
                 f"Cannot use operator '+' on '{type(other)}' and '{type(self)}'"
             )
 
+    def __gt__(self, other):
+        if isinstance(other, TripLeg):
+            return (self.travel_time + self.wait_time) > (
+                other.travel_time + other.wait_time
+            )
+
+    def __ge__(self, other):
+        if isinstance(other, TripLeg):
+            return (self.travel_time + self.wait_time) >= (
+                other.travel_time + other.wait_time
+            )
+
+    def __lt__(self, other):
+        if isinstance(other, TripLeg):
+            return (self.travel_time + self.wait_time) < (
+                other.travel_time + other.wait_time
+            )
+
+    def __le__(self, other):
+        if isinstance(other, TripLeg):
+            return (self.travel_time + self.wait_time) <= (
+                other.travel_time + other.wait_time
+            )
+
     def __radd__(self, other):
         from .trip import Trip
 

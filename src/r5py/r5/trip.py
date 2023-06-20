@@ -62,8 +62,10 @@ class Trip:
 
     @property
     def geometry(self):
-        """Joined geometries of all legs of this trip (shapely.MultiLineString)."""
-        return shapely.MultiLineString([leg.geometry for leg in self.legs])
+        """Joined geometries of all legs of this trip (shapely.LineString or shapely.MultiLineString)."""
+        return shapely.line_merge(
+            shapely.MultiLineString([leg.geometry for leg in self.legs])
+        )
 
     @property
     def routes(self):

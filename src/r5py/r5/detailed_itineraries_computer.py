@@ -160,7 +160,8 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
         request._regional_task.toLat = destination.geometry.item().y
         request._regional_task.toLon = destination.geometry.item().x
 
-        trip_planner = TripPlanner(self.transport_network, request)
+        # TODO: remove debug statement
+        self.trip_planner = trip_planner = TripPlanner(self.transport_network, request)
         trips = trip_planner.trips
 
         # fmt: off

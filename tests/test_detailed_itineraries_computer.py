@@ -162,6 +162,12 @@ class TestDetailedItinerariesComputerInputValidation:
             match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`",
         ):
             _ = detailed_itineraries_computer.compute_travel_details()
+        import java.lang
+        try:
+            _ = detailed_itineraries_computer.compute_travel_details()
+        except java.lang.IllegalStateException as exception:
+            print(exception, exception.stacktrace())
+            raise RuntimeError from exception
         assert detailed_itineraries_computer.origins.equals(
             detailed_itineraries_computer.destinations
         )

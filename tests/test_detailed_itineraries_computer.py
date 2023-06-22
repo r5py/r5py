@@ -162,14 +162,9 @@ class TestDetailedItinerariesComputerInputValidation:
             match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`",
         ):
             _ = detailed_itineraries_computer.compute_travel_details()
-        import java.lang
-        try:
-            _ = detailed_itineraries_computer.compute_travel_details()
-        except java.lang.IllegalStateException as exception:
-            print(exception, exception.stacktrace())
-            raise RuntimeError from exception
-        assert detailed_itineraries_computer.origins.equals(
-            detailed_itineraries_computer.destinations
+        pandas.testing.assert_frame_equal(
+            detailed_itineraries_computer.origins,
+            detailed_itineraries_computer.destinations,
         )
 
 
@@ -381,7 +376,7 @@ class TestDetailedItinerariesComputer:
             ["from_id", "to_id"]
         ).sort_index()
 
-        assert travel_details.equals(expected_travel_details)
+        pandas.testing.assert_frame_equal(travel_details, expected_travel_details)
 
     def test_snap_to_network_with_unsnappable_origins(
         self,

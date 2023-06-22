@@ -4,6 +4,7 @@ import filecmp
 import pathlib
 import shutil
 
+import geopandas
 import pytest
 import shapely
 
@@ -140,7 +141,9 @@ class Test_TransportNetwork:
         snapped_population_grid_points,
     ):
         snapped = transport_network.snap_to_network(population_grid_points.geometry)
-        assert snapped.geometry.equals(snapped_population_grid_points.geometry)
+        geopandas.testing.assert_geoseries_equal(
+            snapped.geometry, snapped_population_grid_points.geometry
+        )
 
     def test_snap_to_network_with_unsnappable_points(
         self,

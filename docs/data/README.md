@@ -14,9 +14,6 @@ The data was created by Helsinki Region Transport (HLS) and obtained from
 
 This GTFS data set is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-To reduce the size of the sample dataset, it was cropped to cover only parts of the City of Helsinki,
-and a limited time frame only.
-
 
 ### `kantakaupunki.osm.pbf`
 

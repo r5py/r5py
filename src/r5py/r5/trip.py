@@ -58,7 +58,11 @@ class Trip:
     @property
     def distance(self):
         """Overall distance of this trip in metres (float)."""
-        return sum([leg.distance for leg in self.legs])
+        try:
+            distance = sum([leg.distance for leg in self.legs])
+        except TypeError:  # distance of a leg can be None
+            distance = None
+        return distance
 
     @property
     def geometry(self):

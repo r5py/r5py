@@ -75,9 +75,20 @@ class TripLeg:
             other.legs = [self] + other.legs
             return other
         else:
-            raise ValueError(
-                f"Cannot use operator '+' on '{type(other)}' and '{type(self)}'"
+            raise TypeError(
+                f"unsupported operand type(s) for '+': '{type(other)}' and '{type(self)}'"
             )
+
+    def __radd__(self, other):
+        from .trip import Trip
+
+        if other == 0:  # first iteration of sum()
+            return self
+        elif isinstance(other, Trip):
+            other.legs.append(self)
+            return other
+        else:
+            return self.__add__(other)
 
     def __gt__(self, other):
         if isinstance(other, TripLeg):
@@ -102,17 +113,6 @@ class TripLeg:
             return (self.travel_time + self.wait_time) <= (
                 other.travel_time + other.wait_time
             )
-
-    def __radd__(self, other):
-        from .trip import Trip
-
-        if other == 0:  # first iteration of sum()
-            return self
-        elif isinstance(other, Trip):
-            other.legs.append(self)
-            return other
-        else:
-            return self.__add__(other)
 
     def __repr__(self):
         first_point = self.geometry.coords[0]

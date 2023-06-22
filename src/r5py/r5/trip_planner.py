@@ -218,12 +218,8 @@ class TripPlanner:
             }
 
             for departure_time, state in final_states.items():
-                print("NEW TRIP")
                 trip = Trip()
                 while state:
-                    print(
-                        f"state.stop: {state.stop}, state.back: {state.back}, state.pattern: {state.pattern}"
-                    )
                     if state.stop == -1:  # egress
                         leg = min(
                             [
@@ -318,23 +314,13 @@ class TripPlanner:
                             )
 
                     # we traverse in reverse order:
-                    # add leg to beginning of trip
-                    print(leg)
+                    # add leg to beginning of trip,
+                    # then fetch previous state (=leg)
                     trip = leg + trip
-                    print(trip)
-
                     state = state.back
 
                 transit_paths.append(trip)
 
-            # self.debug_value = {}
-
-        # print(
-        #     {
-        #         # "ACCESS": self.transit_access_paths,
-        #         # "EGRESS:": self.transit_egress_paths,
-        #     }
-        # )
         return transit_paths
 
     @functools.cached_property

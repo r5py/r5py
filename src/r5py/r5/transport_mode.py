@@ -67,6 +67,24 @@ class TransportMode(enum.Enum):
                 return member
         return None
 
+    def __add__(self, other):
+        if isinstance(other, self.__class__):
+            return [self, other]
+        elif isinstance(other, list):
+            return [self] + other
+        else:
+            raise TypeError(
+                f"unsupported operand type(s) for '+': '{type(other)}' and '{type(self)}'"
+            )
+
+    def __radd__(self, other):
+        if other == 0:  # first iteration of sum()
+            return self
+        elif isinstance(other, list):
+            return other + [self]
+        else:
+            return self.__add__(other)
+
     @property
     def is_leg_mode(self):
         """Can this TransportMode function as a LegMode?"""

@@ -14,7 +14,9 @@ import jpype
 import pyproj
 import shapely
 
+from .access_leg import AccessLeg
 from .direct_leg import DirectLeg
+from .egress_leg import EgressLeg
 from .transfer_leg import TransferLeg
 from .transit_leg import TransitLeg
 from .transport_mode import TransportMode
@@ -229,7 +231,7 @@ class TripPlanner:
                                 for transport_mode in self.transit_egress_paths.keys()
                             ]
                         )
-                    elif state.pattern == -1 or state.back is None:  # access
+                    elif state.back is None:
                         leg = min(
                             [
                                 self.transit_access_paths[transport_mode][state.stop]
@@ -377,7 +379,7 @@ class TripPlanner:
                         self.transport_network.street_layer,
                     )
 
-                    access_paths[transport_mode][stop] = TransferLeg(
+                    access_paths[transport_mode][stop] = AccessLeg(
                         transport_mode, street_segment
                     )
 
@@ -411,7 +413,7 @@ class TripPlanner:
         )
         return access_times
 
-    @property
+    @functools.cached_property
     def transit_egress_paths(self):
         egress_paths = {}
 
@@ -465,7 +467,7 @@ class TripPlanner:
                         self.transport_network.street_layer,
                     )
 
-                    egress_paths[transport_mode][stop] = TransferLeg(
+                    egress_paths[transport_mode][stop] = EgressLeg(
                         transport_mode, street_segment
                     )
 

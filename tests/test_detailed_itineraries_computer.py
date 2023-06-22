@@ -505,10 +505,10 @@ class TestDetailedItinerariesComputer:
                 r5py.TransportMode.CAR,
                 pytest.lazy_fixture("detailed_itineraries_car"),
             ),
-            # (
-            #     r5py.TransportMode.TRANSIT,
-            #     pytest.lazy_fixture("detailed_itineraries_transit"),
-            # ),
+            (
+                r5py.TransportMode.TRANSIT,
+                pytest.lazy_fixture("detailed_itineraries_transit"),
+            ),
             (
                 r5py.TransportMode.WALK,
                 pytest.lazy_fixture("detailed_itineraries_walk"),
@@ -531,10 +531,20 @@ class TestDetailedItinerariesComputer:
             departure=departure_datetime,
             transport_modes=[transport_mode],
         )
-        travel_details = detailed_itineraries_computer.compute_travel_details()
+        if transport_mode == r5py.TransportMode.TRANSIT:
+            with pytest.warns(
+                RuntimeWarning,
+                match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`",
+            ):
+                travel_details = detailed_itineraries_computer.compute_travel_details()
+        else:
+            travel_details = detailed_itineraries_computer.compute_travel_details()
 
         travel_details.travel_time = travel_details.travel_time.apply(
             lambda t: t.total_seconds()
+        )
+        travel_details.wait_time = travel_details.wait_time.apply(
+            lambda t: None if t is None else t.total_seconds()
         )
         travel_details.transport_mode = travel_details.transport_mode.apply(
             lambda t: t.value
@@ -543,6 +553,8 @@ class TestDetailedItinerariesComputer:
         travel_details.replace(to_replace=[None], value=numpy.nan, inplace=True)
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
+
+        travel_details.to_file(f"/tmp/test_detailed_itineraries_{transport_mode.value}.gpkg")
 
         geopandas.testing.assert_geodataframe_equal(
             travel_details,

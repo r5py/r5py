@@ -380,8 +380,6 @@ class TestTravelTimeMatrixComputer:
         )
         travel_times = travel_time_matrix_computer.compute_travel_times()
 
-        travel_times.to_csv("/tmp/x.csv", index=False)
-
         travel_times = travel_times.set_index(["from_id", "to_id"]).sort_index()
         expected_travel_times = expected_travel_times.set_index(
             ["from_id", "to_id"]

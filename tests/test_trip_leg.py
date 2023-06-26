@@ -85,10 +85,10 @@ class TestTripLeg:
             "54A",
             shapely.LineString([[2, 2], [34, 34]]),
         )
-        with pytest.raises(ValueError, match="Cannot use operator"):
+        with pytest.raises(TypeError, match="unsupported operator"):
             _ = trip_leg + invalid_other
 
-        with pytest.raises(ValueError, match="Cannot use operator"):
+        with pytest.raises(TypeError, match="unsupported operator"):
             _ = invalid_other + trip_leg
 
     def test_as_table_row(self):

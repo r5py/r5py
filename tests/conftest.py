@@ -75,7 +75,7 @@ DETAILED_ITINERARIES_WALK = (
 
 
 @pytest.fixture
-def data_columns_with_breakdown(scope="session"):
+def data_columns_with_breakdown():
     yield [
         "from_id",
         "to_id",
@@ -98,22 +98,22 @@ def departure_datetime():
     yield datetime.datetime(2022, 2, 22, 8, 30)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def detailed_itineraries_bicycle():
     yield geopandas.read_file(DETAILED_ITINERARIES_BICYCLE)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def detailed_itineraries_car():
     yield geopandas.read_file(DETAILED_ITINERARIES_CAR)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def detailed_itineraries_transit():
     yield geopandas.read_file(DETAILED_ITINERARIES_TRANSIT)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def detailed_itineraries_walk():
     yield geopandas.read_file(DETAILED_ITINERARIES_WALK)
 
@@ -133,35 +133,35 @@ def gtfs_timezone_helsinki():
     yield "Europe/Helsinki"
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def origins_invalid_no_id():
     origins = geopandas.read_file(ORIGINS_INVALID_NO_ID)
     yield origins
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def origins_invalid_duplicate_ids():
     origins = geopandas.read_file(ORIGINS_INVALID_DUPLICATE_IDS)
     yield origins
 
 
 @pytest.fixture
-def origin_point(scope="session"):
+def origin_point():
     yield geopandas.read_file(SINGLE_VALID_ORIGIN)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def origins_valid_ids():
     origins = geopandas.read_file(ORIGINS_VALID_IDS)
     yield origins
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def population_grid():
     yield geopandas.read_file(POPULATION_GRID)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def population_grid_points(population_grid):
     population_grid_points = population_grid.copy()
     population_grid_points.geometry = population_grid_points.geometry.to_crs(
@@ -185,34 +185,34 @@ def population_grid_points_four(population_grid_points):
     yield population_grid_points[10:14]
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def r5_jar_cached():
     from r5py.util.config import Config
 
     yield str(Config().CACHE_DIR / pathlib.Path(R5_JAR_URL).name)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def r5_jar_cached_invalid():
     yield "/definitely/invalid/path/to/r5.jar"
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def r5_jar_sha256():
     yield R5_JAR_SHA256
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def r5_jar_sha256_invalid():
     yield R5_JAR_SHA256_INVALID
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def r5_jar_sha256_github_error_message_when_posting():
     yield R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def r5_jar_url():
     yield R5_JAR_URL
 
@@ -231,29 +231,29 @@ def regional_task(population_grid_points, departure_datetime):
     yield regional_task
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def snapped_population_grid_points():
     yield geopandas.read_file(SNAPPED_POPULATION_GRID_POINTS)
 
 
 @pytest.fixture
-def transport_network_files_tuple(scope="session"):
+def transport_network_files_tuple():
     yield OSM_PBF, [GTFS]
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def transport_network(transport_network_from_test_files):
     yield transport_network_from_test_files
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def transport_network_from_test_directory():
     import r5py
 
     yield r5py.TransportNetwork.from_directory(DATA_DIRECTORY / "Helsinki")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def transport_network_from_test_files():
     import r5py
 
@@ -261,7 +261,7 @@ def transport_network_from_test_files():
     yield transport_network
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def transport_network_from_test_files_without_gtfs():
     import r5py
 
@@ -269,7 +269,7 @@ def transport_network_from_test_files_without_gtfs():
     yield transport_network
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def unsnappable_points():
     yield geopandas.GeoDataFrame(
         {
@@ -283,21 +283,21 @@ def unsnappable_points():
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def walking_details_snapped():
     yield pandas.read_csv(WALKING_DETAILS_SNAPPED)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def walking_details_not_snapped():
     yield pandas.read_csv(WALKING_DETAILS_NOT_SNAPPED)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def walking_times_snapped():
     yield pandas.read_csv(WALKING_TIMES_SNAPPED)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def walking_times_not_snapped():
     yield pandas.read_csv(WALKING_TIMES_NOT_SNAPPED)

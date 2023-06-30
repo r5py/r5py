@@ -206,7 +206,7 @@ class TripPlanner:
                                 travel_time=ZERO_SECONDS,
                                 wait_time=ZERO_SECONDS,
                                 route=None,
-                                geometry=shapely.LineString(((lon, lat), (lon, lat)))
+                                geometry=shapely.LineString(((lon, lat), (lon, lat))),
                             )
                         ]
                     )
@@ -262,22 +262,20 @@ class TripPlanner:
                                 + datetime.timedelta(seconds=state.back.time)
                                 + ONE_MINUTE
                             )
-                            leg.arrival_time = (
-                                leg.departure_time
-                                + leg.travel_time
-                            )
+                            leg.arrival_time = leg.departure_time + leg.travel_time
 
                         elif state.back is None:  # AccessLeg
                             leg = min(
                                 [
-                                    self.transit_access_paths[transport_mode][state.stop]
+                                    self.transit_access_paths[transport_mode][
+                                        state.stop
+                                    ]
                                     for transport_mode in self.transit_access_paths.keys()
                                 ]
                             )
                             leg.wait_time = ZERO_SECONDS
-                            leg.arrival_time = (
-                                midnight
-                                + datetime.timedelta(seconds=state.time)
+                            leg.arrival_time = midnight + datetime.timedelta(
+                                seconds=state.time
                             )
                             leg.departure_time = leg.arrival_time - leg.travel_time
 
@@ -313,9 +311,8 @@ class TripPlanner:
                                         route.route_type
                                     ).toString()
                                 )
-                                departure_time = (
-                                    midnight
-                                    + datetime.timedelta(seconds=state.boardTime)
+                                departure_time = midnight + datetime.timedelta(
+                                    seconds=state.boardTime
                                 )
                                 travel_time = datetime.timedelta(
                                     seconds=(state.time - state.boardTime)

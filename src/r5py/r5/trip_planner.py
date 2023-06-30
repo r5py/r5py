@@ -36,8 +36,11 @@ start_jvm()
 
 
 ACCURATE_GEOMETRIES = com.conveyal.r5.transit.TransitLayer.SAVE_SHAPES
-COORDINATE_CORRECTION = com.conveyal.r5.streets.VertexStore.FIXED_FACTOR
+COORDINATE_CORRECTION_FACTOR = com.conveyal.r5.streets.VertexStore.FIXED_FACTOR
 R5_CRS = "EPSG:4326"
+
+ONE_MINUTE = datetime.timedelta(minutes=1)
+ZERO_SECONDS = datetime.timedelta(seconds=0)
 
 
 class TripPlanner:
@@ -61,6 +64,11 @@ class TripPlanner:
         """
         self.transport_network = transport_network
         self.request = request
+
+        EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(self.transport_network.extent)
+        self._crs_transformer_function = pyproj.Transformer.from_crs(
+            R5_CRS, EQUIDISTANT_CRS
+        ).transform
 
     @property
     def trips(self):
@@ -168,11 +176,6 @@ class TripPlanner:
             suboptimal_minutes = max(self.request._regional_task.suboptimalMinutes, 0)
             transit_layer = self.transport_network.transit_layer
 
-            EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(self.transport_network.extent)
-            crs_transformer_function = pyproj.Transformer.from_crs(
-                R5_CRS, EQUIDISTANT_CRS
-            ).transform
-
             if not ACCURATE_GEOMETRIES:
                 warnings.warn(
                     (
@@ -187,141 +190,189 @@ class TripPlanner:
                     RuntimeWarning,
                 )
 
-            # McRapterSuboptimalPathProfileRouter needs this simple callback,
-            # this could, of course, be a lambda function, but this way it’s
-            # cleaner
-            def list_supplier_callback(departure_time):
-                return com.conveyal.r5.profile.SuboptimalDominatingList(
-                    suboptimal_minutes
+            if (
+                request._regional_task.fromLat == request._regional_task.toLat
+                and request._regional_task.fromLon == request._regional_task.toLon
+            ):
+                lat = request._regional_task.fromLat
+                lon = request._regional_task.fromLon
+                transit_paths.append(
+                    Trip(
+                        [
+                            TransitLeg(
+                                transport_mode=TransportMode.TRANSIT,
+                                departure_time=None,
+                                distance=0.0,
+                                travel_time=ZERO_SECONDS,
+                                wait_time=ZERO_SECONDS,
+                                route=None,
+                                geometry=shapely.LineString(((lon, lat), (lon, lat)))
+                            )
+                        ]
+                    )
                 )
+            else:
+                # McRapterSuboptimalPathProfileRouter needs this simple callback,
+                # this could, of course, be a lambda function, but this way it’s
+                # cleaner
+                def list_supplier_callback(departure_time):
+                    return com.conveyal.r5.profile.SuboptimalDominatingList(
+                        suboptimal_minutes
+                    )
 
-            transit_router = (
-                com.conveyal.r5.profile.McRaptorSuboptimalPathProfileRouter(
-                    self.transport_network,
-                    request,
-                    self.transit_access_times,
-                    self.transit_egress_times,
-                    list_supplier_callback,
-                    None,
-                    True,
+                transit_router = (
+                    com.conveyal.r5.profile.McRaptorSuboptimalPathProfileRouter(
+                        self.transport_network,
+                        request,
+                        self.transit_access_times,
+                        self.transit_egress_times,
+                        list_supplier_callback,
+                        None,
+                        True,
+                    )
                 )
-            )
-            transit_router.route()
+                transit_router.route()
 
-            # `finalStatesByDepartureTime` is a hashmap of lists of router
-            # states, indexed by departure times (in seconds since midnight)
-            final_states = {
-                (midnight + datetime.timedelta(seconds=departure_time)): state
-                for departure_time, states in zip(
-                    transit_router.finalStatesByDepartureTime.keys(),
-                    transit_router.finalStatesByDepartureTime.values(),
-                )
-                for state in list(states)  # some departure times yield no results
-            }
+                # `finalStatesByDepartureTime` is a hashmap of lists of router
+                # states, indexed by departure times (in seconds since midnight)
+                final_states = {
+                    (midnight + datetime.timedelta(seconds=departure_time)): state
+                    for departure_time, states in zip(
+                        transit_router.finalStatesByDepartureTime.keys(),
+                        transit_router.finalStatesByDepartureTime.values(),
+                    )
+                    for state in list(states)  # some departure times yield no results
+                }
 
-            for departure_time, state in final_states.items():
-                trip = Trip()
-                while state:
-                    if state.stop == -1:  # egress
-                        leg = min(
-                            [
-                                self.transit_egress_paths[transport_mode][
-                                    state.back.stop
-                                ]
-                                for transport_mode in self.transit_egress_paths.keys()
-                            ]
-                        )
-                    elif state.back is None:
-                        leg = min(
-                            [
-                                self.transit_access_paths[transport_mode][state.stop]
-                                for transport_mode in self.transit_access_paths.keys()
-                            ]
-                        )
-                    else:
-                        if state.pattern == -1:  # TransferLeg
-                            departure_time = midnight + datetime.timedelta(
-                                seconds=state.back.time
-                            )
-                            arrival_time = midnight + datetime.timedelta(
-                                seconds=state.time
-                            )
-                            travel_time = arrival_time - departure_time
-
-                            departure_stop = state.back.stop
-                            arrival_stop = state.stop
-
-                            leg = self.transit_transfer_path(
-                                departure_stop, arrival_stop
-                            )
-
-                        else:  # TransitLeg
-                            pattern = transit_layer.trip_patterns[state.pattern]
-                            route = transit_layer.routes[pattern.routeIndex]
-                            # departure_stop = pattern.stops[state.boardStopPosition]
-                            # arrival_stop = pattern.stops[state.alightStopPosition]
-                            transport_mode = TransportMode(
-                                com.conveyal.r5.transit.TransitLayer.getTransitModes(
-                                    route.route_type
-                                ).toString()
-                            )
-                            departure_time = midnight + datetime.timedelta(
-                                seconds=state.boardTime
-                            )
-                            travel_time = datetime.timedelta(
-                                seconds=(state.time - state.boardTime)
-                            )
-                            wait_time = datetime.timedelta(
-                                seconds=(state.boardTime - state.back.time)
-                            )
-
-                            # geometry
-                            # hops == LineStrings between stops of a route
-                            hops = list(pattern.getHopGeometries(transit_layer))
-                            # select only the ones between our stops, and merge
-                            # them into one LineString
-                            hops = hops[
-                                state.boardStopPosition : state.alightStopPosition
-                            ]
-                            geometry = shapely.line_merge(
-                                shapely.MultiLineString(
-                                    [
-                                        shapely.from_wkt(str(geometry.toText()))
-                                        for geometry in hops
+                for departure_time, state in final_states.items():
+                    trip = Trip()
+                    while state:
+                        if state.stop == -1:  # EgressLeg
+                            leg = min(
+                                [
+                                    self.transit_egress_paths[transport_mode][
+                                        state.back.stop
                                     ]
+                                    for transport_mode in self.transit_egress_paths.keys()
+                                ]
+                            )
+                            leg.wait_time = ZERO_SECONDS
+                            leg.departure_time = (
+                                midnight
+                                + datetime.timedelta(seconds=state.back.time)
+                                + ONE_MINUTE
+                            )
+                            leg.arrival_time = (
+                                leg.departure_time
+                                + leg.travel_time
+                            )
+
+                        elif state.back is None:  # AccessLeg
+                            leg = min(
+                                [
+                                    self.transit_access_paths[transport_mode][state.stop]
+                                    for transport_mode in self.transit_access_paths.keys()
+                                ]
+                            )
+                            leg.wait_time = ZERO_SECONDS
+                            leg.arrival_time = (
+                                midnight
+                                + datetime.timedelta(seconds=state.time)
+                            )
+                            leg.departure_time = leg.arrival_time - leg.travel_time
+
+                        else:
+                            if state.pattern == -1:  # TransferLeg
+                                departure_stop = state.back.stop
+                                arrival_stop = state.stop
+
+                                leg = self.transit_transfer_path(
+                                    departure_stop, arrival_stop
                                 )
-                            )
 
-                            # distance: based on the geometry, which might be
-                            # inaccurate. Do not compute vastly off distance
-                            # values - the user can still do that themselves
-                            # from the inaccurate geometries, then they at least
-                            # know what they committed to.
-                            if ACCURATE_GEOMETRIES:
-                                distance = shapely.ops.transform(
-                                    crs_transformer_function,
+                                leg.departure_time = (
+                                    midnight
+                                    + datetime.timedelta(seconds=state.back.time)
+                                    + ONE_MINUTE
+                                )
+                                leg.arrival_time = leg.departure_time + leg.travel_time
+                                leg.wait_time = (
+                                    datetime.timedelta(
+                                        seconds=(state.time - state.back.time)
+                                    )
+                                    - leg.travel_time
+                                )
+
+                            else:  # TransitLeg
+                                pattern = transit_layer.trip_patterns[state.pattern]
+                                route = transit_layer.routes[pattern.routeIndex]
+                                # departure_stop = pattern.stops[state.boardStopPosition]
+                                # arrival_stop = pattern.stops[state.alightStopPosition]
+                                transport_mode = TransportMode(
+                                    com.conveyal.r5.transit.TransitLayer.getTransitModes(
+                                        route.route_type
+                                    ).toString()
+                                )
+                                departure_time = (
+                                    midnight
+                                    + datetime.timedelta(seconds=state.boardTime)
+                                )
+                                travel_time = datetime.timedelta(
+                                    seconds=(state.time - state.boardTime)
+                                )
+                                wait_time = datetime.timedelta(
+                                    seconds=(state.boardTime - state.back.time)
+                                )
+
+                                # geometry
+                                # hops == LineStrings between stops of a route
+                                hops = list(pattern.getHopGeometries(transit_layer))
+                                # select only the ones between our stops, and merge
+                                # them into one LineString
+                                hops = hops[
+                                    state.boardStopPosition : state.alightStopPosition
+                                ]
+                                geometry = shapely.line_merge(
+                                    shapely.MultiLineString(
+                                        [
+                                            shapely.from_wkt(str(geometry.toText()))
+                                            for geometry in hops
+                                        ]
+                                    )
+                                )
+
+                                # distance: based on the geometry, which might
+                                # be inaccurate.
+                                # We do not compute potentially vastly off
+                                # distance values - the user can still do that
+                                # themselves from the inaccurate geometries,
+                                # then they at least know what they committed
+                                # to.
+                                if ACCURATE_GEOMETRIES:
+                                    distance = shapely.ops.transform(
+                                        self._crs_transformer_function,
+                                        geometry,
+                                    ).length
+                                else:
+                                    distance = None
+
+                                leg = TransitLeg(
+                                    transport_mode,
+                                    departure_time,
+                                    distance,
+                                    travel_time,
+                                    wait_time,
+                                    str(route.route_short_name),
                                     geometry,
-                                ).length
-                            else:
-                                distance = None
+                                )
 
-                            leg = TransitLeg(
-                                transport_mode,
-                                departure_time,
-                                distance,
-                                travel_time,
-                                wait_time,
-                                str(route.route_short_name),
-                                geometry,
-                            )
+                        # we traverse in reverse order:
+                        # add leg to beginning of trip,
+                        # then fetch previous state (=leg)
+                        trip = leg + trip
+                        state = state.back
 
-                    # we traverse in reverse order:
-                    # add leg to beginning of trip,
-                    # then fetch previous state (=leg)
-                    trip = leg + trip
-                    state = state.back
-
-                transit_paths.append(trip)
+                    transit_paths.append(trip)
 
         return transit_paths
 
@@ -521,10 +572,10 @@ class TripPlanner:
                 from_stop_coordinates = get_coordinates_for_stop(from_stop)
                 to_stop_coordinates = get_coordinates_for_stop(to_stop)
 
-                from_lat = from_stop_coordinates.getY() / COORDINATE_CORRECTION
-                from_lon = from_stop_coordinates.getX() / COORDINATE_CORRECTION
-                to_lat = to_stop_coordinates.getY() / COORDINATE_CORRECTION
-                to_lon = to_stop_coordinates.getX() / COORDINATE_CORRECTION
+                from_lat = from_stop_coordinates.getY() / COORDINATE_CORRECTION_FACTOR
+                from_lon = from_stop_coordinates.getX() / COORDINATE_CORRECTION_FACTOR
+                to_lat = to_stop_coordinates.getY() / COORDINATE_CORRECTION_FACTOR
+                to_lon = to_stop_coordinates.getX() / COORDINATE_CORRECTION_FACTOR
 
                 if street_router.setOrigin(
                     from_lat, from_lon

@@ -554,6 +554,8 @@ class TestDetailedItinerariesComputer:
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
 
+        travel_details.to_file(f"/tmp/test_detailed_itineraries_{str(transport_mode).lower()}.gpkg")
+
         geopandas.testing.assert_geodataframe_equal(
             travel_details,
             expected_travel_details,

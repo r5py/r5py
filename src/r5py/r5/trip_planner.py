@@ -26,7 +26,6 @@ from ..util.exceptions import R5pyError
 
 import com.conveyal.r5
 import gnu.trove.map
-import java.util
 
 
 __all__ = ["TripPlanner"]
@@ -80,7 +79,6 @@ class TripPlanner:
         list[r5py.r5.Trip]
             Detailed routes that meet the requested parameters
         """
-        # TODO: catch from_id == to_id cases and short-circuit them
         trips = self.direct_paths + self.transit_paths
         return trips
 
@@ -127,20 +125,10 @@ class TripPlanner:
                     # fmt: on
                     street_router.route()
                     router_state = street_router.getState(street_router.getDestinationSplit())
-                    try:
-                        street_path = com.conveyal.r5.profile.StreetPath(
-                            router_state,
-                            self.transport_network,
-                            False,
-                        )
-                    except java.util.NoSuchElementException:
-                        continue
-                    street_segment = com.conveyal.r5.api.util.StreetSegment(
-                        street_path,
+                    street_segment = self._street_segment_from_router_state(
+                        router_state,
                         transport_mode,
-                        self.transport_network.street_layer,
                     )
-
                     direct_paths.append(
                         Trip([
                             DirectLeg(transport_mode, street_segment),
@@ -161,6 +149,20 @@ class TripPlanner:
     def _hashmap_to_dict(hashmap):
         """Convert a `java.util.hash.HashMap` into a Python dictionary."""
         return {key: value for key, value in zip(hashmap.keys(), hashmap.values())}
+
+    def _street_segment_from_router_state(self, router_state, transport_mode):
+        """Retrieve a com.conveyal.r5.street.StreetSegment for a route."""
+        street_path = com.conveyal.r5.profile.StreetPath(
+            router_state,
+            self.transport_network,
+            False,
+        )
+        street_segment = com.conveyal.r5.api.util.StreetSegment(
+            street_path,
+            transport_mode,
+            self.transport_network.street_layer,
+        )
+        return street_segment
 
     @functools.cached_property
     def transit_paths(self):
@@ -406,28 +408,10 @@ class TripPlanner:
                     router_state = street_router.getStateAtVertex(
                         transit_layer.get_street_vertex_for_stop(stop)
                     )
-                    try:
-                        street_path = com.conveyal.r5.profile.StreetPath(
-                            router_state,
-                            self.transport_network,
-                            False,
-                        )
-                    except java.util.NoSuchElementException:
-                        warnings.warn(
-                            (
-                                f"Failed to look up street path/street segment "
-                                f"to access public transport stop {stop}, skipping."
-                            ),
-                            RuntimeWarning,
-                        )
-                        continue
-
-                    street_segment = com.conveyal.r5.api.util.StreetSegment(
-                        street_path,
+                    street_segment = self._street_segment_from_router_state(
+                        router_state,
                         transport_mode,
-                        self.transport_network.street_layer,
                     )
-
                     access_paths[transport_mode][stop] = AccessLeg(
                         transport_mode, street_segment
                     )
@@ -494,28 +478,10 @@ class TripPlanner:
                     router_state = street_router.getStateAtVertex(
                         transit_layer.get_street_vertex_for_stop(stop)
                     )
-                    try:
-                        street_path = com.conveyal.r5.profile.StreetPath(
-                            router_state,
-                            self.transport_network,
-                            False,
-                        )
-                    except java.util.NoSuchElementException:
-                        warnings.warn(
-                            (
-                                f"Failed to look up street path/street segment "
-                                f"to egress public transport stop {stop}, skipping."
-                            ),
-                            RuntimeWarning,
-                        )
-                        continue
-
-                    street_segment = com.conveyal.r5.api.util.StreetSegment(
-                        street_path,
+                    street_segment = self._street_segment_from_router_state(
+                        router_state,
                         transport_mode,
-                        self.transport_network.street_layer,
                     )
-
                     egress_paths[transport_mode][stop] = EgressLeg(
                         transport_mode, street_segment
                     )
@@ -582,15 +548,9 @@ class TripPlanner:
                     router_state = street_router.getState(
                         street_router.getDestinationSplit()
                     )
-                    street_path = com.conveyal.r5.profile.StreetPath(
+                    street_segment = self._street_segment_from_router_state(
                         router_state,
-                        self.transport_network,
-                        False,
-                    )
-                    street_segment = com.conveyal.r5.api.util.StreetSegment(
-                        street_path,
                         TransportMode.WALK,
-                        self.transport_network.street_layer,
                     )
 
                     transfer_path = self._transfer_paths[

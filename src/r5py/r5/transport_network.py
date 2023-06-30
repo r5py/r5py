@@ -61,6 +61,8 @@ class TransportNetwork:
         osm_file.intersectionDetection = True
         osm_file.readFromFile(f"{osm_pbf}")
 
+        self.osm_file = osm_file  # keep the mapdb open, close in destructor
+
         transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
         transport_network.streetLayer.loadFromOsm(osm_file)
         transport_network.streetLayer.parentNetwork = transport_network
@@ -90,9 +92,12 @@ class TransportNetwork:
         """
         Delete all temporary files upon destruction.
         """
-        MAX_TRIES = 99
+        MAX_TRIES = 10
 
-        # first, delete Java objects, and trigger Java garbage collection
+        # first, close the open osm_file,
+        # delete Java objects, and
+        # trigger Java garbage collection
+        self.osm_file.close()
         try:
             del self.street_layer
         except AttributeError:  # might not have been accessed a single time

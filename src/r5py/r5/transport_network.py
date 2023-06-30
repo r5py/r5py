@@ -103,20 +103,31 @@ class TransportNetwork:
             pass
         del self._transport_network
 
-        time.sleep(0.5)  # half a second is long, but let’s err on the safe side
-
+        time.sleep(0.5)
         jpype.java.lang.System.gc()
 
         # then, try to delete all files in cache directory
+        temporary_files = [child for child in self._cache_directory.iterdir()]
         for _ in range(MAX_TRIES):
-            for temporary_file in self._cache_directory.iterdir():
-                try:
-                    temporary_file.unlink()
-                except (FileNotFoundError, IOError, OSError):
-                    time.sleep(0.5)
-                    if (_ + 1) == MAX_TRIES:
-                        print(f"could not clean {self._cache_directory}")
-                    pass
+            try:
+                while temporary_file := temporary_files.pop():
+                    try:
+                        temporary_file.unlink()
+                    except (FileNotFoundError, IOError, OSError):
+                        temporary_files = [temporary_file] + temporary_files
+                        time.sleep(0.5)
+            except IndexError:  # list empty
+                break
+        else:
+            if Config().verbose:
+                remaining_files = ", ".join(
+                    [f"{temporary_file}" for temporary_file in temporary_files]
+                )
+                warnings.warn(
+                    f"Failed to clean cache directory ‘{self._cache_directory}’. "
+                    f"Remaining file(s): {remaining_files}",
+                    RuntimeWarning,
+                )
 
         # finally, try to delete the cache directory itself
         try:

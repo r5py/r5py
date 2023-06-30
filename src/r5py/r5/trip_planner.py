@@ -299,6 +299,7 @@ class TripPlanner:
                                         seconds=(state.time - state.back.time)
                                     )
                                     - leg.travel_time
+                                    + ONE_MINUTE  # the slack added above
                                 )
 
                             else:  # TransitLeg

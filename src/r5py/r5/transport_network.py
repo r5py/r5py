@@ -8,6 +8,7 @@ import functools
 import pathlib
 import random
 import shutil
+import time
 import warnings
 
 import filelock
@@ -53,12 +54,13 @@ class TransportNetwork:
         transport_network = com.conveyal.r5.transit.TransportNetwork()
         transport_network.scenarioId = PACKAGE
 
-        osm_file = pathlib.Path(f"{osm_pbf}.mapdb")
-        if osm_file.exists():
-            osm_file.unlink()
-        osm_file = com.conveyal.osmlib.OSM(f"{osm_file}")
+        osm_mapdb = pathlib.Path(f"{osm_pbf}.mapdb")
+        if osm_mapdb.exists():
+            osm_mapdb.unlink()
+        osm_file = com.conveyal.osmlib.OSM(f"{osm_mapdb}")
         osm_file.intersectionDetection = True
         osm_file.readFromFile(f"{osm_pbf}")
+
         transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
         transport_network.streetLayer.loadFromOsm(osm_file)
         transport_network.streetLayer.parentNetwork = transport_network
@@ -83,6 +85,44 @@ class TransportNetwork:
         transport_network.transitLayer.buildDistanceTables(None)
 
         self._transport_network = transport_network
+
+    def __del__(self):
+        """
+        Delete all temporary files upon destruction.
+        """
+        MAX_TRIES = 99
+
+        # first, delete Java objects, and trigger Java garbage collection
+        try:
+            del self.street_layer
+        except AttributeError:  # might not have been accessed a single time
+            pass
+        try:
+            del self.transit_layer
+        except AttributeError:
+            pass
+        del self._transport_network
+
+        time.sleep(0.5)  # half a second is long, but let’s err on the safe side
+
+        jpype.java.lang.System.gc()
+
+        # then, try to delete all files in cache directory
+        for _ in range(MAX_TRIES):
+            for temporary_file in self._cache_directory.iterdir():
+                try:
+                    temporary_file.unlink()
+                except (FileNotFoundError, IOError, OSError):
+                    time.sleep(0.5)
+                    if (_ + 1) == MAX_TRIES:
+                        print(f"could not clean {self._cache_directory}")
+                    pass
+
+        # finally, try to delete the cache directory itself
+        try:
+            self._cache_directory.rmdir()
+        except OSError:  # not empty
+            pass  # the JVM destructor is going to take care of this
 
     @classmethod
     def from_directory(cls, path):
@@ -226,7 +266,7 @@ class TransportNetwork:
             )
         )
 
-    @property
+    @functools.cached_property
     def street_layer(self):
         """Expose the `TransportNetwork`’s `streetLayer` to Python."""
         return StreetLayer.from_r5_street_layer(self._transport_network.streetLayer)
@@ -239,10 +279,7 @@ class TransportNetwork:
     @functools.cached_property
     def transit_layer(self):
         """Expose the `TransportNetwork`’s `transitLayer` to Python."""
-        transit_layer = TransitLayer.from_r5_transit_layer(
-            self._transport_network.transitLayer
-        )
-        return transit_layer
+        return TransitLayer.from_r5_transit_layer(self._transport_network.transitLayer)
 
 
 @jpype._jcustomizer.JConversion(

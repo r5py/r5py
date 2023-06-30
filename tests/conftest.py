@@ -11,9 +11,12 @@
 import fiona  # noqa: F401
 
 import datetime
+import pathlib
+import time
+
+import jpype
 import geopandas
 import pandas
-import pathlib
 import pytest
 import shapely
 
@@ -93,27 +96,27 @@ def data_columns_with_breakdown():
     ]
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def departure_datetime():
     yield datetime.datetime(2022, 2, 22, 8, 30)
 
 
-@pytest.fixture()
+@pytest.fixture
 def detailed_itineraries_bicycle():
     yield geopandas.read_file(DETAILED_ITINERARIES_BICYCLE)
 
 
-@pytest.fixture()
+@pytest.fixture
 def detailed_itineraries_car():
     yield geopandas.read_file(DETAILED_ITINERARIES_CAR)
 
 
-@pytest.fixture()
+@pytest.fixture
 def detailed_itineraries_transit():
     yield geopandas.read_file(DETAILED_ITINERARIES_TRANSIT)
 
 
-@pytest.fixture()
+@pytest.fixture
 def detailed_itineraries_walk():
     yield geopandas.read_file(DETAILED_ITINERARIES_WALK)
 
@@ -156,12 +159,12 @@ def origins_valid_ids():
     yield origins
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def population_grid():
     yield geopandas.read_file(POPULATION_GRID)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def population_grid_points(population_grid):
     population_grid_points = population_grid.copy()
     population_grid_points.geometry = population_grid_points.geometry.to_crs(
@@ -170,44 +173,44 @@ def population_grid_points(population_grid):
     yield population_grid_points
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def population_grid_points_first_three(population_grid_points):
     yield population_grid_points[0:3]
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def population_grid_points_second_three(population_grid_points):
     yield population_grid_points[4:7]
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def population_grid_points_four(population_grid_points):
     yield population_grid_points[10:14]
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def r5_jar_cached():
     from r5py.util.config import Config
 
     yield str(Config().CACHE_DIR / pathlib.Path(R5_JAR_URL).name)
 
 
-@pytest.fixture()
+@pytest.fixture
 def r5_jar_cached_invalid():
     yield "/definitely/invalid/path/to/r5.jar"
 
 
-@pytest.fixture()
+@pytest.fixture
 def r5_jar_sha256():
     yield R5_JAR_SHA256
 
 
-@pytest.fixture()
+@pytest.fixture
 def r5_jar_sha256_invalid():
     yield R5_JAR_SHA256_INVALID
 
 
-@pytest.fixture()
+@pytest.fixture
 def r5_jar_sha256_github_error_message_when_posting():
     yield R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING
 
@@ -217,7 +220,7 @@ def r5_jar_url():
     yield R5_JAR_URL
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def regional_task(population_grid_points, departure_datetime):
     import r5py
 
@@ -230,8 +233,12 @@ def regional_task(population_grid_points, departure_datetime):
     )
     yield regional_task
 
+    del regional_task
+    time.sleep(0.5)
+    jpype.java.lang.System.gc()
 
-@pytest.fixture()
+
+@pytest.fixture(scope="session")
 def snapped_population_grid_points():
     yield geopandas.read_file(SNAPPED_POPULATION_GRID_POINTS)
 
@@ -241,35 +248,50 @@ def transport_network_files_tuple():
     yield OSM_PBF, [GTFS]
 
 
-@pytest.fixture()
+@pytest.fixture
 def transport_network(transport_network_from_test_files):
     yield transport_network_from_test_files
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def transport_network_from_test_directory():
     import r5py
 
-    yield r5py.TransportNetwork.from_directory(DATA_DIRECTORY / "Helsinki")
+    transport_network = r5py.TransportNetwork.from_directory(
+        DATA_DIRECTORY / "Helsinki"
+    )
+    yield transport_network
+
+    del transport_network
+    time.sleep(0.5)
+    jpype.java.lang.System.gc()
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def transport_network_from_test_files():
     import r5py
 
     transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
     yield transport_network
 
+    del transport_network
+    time.sleep(0.5)
+    jpype.java.lang.System.gc()
 
-@pytest.fixture()
+
+@pytest.fixture(scope="session")
 def transport_network_from_test_files_without_gtfs():
     import r5py
 
     transport_network = r5py.TransportNetwork(OSM_PBF, [])
     yield transport_network
 
+    del transport_network
+    time.sleep(0.5)
+    jpype.java.lang.System.gc()
 
-@pytest.fixture()
+
+@pytest.fixture
 def unsnappable_points():
     yield geopandas.GeoDataFrame(
         {
@@ -283,21 +305,21 @@ def unsnappable_points():
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def walking_details_snapped():
     yield pandas.read_csv(WALKING_DETAILS_SNAPPED)
 
 
-@pytest.fixture()
+@pytest.fixture
 def walking_details_not_snapped():
     yield pandas.read_csv(WALKING_DETAILS_NOT_SNAPPED)
 
 
-@pytest.fixture()
+@pytest.fixture
 def walking_times_snapped():
     yield pandas.read_csv(WALKING_TIMES_SNAPPED)
 
 
-@pytest.fixture()
+@pytest.fixture
 def walking_times_not_snapped():
     yield pandas.read_csv(WALKING_TIMES_NOT_SNAPPED)

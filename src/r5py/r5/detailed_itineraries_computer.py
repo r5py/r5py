@@ -109,7 +109,7 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
         with joblib.Parallel(
             prefer="threads",
             verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
-            n_jobs=-1,
+            n_jobs=self.NUM_THREADS,
         ) as parallel:
             od_matrix = pandas.concat(
                 parallel(

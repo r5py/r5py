@@ -109,16 +109,10 @@ class TransportNetwork:
         del self._transport_network
 
         time.sleep(0.5)
-        try:
-            jpype.java.lang.System.gc()
-        except jpype._core.JVMNotRunning:
-            pass
+        jpype.java.lang.System.gc()
 
         # then, try to delete all files in cache directory
-        try:
-            temporary_files = [child for child in self._cache_directory.iterdir()]
-        except FileNotFoundError:
-            pass
+        temporary_files = [child for child in self._cache_directory.iterdir()]
         for _ in range(MAX_TRIES):
             try:
                 while temporary_file := temporary_files.pop():

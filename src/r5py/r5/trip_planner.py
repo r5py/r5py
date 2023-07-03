@@ -22,10 +22,10 @@ from .transit_leg import TransitLeg
 from .transport_mode import TransportMode
 from .trip import Trip
 from ..util import GoodEnoughEquidistantCrs, start_jvm
-from ..util.exceptions import R5pyError
 
 import com.conveyal.r5
 import gnu.trove.map
+import java.lang
 
 
 __all__ = ["TripPlanner"]
@@ -40,6 +40,10 @@ R5_CRS = "EPSG:4326"
 
 ONE_MINUTE = datetime.timedelta(minutes=1)
 ZERO_SECONDS = datetime.timedelta(seconds=0)
+
+
+# Show the ACCURATE_GEOMETRIES warning once, only
+warnings.filterwarnings("once", "TransitLayer.SAVE_SHAPES = false")
 
 
 class TripPlanner:
@@ -117,38 +121,40 @@ class TripPlanner:
                 street_router.profileRequest = request
                 street_router.streetMode = transport_mode
 
-                # fmt: off
-                if (
-                    street_router.setOrigin(request._regional_task.fromLat, request._regional_task.fromLon)
-                    and street_router.setDestination(request._regional_task.toLat, request._regional_task.toLon)
-                ):
-                    # fmt: on
-                    street_router.route()
-                    router_state = street_router.getState(street_router.getDestinationSplit())
+                street_router.setOrigin(
+                    request._regional_task.fromLat,
+                    request._regional_task.fromLon,
+                )
+                street_router.setDestination(
+                    request._regional_task.toLat,
+                    request._regional_task.toLon,
+                )
+
+                street_router.route()
+
+                try:
+                    router_state = street_router.getState(
+                        street_router.getDestinationSplit()
+                    )
                     street_segment = self._street_segment_from_router_state(
                         router_state,
                         transport_mode,
                     )
                     direct_paths.append(
-                        Trip([
-                            DirectLeg(transport_mode, street_segment),
-                        ])
+                        Trip(
+                            [
+                                DirectLeg(transport_mode, street_segment),
+                            ]
+                        )
                     )
-                else:
+                except java.lang.NullPointerException:
                     warnings.warn(
-                        (
-                            f"Could not find "
-                            f"origin ({self.request.fromLon}, {self.request.fromLat}) "
-                            f"or destination ({self.request.toLon}, {self.request.toLat})"
-                        ),
-                        RuntimeWarning,
+                        f"Could not find route between origin "
+                        f"({self.request.fromLon}, {self.request.fromLat}) "
+                        f"and destination ({self.request.toLon}, {self.request.toLat})",
+                        RuntimeWarning
                     )
         return direct_paths
-
-    @classmethod
-    def _hashmap_to_dict(hashmap):
-        """Convert a `java.util.hash.HashMap` into a Python dictionary."""
-        return {key: value for key, value in zip(hashmap.keys(), hashmap.values())}
 
     def _street_segment_from_router_state(self, router_state, transport_mode):
         """Retrieve a com.conveyal.r5.street.StreetSegment for a route."""
@@ -307,8 +313,6 @@ class TripPlanner:
                             else:  # TransitLeg
                                 pattern = transit_layer.trip_patterns[state.pattern]
                                 route = transit_layer.routes[pattern.routeIndex]
-                                # departure_stop = pattern.stops[state.boardStopPosition]
-                                # arrival_stop = pattern.stops[state.alightStopPosition]
                                 transport_mode = TransportMode(
                                     com.conveyal.r5.transit.TransitLayer.getTransitModes(
                                         route.route_type
@@ -324,10 +328,11 @@ class TripPlanner:
                                     seconds=(state.boardTime - state.back.time)
                                 )
 
-                                # geometry
-                                # hops == LineStrings between stops of a route
+                                # ‘hops’ in R5 terminology are the LineStrings
+                                # between each pair of consecutive stops of a route
                                 hops = list(pattern.getHopGeometries(transit_layer))
-                                # select only the ones between our stops, and merge
+
+                                # select only the ‘hops’ between our stops, and merge
                                 # them into one LineString
                                 hops = hops[
                                     state.boardStopPosition : state.alightStopPosition
@@ -343,11 +348,13 @@ class TripPlanner:
 
                                 # distance: based on the geometry, which might
                                 # be inaccurate.
-                                # We do not compute potentially vastly off
-                                # distance values - the user can still do that
-                                # themselves from the inaccurate geometries,
-                                # then they at least know what they committed
-                                # to.
+
+                                # We do not compute distance values if the
+                                # geometry is straight lines between stops
+                                # the user can still do that themselves from the
+                                # inaccurate geometries: then they at least know
+                                # what they committed to.
+                                # TODO: add to documentation
                                 if ACCURATE_GEOMETRIES:
                                     distance = shapely.ops.transform(
                                         self._crs_transformer_function,
@@ -387,6 +394,12 @@ class TripPlanner:
             self.transport_network.street_layer
         )
         street_router.profileRequest = request
+        street_router.setOrigin(
+            self.request._regional_task.fromLat,
+            self.request._regional_task.fromLon,
+        )
+        street_router.transitStopSearch = True
+        street_router.timeLimitSeconds = round(self.MAX_ACCESS_TIME.total_seconds())
 
         transit_layer = self.transport_network.transit_layer
 
@@ -394,35 +407,19 @@ class TripPlanner:
             access_paths[transport_mode] = {}
 
             street_router.streetMode = transport_mode
-            street_router.transitStopSearch = True
-            street_router.timeLimitSeconds = round(self.MAX_ACCESS_TIME.total_seconds())
+            street_router.route()
+            reached_stops = street_router.getReachedStops()
 
-            if street_router.setOrigin(
-                self.request._regional_task.fromLat,
-                self.request._regional_task.fromLon,
-            ):
-                street_router.route()
-                reached_stops = street_router.getReachedStops()
-
-                for stop in reached_stops.keys():
-                    router_state = street_router.getStateAtVertex(
-                        transit_layer.get_street_vertex_for_stop(stop)
-                    )
-                    street_segment = self._street_segment_from_router_state(
-                        router_state,
-                        transport_mode,
-                    )
-                    access_paths[transport_mode][stop] = AccessLeg(
-                        transport_mode, street_segment
-                    )
-
-            else:
-                warnings.warn(
-                    (
-                        f"Could not find "
-                        f"origin ({self.request.fromLon}, {self.request.fromLat}) "
-                    ),
-                    RuntimeWarning,
+            for stop in reached_stops.keys():
+                router_state = street_router.getStateAtVertex(
+                    transit_layer.get_street_vertex_for_stop(stop)
+                )
+                street_segment = self._street_segment_from_router_state(
+                    router_state,
+                    transport_mode,
+                )
+                access_paths[transport_mode][stop] = AccessLeg(
+                    transport_mode, street_segment
                 )
         return access_paths
 
@@ -457,6 +454,12 @@ class TripPlanner:
             self.transport_network.street_layer
         )
         street_router.profileRequest = request
+        street_router.setOrigin(
+            self.request._regional_task.toLat,
+            self.request._regional_task.toLon,
+        )
+        street_router.transitStopSearch = True
+        street_router.timeLimitSeconds = round(self.MAX_EGRESS_TIME.total_seconds())
 
         transit_layer = self.transport_network.transit_layer
 
@@ -464,35 +467,20 @@ class TripPlanner:
             egress_paths[transport_mode] = {}
 
             street_router.streetMode = transport_mode
-            street_router.transitStopSearch = True
-            street_router.timeLimitSeconds = round(self.MAX_EGRESS_TIME.total_seconds())
 
-            if street_router.setOrigin(
-                self.request._regional_task.toLat,
-                self.request._regional_task.toLon,
-            ):
-                street_router.route()
-                reached_stops = street_router.getReachedStops()
+            street_router.route()
+            reached_stops = street_router.getReachedStops()
 
-                for stop in reached_stops.keys():
-                    router_state = street_router.getStateAtVertex(
-                        transit_layer.get_street_vertex_for_stop(stop)
-                    )
-                    street_segment = self._street_segment_from_router_state(
-                        router_state,
-                        transport_mode,
-                    )
-                    egress_paths[transport_mode][stop] = EgressLeg(
-                        transport_mode, street_segment
-                    )
-
-            else:
-                warnings.warn(
-                    (
-                        f"Could not find "
-                        f"origin ({self.request.fromLon}, {self.request.fromLat}) "
-                    ),
-                    RuntimeWarning,
+            for stop in reached_stops.keys():
+                router_state = street_router.getStateAtVertex(
+                    transit_layer.get_street_vertex_for_stop(stop)
+                )
+                street_segment = self._street_segment_from_router_state(
+                    router_state,
+                    transport_mode,
+                )
+                egress_paths[transport_mode][stop] = EgressLeg(
+                    transport_mode, street_segment
                 )
         return egress_paths
 
@@ -541,25 +529,21 @@ class TripPlanner:
                 to_lat = to_stop_coordinates.getY() / COORDINATE_CORRECTION_FACTOR
                 to_lon = to_stop_coordinates.getX() / COORDINATE_CORRECTION_FACTOR
 
-                if street_router.setOrigin(
-                    from_lat, from_lon
-                ) and street_router.setDestination(to_lat, to_lon):
-                    street_router.route()
-                    router_state = street_router.getState(
-                        street_router.getDestinationSplit()
-                    )
-                    street_segment = self._street_segment_from_router_state(
-                        router_state,
-                        TransportMode.WALK,
-                    )
+                street_router.setOrigin(from_lat, from_lon)
+                street_router.setDestination(to_lat, to_lon)
 
-                    transfer_path = self._transfer_paths[
-                        (from_stop, to_stop)
-                    ] = TransferLeg(TransportMode.WALK, street_segment)
-                else:
-                    raise R5pyError(
-                        f"Could not find a valid `TransferLeg`"
-                        f"between stops {from_stop} and {to_stop}."
-                    )
+                street_router.route()
+
+                router_state = street_router.getState(
+                    street_router.getDestinationSplit()
+                )
+                street_segment = self._street_segment_from_router_state(
+                    router_state,
+                    TransportMode.WALK,
+                )
+
+                transfer_path = self._transfer_paths[
+                    (from_stop, to_stop)
+                ] = TransferLeg(TransportMode.WALK, street_segment)
 
                 return transfer_path

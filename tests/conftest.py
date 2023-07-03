@@ -292,6 +292,15 @@ def transport_network_from_test_files_without_gtfs():
 
 
 @pytest.fixture
+def unreachable_stops():
+    yield [
+        1294132,
+        1174101,
+        1452601,
+    ]
+
+
+@pytest.fixture
 def unsnappable_points():
     yield geopandas.GeoDataFrame(
         {

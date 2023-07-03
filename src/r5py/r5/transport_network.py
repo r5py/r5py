@@ -130,15 +130,14 @@ class TransportNetwork:
             except IndexError:  # list empty
                 break
         else:
-            if Config().verbose:
-                remaining_files = ", ".join(
-                    [f"{temporary_file}" for temporary_file in temporary_files]
-                )
-                warnings.warn(
-                    f"Failed to clean cache directory ‘{self._cache_directory}’. "
-                    f"Remaining file(s): {remaining_files}",
-                    RuntimeWarning,
-                )
+            remaining_files = ", ".join(
+                [f"{temporary_file}" for temporary_file in temporary_files]
+            )
+            warnings.warn(
+                f"Failed to clean cache directory ‘{self._cache_directory}’. "
+                f"Remaining file(s): {remaining_files}",
+                RuntimeWarning,
+            )
 
         # finally, try to delete the cache directory itself
         try:

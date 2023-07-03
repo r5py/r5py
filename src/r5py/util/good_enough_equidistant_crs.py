@@ -39,27 +39,24 @@ class GoodEnoughEquidistantCrs(pyproj.CRS):
             # buffer extent (so everything is a polygon)
             extent = extent.buffer(0.1)
 
-            try:
-                crsinfo = pyproj.database.query_utm_crs_info(
-                    datum_name="WGS 84",
-                    area_of_interest=pyproj.aoi.AreaOfInterest(*extent.bounds),
+            crsinfo = pyproj.database.query_utm_crs_info(
+                datum_name="WGS 84",
+                area_of_interest=pyproj.aoi.AreaOfInterest(*extent.bounds),
+            )
+            for candidate_crs in crsinfo:
+                area_of_use = shapely.box(*candidate_crs.area_of_use.bounds)
+                coverage = (
+                    shapely.intersection(extent, area_of_use).area / extent.area
                 )
-                for candidate_crs in crsinfo:
-                    area_of_use = shapely.box(*candidate_crs.area_of_use.bounds)
-                    coverage = (
-                        shapely.intersection(extent, area_of_use).area / extent.area
+
+                if coverage > 0.5:
+                    # more than half of extent covered by crs’ area of use
+                    # -> good enough
+                    crs = pyproj.CRS.from_authority(
+                        candidate_crs.auth_name, candidate_crs.code
                     )
+                    break
 
-                    if coverage > 0.5:
-                        # more than half of extent covered by crs’ area of use
-                        # -> good enough
-                        crs = pyproj.CRS.from_authority(
-                            candidate_crs.auth_name, candidate_crs.code
-                        )
-                        break
-
-            except (AttributeError, IndexError):
-                pass
             return crs
 
         else:

@@ -162,3 +162,36 @@ class TestTransportMode:
     )
     def test_is_transit_mode(self, mode, expected):
         assert r5py.TransportMode(mode).is_transit_mode == expected
+
+    def test_add(self):
+        transport_mode1 = r5py.TransportMode.TRANSIT
+        transport_mode2 = r5py.TransportMode.WALK
+
+        transport_modes = transport_mode1 + transport_mode2
+        assert isinstance(transport_modes, list)
+        assert transport_modes == [transport_mode1, transport_mode2]
+
+        transport_modes = transport_mode2 + transport_mode1
+        assert isinstance(transport_modes, list)
+        assert transport_modes == [transport_mode2, transport_mode1]
+
+        transport_modes = sum([transport_mode1, transport_mode2])
+        assert isinstance(transport_modes, list)
+        assert transport_modes == [transport_mode1, transport_mode2]
+
+    @pytest.mark.parametrize(
+        ["invalid_other"],
+        [
+            (123.0,),
+            (1,),
+            ("asdfasdf",),
+            ({},),
+        ],
+    )
+    def test_add_invalid_type(self, invalid_other):
+        transport_mode = r5py.TransportMode.TRANSIT
+        with pytest.raises(TypeError, match="unsupported operand type"):
+            _ = transport_mode + invalid_other
+
+        with pytest.raises(TypeError, match="unsupported operand type"):
+            _ = invalid_other + transport_mode

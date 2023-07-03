@@ -152,7 +152,7 @@ class TripPlanner:
                         f"Could not find route between origin "
                         f"({self.request.fromLon}, {self.request.fromLat}) "
                         f"and destination ({self.request.toLon}, {self.request.toLat})",
-                        RuntimeWarning
+                        RuntimeWarning,
                     )
         return direct_paths
 

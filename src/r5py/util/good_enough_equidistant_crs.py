@@ -45,9 +45,7 @@ class GoodEnoughEquidistantCrs(pyproj.CRS):
             )
             for candidate_crs in crsinfo:
                 area_of_use = shapely.box(*candidate_crs.area_of_use.bounds)
-                coverage = (
-                    shapely.intersection(extent, area_of_use).area / extent.area
-                )
+                coverage = shapely.intersection(extent, area_of_use).area / extent.area
 
                 if coverage > 0.5:
                     # more than half of extent covered by crs’ area of use

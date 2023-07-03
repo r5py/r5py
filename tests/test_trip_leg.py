@@ -110,3 +110,28 @@ class TestTripLeg:
             "48A",
             shapely.LineString([[0, 0], [1, 1], [2, 2]]),
         ]
+
+    def test_compare(self):
+        trip_leg1 = r5py.r5.trip_leg.TripLeg(
+            r5py.TransportMode.TRANSIT,
+            datetime.datetime(2023, 4, 25, 15, 30),
+            12.34,
+            datetime.timedelta(minutes=10),
+            datetime.timedelta(minutes=2),
+            "56A",
+            shapely.LineString([[0, 0], [1, 1], [2, 2]]),
+        )
+        trip_leg2 = r5py.r5.trip_leg.TripLeg(
+            r5py.TransportMode.TRANSIT,
+            datetime.datetime(2023, 4, 25, 15, 30),
+            98.76,
+            datetime.timedelta(minutes=30),
+            datetime.timedelta(minutes=5),
+            "54A",
+            shapely.LineString([[2, 2], [34, 34]]),
+        )
+
+        assert trip_leg1 < trip_leg2
+        assert trip_leg1 <= trip_leg2
+        assert trip_leg2 > trip_leg1
+        assert trip_leg2 >= trip_leg1

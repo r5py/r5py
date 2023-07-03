@@ -81,3 +81,7 @@ class TestTrip:
                 shapely.LineString([[0, 0], [1, 1], [2, 2]]),
             ]
         ]
+
+    def test_distance_none(self):
+        trip = sum([r5py.r5.trip_leg.TripLeg()])
+        assert trip.distance is None

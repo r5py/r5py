@@ -115,17 +115,21 @@ class TripLeg:
             )
 
     def __repr__(self):
-        first_point = self.geometry.coords[0]
-        last_point = self.geometry.coords[-1]
-        return (
-            "<"
-            f"{self.__class__.__name__}: "
-            f"{self.transport_mode}, "
-            f"{self.distance}m, "
-            f"{self.travel_time.total_seconds():0.1f}s, "
-            f"{first_point} -> {last_point}"
-            ">"
-        )
+        try:
+            first_point = self.geometry.coords[0]
+            last_point = self.geometry.coords[-1]
+            _repr = (
+                "<"
+                f"{self.__class__.__name__}: "
+                f"{self.transport_mode}, "
+                f"{self.distance}m, "
+                f"{self.travel_time.total_seconds():0.1f}s, "
+                f"{first_point} -> {last_point}"
+                ">"
+            )
+        except AttributeError:
+            _repr = f"<{self.__class__.__name__}>"
+        return _repr
 
     def as_table_row(self):
         """

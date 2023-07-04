@@ -55,8 +55,6 @@ class TransportNetwork:
         transport_network.scenarioId = PACKAGE
 
         osm_mapdb = pathlib.Path(f"{osm_pbf}.mapdb")
-        if osm_mapdb.exists():
-            osm_mapdb.unlink()
         osm_file = com.conveyal.osmlib.OSM(f"{osm_mapdb}")
         osm_file.intersectionDetection = True
         osm_file.readFromFile(f"{osm_pbf}")
@@ -114,15 +112,19 @@ class TransportNetwork:
         # then, try to delete all files in cache directory
         temporary_files = [child for child in self._cache_directory.iterdir()]
         for _ in range(MAX_TRIES):
-            try:
-                while temporary_file := temporary_files.pop():
-                    try:
-                        temporary_file.unlink()
-                    except (FileNotFoundError, IOError, OSError):
-                        temporary_files = [temporary_file] + temporary_files
-                        time.sleep(0.5)
-            except IndexError:  # list empty
+            for temporary_file in temporary_files:
+                try:
+                    temporary_file.unlink()
+                    temporary_files.remove(temporary_file)
+                except (FileNotFoundError, IOError, OSError):
+                    print(f"re-adding {temporary_file} to {temporary_files}")
+                    temporary_files = [temporary_file] + temporary_files
+
+            if not temporary_files:  # empty
                 break
+
+            print(f"waiting for still open files, round {_}")
+            time.sleep(0.1)
         else:
             remaining_files = ", ".join(
                 [f"{temporary_file}" for temporary_file in temporary_files]

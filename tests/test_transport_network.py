@@ -152,3 +152,33 @@ class Test_TransportNetwork:
     ):
         snapped = transport_network.snap_to_network(unsnappable_points.geometry)
         assert snapped.geometry.unique() == [shapely.Point()]
+
+    def test_failed_symlink(self, transport_network_files_tuple, monkeypatch):
+        def _symlink_to(*args, **kwargs):
+            raise OSError
+
+        monkeypatch.setattr(pathlib.Path, "symlink_to", _symlink_to)
+
+        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
+        del transport_network
+
+    def test_failed_unlinking_of_temporary_files(
+        self, transport_network_files_tuple, monkeypatch
+    ):
+        def _unlink(*args, **kwargs):
+            raise OSError
+
+        monkeypatch.setattr(pathlib.Path, "unlink", _unlink)
+
+        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
+        with pytest.warns(RuntimeWarning, match="Failed to clean cache directory"):
+            del transport_network
+
+    def test_failed_cachedir_rmdir(self, transport_network_files_tuple, monkeypatch):
+        def _rmdir(*args, **kwargs):
+            raise OSError
+
+        monkeypatch.setattr(pathlib.Path, "rmdir", _rmdir)
+
+        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
+        del transport_network

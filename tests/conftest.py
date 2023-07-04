@@ -221,10 +221,9 @@ def r5_jar_url():
 
 
 @pytest.fixture(scope="session")
-def regional_task(population_grid_points, departure_datetime):
+def regional_task(transport_network, population_grid_points, departure_datetime):
     import r5py
 
-    transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
     regional_task = r5py.RegionalTask(
         transport_network,
         population_grid_points.at[1, "geometry"],

@@ -179,6 +179,14 @@ class TestTransportMode:
         assert isinstance(transport_modes, list)
         assert transport_modes == [transport_mode1, transport_mode2]
 
+        transport_modes = [transport_mode1] + transport_mode2
+        assert isinstance(transport_modes, list)
+        assert transport_modes == [transport_mode1, transport_mode2]
+
+        transport_modes = transport_mode1 + [transport_mode2]
+        assert isinstance(transport_modes, list)
+        assert transport_modes == [transport_mode1, transport_mode2]
+
     @pytest.mark.parametrize(
         ["invalid_other"],
         [

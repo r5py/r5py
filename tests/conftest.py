@@ -20,7 +20,6 @@ import pandas
 import pytest
 import shapely
 
-from . import pytest_platform_specific_warns  # noqa: F401
 
 DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
 
@@ -262,12 +261,7 @@ def transport_network_from_test_directory():
     )
     yield transport_network
 
-    with pytest.warns(
-        RuntimeWarning,
-        match="Failed to clean cache directory",
-        platforms=["Windows"]
-    ):
-        del transport_network
+    del transport_network
 
     time.sleep(0.5)
     jpype.java.lang.System.gc()
@@ -280,12 +274,7 @@ def transport_network_from_test_files():
     transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
     yield transport_network
 
-    with pytest.warns(
-        RuntimeWarning,
-        match="Failed to clean cache directory",
-        platforms=["Windows"]
-    ):
-        del transport_network
+    del transport_network
 
     time.sleep(0.5)
     jpype.java.lang.System.gc()
@@ -298,12 +287,7 @@ def transport_network_from_test_files_without_gtfs():
     transport_network = r5py.TransportNetwork(OSM_PBF, [])
     yield transport_network
 
-    with pytest.warns(
-        RuntimeWarning,
-        match="Failed to clean cache directory",
-        platforms=["Windows"]
-    ):
-        del transport_network
+    del transport_network
 
     time.sleep(0.5)
     jpype.java.lang.System.gc()

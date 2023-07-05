@@ -117,7 +117,9 @@ class TransportNetwork:
                     temporary_file.unlink()
                     temporary_files.remove(temporary_file)
                 except (FileNotFoundError, IOError, OSError):
-                    print(f"could not delete {temporary_file}, keeping in {temporary_files}")
+                    print(
+                        f"could not delete {temporary_file}, keeping in {temporary_files}"
+                    )
                     pass
 
             if not temporary_files:  # empty

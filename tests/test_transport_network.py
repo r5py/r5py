@@ -92,7 +92,12 @@ class Test_TransportNetwork:
             len(list(cache_dir.glob("*"))) > 0
         )  # files have been copied/linked to cache
 
-        del transport_network
+        with pytest.warns(
+            RuntimeWarning,
+            match="Failed to clean cache directory",
+            platforms=["Windows"]
+        ):
+            del transport_network
 
     @pytest.mark.parametrize(
         ["transport_network"],
@@ -122,7 +127,6 @@ class Test_TransportNetwork:
                 transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
                     temp_directory
                 )
-                del transport_network
 
     def test_fromdirectory_no_osm_files(self):
         # try to create transport network from a directory without osm file
@@ -132,7 +136,6 @@ class Test_TransportNetwork:
                 transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
                     temp_directory
                 )
-                del transport_network
 
     def test_snap_to_network(
         self,
@@ -160,7 +163,12 @@ class Test_TransportNetwork:
         monkeypatch.setattr(pathlib.Path, "symlink_to", _symlink_to)
 
         transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
-        del transport_network
+        with pytest.warns(
+            RuntimeWarning,
+            match="Failed to clean cache directory",
+            platforms=["Windows"]
+        ):
+            del transport_network
 
     def test_failed_unlinking_of_temporary_files(
         self, transport_network_files_tuple, monkeypatch
@@ -181,4 +189,9 @@ class Test_TransportNetwork:
         monkeypatch.setattr(pathlib.Path, "rmdir", _rmdir)
 
         transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
-        del transport_network
+        with pytest.warns(
+            RuntimeWarning,
+            match="Failed to clean cache directory",
+            platforms=["Windows"]
+        ):
+            del transport_network

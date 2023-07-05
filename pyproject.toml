@@ -52,7 +52,7 @@ Repository = "https://github.com/r5py/r5py.git"
 "Bug tracker" = "https://github.com/r5py/r5py/issues"
 
 [tool.coverage.run]
-omit = ["tests/*"]
+omit = ["tests/*", ".virtualenv/**/*"]
 
 [tool.jupytext.formats]
 "docs/notebooks/" = "ipynb"

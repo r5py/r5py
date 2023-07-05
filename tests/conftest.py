@@ -220,6 +220,7 @@ def r5_jar_url():
     yield R5_JAR_URL
 
 
+@pytest.fixture()
 def regional_task(transport_network, population_grid_points, departure_datetime):
     import r5py
 

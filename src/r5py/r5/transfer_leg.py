@@ -5,16 +5,14 @@
 vehicles."""
 
 
-from .trip_leg import TripLeg
+from .direct_leg import DirectLeg
 
 
 __all__ = ["TransferLeg"]
 
 
-class TransferLeg(TripLeg):
+class TransferLeg(DirectLeg):
     """
     Represent one leg of a trip, specifically transfers between public transport
     vehicles.
     """
-
-    pass

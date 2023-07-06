@@ -28,3 +28,7 @@ class MissingColumnError(ValueError, R5pyError):
 
 class NoIDColumnError(MissingColumnError):
     """An input data set does not have a required `id` column."""
+
+
+class UnexpectedCrsError(ValueError, R5pyError):
+    """A geometry is in an unexpected reference system."""

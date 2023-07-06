@@ -25,6 +25,7 @@ dependencies = [
     "numpy",
     "pandas",
     "psutil",
+    "pyproj",
     "requests",
     "shapely>=2.0"
 ]
@@ -55,14 +56,14 @@ Repository = "https://github.com/r5py/r5py.git"
 "Bug tracker" = "https://github.com/r5py/r5py/issues"
 
 [tool.coverage.run]
-omit = ["tests/*"]
+omit = ["tests/*", ".virtualenv/**/*"]
 
 [tool.jupytext.formats]
 "docs/notebooks/" = "ipynb"
 "docs/md/" = "md"
 
 [tool.pytest.ini_options]
-addopts = "-p no:faulthandler --cov --cov-report term-missing"
+addopts = "-p no:faulthandler --cov --cov-report term-missing --cov-report xml"
 filterwarnings = [
     "error",
     "ignore:Could not find R5 jar, trying to download it from upstream",

@@ -19,6 +19,7 @@ joblib
 jpype1
 numpy
 pandas
+pyproj
 psutil
 requests
 

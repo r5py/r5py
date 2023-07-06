@@ -4,6 +4,7 @@ import filecmp
 import pathlib
 import shutil
 
+import geopandas
 import pytest
 import shapely
 
@@ -121,7 +122,6 @@ class Test_TransportNetwork:
                 transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
                     temp_directory
                 )
-                del transport_network
 
     def test_fromdirectory_no_osm_files(self):
         # try to create transport network from a directory without osm file
@@ -131,7 +131,6 @@ class Test_TransportNetwork:
                 transport_network = r5py.TransportNetwork.from_directory(  # noqa: F841
                     temp_directory
                 )
-                del transport_network
 
     def test_snap_to_network(
         self,
@@ -140,7 +139,9 @@ class Test_TransportNetwork:
         snapped_population_grid_points,
     ):
         snapped = transport_network.snap_to_network(population_grid_points.geometry)
-        assert snapped.geometry.equals(snapped_population_grid_points.geometry)
+        geopandas.testing.assert_geoseries_equal(
+            snapped.geometry, snapped_population_grid_points.geometry
+        )
 
     def test_snap_to_network_with_unsnappable_points(
         self,
@@ -149,3 +150,33 @@ class Test_TransportNetwork:
     ):
         snapped = transport_network.snap_to_network(unsnappable_points.geometry)
         assert snapped.geometry.unique() == [shapely.Point()]
+
+    def test_failed_symlink(self, transport_network_files_tuple, monkeypatch):
+        def _symlink_to(*args, **kwargs):
+            raise OSError
+
+        monkeypatch.setattr(pathlib.Path, "symlink_to", _symlink_to)
+
+        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
+        del transport_network
+
+    def test_failed_unlinking_of_temporary_files(
+        self, transport_network_files_tuple, monkeypatch
+    ):
+        def _unlink(*args, **kwargs):
+            raise OSError
+
+        monkeypatch.setattr(pathlib.Path, "unlink", _unlink)
+
+        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
+        with pytest.warns(RuntimeWarning, match="Failed to clean cache directory"):
+            del transport_network
+
+    def test_failed_cachedir_rmdir(self, transport_network_files_tuple, monkeypatch):
+        def _rmdir(*args, **kwargs):
+            raise OSError
+
+        monkeypatch.setattr(pathlib.Path, "rmdir", _rmdir)
+
+        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
+        del transport_network

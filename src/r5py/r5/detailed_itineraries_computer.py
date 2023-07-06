@@ -109,7 +109,7 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
         with joblib.Parallel(
             prefer="threads",
             verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
-            n_jobs=-1,
+            n_jobs=self.NUM_THREADS,
         ) as parallel:
             od_matrix = pandas.concat(
                 parallel(
@@ -155,13 +155,13 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
         destination = self.destinations[self.destinations.id == to_id]
 
         request = copy.copy(self.request)
-        request.fromLat = origin.geometry.item().y
-        request.fromLon = origin.geometry.item().x
-        request.toLat = destination.geometry.item().y
-        request.toLon = destination.geometry.item().x
+        request._regional_task.fromLat = origin.geometry.item().y
+        request._regional_task.fromLon = origin.geometry.item().x
+        request._regional_task.toLat = destination.geometry.item().y
+        request._regional_task.toLon = destination.geometry.item().x
 
         trip_planner = TripPlanner(self.transport_network, request)
-        trips = trip_planner.plan()
+        trips = trip_planner.trips
 
         # fmt: off
         trips = [

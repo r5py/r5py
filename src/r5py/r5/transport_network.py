@@ -6,7 +6,9 @@
 
 import functools
 import pathlib
+import random
 import shutil
+import time
 import warnings
 
 import filelock
@@ -52,12 +54,13 @@ class TransportNetwork:
         transport_network = com.conveyal.r5.transit.TransportNetwork()
         transport_network.scenarioId = PACKAGE
 
-        osm_file = pathlib.Path(f"{osm_pbf}.mapdb")
-        if osm_file.exists():
-            osm_file.unlink()
-        osm_file = com.conveyal.osmlib.OSM(f"{osm_file}")
+        osm_mapdb = pathlib.Path(f"{osm_pbf}.mapdb")
+        osm_file = com.conveyal.osmlib.OSM(f"{osm_mapdb}")
         osm_file.intersectionDetection = True
         osm_file.readFromFile(f"{osm_pbf}")
+
+        self.osm_file = osm_file  # keep the mapdb open, close in destructor
+
         transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
         transport_network.streetLayer.loadFromOsm(osm_file)
         transport_network.streetLayer.parentNetwork = transport_network
@@ -82,6 +85,63 @@ class TransportNetwork:
         transport_network.transitLayer.buildDistanceTables(None)
 
         self._transport_network = transport_network
+
+    def __del__(self):
+        """
+        Delete all temporary files upon destruction.
+        """
+        MAX_TRIES = 10
+
+        # first, close the open osm_file,
+        # delete Java objects, and
+        # trigger Java garbage collection
+        self.osm_file.close()
+        try:
+            del self.street_layer
+        except AttributeError:  # might not have been accessed a single time
+            pass
+        try:
+            del self.transit_layer
+        except AttributeError:
+            pass
+        del self._transport_network
+
+        time.sleep(0.5)
+        jpype.java.lang.System.gc()
+
+        # then, try to delete all files in cache directory
+        temporary_files = [child for child in self._cache_directory.iterdir()]
+        for _ in range(MAX_TRIES):
+            for temporary_file in temporary_files:
+                try:
+                    temporary_file.unlink()
+                    temporary_files.remove(temporary_file)
+                except (FileNotFoundError, IOError, OSError):
+                    print(
+                        f"could not delete {temporary_file}, keeping in {temporary_files}"
+                    )
+                    pass
+
+            if not temporary_files:  # empty
+                break
+
+            print(f"waiting for still open files, round {_}")
+            time.sleep(0.1)
+        else:
+            remaining_files = ", ".join(
+                [f"{temporary_file}" for temporary_file in temporary_files]
+            )
+            warnings.warn(
+                f"Failed to clean cache directory ‘{self._cache_directory}’. "
+                f"Remaining file(s): {remaining_files}",
+                RuntimeWarning,
+            )
+
+        # finally, try to delete the cache directory itself
+        try:
+            self._cache_directory.rmdir()
+        except OSError:  # not empty
+            pass  # the JVM destructor is going to take care of this
 
     @classmethod
     def from_directory(cls, path):
@@ -138,11 +198,17 @@ class TransportNetwork:
         """Exit context."""
         return False
 
+    @property
+    def extent(self):
+        # TODO: figure out how to get the extent of the GTFS schedule,
+        # then find the smaller extent of the two (or the larger one?)
+        return self.street_layer.extent
+
     @functools.cached_property
     def _cache_directory(self):
         cache_dir = (
             pathlib.Path(Config().TEMP_DIR)
-            / f"{self.__class__.__name__:s}_{id(self):x}"
+            / f"{self.__class__.__name__:s}_{id(self):x}_{random.randrange(16**5):07x}"
         )
         cache_dir.mkdir(exist_ok=True)
         return cache_dir
@@ -219,7 +285,7 @@ class TransportNetwork:
             )
         )
 
-    @property
+    @functools.cached_property
     def street_layer(self):
         """Expose the `TransportNetwork`’s `streetLayer` to Python."""
         return StreetLayer.from_r5_street_layer(self._transport_network.streetLayer)
@@ -232,10 +298,7 @@ class TransportNetwork:
     @functools.cached_property
     def transit_layer(self):
         """Expose the `TransportNetwork`’s `transitLayer` to Python."""
-        transit_layer = TransitLayer.from_r5_transit_layer(
-            self._transport_network.transitLayer
-        )
-        return transit_layer
+        return TransitLayer.from_r5_transit_layer(self._transport_network.transitLayer)
 
 
 @jpype._jcustomizer.JConversion(

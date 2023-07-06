@@ -71,37 +71,65 @@ class TripLeg:
         if isinstance(other, self.__class__):
             trip = Trip([self, other])
             return trip
+        elif isinstance(other, Trip):
+            other.legs = [self] + other.legs
+            return other
         else:
-            raise NotImplementedError(
-                f"Cannot use operator '+' on '{type(other)}' and '{type(self)}'"
+            raise TypeError(
+                f"unsupported operand type(s) for '+': '{type(other)}' and '{type(self)}'"
             )
 
     def __radd__(self, other):
         from .trip import Trip
 
-        if isinstance(other, Trip):
+        if other == 0:  # first iteration of sum()
+            return self
+        elif isinstance(other, Trip):
             other.legs.append(self)
             return other
-        elif isinstance(other, self.__class__):
-            trip = Trip([other, self])
-            return trip
         else:
-            raise NotImplementedError(
-                f"Cannot use operator '+' on '{type(self)}' and '{type(other)}'"
+            return self.__add__(other)
+
+    def __gt__(self, other):
+        if isinstance(other, TripLeg):
+            return (self.travel_time + self.wait_time) > (
+                other.travel_time + other.wait_time
             )
 
-    def __str__(self):
-        first_point = self.geometry.coords[0]
-        last_point = self.geometry.coords[-1]
-        return (
-            "<"
-            f"{self.__class__.__name__}: "
-            f"{self.transport_mode}, "
-            f"{self.distance}m, "
-            f"{self.travel_time.total_seconds():0.1f}s, "
-            f"{first_point} -> {last_point}"
-            ">"
-        )
+    def __ge__(self, other):
+        if isinstance(other, TripLeg):
+            return (self.travel_time + self.wait_time) >= (
+                other.travel_time + other.wait_time
+            )
+
+    def __lt__(self, other):
+        if isinstance(other, TripLeg):
+            return (self.travel_time + self.wait_time) < (
+                other.travel_time + other.wait_time
+            )
+
+    def __le__(self, other):
+        if isinstance(other, TripLeg):
+            return (self.travel_time + self.wait_time) <= (
+                other.travel_time + other.wait_time
+            )
+
+    def __repr__(self):
+        try:
+            first_point = self.geometry.coords[0]
+            last_point = self.geometry.coords[-1]
+            _repr = (
+                "<"
+                f"{self.__class__.__name__}: "
+                f"{self.transport_mode}, "
+                f"{self.distance}m, "
+                f"{self.travel_time.total_seconds():0.1f}s, "
+                f"{first_point} -> {last_point}"
+                ">"
+            )
+        except AttributeError:
+            _repr = f"<{self.__class__.__name__}>"
+        return _repr
 
     def as_table_row(self):
         """

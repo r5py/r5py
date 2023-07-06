@@ -128,7 +128,11 @@ class TestDetailedItinerariesComputerInputValidation:
             destinations=destinations,
             departure=departure_datetime,
         )
-        _ = detailed_itineraries_computer_computer.compute_travel_details()
+        with pytest.warns(
+            RuntimeWarning,
+            match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`",
+        ):
+            _ = detailed_itineraries_computer_computer.compute_travel_details()
 
     def test_try_to_route_without_origins(
         self,
@@ -153,25 +157,18 @@ class TestDetailedItinerariesComputerInputValidation:
             origins=population_grid_points[0:3],
             departure=departure_datetime,
         )
-        _ = detailed_itineraries_computer.compute_travel_details()
-        assert detailed_itineraries_computer.origins.equals(
-            detailed_itineraries_computer.destinations
+        with pytest.warns(
+            RuntimeWarning,
+            match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`",
+        ):
+            _ = detailed_itineraries_computer.compute_travel_details()
+        pandas.testing.assert_frame_equal(
+            detailed_itineraries_computer.origins,
+            detailed_itineraries_computer.destinations,
         )
 
 
 class TestDetailedItinerariesComputer:
-    @pytest.fixture()
-    def population_grid_points_first_three(self, population_grid_points):
-        yield population_grid_points[0:3]
-
-    @pytest.fixture()
-    def population_grid_points_second_three(self, population_grid_points):
-        yield population_grid_points[4:7]
-
-    @pytest.fixture()
-    def population_grid_points_four(self, population_grid_points):
-        yield population_grid_points[10:14]
-
     def test_detailed_itineraries_initialization(
         self,
         transport_network,
@@ -379,7 +376,7 @@ class TestDetailedItinerariesComputer:
             ["from_id", "to_id"]
         ).sort_index()
 
-        assert travel_details.equals(expected_travel_details)
+        pandas.testing.assert_frame_equal(travel_details, expected_travel_details)
 
     def test_snap_to_network_with_unsnappable_origins(
         self,
@@ -508,10 +505,10 @@ class TestDetailedItinerariesComputer:
                 r5py.TransportMode.CAR,
                 pytest.lazy_fixture("detailed_itineraries_car"),
             ),
-            # (
-            #     r5py.TransportMode.TRANSIT,
-            #     pytest.lazy_fixture("detailed_itineraries_transit"),
-            # ),
+            (
+                r5py.TransportMode.TRANSIT,
+                pytest.lazy_fixture("detailed_itineraries_transit"),
+            ),
             (
                 r5py.TransportMode.WALK,
                 pytest.lazy_fixture("detailed_itineraries_walk"),
@@ -534,10 +531,20 @@ class TestDetailedItinerariesComputer:
             departure=departure_datetime,
             transport_modes=[transport_mode],
         )
-        travel_details = detailed_itineraries_computer.compute_travel_details()
+        if transport_mode == r5py.TransportMode.TRANSIT:
+            with pytest.warns(
+                RuntimeWarning,
+                match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`",
+            ):
+                travel_details = detailed_itineraries_computer.compute_travel_details()
+        else:
+            travel_details = detailed_itineraries_computer.compute_travel_details()
 
         travel_details.travel_time = travel_details.travel_time.apply(
             lambda t: t.total_seconds()
+        )
+        travel_details.wait_time = travel_details.wait_time.apply(
+            lambda t: None if t is None else t.total_seconds()
         )
         travel_details.transport_mode = travel_details.transport_mode.apply(
             lambda t: t.value

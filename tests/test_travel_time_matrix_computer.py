@@ -151,8 +151,9 @@ class TestTravelTimeMatrixInputValidation:
             departure=departure_datetime,
         )
         _ = travel_time_matrix_computer.compute_travel_times()
-        assert travel_time_matrix_computer.origins.equals(
-            travel_time_matrix_computer.destinations
+        pandas.testing.assert_frame_equal(
+            travel_time_matrix_computer.origins,
+            travel_time_matrix_computer.destinations,
         )
 
 
@@ -384,7 +385,7 @@ class TestTravelTimeMatrixComputer:
             ["from_id", "to_id"]
         ).sort_index()
 
-        assert travel_times.equals(expected_travel_times)
+        pandas.testing.assert_frame_equal(travel_times, expected_travel_times)
 
     def test_snap_to_network_with_unsnappable_origins(
         self,

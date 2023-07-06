@@ -14,6 +14,7 @@ dependencies:
     - jpype1
     - numpy
     - pandas
+    - pyproj
     - psutil
     - requests
     - shapely

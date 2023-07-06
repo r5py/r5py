@@ -71,6 +71,31 @@ class TransitLayer:
             covers = False
         return covers
 
+    def get_street_vertex_for_stop(self, stop):
+        """
+        Get the street layer’s vertex corresponding to `stop`.
+
+        Arguments
+        ---------
+        stop : int
+            ID of the public transport stop for which to find a vertex
+
+        Returns
+        -------
+        int
+            ID of the vertex corresponding to the public transport stop
+        """
+        street_vertex = self._transit_layer.streetVertexForStop.get(stop)
+        return street_vertex
+
+    @functools.cached_property
+    def routes(self):
+        return list(self._transit_layer.routes)
+
+    @functools.cached_property
+    def trip_patterns(self):
+        return list(self._transit_layer.tripPatterns)
+
 
 @jpype._jcustomizer.JConversion(
     "com.conveyal.r5.transit.TransitLayer", exact=TransitLayer

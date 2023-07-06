@@ -23,7 +23,7 @@ MAX_INT32 = (2**31) - 1
 # how many (Python) threads to start
 # (they still run many Java threads, so be careful what you wish for ;) )
 # TODO: benchmark the optimal number of threads
-NUM_THREADS = math.ceil(multiprocessing.cpu_count() * 0.75)
+NUM_THREADS = math.ceil(multiprocessing.cpu_count() * 0.5)
 
 
 class BaseTravelTimeMatrixComputer:
@@ -131,7 +131,8 @@ class BaseTravelTimeMatrixComputer:
 
         try:
             self.destinations
-        except AttributeError:
+            assert self.destinations is not None
+        except (AssertionError, AttributeError):
             self.destinations = self.origins.copy()
             if self.verbose:
                 warnings.warn(

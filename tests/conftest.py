@@ -44,6 +44,10 @@ R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
 R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
     "14aa2347be79c280e4d0fd3a137fb8f5bf2863261a1e48e1a122df1a52a0f453"
 )
+R5_JAR_CUSTOM_URL = (
+    "https://github.com/DigitalGeographyLab/r5/releases/"
+    "download/v6.9-post16-g1054c1e-20230619/r5-v6.9-post16-g1054c1e-20230619-all.jar"
+)
 
 
 SNAPPED_POPULATION_GRID_POINTS = (
@@ -161,6 +165,11 @@ def r5_jar_sha256_github_error_message_when_posting():
 @pytest.fixture(scope="session")
 def r5_jar_url():
     yield R5_JAR_URL
+
+
+@pytest.fixture(scope="session")
+def r5_jar_custom_url():
+    yield R5_JAR_CUSTOM_URL
 
 
 @pytest.fixture

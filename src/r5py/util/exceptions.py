@@ -28,3 +28,7 @@ class MissingColumnError(ValueError, R5pyError):
 
 class NoIDColumnError(MissingColumnError):
     """An input data set does not have a required `id` column."""
+
+
+class UnexpectedClasspathSchema(ValueError, R5pyError):
+    """A classpath was supplied as an URI, but could not be parsed."""

@@ -24,6 +24,12 @@ class TestTripLeg:
             == "<TripLeg: TransportMode.TRANSIT, 12.67m, 600.0s, (0.0, 0.0) -> (2.0, 2.0)>"
         )
 
+        trip_leg = r5py.r5.trip_leg.TripLeg()
+        assert (
+            repr(trip_leg)
+            == "<TripLeg>"
+        )
+
     def test_add(self):
         trip_leg1 = r5py.r5.trip_leg.TripLeg(
             r5py.TransportMode.TRANSIT,

@@ -83,5 +83,10 @@ class TestTrip:
         ]
 
     def test_distance_none(self):
-        trip = sum([r5py.r5.trip_leg.TripLeg()])
+        trip = sum(
+            [
+                r5py.r5.trip_leg.TripLeg(distance=None),
+                r5py.r5.trip_leg.TripLeg(distance=None),
+            ]
+        )
         assert trip.distance is None

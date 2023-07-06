@@ -32,6 +32,8 @@ sys.path.insert(0, str(R5PY_DIRECTORY))
 
 :::{dropdown} What is a travel time matrix?
 :open:
+:color: light
+:margin: 1 5 0 0
 
 A travel time matrix is a tool and data set that allows researchers to study how
 easily people can reach different destination within and beyond cities, and how
@@ -65,7 +67,7 @@ As briefly visited in [Quickstart](quickstart) and dicussed in detail in [Data
 Requirements](data-requirements), fundamentally, two types of input data are
 required for computing a travel time matrix:
 
-- a transport network, and 
+- a transport network, and
 - a set of origins and destinations
 
 First, create a {class}`TransportNetwork<r5py.TransportNetwork>` and load an
@@ -78,9 +80,9 @@ schedule in GTFS format covering the same area:
 import r5py
 
 transport_network = r5py.TransportNetwork(
-    DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf",
+    DATA_DIRECTORY / "São Paulo" / "spo_osm.pbf",
     [
-        DATA_DIRECTORY / "Helsinki" / "GTFS.zip",
+        DATA_DIRECTORY / "São Paulo" / "spo_gtfs.zip",
     ]
 )
 ```
@@ -98,16 +100,65 @@ import h3
 import shapely
 
 HELSINKI_CENTRE = shapely.box(24.9318, 60.1550, 24.9535, 60.1751)
+
+SAO_PAULO_CENTRE = shapely.box(-46.650, -23.558, -46.620, -23.531)
 ```
 
 ```{code-cell} ipython3
-dir(h3)
+
 ```
 
 ```{code-cell} ipython3
-dir(HELSINKI_CENTRE)
-list(HELSINKI_CENTRE.exterior.coords)
-h3.Polygon(list(HELSINKI_CENTRE.exterior.coords))
+h3.Polygon(list(SAO_PAULO_CENTRE.exterior.coords))
+```
+
+```{code-cell} ipython3
+ZOOM_LEVEL = 9
+
+h3_cells = [
+    (cell, shapely.Polygon(h3.cell_to_boundary(cell)))
+    for cell in h3.polygon_to_cells(h3.Polygon(list(SAO_PAULO_CENTRE.exterior.coords)), ZOOM_LEVEL)
+]
+
+import geopandas
+
+hexagon_grid = geopandas.GeoDataFrame(
+    {
+        "id": [cell[0] for cell in h3_cells],
+        "geometry": [cell[1] for cell in h3_cells]
+    },
+    crs="EPSG:4326"
+)
+hexagon_grid
+```
+
+```{code-cell} ipython3
+import pandas
+hexagon_grid = pandas.read_csv(DATA_DIRECTORY / "São Paulo" / "spo_hexgrid.csv")
+hexagon_grid["geometry"] = hexagon_grid["id"].apply(lambda id : shapely.Polygon(h3.cell_to_boundary(id, True)))
+hexagon_grid = geopandas.GeoDataFrame(hexagon_grid, crs="EPSG:4326")
+hexagon_grid
+```
+
+```{code-cell} ipython3
+hexagon_grid.explore()
+```
+
+```{code-cell} ipython3
+origins = hexagon_grid.copy()
+origins["geometry"] = origins.geometry.centroid
+```
+
+```{code-cell} ipython3
+import datetime
+
+travel_time_matrix = r5py.TravelTimeMatrixComputer(
+    transport_network,
+    origins=origins,
+    transport_modes=[r5py.TransportMode.TRANSIT],
+    departure=datetime.datetime(2019,5,13, 14, 0, 0),
+).compute_travel_times()
+travel_time_matrix
 ```
 
 ## Bibliography

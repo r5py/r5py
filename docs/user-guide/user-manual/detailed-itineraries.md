@@ -10,12 +10,12 @@ jupytext:
     jupytext_version: 1.14.1
 ---
 
-# TODO:
-# - a lot
-# - specifically, do not forget to mention the following things:
-#   - if R5’s TransitLayer is compiled with SAVE_SHAPES=false (the default),
-#     geometries for PT routing are straight lines between stops; distances are
-#     based on these geometries and, consequently, shortened
+% TODO:
+% - a lot
+% - specifically, do not forget to mention the following things:
+%   - if R5’s TransitLayer is compiled with SAVE_SHAPES=false (the default),
+%     geometries for PT routing are straight lines between stops; distances are
+%     based on these geometries and, consequently, shortened
 
 
 ```{code-cell}

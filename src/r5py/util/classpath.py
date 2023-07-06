@@ -4,6 +4,7 @@
 
 import hashlib
 import pathlib
+import string
 import urllib.parse
 import warnings
 
@@ -40,7 +41,12 @@ def find_r5_classpath(arguments):
     if arguments.r5_classpath:
         schema, *_ = urllib.parse.urlparse(arguments.r5_classpath)
 
-        if schema in ("file", ""):
+        # fmt: off
+        if (
+            schema in ("file", "")
+            or (len(schema) == 1 and schema in string.ascii_letters)  # windows drive letter
+        ):
+            # fmt: on
             if pathlib.Path(arguments.r5_classpath).exists():
                 r5_classpath = arguments.r5_classpath
 

@@ -39,7 +39,6 @@ def find_r5_classpath(arguments):
 
     if arguments.r5_classpath:
         schema, *_ = urllib.parse.urlparse(arguments.r5_classpath)
-        print(schema, schema == "", arguments.r5_classpath)
 
         if schema in ("file", ""):
             if pathlib.Path(arguments.r5_classpath).exists():

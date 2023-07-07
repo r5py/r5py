@@ -9,29 +9,40 @@ dependencies:
     - filelock
     - fiona
     - geopandas
+    - importlib_resources
     - joblib
     - jpype1
     - numpy
     - pandas
+    - pyproj
     - psutil
     - requests
+
     # testing / dev / docs related
     - black
+    - black-jupyter
     - codecov
     - folium
     - gitpython
     - jupyterlab
-    - jupytext=1.14.0
+    - jupyterlab-myst
+    - jupytext[myst]
     - mapclassify
     - matplotlib
     - myst-nb
-    - myst-parser
     - nbsphinx
     - nbstripout
-    - numpydoc
+    - openjdk
     - pytest
+    - pytest-asyncio
     - pytest-cov
     - pytest-lazy-fixture
     - shapely
     - sphinx
     - sphinx-book-theme
+    - sphinx-design
+
+    - pip
+    - pip:
+        - pybtex-apa7-style
+        - sphinxcontrib-images

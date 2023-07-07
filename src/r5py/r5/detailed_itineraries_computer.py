@@ -1,42 +1,35 @@
 #!/usr/bin/env python3
 
+
 """Calculate detailed itineraries between many origins and destinations."""
 
+
+import copy
+import warnings
+
+import joblib
 import pandas
 
-from .breakdown_stat import BreakdownStat
-from .travel_time_matrix_computer import TravelTimeMatrixComputer
+from .base_travel_time_matrix_computer import BaseTravelTimeMatrixComputer
+from .trip import Trip
+from .trip_planner import TripPlanner
 
 
 __all__ = ["DetailedItinerariesComputer"]
 
 
-# Which columns (and types) are returned by
-# com.conveyal.r5.analyst.cluster.PathResult.summarizeIterations?
-# Note that these are already camel_case (Python) names and pandas/numpy (d)types.
-DATA_COLUMNS = {
-    "routes": pandas.SparseDtype(str),
-    "board_stops": pandas.SparseDtype(str),
-    "alight_stops": pandas.SparseDtype(str),
-    "ride_times": pandas.SparseDtype(float),
-    "access_time": float,
-    "egress_time": float,
-    "transfer_time": float,
-    "wait_times": pandas.SparseDtype(float),
-    "total_time": float,
-    "n_iterations": int,
-}
-
-
-class DetailedItinerariesComputer(TravelTimeMatrixComputer):
+class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
     """Compute detailed itineraries between many origins and destinations."""
+
+    COLUMNS = ["from_id", "to_id", "option"] + Trip.COLUMNS
 
     def __init__(
         self,
         transport_network,
-        origins,
+        origins=None,
         destinations=None,
-        breakdown_stat=BreakdownStat.MEAN,
+        snap_to_network=False,
+        force_all_to_all=False,
         **kwargs,
     ):
         """
@@ -57,161 +50,131 @@ class DetailedItinerariesComputer(TravelTimeMatrixComputer):
             Places to find a route _to_
             Has to have a point geometry, and at least an `id` column
             If omitted, use same data set as for origins
-        breakdown_stat : r5py.BreakdownStat
-            Summarise the values of the detailed breakdown using this statistical function.
-            Default: r5py.BreakdownStat.MEAN
+        snap_to_network : bool or int, default False
+            Should origin an destination points be snapped to the street network
+            before routing? If `True`, the default search radius (defined in
+            `com.conveyal.r5.streets.StreetLayer.LINK_RADIUS_METERS`) is used,
+            if `int`, use `snap_to_network` meters as the search radius.
+        force_all_to_all : bool, default False
+            If ``origins`` and ``destinations`` have the same length, by
+            default, ``DetailedItinerariesComputer`` finds routes between pairs
+            of origins and destinations, i.e., it routes from origin #1 to
+            destination #1, origin #2 to destination #2, ... .
+            Set ``all_to_all=True`` to route from each origin to all
+            destinations (this is the default, if ``origins`` and ``destinations``
+            have different lengths, or if ``destinations`` is omitted)
         **kwargs : mixed
             Any arguments than can be passed to r5py.RegionalTask:
             ``departure``, ``departure_time_window``, ``percentiles``, ``transport_modes``,
             ``access_modes``, ``egress_modes``, ``max_time``, ``max_time_walking``,
             ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
             ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
+            Not that not all arguments might make sense in this context, and the
+            underlying R5 engine might ignore some of them.
         """
-        super().__init__(transport_network, origins, destinations, **kwargs)
+        super().__init__(
+            transport_network,
+            origins,
+            destinations,
+            snap_to_network,
+            **kwargs,
+        )
 
-        self.request.breakdown = self.breakdown = True
-        self.breakdown_stat = breakdown_stat
+        if destinations is None:
+            self.all_to_all = True
+            if self.verbose:
+                warnings.warn(
+                    "No destinations specified, computing an all-to-all matrix",
+                    RuntimeWarning,
+                )
 
-    def compute_travel_times(self):
+        elif len(origins) != len(destinations):
+            self.all_to_all = True
+            if self.verbose:
+                warnings.warn(
+                    "Origins and destinations are of different length, computing an all-to-all matrix",
+                    RuntimeWarning,
+                )
+        else:
+            self.all_to_all = force_all_to_all
+
+    def compute_travel_details(self):
         """
         Compute travel times from all origins to all destinations.
 
         Returns
         -------
         pandas.DataFrame
-            A data frame containing the columns ``from_id``, ``to_id``, and
-            ``travel_time``, where ``travel_time`` is the median calculated
-            travel time between ``from_id`` and ``to_id`` or ``numpy.nan``
-            if no connection with the given parameters was found.
-            Detailed information about the routes found is reported in the
-            columns ``routes`` (route numbers of public transport lines),
-            ``board_stops`` and ``alight_stops`` (public transport stops at
-            which a vehicle/line is boarded or alighted), ``ride_times`` (times
-            aboard a public transport vehicle or line), ``access_time`` (time
-            to reach the road (when on car or bicycle) or the first public transport
-            stop from ``from_id``), ``egress_time`` (time from road or last
-            public transport stop to ``to_id``), ``total_time`` (overall travel
-            time), and ``n_iterations`` (number of McRAPTOR iterations used).
-            If non-default ``percentiles`` were requested: one or more columns
-            ``travel_time_p{:02d}`` representing the particular percentile of
-            travel time.
-
+            TODO: Add description of output data frame columns and format
         """
-        return super().compute_travel_times()
 
-    def _parse_results(self, from_id, results):
-        """
-        Parse the *detailed* results of an R5 TravelTimeMatrix.
+        self._prepare_origins_destinations()
 
-        Parse data as returned from `com.conveyal.r5.analyst.TravelTimeComputer.computeTravelTimes()`,
-        cast data to Python types, and return as a `pandas.Dataframe`. Because of the way r5py
-        and R5 interact, this parses the results of routing from one origin to many (all) destinations.
-
-        Arguments
-        ---------
-        from_id : mixed
-            The value of the ID column of the origin record to report on.
-        results : `com.conveyal.r5.OneOriginResult` (Java object)
-
-        Returns
-        -------
-        pandas.DataFrame
-            A data frame containing the columns ``from_id``, ``to_id``, and
-            detailed information about the routes, reported in the
-            columns ``routes`` (route numbers of public transport lines),
-            ``board_stops`` and ``alight_stops`` (public transport stops at
-            which a vehicle/line is boarded or alighted), ``ride_times`` (times
-            aboard a public transport vehicle or line), ``access_time`` (time
-            to reach the road (when on car or bicycle) or the first public transport
-            stop from ``from_id``), ``egress_time`` (time from road or last
-            public transport stop to ``to_id``), ``total_time`` (overall travel
-            time), and ``n_iterations`` (number of McRAPTOR iterations used).
-
-            Results can contain more than one row per ``from_id``/``to_id`` pair.
-        """
-        # Let’s start with an empty DataFrame with the correct columns (and types)
-        columns = {
-            "from_id": [],
-            "to_id": [],
-        }
-        columns.update(
-            {
-                column_name: pandas.Series(dtype=column_type)
-                for column_name, column_type in DATA_COLUMNS.items()
-            }
-        )
-        od_matrix = pandas.DataFrame(columns)
-
-        # R5 returns multiple rows per O/D-pair, in a nested array
-        # (first dimension == to_id, second dimension == different
-        # routes for O/D pair, third dimension == data records)
-        #
-        # On top of that, some of the columns are arrays themselves,
-        # and are represented as a pipe-separated string
-        #
-        # typically, data look something like this:
-        #
-        # [
-        #   [
-        #      ['1002|1003', '1020446|1090415', '1090415|1070417', '6.0|1.0', '7.3', '3.7', '0.0', '1.3|2.0', '21.3', '1']  # noqa: E501
-        #       ...
-        #   ],
-        #    ...
-        # ]
-
-        # First, unnest the data, and add `from_id` and `to_id` to each row
-        # (After this, we have a 2dim table of several rows per O/D pair)
-        details = [
-            [from_id, to_id] + list(row)
-            for to_id, record in zip(
-                self.destinations.id,
-                results.paths.summarizeIterations(self.breakdown_stat.value),
+        # loop over all origin/destination pairs, modify the request, and
+        # compute times, distance, and other details for each trip
+        with joblib.Parallel(
+            prefer="threads",
+            verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
+            n_jobs=self.NUM_THREADS,
+        ) as parallel:
+            od_matrix = pandas.concat(
+                parallel(
+                    joblib.delayed(self._travel_details_per_od_pair)(from_id, to_id)
+                    for _, (from_id, to_id) in self.od_pairs.iterrows()
+                ),
+                ignore_index=True,
             )
-            for row in record
-        ]
 
-        # Because casting directly from jpype’s Java types does not always work
-        # perfectly (probably because the Python types/‘cast function’ accept
-        # mixed values, so jpype cannot decide), let’s just cast _everything_ to
-        # ‘nullable’ `str` to be on the safe side
-        details = [
-            [None if value is None else str(value) for value in row] for row in details
-        ]
-
-        # Then, cast the data to Python types, and split the pipe-separated arrays
-        #
-        # We do this by column, because it should be fast in pandas, and because
-        # more legible and comprehensible what we do.
-        # (`zip(*details)` transposes rows and columns)
-        details = list(zip(*details))
-        od_matrix["from_id"] = details[0]
-        od_matrix["to_id"] = details[1]
-
-        for column_name, column_type, column_data in zip(
-            DATA_COLUMNS.keys(),
-            DATA_COLUMNS.values(),
-            details[2:],
-        ):
-            # split the array columns (they are pipe-separated strings)
-            # also, cast to destination type
-            if isinstance(column_type, pandas.SparseDtype):
-                column_data = [
-                    [
-                        column_type.subtype.type(array_member_value)  # cast
-                        if array_member_value
-                        else None  # if False-ish -> None
-                        for array_member_value in value.split("|")
-                    ]
-                    if value is not None
-                    else []
-                    for value in column_data
-                ]
-            else:
-                column_data = [
-                    column_type(value) if value else None  # cast (nullable)
-                    for value in column_data
-                ]
-
-            od_matrix[column_name] = column_data
-
+        try:
+            od_matrix = od_matrix.to_crs(self._origins_crs)
+        except AttributeError:  # (not a GeoDataFrame)
+            pass
         return od_matrix
+
+    def _prepare_origins_destinations(self):
+        """
+        Make sure we received enough information to route from origins to
+        destinations.
+        """
+
+        super()._prepare_origins_destinations()
+
+        if self.all_to_all:
+            # manually create a list of all all-to-all permutations
+            self.od_pairs = self.origins[["id"]].join(
+                self.destinations[["id"]],
+                how="cross",
+                lsuffix="_origin",
+                rsuffix="_destination",
+            )
+        else:
+            # origins and destinations are same length, run one-to-one routing
+            self.od_pairs = pandas.DataFrame(
+                {
+                    "id_origin": self.origins.id.values,
+                    "id_destination": self.destinations.id.values,
+                }
+            )
+
+    def _travel_details_per_od_pair(self, from_id, to_id):
+        origin = self.origins[self.origins.id == from_id]
+        destination = self.destinations[self.destinations.id == to_id]
+
+        request = copy.copy(self.request)
+        request._regional_task.fromLat = origin.geometry.item().y
+        request._regional_task.fromLon = origin.geometry.item().x
+        request._regional_task.toLat = destination.geometry.item().y
+        request._regional_task.toLon = destination.geometry.item().x
+
+        trip_planner = TripPlanner(self.transport_network, request)
+        trips = trip_planner.trips
+
+        # fmt: off
+        trips = [
+            [from_id, to_id, option] + segment
+            for option, trip in enumerate(trips)
+            for segment in trip.as_table()
+        ]
+        # fmt: on
+
+        return pandas.DataFrame(trips, columns=self.COLUMNS)

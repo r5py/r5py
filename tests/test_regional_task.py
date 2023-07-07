@@ -21,24 +21,34 @@ class TestRegionalTask:
         ["access_modes", "expected"],
         [
             (
-                [r5py.LegMode.WALK],
-                set([r5py.LegMode.WALK]),
+                [r5py.TransportMode.WALK],
+                set([r5py.TransportMode.WALK]),
             ),
             (
-                [r5py.LegMode.BICYCLE],
-                set([r5py.LegMode.BICYCLE]),
+                [r5py.TransportMode.BICYCLE],
+                set([r5py.TransportMode.BICYCLE]),
             ),
             (
-                [r5py.LegMode.CAR],
-                set([r5py.LegMode.CAR]),
+                [r5py.TransportMode.CAR],
+                set([r5py.TransportMode.CAR]),
             ),
             (
-                [r5py.LegMode.WALK, r5py.LegMode.BICYCLE],
-                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE]),
+                [r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE],
+                set([r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE]),
             ),
             (
-                [r5py.LegMode.WALK, r5py.LegMode.BICYCLE, r5py.LegMode.CAR],
-                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE, r5py.LegMode.CAR]),
+                [
+                    r5py.TransportMode.WALK,
+                    r5py.TransportMode.BICYCLE,
+                    r5py.TransportMode.CAR,
+                ],
+                set(
+                    [
+                        r5py.TransportMode.WALK,
+                        r5py.TransportMode.BICYCLE,
+                        r5py.TransportMode.CAR,
+                    ]
+                ),
             ),
         ],
     )
@@ -54,23 +64,29 @@ class TestRegionalTask:
         [
             (
                 ["WALK"],
-                set([r5py.LegMode.WALK]),
+                set([r5py.TransportMode.WALK]),
             ),
             (
                 ["BICYCLE"],
-                set([r5py.LegMode.BICYCLE]),
+                set([r5py.TransportMode.BICYCLE]),
             ),
             (
                 ["CAR"],
-                set([r5py.LegMode.CAR]),
+                set([r5py.TransportMode.CAR]),
             ),
             (
                 ["WALK", "BICYCLE"],
-                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE]),
+                set([r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE]),
             ),
             (
                 ["WALK", "BICYCLE", "CAR"],
-                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE, r5py.LegMode.CAR]),
+                set(
+                    [
+                        r5py.TransportMode.WALK,
+                        r5py.TransportMode.BICYCLE,
+                        r5py.TransportMode.CAR,
+                    ]
+                ),
             ),
         ],
     )
@@ -116,24 +132,34 @@ class TestRegionalTask:
         ["egress_modes", "expected"],
         [
             (
-                [r5py.LegMode.WALK],
-                set([r5py.LegMode.WALK]),
+                [r5py.TransportMode.WALK],
+                set([r5py.TransportMode.WALK]),
             ),
             (
-                [r5py.LegMode.BICYCLE],
-                set([r5py.LegMode.BICYCLE]),
+                [r5py.TransportMode.BICYCLE],
+                set([r5py.TransportMode.BICYCLE]),
             ),
             (
-                [r5py.LegMode.CAR],
-                set([r5py.LegMode.CAR]),
+                [r5py.TransportMode.CAR],
+                set([r5py.TransportMode.CAR]),
             ),
             (
-                [r5py.LegMode.WALK, r5py.LegMode.BICYCLE],
-                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE]),
+                [r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE],
+                set([r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE]),
             ),
             (
-                [r5py.LegMode.WALK, r5py.LegMode.BICYCLE, r5py.LegMode.CAR],
-                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE, r5py.LegMode.CAR]),
+                [
+                    r5py.TransportMode.WALK,
+                    r5py.TransportMode.BICYCLE,
+                    r5py.TransportMode.CAR,
+                ],
+                set(
+                    [
+                        r5py.TransportMode.WALK,
+                        r5py.TransportMode.BICYCLE,
+                        r5py.TransportMode.CAR,
+                    ]
+                ),
             ),
         ],
     )
@@ -149,23 +175,29 @@ class TestRegionalTask:
         [
             (
                 ["WALK"],
-                set([r5py.LegMode.WALK]),
+                set([r5py.TransportMode.WALK]),
             ),
             (
                 ["BICYCLE"],
-                set([r5py.LegMode.BICYCLE]),
+                set([r5py.TransportMode.BICYCLE]),
             ),
             (
                 ["CAR"],
-                set([r5py.LegMode.CAR]),
+                set([r5py.TransportMode.CAR]),
             ),
             (
                 ["WALK", "BICYCLE"],
-                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE]),
+                set([r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE]),
             ),
             (
                 ["WALK", "BICYCLE", "CAR"],
-                set([r5py.LegMode.WALK, r5py.LegMode.BICYCLE, r5py.LegMode.CAR]),
+                set(
+                    [
+                        r5py.TransportMode.WALK,
+                        r5py.TransportMode.BICYCLE,
+                        r5py.TransportMode.CAR,
+                    ]
+                ),
             ),
         ],
     )
@@ -445,15 +477,15 @@ class TestRegionalTask:
         [
             (
                 ["WALK"],
-                set([r5py.LegMode.WALK]),
+                set([r5py.TransportMode.WALK]),
             ),
             (
                 ["TRANSIT", "WALK"],
-                set([r5py.TransitMode.TRANSIT, r5py.LegMode.WALK]),
+                set([r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK]),
             ),
             (
                 ["GONDOLA", "SUBWAY"],
-                set([r5py.TransitMode.GONDOLA, r5py.TransitMode.SUBWAY]),
+                set([r5py.TransportMode.GONDOLA, r5py.TransportMode.SUBWAY]),
             ),
         ],
     )

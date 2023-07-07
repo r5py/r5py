@@ -35,6 +35,24 @@ class TestVerboseWarnings:
                 regional_task,
             ).trips
 
+    def test_detailed_itineraries_warn_no_destinations_all_to_all(
+        self,
+        transport_network,
+        population_grid_points_first_three,
+        departure_datetime,
+        setup_verbose_mode,
+    ):
+        with pytest.warns(
+            RuntimeWarning,
+            match="No destinations specified, computing an all-to-all matrix",
+        ):
+            r5py.DetailedItinerariesComputer(
+                transport_network=transport_network,
+                origins=population_grid_points_first_three,
+                departure=departure_datetime,
+                transport_modes=[r5py.TransportMode.WALK],
+            ).compute_travel_details()
+
     def test_detailed_itineraries_warn_diff_length_all_to_all(
         self,
         transport_network,

@@ -4,9 +4,14 @@
 
 import hashlib
 import pathlib
+import string
+import urllib.parse
 import warnings
 
+import requests
+
 from .config import Config
+from .exceptions import UnexpectedClasspathSchema
 from .validating_requests_session import ValidatingRequestsSession
 from .warnings import R5pyWarning
 
@@ -31,10 +36,33 @@ config.argparser.add(
 
 
 def find_r5_classpath(arguments):
-    if arguments.r5_classpath and pathlib.Path(arguments.r5_classpath).exists():
-        # do not test local files’ checksums, as they might be customly compiled
-        r5_classpath = arguments.r5_classpath
-    else:
+    r5_classpath = None
+
+    if arguments.r5_classpath:
+        schema, *_ = urllib.parse.urlparse(arguments.r5_classpath)
+
+        # fmt: off
+        if (
+            schema in ("file", "")
+            or (len(schema) == 1 and schema in string.ascii_letters)  # windows drive letter
+        ):
+            # fmt: on
+            if pathlib.Path(arguments.r5_classpath).exists():
+                r5_classpath = arguments.r5_classpath
+
+        elif schema in ("https", "http"):
+            r5_classpath = config.CACHE_DIR / pathlib.Path(arguments.r5_classpath).name
+            with requests.get(arguments.r5_classpath) as response:
+                r5_classpath.write_bytes(response.content)
+            r5_classpath = str(r5_classpath)
+
+        else:
+            raise UnexpectedClasspathSchema(
+                f"Could not parse `r5_classpath`: "
+                f"schema {schema}:// is not supported"
+            )
+
+    if r5_classpath is None:
         r5_classpath = str(config.CACHE_DIR / pathlib.Path(R5_JAR_URL).name)
         try:
             with open(r5_classpath, "rb") as jar:
@@ -54,6 +82,7 @@ def find_r5_classpath(arguments):
                     f"Successfully downloaded {pathlib.Path(R5_JAR_URL).name}",
                     R5pyWarning,
                 )
+
     return r5_classpath
 
 

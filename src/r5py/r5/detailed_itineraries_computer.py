@@ -82,6 +82,12 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
 
         if destinations is None:
             self.all_to_all = True
+            if self.verbose:
+                warnings.warn(
+                    "No destinations specified, computing an all-to-all matrix",
+                    RuntimeWarning,
+                )
+
         elif len(origins) != len(destinations):
             self.all_to_all = True
             if self.verbose:

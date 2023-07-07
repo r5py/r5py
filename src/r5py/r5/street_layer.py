@@ -4,6 +4,8 @@
 """Wraps a com.conveyal.r5.streets.StreetLayer."""
 
 
+import functools
+
 import jpype
 import jpype.types
 import shapely
@@ -35,6 +37,16 @@ class StreetLayer:
         instance = cls()
         instance._street_layer = street_layer
         return instance
+
+    @functools.cached_property
+    def extent(self):
+        envelope = self._street_layer.envelope
+        return shapely.box(
+            envelope.getMinX(),
+            envelope.getMinY(),
+            envelope.getMaxX(),
+            envelope.getMaxY(),
+        )
 
     def find_split(
         self,

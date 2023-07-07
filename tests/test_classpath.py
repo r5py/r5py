@@ -39,6 +39,8 @@ class TestClassPath:
             digest = hashlib.sha256(r5_jar.read()).hexdigest()
         assert digest == r5_jar_sha256
 
+        sys.argv = sys.argv[:-3]
+
     def test_use_classpath_from_local_file(
         self, r5_jar_url, r5_jar_sha256, r5_jar_cached
     ):
@@ -54,6 +56,8 @@ class TestClassPath:
 
         assert digest == r5_jar_sha256
         assert r5_classpath == r5_jar_cached
+
+        sys.argv = sys.argv[:-2]
 
     def test_use_classpath_from_local_uri(
         self, r5_jar_url, r5_jar_sha256, r5_jar_cached
@@ -71,6 +75,8 @@ class TestClassPath:
         assert digest == r5_jar_sha256
         assert r5_classpath == r5_jar_cached
 
+        sys.argv = sys.argv[:-2]
+
     def test_use_classpath_from_remote_uri(
         self, r5_jar_url, r5_jar_sha256, r5_jar_cached
     ):
@@ -84,11 +90,15 @@ class TestClassPath:
         assert digest == r5_jar_sha256
         assert r5_classpath == r5_jar_cached
 
+        sys.argv = sys.argv[:-2]
+
     def test_use_classpath_from_invalid_uri(self):
         sys.argv.extend(["--r5-classpath", "invalid://schema/and/path"])
 
         with pytest.raises(UnexpectedClasspathSchema):
             _ = find_r5_classpath(Config().arguments)
+
+        sys.argv = sys.argv[:-2]
 
     def test_find_classpath_download(
         self, r5_jar_url, r5_jar_sha256, r5_jar_cached_invalid
@@ -98,6 +108,8 @@ class TestClassPath:
         with open(r5_classpath, "rb") as r5_jar:
             digest = hashlib.sha256(r5_jar.read()).hexdigest()
         assert digest == r5_jar_sha256
+
+        sys.argv = sys.argv[:-2]
 
     @pytest.mark.skipif(
         sys.platform == "win32", reason="No signal chaining library for Windows"

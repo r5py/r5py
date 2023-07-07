@@ -29,8 +29,8 @@ class RegionalTask:
     def __init__(
         self,
         transport_network,
-        origin,
-        destinations,
+        origin=None,
+        destinations=None,
         departure=datetime.datetime.now(),
         departure_time_window=datetime.timedelta(hours=1),
         percentiles=[50],
@@ -204,10 +204,13 @@ class RegionalTask:
         # information, and it’s set to 5000 by default.
         # The value is a static property of com.conveyal.r5.analyst.cluster.PathResult;
         # static properites of Java classes can be modified in a singleton kind of way
-        com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = max(
-            com.conveyal.r5.analyst.cluster.PathResult.maxDestinations,
-            len(self.destinations) + 1,
-        )
+        try:
+            com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = max(
+                com.conveyal.r5.analyst.cluster.PathResult.maxDestinations,
+                len(self.destinations) + 1,
+            )
+        except AttributeError:
+            pass
 
     @property
     def departure(self):
@@ -270,36 +273,37 @@ class RegionalTask:
 
     @destinations.setter
     def destinations(self, destinations):
-        self._destinations = destinations
+        if destinations is not None:
+            self._destinations = destinations
 
-        # wrap destinations in a few layers of streams (yeah, Java)
-        output_stream = java.io.ByteArrayOutputStream()
-        data_output_stream = java.io.DataOutputStream(output_stream)
+            # wrap destinations in a few layers of streams (yeah, Java)
+            output_stream = java.io.ByteArrayOutputStream()
+            data_output_stream = java.io.DataOutputStream(output_stream)
 
-        # first: number of destinations
-        data_output_stream.writeInt(len(destinations))
+            # first: number of destinations
+            data_output_stream.writeInt(len(destinations))
 
-        # then, data columns, one by one, then still ‘opportunties’
-        for id_ in destinations.id.astype(str):
-            data_output_stream.writeUTF(id_)
-        for lat in destinations.geometry.y:
-            data_output_stream.writeDouble(lat)
-        for lon in destinations.geometry.x:
-            data_output_stream.writeDouble(lon)
-        for _ in range(len(destinations)):
-            data_output_stream.writeDouble(0)  # ‘opportunities’
+            # then, data columns, one by one, then still ‘opportunties’
+            for id_ in destinations.id.astype(str):
+                data_output_stream.writeUTF(id_)
+            for lat in destinations.geometry.y:
+                data_output_stream.writeDouble(lat)
+            for lon in destinations.geometry.x:
+                data_output_stream.writeDouble(lon)
+            for _ in range(len(destinations)):
+                data_output_stream.writeDouble(0)  # ‘opportunities’
 
-        # convert to input stream, then into a point set
-        destinations_point_set = com.conveyal.r5.analyst.FreeFormPointSet(
-            java.io.ByteArrayInputStream(output_stream.toByteArray())
-        )
+            # convert to input stream, then into a point set
+            destinations_point_set = com.conveyal.r5.analyst.FreeFormPointSet(
+                java.io.ByteArrayInputStream(output_stream.toByteArray())
+            )
 
-        self._regional_task.destinationPointSets = [destinations_point_set]
+            self._regional_task.destinationPointSets = [destinations_point_set]
 
-        # TODO: figure out whether we could cut this a bit shorter. We should be able
-        # to construct the ByteArray fed to java.io.ByteArrayInputStream as a Python `bytes`
-        # without the detour via two Java OutputStreams.
-        # (but not sure how to distinguish between the writeUTF/writeDouble/etc)
+            # TODO: figure out whether we could cut this a bit shorter. We should be able
+            # to construct the ByteArray fed to java.io.ByteArrayInputStream as a Python `bytes`
+            # without the detour via two Java OutputStreams.
+            # (but not sure how to distinguish between the writeUTF/writeDouble/etc)
 
     @property
     def egress_modes(self):
@@ -435,9 +439,10 @@ class RegionalTask:
         origin : shapely.geometry.Point
             Point to route from
         """
-        self._origin = origin
-        self._regional_task.fromLat = origin.y
-        self._regional_task.fromLon = origin.x
+        if origin is not None:
+            self._origin = origin
+            self._regional_task.fromLat = origin.y
+            self._regional_task.fromLon = origin.x
 
     @property
     def scenario(self):
@@ -500,9 +505,10 @@ class RegionalTask:
                 # let people walk to and from the stops
                 access_modes = direct_modes = [TransportMode.WALK]
             else:
-                access_modes = direct_modes
-        else:
-            # no public transport
+                # otherwise, include the supplied direct modes into access_modes
+                access_modes = set(list(self.access_modes) + direct_modes)
+
+        else:  # no public transport
             egress_modes = []  # ignore egress (why?)
 
             #     # this is weird (the following is the logic implemented in r5r)
@@ -518,9 +524,9 @@ class RegionalTask:
             # let’s do that differently (even if potentially more expensive, computationally)
             access_modes = direct_modes
 
-        # assign the calculated modes
         self.access_modes = access_modes
         self.egress_modes = egress_modes
+
         self._regional_task.transitModes = RegionalTask._enum_set(
             transit_modes, com.conveyal.r5.api.util.TransitModes
         )
@@ -532,13 +538,14 @@ class RegionalTask:
         # (for fully-interconnected travel time matrices this also covers all origin points,
         # but potentially this needs to be extended to run also for origins) //TODO
 
-        for mode in direct_modes:
-            for destination_point_set in self._regional_task.destinationPointSets:
-                self.transport_network.linkage_cache.getLinkage(
-                    destination_point_set,
-                    self.transport_network.street_layer,
-                    mode,
-                )
+        if self._regional_task.destinationPointSets is not None:
+            for mode in direct_modes:
+                for destination_point_set in self._regional_task.destinationPointSets:
+                    self.transport_network.linkage_cache.getLinkage(
+                        destination_point_set,
+                        self.transport_network.street_layer,
+                        mode,
+                    )
 
     @staticmethod
     def _enum_set(values, java_class):
@@ -551,6 +558,9 @@ class RegionalTask:
 
 @jpype._jcustomizer.JConversion(
     "com.conveyal.r5.analyst.cluster.AnalysisWorkerTask", exact=RegionalTask
+)
+@jpype._jcustomizer.JConversion(
+    "com.conveyal.r5.profile.ProfileRequest", exact=RegionalTask
 )
 @jpype._jcustomizer.JConversion(
     "com.conveyal.r5.analyst.cluster.RegionalTask", exact=RegionalTask

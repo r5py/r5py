@@ -160,7 +160,7 @@ class RegionalTask:
         # a few settings we don’t expose (yet?)
         self._regional_task.makeTauiSite = False
         self._regional_task.oneToOne = False
-        self._regional_task.monteCarloDraws = 0
+        self._regional_task.monteCarloDraws = 60
         self._regional_task.recordAccessibility = False
 
     def __copy__(self):

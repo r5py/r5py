@@ -27,7 +27,7 @@ from _helpers.citation_style import R5PY_CITATION_STYLE, R5PY_REFERENCE_STYLE
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "r5py"
-copyright = "2022, r5py contributors"
+copyright = "2023, r5py contributors"
 author = "r5py contributors"
 
 

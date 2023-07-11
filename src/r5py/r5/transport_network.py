@@ -125,7 +125,7 @@ class TransportNetwork:
             if not temporary_files:  # empty
                 break
 
-            print(f"waiting for still open files, round {_}")
+            # there are still files open, let’s wait a moment and try again
             time.sleep(0.1)
         else:
             remaining_files = ", ".join(

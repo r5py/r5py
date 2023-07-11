@@ -44,4 +44,5 @@ dependencies:
 
     - pip
     - pip:
+        - pybtex-apa7-style
         - sphinxcontrib-images

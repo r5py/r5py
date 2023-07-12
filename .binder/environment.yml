@@ -263,12 +263,12 @@ dependencies:
   - pytest-asyncio=0.21.0
   - pytest-cov=4.1.0
   - pytest-lazy-fixture=0.6.3
-  - python=3.10.12
+  - python=3.11.4
   - python-dateutil=2.8.2
   - python-fastjsonschema=2.17.1
   - python-json-logger=2.0.7
   - python-tzdata=2023.3
-  - python_abi=3.10
+  - python_abi=3.11
   - pytz=2023.3
   - pyyaml=6.0
   - pyzmq=25.1.0
@@ -320,7 +320,6 @@ dependencies:
   - typing_utils=0.1.0
   - tzcode=2023c
   - tzdata=2023c
-  - unicodedata2=15.0.0
   - urllib3=2.0.3
   - wcwidth=0.2.6
   - webencodings=0.5.1

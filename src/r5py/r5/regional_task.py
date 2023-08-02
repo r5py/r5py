@@ -75,7 +75,7 @@ class RegionalTask:
             Default: current date and time
         departure_time_window : datetime.timedelta
             (see ``departure``)
-            Default: 1 hour
+            Default: 10 minutes
         percentiles : list[int]
             Return the travel time for these percentiles of all computed trips,
             by travel time. By default, return the median travel time.

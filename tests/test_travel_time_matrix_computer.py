@@ -10,6 +10,20 @@ import r5py.util.exceptions
 
 
 class TestTravelTimeMatrixInputValidation:
+    def test_departure_time_window_warning(
+        self, transport_network, population_grid_points, origin_point, departure_datetime
+    ):
+        with pytest.warns(RuntimeWarning, match="The provided departure time window is below 5 minutes"):
+            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+                transport_network,
+                origins=origin_point,
+                destinations=population_grid_points,
+                departure_time_window=datetime.timedelta(minutes=3),  # Should throw warning
+                departure=departure_datetime,
+                transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+            )
+            del travel_time_matrix_computer
+
     @pytest.mark.parametrize(
         [
             "origins",
@@ -172,19 +186,12 @@ class TestTravelTimeMatrixComputer:
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
-        assert isinstance(
-            travel_time_matrix_computer.transport_network, r5py.TransportNetwork
-        )
+        assert isinstance(travel_time_matrix_computer.transport_network, r5py.TransportNetwork)
         assert isinstance(travel_time_matrix_computer.origins, geopandas.GeoDataFrame)
-        assert isinstance(
-            travel_time_matrix_computer.destinations, geopandas.GeoDataFrame
-        )
+        assert isinstance(travel_time_matrix_computer.destinations, geopandas.GeoDataFrame)
 
         assert travel_time_matrix_computer.origins.shape == origin_point.shape
-        assert (
-            travel_time_matrix_computer.destinations.shape
-            == population_grid_points.shape
-        )
+        assert travel_time_matrix_computer.destinations.shape == population_grid_points.shape
 
     def test_travel_time_matrix_initialization_with_files(
         self,
@@ -200,9 +207,7 @@ class TestTravelTimeMatrixComputer:
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
-        assert isinstance(
-            travel_time_matrix_computer.transport_network, r5py.TransportNetwork
-        )
+        assert isinstance(travel_time_matrix_computer.transport_network, r5py.TransportNetwork)
 
     def test_all_to_all(
         self,
@@ -275,10 +280,7 @@ class TestTravelTimeMatrixComputer:
             assert col in travel_time_matrix.columns
 
         # 75 percentile should always be higher or equal to 25 percentile
-        check = (
-            travel_time_matrix["travel_time_p75"]
-            >= travel_time_matrix["travel_time_p25"]
-        )
+        check = travel_time_matrix["travel_time_p75"] >= travel_time_matrix["travel_time_p25"]
         assert False not in check.to_list()
 
     def test_gtfs_date_range_warnings(
@@ -381,9 +383,7 @@ class TestTravelTimeMatrixComputer:
         travel_times = travel_time_matrix_computer.compute_travel_times()
 
         travel_times = travel_times.set_index(["from_id", "to_id"]).sort_index()
-        expected_travel_times = expected_travel_times.set_index(
-            ["from_id", "to_id"]
-        ).sort_index()
+        expected_travel_times = expected_travel_times.set_index(["from_id", "to_id"]).sort_index()
 
         pandas.testing.assert_frame_equal(travel_times, expected_travel_times)
 
@@ -394,9 +394,7 @@ class TestTravelTimeMatrixComputer:
         population_grid_points,
         departure_datetime,
     ):
-        origins = pandas.concat(
-            [population_grid_points[-3:], unsnappable_points]
-        ).reset_index(drop=False)
+        origins = pandas.concat([population_grid_points[-3:], unsnappable_points]).reset_index(drop=False)
         with pytest.warns(
             RuntimeWarning,
             match="Some destination points could not be snapped to the street network",
@@ -416,9 +414,7 @@ class TestTravelTimeMatrixComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        with pytest.raises(
-            ValueError, match="After snapping, no valid origin points remain"
-        ), pytest.warns(
+        with pytest.raises(ValueError, match="After snapping, no valid origin points remain"), pytest.warns(
             RuntimeWarning,
             match="Some origin points could not be snapped to the street network",
         ):
@@ -438,9 +434,7 @@ class TestTravelTimeMatrixComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        destinations = pandas.concat(
-            [population_grid_points[-3:], unsnappable_points]
-        ).reset_index(drop=False)
+        destinations = pandas.concat([population_grid_points[-3:], unsnappable_points]).reset_index(drop=False)
         with pytest.warns(
             RuntimeWarning,
             match="Some destination points could not be snapped to the street network",
@@ -462,9 +456,7 @@ class TestTravelTimeMatrixComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        with pytest.raises(
-            ValueError, match="After snapping, no valid destination points remain"
-        ), pytest.warns(
+        with pytest.raises(ValueError, match="After snapping, no valid destination points remain"), pytest.warns(
             RuntimeWarning,
             match="Some destination points could not be snapped to the street network",
         ):
@@ -494,9 +486,4 @@ class TestTravelTimeMatrixComputer:
             snap_to_network=snap_to_network,
         ).compute_travel_times()
 
-        assert (
-            travel_time_matrix[
-                travel_time_matrix["from_id"] == travel_time_matrix["to_id"]
-            ].travel_time.max()
-            == 0
-        )
+        assert travel_time_matrix[travel_time_matrix["from_id"] == travel_time_matrix["to_id"]].travel_time.max() == 0

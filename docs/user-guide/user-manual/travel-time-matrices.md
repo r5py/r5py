@@ -71,7 +71,7 @@ required for computing a travel time matrix:
 - a set of origins and destinations
 
 First, create a {class}`TransportNetwork<r5py.TransportNetwork>` and load an
-OpenStreetMap extract of the Helsinki city centre as well as a public transport
+OpenStreetMap extract of the São Paulo city centre as well as a public transport
 schedule in GTFS format covering the same area:
 
 ```{code-cell} ipython3
@@ -95,48 +95,14 @@ equidistant neighbourhood relationships (all neighbouring grid cells’ centroid
 are at the same distance; in a grid of squares, the diagonal neighbours are
 roughly 41% further than the horizontal and vertical ones).
 
-```{code-cell} ipython3
-import h3
-import shapely
-
-HELSINKI_CENTRE = shapely.box(24.9318, 60.1550, 24.9535, 60.1751)
-
-SAO_PAULO_CENTRE = shapely.box(-46.650, -23.558, -46.620, -23.531)
-```
+We prepared such a hexagonal grid for São Paulo, and added the counts of
+`population`, `jobs`, and `schools` within each cell as separate columns.
+The `id` column refers to the H3 address of the grid cells.
 
 ```{code-cell} ipython3
-
-```
-
-```{code-cell} ipython3
-h3.Polygon(list(SAO_PAULO_CENTRE.exterior.coords))
-```
-
-```{code-cell} ipython3
-ZOOM_LEVEL = 9
-
-h3_cells = [
-    (cell, shapely.Polygon(h3.cell_to_boundary(cell)))
-    for cell in h3.polygon_to_cells(h3.Polygon(list(SAO_PAULO_CENTRE.exterior.coords)), ZOOM_LEVEL)
-]
-
 import geopandas
 
-hexagon_grid = geopandas.GeoDataFrame(
-    {
-        "id": [cell[0] for cell in h3_cells],
-        "geometry": [cell[1] for cell in h3_cells]
-    },
-    crs="EPSG:4326"
-)
-hexagon_grid
-```
-
-```{code-cell} ipython3
-import pandas
-hexagon_grid = pandas.read_csv(DATA_DIRECTORY / "São Paulo" / "spo_hexgrid.csv")
-hexagon_grid["geometry"] = hexagon_grid["id"].apply(lambda id : shapely.Polygon(h3.cell_to_boundary(id, True)))
-hexagon_grid = geopandas.GeoDataFrame(hexagon_grid, crs="EPSG:4326")
+hexagon_grid = geopandas.read_file(DATA_DIRECTORY / "São Paulo" / "spo_hexgrid.gpkg.zip")
 hexagon_grid
 ```
 
@@ -144,9 +110,11 @@ hexagon_grid
 hexagon_grid.explore()
 ```
 
+*R5py* expects origins and destinations to be point geometries
+
 ```{code-cell} ipython3
 origins = hexagon_grid.copy()
-origins["geometry"] = origins.geometry.centroid
+origins["geometry"] = origins.geometry.apply(lambda geometry: geometry.centroid)
 ```
 
 ```{code-cell} ipython3

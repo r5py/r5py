@@ -136,9 +136,15 @@ class RegionalTask:
         self.percentiles = percentiles
 
         self.max_time = max_time
-        self.max_time_walking = max_time_walking if max_time_walking is not None else max_time
-        self.max_time_cycling = max_time_cycling if max_time_cycling is not None else max_time
-        self.max_time_driving = max_time_driving if max_time_driving is not None else max_time
+        self.max_time_walking = (
+            max_time_walking if max_time_walking is not None else max_time
+        )
+        self.max_time_cycling = (
+            max_time_cycling if max_time_cycling is not None else max_time
+        )
+        self.max_time_driving = (
+            max_time_driving if max_time_driving is not None else max_time
+        )
 
         self.speed_cycling = speed_cycling
         self.speed_walking = speed_walking
@@ -180,7 +186,9 @@ class RegionalTask:
         # eliminate duplicates, cast to TransportMode (converts str values)
         access_modes = set([TransportMode(mode) for mode in set(access_modes)])
         self._access_modes = access_modes
-        self._regional_task.accessModes = RegionalTask._enum_set(access_modes, com.conveyal.r5.api.util.LegMode)
+        self._regional_task.accessModes = RegionalTask._enum_set(
+            access_modes, com.conveyal.r5.api.util.LegMode
+        )
 
     @property
     def breakdown(self):
@@ -254,7 +262,9 @@ class RegionalTask:
                 RuntimeWarning,
             )
         self._departure_time_window = departure_time_window
-        self._regional_task.toTime = int(self._regional_task.fromTime + departure_time_window.total_seconds())
+        self._regional_task.toTime = int(
+            self._regional_task.fromTime + departure_time_window.total_seconds()
+        )
 
     @property
     def destinations(self):
@@ -310,7 +320,9 @@ class RegionalTask:
         # eliminate duplicates, cast to TransportMode (converts str values)
         egress_modes = set([TransportMode(mode) for mode in set(egress_modes)])
         self._egress_modes = egress_modes
-        self._regional_task.egressModes = RegionalTask._enum_set(egress_modes, com.conveyal.r5.api.util.LegMode)
+        self._regional_task.egressModes = RegionalTask._enum_set(
+            egress_modes, com.conveyal.r5.api.util.LegMode
+        )
 
     @property
     def max_bicycle_traffic_stress(self):
@@ -406,7 +418,9 @@ class RegionalTask:
             assert len(percentiles) <= 5  # R5 does not allow more than five percentiles
             # (compare https://github.com/r5py/r5py/issues/139 )
         except AssertionError as exception:
-            raise ValueError("Maximum number of percentiles allowed is 5") from exception
+            raise ValueError(
+                "Maximum number of percentiles allowed is 5"
+            ) from exception
         self._percentiles = percentiles
         self._regional_task.percentiles = percentiles
 
@@ -518,8 +532,12 @@ class RegionalTask:
         self.access_modes = access_modes
         self.egress_modes = egress_modes
 
-        self._regional_task.transitModes = RegionalTask._enum_set(transit_modes, com.conveyal.r5.api.util.TransitModes)
-        self._regional_task.directModes = RegionalTask._enum_set(direct_modes, com.conveyal.r5.api.util.LegMode)
+        self._regional_task.transitModes = RegionalTask._enum_set(
+            transit_modes, com.conveyal.r5.api.util.TransitModes
+        )
+        self._regional_task.directModes = RegionalTask._enum_set(
+            direct_modes, com.conveyal.r5.api.util.LegMode
+        )
 
         # pre-compute closest road segments/public transport stops to destination points
         # (for fully-interconnected travel time matrices this also covers all origin points,
@@ -543,9 +561,15 @@ class RegionalTask:
         return enum_set
 
 
-@jpype._jcustomizer.JConversion("com.conveyal.r5.analyst.cluster.AnalysisWorkerTask", exact=RegionalTask)
-@jpype._jcustomizer.JConversion("com.conveyal.r5.profile.ProfileRequest", exact=RegionalTask)
-@jpype._jcustomizer.JConversion("com.conveyal.r5.analyst.cluster.RegionalTask", exact=RegionalTask)
+@jpype._jcustomizer.JConversion(
+    "com.conveyal.r5.analyst.cluster.AnalysisWorkerTask", exact=RegionalTask
+)
+@jpype._jcustomizer.JConversion(
+    "com.conveyal.r5.profile.ProfileRequest", exact=RegionalTask
+)
+@jpype._jcustomizer.JConversion(
+    "com.conveyal.r5.analyst.cluster.RegionalTask", exact=RegionalTask
+)
 def _cast_RegionalTask(java_class, object_):
     return object_._regional_task.clone()
     # cloned, so we can reuse the Python instance (e.g., with next origin)

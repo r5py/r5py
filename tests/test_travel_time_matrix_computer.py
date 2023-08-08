@@ -58,9 +58,7 @@ class TestTravelTimeMatrixInputValidation:
     ):
         with pytest.raises(expected_error):
             travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
-                transport_network,
-                origins=origins,
-                departure=departure_datetime,
+                transport_network, origins=origins, departure=departure_datetime
             )
             del travel_time_matrix_computer
 

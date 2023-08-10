@@ -1,6 +1,6 @@
 # Advanced Usage
 
-## Setting the maximum Java heap size (memory use)
+## Limit the maximum Java heap size (memory use)
 
 A *Java Virtual Machine* (JVM) typically restricts the memory usage of programs
 it runs.  More specifically, the *heap size* can be limited (see [this
@@ -33,15 +33,15 @@ max-memory: 12G
 ```
 
 
-## Using a custom installation of R⁵
+## Use a custom installation of R⁵
 
 For some use cases, it can be useful to use a local copy of R⁵, rather than
 the one downloaded by *r5py*, for instance, in order to apply custom patches
 to extend or modify R⁵’s functionality, or to force the use of a certain
-version for longitudinal comparability. 
+version for longitudinal comparability. For retaining path geometries for public
+transport routes in {class}`DetailedItinerariesComputer`, 
 
-This can be achieved by either installing R⁵ into the default class path
-`/usr/share/java/r5/r5-all.jar`, or by using a configuration option or command
+This can be achieved by passing a configuration option or command
 line argument to change the class path. 
 
 For example, to set a custom classpath inside a Python notebook, you can set
@@ -50,5 +50,19 @@ For example, to set a custom classpath inside a Python notebook, you can set
 ```python
 import sys
 sys.argv.append(["--r5-classpath", "/opt/r5/"])
+import r5py
+```
+
+To use the patched R⁵ version the [Digital Geography
+Lab](https://www.helsinki.fi/en/researchgroups/digital-geography-lab) provides
+on their [GitHub pages](https://github.com/DigitalGeographyLab/r5/releases),
+pass the full URL, instead:
+
+```python
+import sys
+sys.argv.append([
+    "--r5-classpath", 
+    "https://github.com/DigitalGeographyLab/r5/releases/download/v6.9-post16-g1054c1e-20230619/r5-v6.9-post16-g1054c1e-20230619-all.jar"
+])
 import r5py
 ```

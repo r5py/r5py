@@ -20,3 +20,7 @@ div.code-block-caption {
 span.article-title {
     font-weight: 600;
 }
+
+img.logo__image {
+    padding: 5% 25% 20% 0;
+}

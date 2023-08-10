@@ -14,7 +14,7 @@ kernelspec:
 
 # Travel-time matrices
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-input, remove-output]
 
 # this cell is hidden from output
@@ -63,6 +63,9 @@ Economic Research (IPEA, e.g., {cite:t}`braga_evaluating_2023`,
 :::
 
 
+***
+
+
 As briefly visited in [Quickstart](quickstart) and dicussed in detail in [Data
 Requirements](data-requirements), fundamentally, two types of input data are
 required for computing a travel time matrix:
@@ -74,7 +77,7 @@ First, create a {class}`TransportNetwork<r5py.TransportNetwork>` and load an
 OpenStreetMap extract of the São Paulo city centre as well as a public transport
 schedule in GTFS format covering the same area:
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-output]
 
 import r5py
@@ -99,34 +102,176 @@ We prepared such a hexagonal grid for São Paulo, and added the counts of
 `population`, `jobs`, and `schools` within each cell as separate columns.
 The `id` column refers to the H3 address of the grid cells.
 
-```{code-cell} ipython3
+```{code-cell}
 import geopandas
 
-hexagon_grid = geopandas.read_file(DATA_DIRECTORY / "São Paulo" / "spo_hexgrid.gpkg.zip")
+hexagon_grid = geopandas.read_file(DATA_DIRECTORY / "São Paulo" / "spo_hexgrid_EPSG32723.gpkg.zip")
 hexagon_grid
 ```
 
-```{code-cell} ipython3
+We can use {meth}`explore()<geopandas.GeoDataFrame.explore()>` to plot the
+hexagonal grid in a map:
+
+```{code-cell}
 hexagon_grid.explore()
 ```
 
-*R5py* expects origins and destinations to be point geometries
+*R5py* expects origins and destinations to be point geometries. For grid cells,
+the geometric center point (‘centroid’) is a good approximisation. One can use
+{attr}`geopandas.GeoDataSeries.centroid` to quickly derive a centroid (point)
+geometry from a polygon. We will create one data frame for origins, and one for
+destinations:
 
-```{code-cell} ipython3
+```{code-cell}
 origins = hexagon_grid.copy()
-origins["geometry"] = origins.geometry.apply(lambda geometry: geometry.centroid)
+origins["geometry"] = origins.geometry.centroid
 ```
 
-```{code-cell} ipython3
+```{code-cell}
+destinations = hexagon_grid.copy()
+destinations["geometry"] = destinations.geometry.centroid
+```
+
+***
+
+
+With this, we have all input data sets needed for computing a travel time
+matrix: a transport network, origins, and destinations. We still need to decide
+which modes of transport should be used, and when to depart.
+
+The modes of transport can be passed as a list of different
+{class}`r5py.TransportMode`s (or their {class}`str` equivalent), the departure
+must be a {class}`datetime.datetime`. If you search for public transport routes,
+double-check that the departure date/time is covered by the input GTFS data set.
+
+```{code-cell}
 import datetime
 
 travel_time_matrix = r5py.TravelTimeMatrixComputer(
     transport_network,
     origins=origins,
+    destinations=destinations,
     transport_modes=[r5py.TransportMode.TRANSIT],
-    departure=datetime.datetime(2019,5,13, 14, 0, 0),
+    departure=datetime.datetime(2019, 5, 13, 14, 0, 0),
 ).compute_travel_times()
+```
+
+The output of
+{meth}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`
+is a table in which each row describes the travel time (`travel_time`) from an
+origin (`from_id`), to a destination (`to_id`). The latter two refer to the `id`
+column in the origins and destinations input data sets, respectively.
+
+```{code-cell}
 travel_time_matrix
+```
+
+```{code-cell}
+:tags: [remove-output, remove-input]
+
+import myst_nb
+
+origins_length = len(origins)
+destinations_length = len(destinations)
+matrix_length = origins_length * destinations_length
+
+myst_nb.glue("origins_length", origins_length, display=False)
+myst_nb.glue("destinations_length", destinations_length, display=False)
+myst_nb.glue("matrix_length", matrix_length, display=False)
+```
+
+As {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` creates an
+all-to-all matrix, the results contain one row for every combination of origins
+and destinations. Since we have {glue:}`origins_length` origins and
+{glue:}`destinations_length` destinations, the output travel time matrix is
+{glue:}`matrix_length` rows long.
+
+
+Alternatively, and possibly more intuitively, we can display the travel time
+matrix table as a matrix, using {meth}`pandas.DataFrame.pivot()`:
+
+```{code-cell}
+travel_time_matrix.pivot(index="from_id", columns="to_id", values="travel_time")
+```
+
+***
+
+
+## Exploring results
+
+### Travel times from anywhere to a particular place
+
+Once the travel time matrix is computed, we can use the data to analyse and
+visualise different measures of accessibility. For instance, we can filter the
+table to show all rows for which the destination is the [Praça da
+Sé](https://en.wikipedia.org/wiki/Pra%C3%A7a_da_S%C3%A9), a public square in the
+centre of the city. By plotting the travel times in a map, we can quickly assess
+how equitable the public transport network of São Paulo is for the residents of
+different parts of the city.
+
+For this we first create a copy of the result data frame, filtered to contain
+only rows with `to_id` referencing the Praça da Sé. Then, we join this table to
+the input hexagonal grid, and drop any records that have `NaN` values, i.e., for
+which there was no result. Finally, as we did above, we use the
+{meth}`explore()<geopandas.GeoDataFrame.explore()>` to display the values in a
+map.
+
+```{code-cell}
+PRAÇA_DA_SÉ = "89a8100c02fffff"
+
+travel_times_to_centre = travel_time_matrix[travel_time_matrix["to_id"] == PRAÇA_DA_SÉ].copy()
+travel_times_to_centre = travel_times_to_centre.set_index("from_id")[["travel_time"]]
+
+hexagons_with_travel_time_to_centre = (
+    hexagon_grid.set_index("id").join(travel_times_to_centre)
+)
+
+hexagons_with_travel_time_to_centre
+```
+
+```{code-cell}
+hexagons_with_travel_time_to_centre.explore(column="travel_time", cmap="Oranges")
+```
+
+You can clearly see how travel times do not increase uniformly, but are shorter
+along the major transport axis (metro, railways, bus corridors).
+
+
+***
+
+
+### Aggregated/average accessibility
+
+Another quick way of getting an understanding of how well different parts of the
+city are served by public transport is to aggregate the travel times from or to
+each cell over the entire study region. Of course, this creates [edge
+effects](https://doi.org/10.1016/B978-008044910-4.00423-5), so in our limited
+example, grid cells further outside will have worse over-all accessibility
+values. However, if an entire city region, e.g., covering the entire public
+transport network, can be captured in one analysis, unwanted artefacts of the
+analysis have a smaller impact.
+
+To aggregate travel times, we can use the
+{meth}`groupby()<pandas.DataFrame.groupby()>` method of pandas’ data frames, and
+one of the different aggregation functions available for the resulting
+{class}`pandas.GroupBy` objects. For instance, to show the median travel time
+from any cell to any other cell in our grid, we group the results using
+`from_id` and {meth}`median()<pandas.GroupBy.median()>`:
+
+```{code-cell}
+median_travel_times = travel_time_matrix.groupby("from_id").median("travel_time")
+median_travel_times
+```
+
+Again, we can join these median travel times to the hexagonal grid to display a
+nice map:
+
+```{code-cell}
+hexagons_with_median_travel_times = (
+    hexagon_grid.set_index("id").join(median_travel_times)
+)
+
+hexagons_with_median_travel_times.explore(column="travel_time", cmap="Oranges")
 ```
 
 ## Bibliography

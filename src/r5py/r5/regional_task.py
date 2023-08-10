@@ -32,7 +32,7 @@ class RegionalTask:
         origin=None,
         destinations=None,
         departure=datetime.datetime.now(),
-        departure_time_window=datetime.timedelta(hours=1),
+        departure_time_window=datetime.timedelta(minutes=10),
         percentiles=[50],
         transport_modes=[TransportMode.TRANSIT],
         access_modes=[TransportMode.WALK],
@@ -75,7 +75,7 @@ class RegionalTask:
             Default: current date and time
         departure_time_window : datetime.timedelta
             (see ``departure``)
-            Default: 1 hour
+            Default: 10 minutes
         percentiles : list[int]
             Return the travel time for these percentiles of all computed trips,
             by travel time. By default, return the median travel time.
@@ -255,7 +255,12 @@ class RegionalTask:
         return self._departure_time_window
 
     @departure_time_window.setter
-    def departure_time_window(self, departure_time_window):
+    def departure_time_window(self, departure_time_window: datetime.timedelta):
+        if departure_time_window.total_seconds() < 300:
+            warnings.warn(
+                "The provided departure time window is below 5 minutes. This may cause adverse effects with headway-based GTFS datasets.",
+                RuntimeWarning,
+            )
         self._departure_time_window = departure_time_window
         self._regional_task.toTime = int(
             self._regional_task.fromTime + departure_time_window.total_seconds()

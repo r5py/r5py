@@ -10,6 +10,29 @@ import r5py.util.exceptions
 
 
 class TestTravelTimeMatrixInputValidation:
+    def test_departure_time_window_warning(
+        self,
+        transport_network,
+        population_grid_points,
+        origin_point,
+        departure_datetime,
+    ):
+        with pytest.warns(
+            RuntimeWarning,
+            match="The provided departure time window is below 5 minutes",
+        ):
+            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+                transport_network,
+                origins=origin_point,
+                destinations=population_grid_points,
+                departure_time_window=datetime.timedelta(
+                    minutes=3
+                ),  # Should throw warning
+                departure=departure_datetime,
+                transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+            )
+            del travel_time_matrix_computer
+
     @pytest.mark.parametrize(
         [
             "origins",
@@ -35,9 +58,7 @@ class TestTravelTimeMatrixInputValidation:
     ):
         with pytest.raises(expected_error):
             travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
-                transport_network,
-                origins=origins,
-                departure=departure_datetime,
+                transport_network, origins=origins, departure=departure_datetime
             )
             del travel_time_matrix_computer
 

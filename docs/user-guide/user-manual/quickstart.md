@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.1
+    jupytext_version: 1.14.6
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -29,8 +29,6 @@ Detailed itineraries <detailed-itineraries>
 configuration
 advanced-usage
 :::
-
-+++
 
 
 ```{code-cell}
@@ -65,8 +63,6 @@ population_grid = geopandas.read_file(DATA_DIRECTORY / "Helsinki" / "population_
 import shapely
 RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
 ```
-
-
 
 One of the core functionalities of *r5py* is to compute travel time matrices for
 large extents, such as entire cities or countries. This page walks you through
@@ -125,6 +121,7 @@ zero or more GTFS files:
 
 ```{code-cell}
 :tags: ["remove-output"]
+
 import r5py
 
 transport_network = r5py.TransportNetwork(
@@ -168,6 +165,7 @@ to carry out the actual analysis.
 
 ```{code-cell}
 :tags: ["remove-output"]
+
 import datetime
 
 origins = population_grid.copy()

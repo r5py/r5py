@@ -271,22 +271,3 @@ points.geometry = points.geometry.to_crs("EPSG:3875").centroid.to_crs("EPSG:4326
 points.explore(marker_kwds={"radius": 10}, tooltip={"id"}, m=m)
 
 ```
-
-
-## Summarise travel details
-
-Sometimes, one is interested in the details of a route, but only of the fastest
-connection within the departure time window. 
-
-TODO: add something along the lines of the snippet below:
-
-```{code}
-summary = (
-    details.groupby(["from_id", "to_id", "option"])[
-        ["travel_time", "wait_time", "distance", "transport_mode"]
-    ]
-    .sum()
-    .reset_index()
-)
-summary.loc[summary.groupby(["from_id", "to_id"]).distance.idxmin()]
-```

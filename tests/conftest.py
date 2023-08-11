@@ -21,7 +21,10 @@ import pytest
 import shapely
 
 
-DATA_DIRECTORY = pathlib.Path(__file__).absolute().parent.parent / "docs" / "data"
+# test_data
+DATA_DIRECTORY = (
+    pathlib.Path(__file__).resolve().parent.parent / "docs" / "_static" / "data"
+)
 
 
 OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
@@ -132,6 +135,11 @@ def not_a_gtfs_file():
 
 
 @pytest.fixture
+def gtfs_file_path():
+    yield GTFS
+
+
+@pytest.fixture
 def gtfs_timezone_helsinki():
     yield "Europe/Helsinki"
 
@@ -157,6 +165,11 @@ def origin_point():
 def origins_valid_ids():
     origins = geopandas.read_file(ORIGINS_VALID_IDS)
     yield origins
+
+
+@pytest.fixture
+def osm_pbf_file_path():
+    yield OSM_PBF
 
 
 @pytest.fixture(scope="session")
@@ -220,8 +233,12 @@ def r5_jar_url():
     yield R5_JAR_URL
 
 
-@pytest.fixture()
-def regional_task(transport_network, population_grid_points, departure_datetime):
+@pytest.fixture
+def regional_task(
+    population_grid_points,
+    transport_network,
+    departure_datetime,
+):
     import r5py
 
     regional_task = r5py.RegionalTask(

@@ -9,6 +9,7 @@ dependencies:
     - filelock
     - fiona
     - geopandas
+    - importlib_resources
     - joblib
     - jpype1
     - numpy

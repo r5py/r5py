@@ -55,6 +55,7 @@ def start_jvm():
             "-Duser.variant=",  # … values as a localised string
             f"-Djava.io.tmpdir={TEMP_DIR}",
             classpath=[R5_CLASSPATH],
+            interrupt=True,
         )
 
         # Add shutdown hook that cleans up the temporary directory

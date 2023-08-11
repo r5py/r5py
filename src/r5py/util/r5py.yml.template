@@ -1,0 +1,31 @@
+# Configuration file for r5py
+#
+# Uncomment and change options from their default values below
+# This list might be incomplete after upgrades (existing configuration files
+# are not overwritten), run `python -m r5py --help` for a complete list of
+# command line arguments. Strip leading dashes from command line arguments to
+# use them as configuration options.
+#
+# See https://r5py.readthedocs.io/ for up-to-date details
+
+
+
+# Set the limit for the Java Virtual Machine’s heap size (-Xmx). This option
+# accepts either absolute values (integer or decimal), optionally with a suffix
+# to indicate Mibibytes, Gibibytes, or Tebibytes: M, G, T), or relative,
+# expressed in a percentage of total memory, with a % suffix.
+
+#max-memory: 80%
+
+
+
+# Point to R5’s JAR (or build directory) in case you want to use a custom R5
+# installation.
+
+#r5-classpath: /usr/share/java/r5/r5-all.jar
+
+
+
+# Show more detailed output
+
+#verbose: False

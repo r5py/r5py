@@ -1,0 +1,26 @@
+:root {
+  /* heading font sizes */
+  --pst-font-size-h1: 32px;
+  --pst-font-size-h2: 24px;
+  --pst-font-size-h3: 20px;
+  --pst-font-size-h4: 18px;
+  --pst-font-size-h5: 16px;
+  --pst-font-size-h6: 16px;
+}
+
+figcaption {
+    font-size: var(--sbt-font-size-small-1);
+}
+
+div.code-block-caption {
+  font-size: x-small;
+  color: var(--fbc-secondary-text);
+}
+
+span.article-title {
+    font-weight: 600;
+}
+
+img.logo__image {
+    padding: 5% 25% 20% 0;
+}

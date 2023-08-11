@@ -18,21 +18,18 @@ ABSOLUTE_MINIMUM_MEMORY = 200 * 1024**2  # never grant less than 200 MiB to JVM
 
 
 config = Config()
-try:
-    config.argparser.add(
-        "-m",
-        "--max-memory",
-        help="""
-            Memory limit for the JVM running R5.
+config.argparser.add(
+    "-m",
+    "--max-memory",
+    help="""
+        Memory limit for the JVM running R5.
 
-            Use % as a suffix to specify a share of total RAM;
-            K, M, G, T to specify KiB, MiB, GiB, or TiB, respectively.
-            Values without suffix are interpreted as bytes.
-        """,
-        default="80%",
-    )
-except ValueError:
-    pass  # argument has been added, already
+        Use % as a suffix to specify a share of total RAM;
+        K, M, G, T to specify KiB, MiB, GiB, or TiB, respectively.
+        Values without suffix are interpreted as bytes.
+    """,
+    default="80%",
+)
 
 
 def _share_of_ram(share=0.8, leave_at_least=(2 * 1024**3)):

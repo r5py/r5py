@@ -19,18 +19,17 @@ the configuration files the leading dash(es) are omitted (see
 
 ```{eval-rst}
 --max-memory=value, -m value
-              `Set the limit for the *Java Virtual Machine*’s heap
-              size <advanced-usage.html#setting-the-maximum-java-heap-size-memory-use>`_
-              (``-Xmx``).  This option accepts either absolute values
-              (integer or decimal), optionally with a suffix to indicate
-              Mibibytes, Gibibytes, or Tebibytes: ``M``, ``G``, ``T``),
-              or relative, expressed in a percentage of total memory, with
-              a ``%`` suffix. Default: ``80%``
+              [Set the limit for the *Java Virtual Machine*’s heap
+              size](advanced-usage.html#setting-the-maximum-java-heap-size-memory-use)
+              (`-Xmx`).  This option accepts either absolute values (integer or
+              decimal), optionally with a suffix to indicate Mibibytes,
+              Gibibytes, or Tebibytes: `M`, `G`, `T`), or relative, expressed in
+              a percentage of total memory, with a `%` suffix. Default: `80%`
 
 --r5-classpath=classpath, -r classpath
               Point to R⁵’s JAR (or build directory) in case you want to use a
-              `custom R⁵ installation <advanced-usage.html#using-a-custom-installation-of-r⁵>`_.
-              Default: ``""`` (download latest compatible version of R5)
+              [custom R⁵ installation](advanced-usage.html#using-a-custom-installation-of-r⁵).
+              Default: `""` (download latest compatible version of R5)
 
 --verbose, -v
               Show more detailed output.
@@ -49,13 +48,13 @@ package searches in the following paths:
   - `/etc/r5py.yml` for system-wide configuration (user config overrides system
     config)
 - On Windows operating systems:
-  - `%APPDATA%\\r5py.yml`. The precise path of the `%APPDATA%` directory depends
+  - `%APPDATA%\r5py.yml`. The precise path of the `%APPDATA%` directory depends
     on your user name and locale (enter `%APPDATA%` in a Windows Explorer’s search
     bar to navigate to it).
 
 Consult the [list above](#configuration-options), omit any leading dashes from
 the option names, and specify in [YAML](https://yaml.org/) format (for
-instance, specify `--max-memory=12G` as `max-memory: 12G`).
+instance, `--max-memory=12G` as `max-memory: 12G`).
 
 
 :::{admonition} Template configuration file
@@ -90,6 +89,5 @@ sys.argv.append(["--max-memory", "99%"])
 import r5py  # noqa: F401
 ```
 
-To find available options, consult the *command line argument* column of the
-[table above](#configuration-options).
+To find available options, consult the [table above](#configuration-options).
 

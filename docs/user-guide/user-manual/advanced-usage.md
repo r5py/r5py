@@ -1,4 +1,4 @@
-# Advanced Usage
+# Advanced usage
 
 ## Limit the maximum Java heap size (memory use)
 
@@ -17,9 +17,10 @@ You want to lower this limit if you are running other tasks in parallel, or
 raise it, if you have a dedicated computer with large memory and small
 operating system requirements.
 
-As outlined above, you can either create a configuration file, and set
-`max-memory` there, specify the `--max-memory` or `-m` command line arguments,
-or add the same arguments to `sys.argv`.
+As described in detail on the [configuration](configuration.md) page, you can
+either create a configuration file, and set `max-memory` there, specify the
+`--max-memory` or `-m` command line arguments, or add the same arguments to
+`sys.argv`.
 
 For instance, to set the maximum heap size to a fixed 12 GiB, you can create a
 configuration file in the [location suitable for your operating

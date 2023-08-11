@@ -1,5 +1,6 @@
 # sphinx + dependencies
 GitPython
+jupyterlab_myst
 myst-nb
 pybtex-apa7-style
 sphinx

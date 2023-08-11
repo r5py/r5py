@@ -104,11 +104,10 @@ intersphinx_mapping = {
 }
 
 nb_execution_mode = "force"
-nb_execution_timeout = 120  # needed, e.g., when matplotlib updates its font cache
+nb_execution_timeout = 600  # needed, e.g., when matplotlib updates its font cache
 nb_execution_show_tb = True  # show traceback in case of error
 
 # set bibtex citation style options
-bibtex_reference_style = "author_year"
 bibtex_bibfiles = ["_static/references.bib"]
 bibtex_default_style = R5PY_CITATION_STYLE
 bibtex_reference_style = R5PY_REFERENCE_STYLE

@@ -4,7 +4,7 @@ Contributions of any kind to *r5py* are more than welcome. That does not mean
 new code only, but also improvements of documentation and user guide, additional
 tests (ideally filling the gaps in existing suite) or a bug report. In addition,
 we warmly welcome ideas of new features that could be added to the *r5py*, or
-ideas how to improve the existing codebase.
+ideas on how to improve the existing codebase.
 
 All contributions should go through our GitHub repository. Bug reports, ideas or
 even questions should be raised by opening an issue on the GitHub tracker.

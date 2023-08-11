@@ -54,7 +54,7 @@ package searches in the following paths:
 
 Consult the [list above](#configuration-options), omit any leading dashes from
 the option names, and specify in [YAML](https://yaml.org/) format (for
-instance, specify `--max-memory=12G` as `max-memory: 12G`).
+instance, `--max-memory=12G` as `max-memory: 12G`).
 
 
 :::{admonition} Template configuration file
@@ -89,6 +89,5 @@ sys.argv.append(["--max-memory", "99%"])
 import r5py  # noqa: F401
 ```
 
-To find available options, consult the *command line argument* column of the
-[table above](#configuration-options).
+To find available options, consult the [table above](#configuration-options).
 

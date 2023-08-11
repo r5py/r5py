@@ -26,8 +26,8 @@ self
 data-requirements
 travel-time-matrices
 Detailed itineraries <detailed-itineraries>
-configuration
 advanced-usage
+configuration
 :::
 
 
@@ -66,11 +66,11 @@ RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
 
 One of the core functionalities of *r5py* is to compute travel time matrices for
 large extents, such as entire cities or countries. This page walks you through
-the - pleasantly few - steps to do so.
+the - pleasantly few - steps required to do so.
 
 In our example below, we work with data from Helsinki, the capital of Finland.
-We calculate the travel times on public transport or on foot from the centre
-points of all cells in a population grid data set to the city’s main railway stations.
+We calculate the travel times on public transport or on foot from all cells in a
+population grid data set to the city’s main railway stations.
 
 
 ## Origins and destination
@@ -102,14 +102,15 @@ overview_map
 
 ## Transport network
 
-Virtually all operations of *r5py* require a transport network.
+Virtually all operations of *r5py* require a transport network. *R5py*
+understands and reads the following types of transport networks:
 
-- The street network, including infrastructure for cycling and walking, is
+- a street network, including infrastructure for cycling and walking, is
   loaded from an [OpenStreetMap
   extract](https://wiki.openstreetmap.org/wiki/Extracts) in *Protocol Buffer*
-  (`.pbf`) format.
-- The public transport schedule can be read from a
-  [GTFS](https://en.wikipedia.org/wiki/GTFS) file.
+  (`.pbf`) format
+- a public transport schedule can be read from zero or more
+  [GTFS](https://en.wikipedia.org/wiki/GTFS) files.
 
 For the quickstart example, you find sample data sets in the `DATA_DIRECTORY`
 ([`docs/_static/data`](https://github.com/r5py/r5py/tree/main/docs/_static/data/)
@@ -134,17 +135,20 @@ transport_network = r5py.TransportNetwork(
 
 At this stage, *r5py* has created a routable transport network, that is refered
 to by the `transport_network` variable. We can now use this network for travel
-time calculations.
+time calculations. Depending on the extent of the network, this step can take
+substantial time - you can reuse the same `TransportNetwork` instance in
+subsequent analyses.
 
 
 ## Compute a travel time matrix
 
 A travel time matrix is a dataset of the travel costs (typically, time) between
 given locations (origins and destinations) in a study area.  In *r5py*,
-{class}`r5py.TravelTimeMatrixComputer`s calculate these matrices. A
-{class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`, once initialised,
-can be used multiple times with adjusted parameters, such as a different
-departure time.
+{class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`s calculate
+these matrices. A
+{class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`, once
+initialised, can be used multiple times, for instance, with adjusted parameters,
+such as a different departure time.
 
 A {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` needs (at least)
 the following input arguments:
@@ -196,12 +200,26 @@ travel_times = travel_time_matrix_computer.compute_travel_times()
 travel_times.head()
 ```
 
-The result of {meth}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>` is a
-{class}`pandas.DataFrame`. The values in its `travel_time` column are travel
-times in minutes between the points identified by `from_id` and `to_id` (the
-IDs of the origins and destinations, respectively). As you can see, the `id`
-value in the `to_id` column is the same for all rows because our example used
-only one destination point (the railway station).
+The result of
+{meth}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`
+is a {class}`pandas.DataFrame`. The values in its `travel_time` column are
+travel times in minutes between the points identified by `from_id` and `to_id`
+(the IDs of the origins and destinations, respectively). As you can see, the
+`id` value in the `to_id` column is the same for all rows because our example
+used only one destination point (the railway station).
+
+
+## Save results
+
+To save the travel time matrix to a CSV file, use the
+{meth}`to_csv()<pandas.DataFrame.to_csv()>` method of pandas data frames:
+
+```{code-cell}
+travel_times.to_csv(DATA_DIRECTORY / "travel_times_to_helsinki_railway_station.csv")
+```
+
+
+## Plot a result map
 
 To quickly plot the results in a map, *join* the `travel_times` with the input
 data set `population_grid` and

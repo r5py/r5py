@@ -64,13 +64,14 @@ import shapely
 RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
 ```
 
-One of the core functionalities of *r5py* is to compute travel time matrices for
-large extents, such as entire cities or countries. This page walks you through
-the - pleasantly few - steps required to do so.
+One of the core functionalities of *r5py* is to compute travel time matrices. 
+This  is for done really efficiently even for large extents, such as entire 
+cities or countries. This page walks you through the - pleasantly few - steps 
+required to do so.
 
-In our example below, we work with data from Helsinki, the capital of Finland.
+In our example below, we work with a sample data from Helsinki, the capital of Finland.
 We calculate the travel times on public transport or on foot from all cells in a
-population grid data set to the city’s main railway stations.
+population grid data set to the city’s main railway station.
 
 
 ## Origins and destination
@@ -108,9 +109,9 @@ understands and reads the following types of transport networks:
 - a street network, including infrastructure for cycling and walking, is
   loaded from an [OpenStreetMap
   extract](https://wiki.openstreetmap.org/wiki/Extracts) in *Protocol Buffer*
-  (`.pbf`) format
-- a public transport schedule can be read from zero or more
-  [GTFS](https://en.wikipedia.org/wiki/GTFS) files.
+  (`.pbf`) format (mandatory)
+- a public transport schedule from one or more
+  [GTFS](https://en.wikipedia.org/wiki/GTFS) files (optional).
 
 For the quickstart example, you find sample data sets in the `DATA_DIRECTORY`
 ([`docs/_static/data`](https://github.com/r5py/r5py/tree/main/docs/_static/data/)
@@ -136,7 +137,7 @@ transport_network = r5py.TransportNetwork(
 At this stage, *r5py* has created a routable transport network, that is refered
 to by the `transport_network` variable. We can now use this network for travel
 time calculations. Depending on the extent of the network, this step can take
-substantial time - you can reuse the same `TransportNetwork` instance in
+a few minutes - you can reuse the same `TransportNetwork` instance in
 subsequent analyses.
 
 
@@ -185,10 +186,10 @@ destinations = geopandas.GeoDataFrame(
 
 travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
     transport_network,
-    origins=origins,
-    destinations=destinations,
-    departure=datetime.datetime(2022, 2, 22, 8, 30),
-    transport_modes=[
+    origins = origins,
+    destinations = destinations,
+    departure = datetime.datetime(2022, 2, 22, 8, 30),
+    transport_modes = [
         r5py.TransportMode.TRANSIT,
         r5py.TransportMode.WALK,
     ],

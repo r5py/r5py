@@ -189,7 +189,9 @@ travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
         r5py.TransportMode.WALK,
     ],
 )
+```
 
+```{code-cell}
 travel_times = travel_time_matrix_computer.compute_travel_times()
 travel_times.head()
 ```

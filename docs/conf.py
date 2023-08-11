@@ -104,7 +104,7 @@ intersphinx_mapping = {
 }
 
 nb_execution_mode = "force"
-nb_execution_timeout = 120  # needed, e.g., when matplotlib updates its font cache
+nb_execution_timeout = 600  # needed, e.g., when matplotlib updates its font cache
 nb_execution_show_tb = True  # show traceback in case of error
 
 # set bibtex citation style options

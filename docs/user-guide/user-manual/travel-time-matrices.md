@@ -35,30 +35,20 @@ sys.path.insert(0, str(R5PY_DIRECTORY))
 :color: light
 :margin: 1 5 0 0
 
-A travel time matrix is a tool and data set that allows researchers to study how
-easily people can reach different destination within and beyond cities, and how
-accessibility is influenced by factors such as the quality of public transport
-systems, street networks, and land use patterns.
+A travel time matrix is a table that shows the travel time between 
+all pairs of a set of locations in an urban area. The locations represent typical origins and destinations, such as everyday services and residential homes, or are 
+a complete set of locations covering the entire area wall-to-wall, such as census polygons or a regular grid.
 
-Typically, a travel time matrix is a table that shows the travel time (or other
-travel costs) between all pairs of a set of locations in an urban area. The
-locations represent typical origins and destinations, such as everyday services
-and residential homes, or are a complete set of locations covering the entire
-area wall-to-wall, such as census polygons or a regular grid.
-
-Travel time matrices can then be used to analyse accessibility patterns,
-evaluate the impacts of transport planning and land use policies, and to
-identify in which areas and for which groups of people a city works best and
-worst. This information can then help cities to become more equitable and more
-sustainable, and foster a good quality of life for their residents.
+A travel time matrix is a key piece of information in transportation research and planning. It allows us to study how easily people can reach different destinations, 
+to evaluate the impacts of transport and land use policies, to analyse accessibility patterns and to examine how accessibility is influenced by factors such as the quality of public transport systems, street networks, and land use patterns. Travel time matrices can also be used to identify in which areas and for which groups of people a city works best and worst. Altogether, this makes travel time matrices a critical information to help cities become more equitable and more sustainable, and to foster a good quality of life for their residents.
 
 Successful recent research that either used or produced travel time matrices
 include the work of the Digital Geography Lab at the University of Helsinki
 (e.g., {cite:t}`tenkanen_longitudinal_2020`, {cite:t}`salonen_modelling_2013`,
 or {cite:t}`jarv_dynamic_2018`), the Mobility Network at the University of
 Toronto (e.g., {cite:t}`farber_dynamic_pt_2017`,
-{cite:t}`farber_temporal_variablity_2014`), and the Institute for Applied
-Economic Research (IPEA, e.g., {cite:t}`braga_evaluating_2023`,
+{cite:t}`farber_temporal_variablity_2014`), and the Access to Opportunities Project (AOP) at the Institute for Applied
+Economic Research - IPEA (e.g., {cite:t}`pereira_geographic_2021`, {cite:t}`braga_evaluating_2023`,
 {cite:t}`herszenhut_impact_2022`).
 :::
 
@@ -73,9 +63,7 @@ required for computing a travel time matrix:
 - a transport network, and
 - a set of origins and destinations
 
-First, create a {class}`TransportNetwork<r5py.TransportNetwork>` and load an
-OpenStreetMap extract of the São Paulo city centre as well as a public transport
-schedule in GTFS format covering the same area:
+In the example below, we first create a {class}`TransportNetwork<r5py.TransportNetwork>`. To do so, we load an OpenStreetMap extract of the São Paulo city centre as well as a public transport schedule in GTFS format covering the same area:
 
 ```{code-cell}
 :tags: [remove-output]
@@ -90,13 +78,11 @@ transport_network = r5py.TransportNetwork(
 )
 ```
 
-Studies that compare accessibility (*potential* mobility) between different
-neighbourhoods tend to use a regular grid of points that covers the study area
-as origins or destinations. Recently, hexagonal grids, such as Uber’s [H3
-indexing system](https://h3geo.org/) have gained popularity, as they assure
-equidistant neighbourhood relationships (all neighbouring grid cells’ centroids
-are at the same distance; in a grid of squares, the diagonal neighbours are
-roughly 41% further than the horizontal and vertical ones).
+Studies that compare accessibility between different neighbourhoods tend to use a regular grid of points that covers the study area as origins or destinations. 
+Recently, hexagonal grids, such as Uber’s [H3 indexing system](https://h3geo.org/) 
+have gained popularity, as they assure equidistant neighbourhood relationships 
+(all neighbouring grid cells’ centroids are at the same distance; in a grid of 
+squares, the diagonal neighbours are roughly 41% further than the horizontal and vertical ones).
 
 We prepared such a hexagonal grid for São Paulo, and added the counts of
 `population`, `jobs`, and `schools` within each cell as separate columns.
@@ -137,12 +123,10 @@ destinations["geometry"] = destinations.geometry.centroid
 
 With this, we have all input data sets needed for computing a travel time
 matrix: a transport network, origins, and destinations. We still need to decide
-which modes of transport should be used, and when to depart.
+which modes of transport should be used, and the departure time in our analysis.
 
 The modes of transport can be passed as a list of different
-{class}`r5py.TransportMode`s (or their {class}`str` equivalent), the departure
-must be a {class}`datetime.datetime`. If you search for public transport routes,
-double-check that the departure date/time is covered by the input GTFS data set.
+{class}`r5py.TransportMode`s (or their {class}`str` equivalent). Meanwhile, the departure must be a {class}`datetime.datetime`. If you search for public transport routes, double-check that the departure date/time is covered by the input GTFS data set in the `calendar.txt` file.
 
 ```{code-cell}
 import datetime
@@ -159,8 +143,7 @@ travel_time_matrix = r5py.TravelTimeMatrixComputer(
 The output of
 {meth}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`
 is a table in which each row describes the travel time (`travel_time`) from an
-origin (`from_id`), to a destination (`to_id`). The latter two refer to the `id`
-column in the origins and destinations input data sets, respectively.
+origin (`from_id`), to a destination (`to_id`).
 
 ```{code-cell}
 travel_time_matrix
@@ -181,14 +164,13 @@ myst_nb.glue("matrix_length", matrix_length, display=False)
 ```
 
 As {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` creates an
-all-to-all matrix, the results contain one row for every combination of origins
-and destinations. Since we have {glue:}`origins_length` origins and
+all-to-all matrix in long format. In other words, the results contain one row for every combination of origins and destinations. Since we have {glue:}`origins_length` origins and
 {glue:}`destinations_length` destinations, the output travel time matrix is
 {glue:}`matrix_length` rows long.
 
 
 Alternatively, and possibly more intuitively, we can display the travel time
-matrix table as a matrix, using {meth}`pandas.DataFrame.pivot()`:
+matrix table as a matrix in wide format, using {meth}`pandas.DataFrame.pivot()`:
 
 ```{code-cell}
 travel_time_matrix.pivot(index="from_id", columns="to_id", values="travel_time")
@@ -205,9 +187,7 @@ Once the travel time matrix is computed, we can use the data to analyse and
 visualise different measures of accessibility. For instance, we can filter the
 table to show all rows for which the destination is the [Praça da
 Sé](https://en.wikipedia.org/wiki/Pra%C3%A7a_da_S%C3%A9), a public square in the
-centre of the city. By plotting the travel times in a map, we can quickly assess
-how equitable the public transport network of São Paulo is for the residents of
-different parts of the city.
+centre of the city. By plotting the travel times in a map, we can quickly assess how long it takes for residents from different parts of the city to reach this square by public transport.
 
 For this we first create a copy of the result data frame, filtered to contain
 only rows with `to_id` referencing the Praça da Sé. Then, we join this table to

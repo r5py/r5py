@@ -11,16 +11,15 @@ for a detailed explanation).
 The tasks carried out by *R⁵* under the hood of *r5py* are fairly
 memory-intensive, which is why, by default, *r5py* allows the JVM to grant up to
 80% of total memory to R⁵ (but ensures to always leave at least 2 GiB to the
-system and other processes).
+operating system and other processes).
 
-You want to lower this limit if you are running other tasks in parallel, or
-raise it, if you have a dedicated computer with large memory and small
+You may want to lower this limit if you are running other tasks in parallel, or
+raise it if you have a dedicated computer with large memory and small
 operating system requirements.
 
-As described in detail on the [configuration](configuration.md) page, you can
-either create a configuration file, and set `max-memory` there, specify the
-`--max-memory` or `-m` command line arguments, or add the same arguments to
-`sys.argv`.
+To change the memory limit, you can either create a configuration file and set `max-memory` from there by specifying the `--max-memory` or `-m` command line 
+arguments, or add the same arguments to `sys.argv`. See detailed explanation on 
+the [configuration](configuration.md) page.
 
 For instance, to set the maximum heap size to a fixed 12 GiB, you can create a
 configuration file in the [location suitable for your operating
@@ -39,8 +38,7 @@ max-memory: 12G
 For some use cases, it can be useful to use a local copy of R⁵, rather than
 the one downloaded by *r5py*, for instance, in order to apply custom patches
 to extend or modify R⁵’s functionality, or to force the use of a certain
-version for longitudinal comparability. For retaining path geometries for public
-transport routes in {class}`DetailedItinerariesComputer`, 
+version for longitudinal comparability. 
 
 This can be achieved by passing a configuration option or command
 line argument to change the class path. 
@@ -54,9 +52,9 @@ sys.argv.append(["--r5-classpath", "/opt/r5/"])
 import r5py
 ```
 
-To use the patched R⁵ version the [Digital Geography
-Lab](https://www.helsinki.fi/en/researchgroups/digital-geography-lab) provides
-on their [GitHub pages](https://github.com/DigitalGeographyLab/r5/releases),
+To use the patched R⁵ version provided by the [Digital Geography
+Lab](https://www.helsinki.fi/en/researchgroups/digital-geography-lab)
+on their [GitHub pages](https://github.com/DigitalGeographyLab/r5/releases), for example,
 pass the full URL, instead:
 
 ```python

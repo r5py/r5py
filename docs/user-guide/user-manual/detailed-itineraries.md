@@ -73,7 +73,7 @@ transport_network = r5py.TransportNetwork(
 In case you are interested in more detailed routing results, you can use
 {class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>`. In
 contrast to {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`, it
-reports individual trip segments, and possibly multiple options for each trip. 
+reports individual trip segments, and possibly multiple alternative routes for each trip. 
 
 As such,
 {class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>`’s output
@@ -86,12 +86,11 @@ as a {class}`shapely.geometry` for each segment.
 :::{admonition} Detailed itineraries are computationally expensive
 :class: attention
 
-Computing detailed itineraries is significantly more expensive than simple
-travel times. As such, think twice whether you actually need the information
-contained.
+Computing detailed itineraries is significantly more expensive than calculating 
+simple travel times. As such, think twice whether you actually need the detailed information output from this function.
 
 For the examples below, to reduce computation effort, we use a sample of 10
-origin points and one single destination: the railway station. 
+origin points and one single destination (the railway station) in our sample data of Helsinki. 
 
 :::
 
@@ -115,11 +114,11 @@ destinations = geopandas.GeoDataFrame(
 
 detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
     transport_network,
-    origins=origins,
-    destinations=destinations,
-    departure=datetime.datetime(2022,2,22,8,30),
-    transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
-    snap_to_network=True,
+    origins = origins,
+    destinations = destinations,
+    departure = datetime.datetime(2022,2,22,8,30),
+    transport_modes = [r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+    snap_to_network = True,
 )
 ```
 
@@ -203,7 +202,7 @@ performance by *not reading the geometries included in GTFS data sets*.
 
 As a consequence, the `geometry` reported by
 {class}`DetailedItinerariesComputer` are straight lines in-between the stops of
-a public transport line, and do not reflect the actual path travelled.
+a public transport line, and do not reflect the actual path travelled in public transport modes.
 
 With this in mind, *r5py* does not attempt to compute the distance of public
 transport segments if `SAVE_SHAPES = false`, as distances would be very crude

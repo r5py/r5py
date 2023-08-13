@@ -1,9 +1,4 @@
-<img 
-    class="r5py_logo" align="right"
-    src="https://github.com/r5py/r5py/raw/main/docs/_static/images/r5py_blue.svg"
-    alt="r5py logo"
-    style="width:180px; max-width:30vW;"
->
+<img class="r5py_logo" align="right" src="https://github.com/r5py/r5py/raw/main/docs/_static/images/r5py_blue.svg" alt="r5py logo" style="width:180px; max-width:30vW;">
 
 # r5py: Rapid Realistic Routing with R5 in Python
 

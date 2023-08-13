@@ -145,7 +145,7 @@ The modes of transport can be passed as a list of different
 {class}`r5py.TransportMode`s (or their {class}`str` equivalent). Meanwhile, the
 departure must be a {class}`datetime.datetime`. If you search for public
 transport routes, [double-check that the departure date and time is covered by
-the input GTFS data set](data-requirements.md#data-preprocessing).
+the input GTFS data set](data-preprocessing).
 
 ```{code-cell}
 import datetime

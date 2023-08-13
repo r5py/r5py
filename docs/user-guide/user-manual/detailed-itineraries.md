@@ -241,7 +241,7 @@ travel_details["trip"] = travel_details.apply(
     axis=1
 )
 
-m = (
+detailed_routes_map = (
     geopandas.GeoDataFrame(travel_details)
     .set_geometry("geometry")
     .set_crs("EPSG:4326")[
@@ -265,9 +265,12 @@ m = (
 )
 ```
 
-Let’s also add the origins to the map:
+Let’s also add the origins and the destination to the map:
 
 ```{code-cell}
+import folium
+
+folium.Marker((RAILWAY_STATION.y, RAILWAY_STATION.x)).add_to(detailed_routes_map)
 
 points = geopandas.GeoDataFrame(
     pandas.DataFrame(
@@ -277,6 +280,6 @@ points = geopandas.GeoDataFrame(
     .join(population_grid.set_index("id"))
 )
 points.geometry = points.geometry.to_crs("EPSG:3875").centroid.to_crs("EPSG:4326")
-points.explore(marker_kwds={"radius": 10}, tooltip={"id"}, m=m)
+points.explore(marker_kwds={"radius": 10}, tooltip={"id"}, m=detailed_routes_map)
 
 ```

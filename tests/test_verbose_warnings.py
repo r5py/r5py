@@ -89,3 +89,23 @@ class TestVerboseWarnings:
                 origins=population_grid_points_first_three,
                 departure=departure_datetime,
             ).compute_travel_times()
+
+    def test_detailed_itineraries_warn_origins_equal_to_destinations(
+        self,
+        transport_network,
+        population_grid_points_first_three,
+        departure_datetime,
+        setup_verbose_mode,
+    ):
+        with pytest.warns(
+            RuntimeWarning,
+            match="Origins and destinations are identical, computing an all-to-all matrix",
+        ):
+            detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+                transport_network=transport_network,
+                origins=population_grid_points_first_three,
+                destinations=population_grid_points_first_three,
+                departure=departure_datetime,
+                transport_modes=[r5py.TransportMode.WALK],
+            )
+        assert detailed_itineraries_computer.all_to_all

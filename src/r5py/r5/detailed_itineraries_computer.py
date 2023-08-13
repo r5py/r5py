@@ -95,6 +95,13 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
                     "Origins and destinations are of different length, computing an all-to-all matrix",
                     RuntimeWarning,
                 )
+        elif origins.equals(destinations):
+            self.all_to_all = True
+            if self.verbose:
+                warnings.warn(
+                    "Origins and destinations are identical, computing an all-to-all matrix",
+                    RuntimeWarning,
+                )
         else:
             self.all_to_all = force_all_to_all
 

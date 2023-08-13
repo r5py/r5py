@@ -64,14 +64,13 @@ import shapely
 RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
 ```
 
-One of the core functionalities of *r5py* is to compute travel time matrices. 
-This  is for done really efficiently even for large extents, such as entire 
-cities or countries. This page walks you through the - pleasantly few - steps 
-required to do so.
+One of the core functionalities of *r5py* is to compute travel time matrices
+efficiently, also for large extents, such as entire cities or countries. This
+page walks you through the - pleasantly few - steps required to do so.
 
-In our example below, we work with a sample data from Helsinki, the capital of Finland.
-We calculate the travel times on public transport or on foot from all cells in a
-population grid data set to the city’s main railway station.
+In our example below, we work with sample data from Helsinki, the capital of
+Finland.  We calculate the travel times on public transport or on foot from all
+cells in a population grid data set to the city’s main railway station.
 
 
 ## Origins and destination
@@ -136,9 +135,9 @@ transport_network = r5py.TransportNetwork(
 
 At this stage, *r5py* has created a routable transport network, that is refered
 to by the `transport_network` variable. We can now use this network for travel
-time calculations. Depending on the extent of the network, this step can take
-a few minutes - you can reuse the same `TransportNetwork` instance in
-subsequent analyses.
+time calculations. Depending on the extent of the network, this step can take up
+to several minutes. However, you can reuse the same `TransportNetwork` instance
+in subsequent analyses.
 
 
 ## Compute a travel time matrix
@@ -186,10 +185,10 @@ destinations = geopandas.GeoDataFrame(
 
 travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
     transport_network,
-    origins = origins,
-    destinations = destinations,
-    departure = datetime.datetime(2022, 2, 22, 8, 30),
-    transport_modes = [
+    origins=origins,
+    destinations=destinations,
+    departure=datetime.datetime(2022, 2, 22, 8, 30),
+    transport_modes=[
         r5py.TransportMode.TRANSIT,
         r5py.TransportMode.WALK,
     ],

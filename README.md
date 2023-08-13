@@ -1,4 +1,9 @@
-<img class="r5py_logo" align="right" src="https://github.com/r5py/r5py/raw/main/docs/_static/images/r5py_blue.svg" alt="r5py logo" style="width:180px; max-width:30vW;">
+<img 
+    class="r5py_logo" align="right"
+    src="https://github.com/r5py/r5py/raw/main/docs/_static/images/r5py_blue.svg"
+    alt="r5py logo"
+    style="width:180px; max-width:30vW;"
+>
 
 # r5py: Rapid Realistic Routing with R5 in Python
 
@@ -16,25 +21,27 @@
 <br />
 
 
-**R5py** is a Python library for rapid realistic routing on multimodal transport networks (walk,
-bike, public transport and car).  It provides a simple and friendly interface to R<sup>5</sup>, the
-Rapid Realistic Routing on Real-world and Reimagined networks, the [routing engine][r5-github]
-developed by Conveyal. **r5py** is inspired by [r5r, a wrapper for R][r5r-vignette],
-and the library is designed to interact with [GeoPandas][geopandas] GeoDataFrames.
+**R5py** is a Python library for rapid realistic routing on multimodal transport
+networks (walk, bike, public transport and car).  It provides a simple and
+friendly interface to R<sup>5</sup>, the Rapid Realistic Routing on Real-world
+and Reimagined networks, the [routing engine][r5-github] developed by Conveyal.
+**r5py** is inspired by [r5r, a wrapper for R][r5r-vignette], and the library is
+designed to interact with [GeoPandas][geopandas] GeoDataFrames.
 
-**R5py** offers a simple way to run R5 locally with Python. It allows users to calculate travel time
-matrices and accessibility by different travel modes.  To get started, see a detailed demonstration
-of the **r5py** ‘in action’ from the [Usage][rtd-basic-usage] section of its documentation. Over
-time, **r5py** will be expanded to incorporate other functionalities from R5.
+**R5py** offers a simple way to run R5 locally with Python. It allows users to
+calculate travel time matrices and accessibility by different travel modes.  To
+get started, see a detailed demonstration of the **r5py** ‘in action’ from the
+[Usage][rtd-quickstart] section of its documentation. Over time, **r5py** will
+be expanded to incorporate other functionalities from R5.
 
 ## Installation
 
-**R5py** is available from conda-forge and PyPi. You can use `mamba`, `pip` or `conda` to install it.
-To quickstart your use of **r5py**, we also provide an [`environment.yml` file ][env-file],
-using which you can [quickly set up a development environment][conda-create-env-from-yml] and are
-ready to go.
+**R5py** is available from conda-forge and PyPi. You can use `mamba`, `pip` or
+`conda` to install it.  To quickstart your use of **r5py**, we also provide an
+[`environment.yml` file ][env-file], using which you can [quickly set up a
+development environment][conda-create-env-from-yml] and are ready to go.
 
-For more details and alternative installation options, read the dedicated 
+For more details and alternative installation options, read the dedicated
 [installation section][rtd-installation] of the r5py documentation.
 
 ## Usage
@@ -45,11 +52,12 @@ API reference at [r5py.readthedocs.io][rtd-link].
 
 ## Acknowledgements
 
-The [R<sup>5</sup> routing engine][r5-github] is developed at [Conveyal][conveyal] with
-contributions from several people.
+The [R<sup>5</sup> routing engine][r5-github] is developed at
+[Conveyal][conveyal] with contributions from several people.
 
-R5py draws a lot of inspiration from [r5r][r5r-github], an interface to R5 from the R language
-that is developed at the Institute for Applied Economic Research (Ipea), Brazil.
+R5py draws a lot of inspiration from [r5r][r5r-github], an interface to R5 from
+the R language that is developed at the Institute for Applied Economic Research
+(Ipea), Brazil.
 
 
 ## Citation
@@ -63,8 +71,9 @@ Fink, C., Klumpenhouwer, W., Saraiva, M., Pereira, R., &amp; Tenkanen, H., 2022:
 
 ## License
 
-This work is dual-licensed under GNU General Public License v3.0 or later and MIT License.
-You can choose between the two depending on which license fits your project better.
+This work is dual-licensed under GNU General Public License v3.0 or later and
+MIT License.  You can choose between the two depending on which license fits
+your project better.
 
 `SPDX-License-Identifier: GPL-3.0-or-later OR MIT`
 
@@ -97,6 +106,6 @@ You can choose between the two depending on which license fits your project bett
 [r5-github]: https://github.com/conveyal/r5/
 [r5r-github]: https://github.com/ipeaGIT/r5r/
 [r5r-vignette]: https://ipeagit.github.io/r5r/
-[rtd-basic-usage]: https://r5py.readthedocs.io/en/latest/notebooks/basic-usage.html
-[rtd-installation]: https://r5py.readthedocs.io/en/latest/installation.html
+[rtd-quickstart]: https://r5py.readthedocs.io/en/stable/user-guide/user-manual/quickstart.html
+[rtd-installation]: https://r5py.readthedocs.io/en/stable/user-guide/installation/installation.html
 [rtd-link]: https://r5py.readthedocs.io/

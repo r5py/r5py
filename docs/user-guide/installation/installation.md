@@ -115,7 +115,7 @@ To interface with R⁵, *r5py* requires a *Java Development Kit* (jdk).
 
 If you installed *r5py* using `conda` or `mamba`, an appropriate version of
 OpenJDK has been installed as a dependency, and you are ready to go. If you used
-`pip`, or installed *r5py* manually, please install a JDK, which can be downloaded from
+`pip`, or installed *r5py* manually, please install a JDK, for instance
 [OpenJDK](https://openjdk.org/).
 
 Consider installing it from your system’s package manager, or the official

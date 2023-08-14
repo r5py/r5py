@@ -5,7 +5,6 @@
 __version__ = "0.0.4"
 
 from .r5 import (
-    BreakdownStat,
     DetailedItinerariesComputer,
     RegionalTask,
     TransportMode,
@@ -14,7 +13,6 @@ from .r5 import (
 )
 
 __all__ = [
-    "BreakdownStat",
     "DetailedItinerariesComputer",
     "RegionalTask",
     "TransportMode",

@@ -37,7 +37,7 @@ appropriate:
 
 If you are new to the (sometimes confusing) world of Python package managers,
 read more about them in [chapter 1 of *Python for Geographic Data
-Analysis*](https://pythongis.org/part1/chapter-01/nb/05-installation.html).
+Analysis*](https://pythongis.org/part1/chapter-01/nb/06-installation.html).
 :::
 
 
@@ -66,8 +66,8 @@ conda create \
     r5py
 ```
 
-This will create a new environment `r5py`, and installs *r5py* and its
-dependencies, using the *conda-forge* repository. To start work inside the newly
+This will create a new environment `r5py`, and install *r5py* and its
+dependencies using the *conda-forge* repository. To start working inside the newly
 created environment, run
 
 ```{code} sh
@@ -85,7 +85,7 @@ conda install --channel conda-forge jupyterlab
 ### Install *r5py* into an existing environment
 
 If you already have an existing conda environment, and want to install *r5py*
-in addition to the packages installed there, *activate* the environment, and
+in addition to the packages already installed there, *activate* the environment, and
 run:
 
 ```{code} sh
@@ -115,7 +115,7 @@ To interface with R⁵, *r5py* requires a *Java Development Kit* (jdk).
 
 If you installed *r5py* using `conda` or `mamba`, an appropriate version of
 OpenJDK has been installed as a dependency, and you are ready to go. If you used
-`pip`, or installed *r5py* manually, please install a JDK, for instance,
+`pip`, or installed *r5py* manually, please install a JDK, for instance
 [OpenJDK](https://openjdk.org/).
 
 Consider installing it from your system’s package manager, or the official

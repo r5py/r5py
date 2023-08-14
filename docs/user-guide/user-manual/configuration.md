@@ -7,8 +7,8 @@ file](#configuration-via-config-files), or using [command line
 arguments](#configuration-via-config-files) which can also be used [within
 script files or notebooks](#configuration-from-the-command-line). 
 
-The arguments and options of all three approaches share the the same names, in
-the configuration files the leading dash(es) are omitted (see
+The arguments and options of all three approaches share the the same names. Please 
+note that in the configuration files the leading dash(es) are omitted (see
 [below](#configuration-via-config-files)).
 
 
@@ -20,7 +20,7 @@ the configuration files the leading dash(es) are omitted (see
 ```{eval-rst}
 --max-memory=value, -m value
               [Set the limit for the *Java Virtual Machine*’s heap
-              size](advanced-usage.html#setting-the-maximum-java-heap-size-memory-use)
+              size](advanced-usage.html#limit-the-maximum-java-heap-size-memory-use)
               (`-Xmx`).  This option accepts either absolute values (integer or
               decimal), optionally with a suffix to indicate Mibibytes,
               Gibibytes, or Tebibytes: `M`, `G`, `T`), or relative, expressed in
@@ -28,7 +28,7 @@ the configuration files the leading dash(es) are omitted (see
 
 --r5-classpath=classpath, -r classpath
               Point to R⁵’s JAR (or build directory) in case you want to use a
-              [custom R⁵ installation](advanced-usage.html#using-a-custom-installation-of-r⁵).
+              [custom R⁵ installation](advanced-usage.html#use-a-custom-installation-of-r5).
               Default: `""` (download latest compatible version of R5)
 
 --verbose, -v
@@ -60,7 +60,7 @@ instance, `--max-memory=12G` as `max-memory: 12G`).
 :::{admonition} Template configuration file
 :class: info
 
-When it is run for the first time, *r5py* creates template configuration files
+When *r5py* is run for the first time, it creates template configuration files
 in all valid locations to which it has write-access.
 :::
 

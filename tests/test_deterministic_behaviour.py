@@ -57,7 +57,7 @@ class TestDeterministicBehaviour:
             transport_modes=transport_modes,
             snap_to_network=True,
         )
-        travel_time_matrix_computer.request.breakdown_stats = r5py.BreakdownStat.MINIMUM
+        travel_time_matrix_computer.request.breakdown_stats = r5py.r5.BreakdownStat.MINIMUM
         travel_times = travel_time_matrix_computer.compute_travel_times()
 
         if transport_modes not in intermediate_results:

@@ -11,8 +11,8 @@ class TestBreakdownStat:
     @pytest.mark.parametrize(
         ["enum_member", "enum_name"],
         [
-            (r5py.BreakdownStat.MEAN, "MEAN"),
-            (r5py.BreakdownStat.MINIMUM, "MINIMUM"),
+            (r5py.r5.BreakdownStat.MEAN, "MEAN"),
+            (r5py.r5.BreakdownStat.MINIMUM, "MINIMUM"),
         ],
     )
     def test_breakdownstats(self, enum_member, enum_name):

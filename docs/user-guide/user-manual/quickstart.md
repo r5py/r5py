@@ -48,21 +48,6 @@ R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
 sys.path.insert(0, str(R5PY_DIRECTORY))
 ```
 
-```{code-cell}
-:tags: [remove-input, remove-output]
-
-# also this cell is hidden in READTHEDOCS
-# it loads the input geodata for the quickstart example
-
-# if you opened this notebook elsewhere, be sure to run
-# this cell, so data is read from disk
-
-import geopandas
-population_grid = geopandas.read_file(DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg")
-
-import shapely
-RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
-```
 
 One of the core functionalities of *r5py* is to compute travel time matrices
 efficiently, also for large extents, such as entire cities or countries. This
@@ -88,6 +73,13 @@ from the [Helsinki Region Environmental Services
 its coordinates refer to Helsinki’s main railway station in the
 [`EPSG:4326`](https://spatialreference.org/ref/epsg/4326/) reference system.
 
+```{code-cell}
+import geopandas
+population_grid = geopandas.read_file(DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg")
+
+import shapely
+RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
+```
 
 ```{code-cell}
 import folium

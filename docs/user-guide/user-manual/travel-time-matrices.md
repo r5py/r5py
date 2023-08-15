@@ -64,8 +64,7 @@ Project (AOP) at the Institute for Applied Economic Research - IPEA (e.g.,
 :::
 
 
-***
-
+## Load a transport network
 
 As briefly visited in [Quickstart](quickstart) and dicussed in detail in [Data
 Requirements](data-requirements), fundamentally, two types of input data are
@@ -134,8 +133,8 @@ destinations = hexagon_grid.copy()
 destinations["geometry"] = destinations.geometry.centroid
 ```
 
-***
 
+## Compute a travel time matrix
 
 With this, we have all input data sets needed for computing a travel time
 matrix: a transport network, origins, and destinations. We still need to decide
@@ -145,7 +144,7 @@ The modes of transport can be passed as a list of different
 {class}`r5py.TransportMode`s (or their {class}`str` equivalent). Meanwhile, the
 departure must be a {class}`datetime.datetime`. If you search for public
 transport routes, [double-check that the departure date and time is covered by
-the input GTFS data set](data-preprocessing).
+the input GTFS data set](check-gtfs-files).
 
 ```{code-cell}
 import datetime
@@ -199,7 +198,7 @@ travel_time_matrix.pivot(index="from_id", columns="to_id", values="travel_time")
 ***
 
 
-## Exploring results
+## Explore results
 
 ### Travel times from anywhere to a particular place
 

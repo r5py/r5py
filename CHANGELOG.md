@@ -1,3 +1,10 @@
+- **0.1.0** (2023-08-15):
+    - added class to compute detailed itineraries
+    - simplified transport modes
+    - rewrote and restructured documentation
+    - improved test coverage to 99.5%
+    - numerous bug fixes and improvements
+
 - **0.0.4** (2022-09-09):
     - a new logo
     - created DOI to properly cite r5py in academic research

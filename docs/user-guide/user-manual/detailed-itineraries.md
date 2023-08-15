@@ -225,11 +225,10 @@ usage](advanced-usage.md#use-a-custom-installation-of-r⁵).
 ## Visualise travel details
 
 It’s not difficult to plot the detailed routes in a map, however, a couple more
-steps are needed than with simple travel times. On the one hand, the resulting
-table needs to be converted into a {class}`geopandas.GeoDataFrame`. On the other
-hand, {meth}`GeoDataFrame.explore()<geopandas.GeoDataFrame.explore()>` cannot
-handle the column types {class}`r5py.TransportMode` and
-{class}`datetime.timedelta` - the conversion is quick and easy, though:
+steps are needed than with simple travel times.
+{meth}`GeoDataFrame.explore()<geopandas.GeoDataFrame.explore()>` cannot handle
+the column types {class}`r5py.TransportMode` and {class}`datetime.timedelta` -
+the conversion is quick and easy, though:
 
 ```{code-cell}
 travel_details["mode"] = travel_details.transport_mode.astype(str)
@@ -242,9 +241,7 @@ travel_details["trip"] = travel_details.apply(
 )
 
 detailed_routes_map = (
-    geopandas.GeoDataFrame(travel_details)
-    .set_geometry("geometry")
-    .set_crs("EPSG:4326")[
+    travel_details[
         [
             "geometry",
             "distance",

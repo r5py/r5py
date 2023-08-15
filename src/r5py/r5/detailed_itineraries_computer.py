@@ -7,6 +7,7 @@
 import copy
 import warnings
 
+import geopandas
 import joblib
 import pandas
 
@@ -111,7 +112,16 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
 
         Returns
         -------
-        pandas.DataFrame
+        geopandas.GeoDataFrame
+            The resulting detailed routes. For each origin/destination pair,
+            multiple route alternatives (‘options’) might be reported that each consist of
+            one or more segments. Each segment represents one row.
+            The data frame comprises of the following columns: `from_id`,
+            `to_id`, `option` (`int`), `segment` (`int`), `transport_mode`
+            (`r5py.TransportMode`), `departure_time` (`datetime.datetime`),
+            `distance` (`float`, metres), `travel_time` (`datetime.timedelta`),
+            `wait_time` (`datetime.timedelta`), `route` (`str`, public transport
+            route number or name), `geometry` (`shapely.LineString`)
             TODO: Add description of output data frame columns and format
         """
 
@@ -148,10 +158,7 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
                 ignore_index=True,
             )
 
-        try:
-            od_matrix = od_matrix.to_crs(self._origins_crs)
-        except AttributeError:  # (not a GeoDataFrame)
-            pass
+        od_matrix = geopandas.GeoDataFrame(od_matrix, crs=self._origins_crs)
         return od_matrix
 
     def _prepare_origins_destinations(self):

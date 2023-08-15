@@ -48,21 +48,6 @@ R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
 sys.path.insert(0, str(R5PY_DIRECTORY))
 ```
 
-```{code-cell}
-:tags: [remove-input, remove-output]
-
-# also this cell is hidden in READTHEDOCS
-# it loads the input geodata for the quickstart example
-
-# if you opened this notebook elsewhere, be sure to run
-# this cell, so data is read from disk
-
-import geopandas
-population_grid = geopandas.read_file(DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg")
-
-import shapely
-RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
-```
 
 One of the core functionalities of *r5py* is to compute travel time matrices
 efficiently, also for large extents, such as entire cities or countries. This
@@ -88,6 +73,13 @@ from the [Helsinki Region Environmental Services
 its coordinates refer to Helsinki’s main railway station in the
 [`EPSG:4326`](https://spatialreference.org/ref/epsg/4326/) reference system.
 
+```{code-cell}
+import geopandas
+population_grid = geopandas.read_file(DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg")
+
+import shapely
+RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
+```
 
 ```{code-cell}
 import folium
@@ -133,11 +125,11 @@ transport_network = r5py.TransportNetwork(
 )
 ```
 
-At this stage, *r5py* has created a routable transport network, that is refered
-to by the `transport_network` variable. We can now use this network for travel
-time calculations. Depending on the extent of the network, this step can take up
-to several minutes. However, you can reuse the same `TransportNetwork` instance
-in subsequent analyses.
+At this stage, *r5py* has created a routable transport network, that is stored
+in the `transport_network` variable. We can now use this network for travel time
+calculations. Depending on the extent of the network, this step can take up to
+several minutes. However, you can reuse the same `TransportNetwork` instance in
+subsequent analyses.
 
 
 ## Compute a travel time matrix
@@ -211,8 +203,10 @@ used only one destination point (the railway station).
 
 ## Save results
 
-To save the travel time matrix to a CSV file, use the
-{meth}`to_csv()<pandas.DataFrame.to_csv()>` method of pandas data frames:
+If you want to continue analysis later, in a different environment, or simply
+retain a clean copy of the results, save the travel time matrix to a CSV file.
+Simply use the {meth}`to_csv()<pandas.DataFrame.to_csv()>` method of pandas data
+frames:
 
 ```{code-cell}
 travel_times.to_csv(DATA_DIRECTORY / "travel_times_to_helsinki_railway_station.csv")

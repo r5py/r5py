@@ -146,7 +146,7 @@ overview_map
 ```
 
 By default, snapping takes into consideration all network nodes that support
-{class}`TransportMode.WALK<r5py.TransportMode.WALK>`, and that are within search
+{class}`TransportMode.WALK<r5py.TransportMode>`, and that are within search
 radius of 1600 metres. In other words, points are snapped to the closest path
 that is accessible on foot, within a maximum of 1.6 kilometres.
 

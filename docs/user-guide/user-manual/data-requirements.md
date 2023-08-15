@@ -96,6 +96,8 @@ you are aware of.
     cities. *Deprecated: will be replaced by* Mobility Database.
 
 
+(check-gtfs-files)=
+
 :::{admonition} Check GTFS files
 :class: tip
 

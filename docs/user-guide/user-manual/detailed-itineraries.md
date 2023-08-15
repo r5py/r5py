@@ -17,7 +17,7 @@ jupytext:
 # this cell is hidden from READTHEDOCS output
 # it’s used to
 #    - set sys.path to point to the local *r5py* source code, to
-#    - use a different upstream R5 jar, so we can display the 
+#    - use a different upstream R5 jar, so we can display the
 #      geometries of public transport routes, to
 #    - define a `DATA_DIRECTORY` pathlib.Path, and to
 #    - force pandas to show all columns of the (very wide)
@@ -68,13 +68,16 @@ transport_network = r5py.TransportNetwork(
 )
 ```
 
+
 # Compute travel times with a detailed breakdown of the routing results
+
+## Detailed itineraries
 
 In case you are interested in more detailed routing results, you can use
 {class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>`. In
 contrast to {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`, it
 reports individual trip segments, and possibly multiple alternative routes for
-each trip. 
+each trip.
 
 As such,
 {class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>`’s output
@@ -91,9 +94,9 @@ Computing detailed itineraries is significantly more expensive than calculating
 simple travel times. As such, think twice whether you actually need the detailed
 information output from this function.
 
-For the examples below, to reduce computation effort, we use a sample of 10
+For the examples below, to reduce computation effort, we use a sample of 3
 origin points and one single destination (the railway station) in our sample
-data of Helsinki. 
+data of Helsinki.
 
 :::
 
@@ -104,7 +107,7 @@ data of Helsinki.
 import datetime
 import r5py
 
-origins = population_grid.sample(10).copy()
+origins = population_grid.sample(3).copy()
 origins.geometry = origins.geometry.centroid
 
 destinations = geopandas.GeoDataFrame(
@@ -125,6 +128,23 @@ detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
 )
 ```
 
+:::{admonition} Snap to network
+:class: info
+
+If you read the code block above especially carefully, you may have noticed that
+we added an option `snap_to_network=True` to
+{class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>`. This
+option does exactly what it says on the outside: it attempts to snap all origin
+and destination points to the transport network before routing. This can help
+with points that come to lie in an otherwise inaccessible area, such as a fenced
+area, a swamp, or the middle of a lake.
+
+For a detailed description of the functionality, see the [Advanced
+usage](advanced-usage.md#snap-origins-and-destination-to-the-street-network) page.
+
+:::
+
+
 ```{code-cell}
 travel_details = detailed_itineraries_computer.compute_travel_details()
 travel_details
@@ -133,7 +153,7 @@ travel_details
 
 As you can see, the result contains much more information than earlier.
 Depending on your screen size, you might even have to scroll further right to
-see all columns. 
+see all columns.
 
 Especially in the case of public transport routes, or when choosing a list of
 different {attr}`transport_modes<r5py.RegionalTask.transport_modes>`, also the
@@ -149,13 +169,13 @@ route (e.g., bus number, metro line), and finally a line geometry representing
 the travelled path.
 
 See the following table for a complete list of columns returned by
-{meth}`DetailedItinerariesComputer.compute_detailed_itineraries()<r5py.DetailedItinerariesComputer.compute_detailed_itineraries()>`:
+{meth}`DetailedItinerariesComputer.compute_travel_details()<r5py.DetailedItinerariesComputer.compute_travel_details()>`:
 
 
 `from_id` (same type as `origins["id"]`)
 : the origin of the trip this segment belongs to
 
-`to_id` (same type as `origins["id"]`)
+`to_id` (same type as `destinations["id"]`)
 : the destination of the trip this segment belongs to
 
 `option` ({class}`int`)
@@ -201,12 +221,12 @@ below](detailed-geometries-with-upstream-r5).
 
 The default upstream version of R⁵ is compiled with
 `com.conveyal.r5.transit.TransitLayer.SAVE_SHAPES = false`, which improves
-performance by *not reading the geometries included in GTFS data sets*. 
+performance by *not reading the geometries included in GTFS data sets*.
 
 As a consequence, the `geometry` reported by
-{class}`DetailedItinerariesComputer` are straight lines in-between the stops of
-a public transport line, and do not reflect the actual path travelled in public
-transport modes.
+{class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>` are
+straight lines in-between the stops of a public transport line, and do not
+reflect the actual path travelled in public transport modes.
 
 With this in mind, *r5py* does not attempt to compute the distance of public
 transport segments if `SAVE_SHAPES = false`, as distances would be very crude
@@ -236,7 +256,7 @@ travel_details["travel time (min)"] = travel_details.travel_time.apply(
     lambda t: round(t.total_seconds() / 60.0, 2)
 )
 travel_details["trip"] = travel_details.apply(
-    lambda row: f"{row.from_id}→{row.to_id}",
+    lambda row: f"{row.from_id} → railway station",
     axis=1
 )
 
@@ -266,8 +286,16 @@ Let’s also add the origins and the destination to the map:
 
 ```{code-cell}
 import folium
+import folium.plugins
 
-folium.Marker((RAILWAY_STATION.y, RAILWAY_STATION.x)).add_to(detailed_routes_map)
+folium.Marker(
+    (RAILWAY_STATION.y, RAILWAY_STATION.x),
+    icon=folium.Icon(
+        color="green",
+        icon="train",
+        prefix="fa",
+    )
+).add_to(detailed_routes_map)
 
 points = geopandas.GeoDataFrame(
     pandas.DataFrame(
@@ -275,8 +303,69 @@ points = geopandas.GeoDataFrame(
     )
     .set_index("id")
     .join(population_grid.set_index("id"))
+    .reset_index()
 )
 points.geometry = points.geometry.to_crs("EPSG:3875").centroid.to_crs("EPSG:4326")
-points.explore(marker_kwds={"radius": 10}, tooltip={"id"}, m=detailed_routes_map)
+
+points.apply(
+    lambda row: (
+        folium.Marker(
+            (row["geometry"].y, row["geometry"].x),
+            icon=folium.plugins.BeautifyIcon(
+                icon_shape="marker",
+                number=row["id"],
+                border_color="#728224",
+                text_color="#728224",
+            ),
+        ).add_to(detailed_routes_map)
+    ),
+    axis=1,
+)
+
+detailed_routes_map
+```
+
+
+## Export the detailed routes
+
+If you want to further analyse the resulting routes, for instance, in a desktop
+{abbr}`GIS (geoinformation system)`, you can export the
+{class}`GeoDataFrame<geopandas.GeoDataFrame>` to a [wide range of file
+formats](https://geopandas.org/en/stable/docs/user_guide/io.html#writing-spatial-data),
+using the {meth}`to_file()<geopandas.GeoDataFrame.to_file()>` method.
+
+Note that many geospatial file formats do not support
+{class}`datetime.timedelta` columns, or columns with custom objects, such as the
+{class}`r5py.TransportMode` data. Similar to the above example, with a few
+simple steps we can convert the values accordingly:
+
+```{code-cell}
+travel_details["transport_mode"] = travel_details.transport_mode.astype(str)
+travel_details["travel time (min)"] = travel_details.travel_time.apply(
+    lambda t: round(t.total_seconds() / 60.0, 2)
+)
+travel_details["wait time (min)"] = travel_details.wait_time.apply(
+    lambda t: round(t.total_seconds() / 60.0, 2)
+)
+
+# keep all columns except travel time and wait time (which we renamed to
+# reflect the unit of measurement)
+travel_details = travel_details[
+    [
+        "from_id",
+        "to_id",
+        "option",
+        "segment",
+        "transport_mode",
+        "departure_time",
+        "distance",
+        "travel time (min)",
+        "wait time (min)",
+        "route",
+        "geometry",
+    ]
+]
+
+travel_details.to_file(DATA_DIRECTORY / "detailed_itineraries.gpkg")
 
 ```

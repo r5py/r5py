@@ -33,7 +33,6 @@ dependencies:
     - nbsphinx
     - nbstripout
     - openjdk
-    - pybtex-apa7-style
     - pytest
     - pytest-asyncio
     - pytest-cov

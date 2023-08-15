@@ -232,7 +232,11 @@ hexagons_with_travel_time_to_centre
 ```
 
 ```{code-cell}
-hexagons_with_travel_time_to_centre.explore(column="travel_time", cmap="Oranges")
+hexagons_with_travel_time_to_centre.explore(
+    column="travel_time",
+    cmap="YlOrBr",
+    tiles="CartoDB.Positron",
+)
 ```
 
 You can clearly see how travel times do not increase uniformly, but are shorter
@@ -273,7 +277,11 @@ hexagons_with_median_travel_times = (
     hexagon_grid.set_index("id").join(median_travel_times)
 )
 
-hexagons_with_median_travel_times.explore(column="travel_time", cmap="Oranges")
+hexagons_with_median_travel_times.explore(
+    column="travel_time", 
+    cmap="YlOrBr",
+    tiles="CartoDB.Positron",
+)
 ```
 
 ## Bibliography

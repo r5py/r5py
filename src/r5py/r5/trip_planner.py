@@ -42,10 +42,6 @@ ONE_MINUTE = datetime.timedelta(minutes=1)
 ZERO_SECONDS = datetime.timedelta(seconds=0)
 
 
-# Show the ACCURATE_GEOMETRIES warning once, only
-warnings.filterwarnings("once", "TransitLayer.SAVE_SHAPES = false")
-
-
 class TripPlanner:
     """
     Find detailed routes between two points.
@@ -183,20 +179,6 @@ class TripPlanner:
             )
             suboptimal_minutes = max(self.request._regional_task.suboptimalMinutes, 0)
             transit_layer = self.transport_network.transit_layer
-
-            if not ACCURATE_GEOMETRIES:
-                warnings.warn(
-                    (
-                        "R5 has been compiled with "
-                        "`TransitLayer.SAVE_SHAPES = false` (the default). "
-                        "The geometries of public transport routes are "
-                        "inaccurate (straight lines between stops), and "
-                        "distances can not be computed."
-                        # TODO: Add documentation on how to compile own version,
-                        # link to that doc page from here
-                    ),
-                    RuntimeWarning,
-                )
 
             if (
                 request._regional_task.fromLat == request._regional_task.toLat

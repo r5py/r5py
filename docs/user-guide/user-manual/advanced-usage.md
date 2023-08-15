@@ -1,4 +1,187 @@
+---
+jupytext:
+  formats: md:myst
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.14.6
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+---
+
+```{code-cell}
+:tags: [remove-input, remove-output]
+
+# this cell is hidden from output
+# it’s used to set sys.path to point to the local repo,
+# and to define a `DATA_DIRECTORY` pathlib.Path
+import pathlib
+import sys
+
+NOTEBOOK_DIRECTORY = pathlib.Path().resolve()
+DOCS_DIRECTORY = NOTEBOOK_DIRECTORY.parent.parent
+DATA_DIRECTORY = DOCS_DIRECTORY / "_static" / "data"
+R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
+sys.path.insert(0, str(R5PY_DIRECTORY))
+```
+
+```{code-cell}
+:tags: [remove-input, remove-output]
+
+# also this cell is hidden in READTHEDOCS
+# it loads input geodata for the examples below
+
+# if you opened this notebook elsewhere, be sure to run
+# this cell, so data is read from disk
+
+import r5py
+
+transport_network = r5py.TransportNetwork(
+    f"{DATA_DIRECTORY}/Helsinki/kantakaupunki.osm.pbf",
+    [
+        f"{DATA_DIRECTORY}/Helsinki/GTFS.zip",
+    ]
+)
+```
+
 # Advanced usage
+
+## Snap origins and destination to the street network
+
+```{code-cell}
+:tags: ["remove-input"]
+
+import folium
+import geopandas
+import shapely
+
+LONELY_POINT = shapely.Point(24.841466, 60.208892)
+
+geopandas.GeoDataFrame(
+    {"id": 1, "geometry": [LONELY_POINT]},
+    crs="EPSG:4326",
+).explore(
+    marker_type="marker",
+    map_kwds={
+        "center": { "lat": 60.208844, "lng": 24.837684 },
+    },
+    zoom_start=15,
+)
+
+```
+
+Sometimes, origin or destination points are far off the walkable, cyclable, or
+drivable street network. Especially when using a regular grid of points, many
+origins or destinations of a data set might be in the middle of a swamp (example
+above), on top of a mountain, or in the deep forest.
+
+While *r5py* and *R⁵* do their best to provide a reasonable route even for these
+points, at times, you might want to be able to control the situation a bit
+better.
+
+*R5py*’s {class}`TransportNetwork<r5py.TransportNetwork>` allows you to snap a
+{class}`GeoSeries<geopandas.GeoSeries>` of {class}`points<shapely.Point>` to
+points on the network.
+
+Simply load a transport network, have a geo-data frame with origin or
+destination points, and call the transport network’s
+{meth}`snap_to_network()<r5py.TransportNetwork.snap_to_network()>` method:
+
+```{code-cell}
+import geopandas
+
+origins = geopandas.GeoDataFrame(
+    {
+        "id": [1, 2],
+        "geometry": [
+            shapely.Point(24.841466, 60.208892),
+            shapely.Point(24.848001, 60.207177),
+        ],
+    },
+    crs="EPSG:4326",
+)
+
+origins["snapped_geometry"] = transport_network.snap_to_network(origins["geometry"])
+
+origins
+```
+
+```{code-cell}
+:tags: ["remove-input"]
+
+origins["lines"] = origins.apply(
+    lambda row: shapely.LineString([row["geometry"], row["snapped_geometry"]]),
+    axis=1
+)
+
+overview_map = origins.explore(
+    marker_type="marker",
+    marker_kwds={
+        "icon": folium.map.Icon(color="red", icon="ban", prefix="fa"),
+    },
+    map_kwds={
+        "center": {"lat": 60.20910, "lng": 24.84738}
+    },
+    zoom_start=15,
+)
+overview_map = origins.set_geometry("snapped_geometry").explore(
+    m=overview_map,
+    marker_type="marker",
+    marker_kwds={
+        "icon": folium.map.Icon(color="green", icon="person-walking", prefix="fa"),
+    }
+)
+overview_map = origins.set_geometry("lines").explore(
+    m=overview_map,
+    zoom_start=15
+)
+
+# remove added columns so `origins` is clean for the next cell
+origins = origins[["id", "geometry"]]
+
+overview_map
+```
+
+By default, snapping takes into consideration all network nodes that support
+{class}`TransportMode.WALK<r5py.TransportMode.WALK>`, and that are within search
+radius of 1600 metres. In other words, points are snapped to the closest path
+that is accessible on foot, within a maximum of 1.6 kilometres.
+
+Both parameters can be adjusted. For example, to snap to network nodes
+that are drivable, within 500 m, use the following code:
+
+```{code-cell}
+origins["snapped_geometry"] = transport_network.snap_to_network(
+    origins["geometry"],
+    radius=500,
+    street_mode=r5py.TransportMode.CAR,
+)
+origins
+```
+
+As you can see, one of the points could not be snapped with the tightened
+requirements: it was returned as an ‘empty’ point.
+
+:::{admonition} Convenient short-hands
+:class: tip
+
+Both {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` and {class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>` support a
+convenient parameter, `snap_to_network`, that controls whether the origins and
+destinations should automatically be snapped to the transport network. 
+
+```{code}
+
+travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+    ...
+    snap_to_network=True,
+)
+```
+
+:::
+
 
 ## Limit the maximum Java heap size (memory use)
 

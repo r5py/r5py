@@ -125,11 +125,11 @@ transport_network = r5py.TransportNetwork(
 )
 ```
 
-At this stage, *r5py* has created a routable transport network, that is refered
-to by the `transport_network` variable. We can now use this network for travel
-time calculations. Depending on the extent of the network, this step can take up
-to several minutes. However, you can reuse the same `TransportNetwork` instance
-in subsequent analyses.
+At this stage, *r5py* has created a routable transport network, that is stored
+in the `transport_network` variable. We can now use this network for travel time
+calculations. Depending on the extent of the network, this step can take up to
+several minutes. However, you can reuse the same `TransportNetwork` instance in
+subsequent analyses.
 
 
 ## Compute a travel time matrix
@@ -203,8 +203,10 @@ used only one destination point (the railway station).
 
 ## Save results
 
-To save the travel time matrix to a CSV file, use the
-{meth}`to_csv()<pandas.DataFrame.to_csv()>` method of pandas data frames:
+If you want to continue analysis later, in a different environment, or simply
+retain a clean copy of the results, save the travel time matrix to a CSV file.
+Simply use the {meth}`to_csv()<pandas.DataFrame.to_csv()>` method of pandas data
+frames:
 
 ```{code-cell}
 travel_times.to_csv(DATA_DIRECTORY / "travel_times_to_helsinki_railway_station.csv")

@@ -26,7 +26,7 @@ self
 data-requirements
 travel-time-matrices
 Detailed itineraries <detailed-itineraries>
-advanced-usage
+advanced-use
 configuration
 :::
 

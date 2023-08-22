@@ -20,7 +20,7 @@ note that in the configuration files the leading dash(es) are omitted (see
 ```{eval-rst}
 --max-memory=value, -m value
               [Set the limit for the *Java Virtual Machine*’s heap
-              size](advanced-usage.html#limit-the-maximum-java-heap-size-memory-use)
+              size](advanced-use.html#limit-the-maximum-java-heap-size-memory-use)
               (`-Xmx`).  This option accepts either absolute values (integer or
               decimal), optionally with a suffix to indicate Mibibytes,
               Gibibytes, or Tebibytes: `M`, `G`, `T`), or relative, expressed in
@@ -28,7 +28,7 @@ note that in the configuration files the leading dash(es) are omitted (see
 
 --r5-classpath=classpath, -r classpath
               Point to R⁵’s JAR (or build directory) in case you want to use a
-              [custom R⁵ installation](advanced-usage.html#use-a-custom-installation-of-r5).
+              [custom R⁵ installation](advanced-use.html#use-a-custom-installation-of-r5).
               Default: `""` (download latest compatible version of R5)
 
 --verbose, -v

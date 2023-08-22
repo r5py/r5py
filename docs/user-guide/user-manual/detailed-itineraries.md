@@ -141,7 +141,7 @@ with points that come to lie in an otherwise inaccessible area, such as a fenced
 area, a swamp, or the middle of a lake.
 
 For a detailed description of the functionality, see the [Advanced
-use](advanced-usage.md#snap-origins-and-destination-to-the-street-network) page.
+use](advanced-use.md#snap-origins-and-destination-to-the-street-network) page.
 
 :::
 
@@ -239,7 +239,7 @@ a patched version of R⁵ in its [GitHub
 repositories](https://github.com/DigitalGeographyLab/r5/releases). If you want
 to refrain from compiling your own R⁵ jar, but still would like to use detailed
 geometries of public transport routes, follow the instructions in [Advanced
-use](advanced-usage.md#use-a-custom-installation-of-r⁵).
+use](advanced-use.md#use-a-custom-installation-of-r⁵).
 :::
 
 

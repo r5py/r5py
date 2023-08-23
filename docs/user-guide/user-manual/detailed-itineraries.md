@@ -90,9 +90,10 @@ as a {class}`shapely.geometry` for each segment.
 :::{admonition} Detailed itineraries are computationally expensive
 :class: attention
 
-Computing detailed itineraries is significantly more expensive than calculating
-simple travel times. As such, think twice whether you actually need the detailed
-information output from this function.
+Computing detailed itineraries is significantly more time-consuming than
+calculating simple travel times. As such, think twice whether you actually need
+the detailed information output from this function, and how you might be able to
+limit the number of origins and destinations you need to compute.
 
 For the examples below, to reduce computation effort, we use a sample of 3
 origin points and one single destination (the railway station) in our sample
@@ -140,7 +141,7 @@ with points that come to lie in an otherwise inaccessible area, such as a fenced
 area, a swamp, or the middle of a lake.
 
 For a detailed description of the functionality, see the [Advanced
-usage](advanced-usage.md#snap-origins-and-destination-to-the-street-network) page.
+use](advanced-use.md#snap-origins-and-destination-to-the-street-network) page.
 
 :::
 
@@ -238,7 +239,7 @@ a patched version of R⁵ in its [GitHub
 repositories](https://github.com/DigitalGeographyLab/r5/releases). If you want
 to refrain from compiling your own R⁵ jar, but still would like to use detailed
 geometries of public transport routes, follow the instructions in [Advanced
-usage](advanced-usage.md#use-a-custom-installation-of-r⁵).
+use](advanced-use.md#use-a-custom-installation-of-r⁵).
 :::
 
 

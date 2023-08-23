@@ -26,7 +26,7 @@ self
 data-requirements
 travel-time-matrices
 Detailed itineraries <detailed-itineraries>
-advanced-usage
+advanced-use
 configuration
 :::
 
@@ -50,7 +50,7 @@ sys.path.insert(0, str(R5PY_DIRECTORY))
 
 
 One of the core functionalities of *r5py* is to compute travel time matrices
-efficiently, also for large extents, such as entire cities or countries. This
+efficiently, and for large extents such as entire cities or countries. This
 page walks you through the - pleasantly few - steps required to do so.
 
 In our example below, we work with sample data from Helsinki, the capital of

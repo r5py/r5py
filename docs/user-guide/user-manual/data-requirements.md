@@ -13,8 +13,9 @@ a **road network** dataset from [OpenStreetMap
 (`.pbf`)](https://wiki.openstreetmap.org/wiki/PBF_Format) format (mandatory):
 
 These data are used for finding the fastest routes and calculating the travel
-times for walking, cycling and driving. In addition, these data are used
-for walking/cycling legs between stops when routing with public transport.
+times for walking, cycling and driving. In addition, these data are used for
+walking/cycling legs to, from, or between stops when routing with public
+transport.
 ::::
 
 ::::{grid-item-card}
@@ -93,7 +94,7 @@ you are aware of.
     built, set to replace Transitfeeds (see below)
   - [Transitfeeds](https://transitfeeds.com/) is an easy to navigate website
     that hosts up-to-date and historical GTFS data for many countries and
-    cities. *Deprecated: will be replaced by* Mobility Database.
+    cities. *Deprecated: will be replaced by Mobility Database*.
 
 
 (check-gtfs-files)=
@@ -108,7 +109,9 @@ geographic extent of a study area.
 *MobilityData*’s [GTFS
 Validator](https://github.com/MobilityData/gtfs-validator) is a cross-platform
 Java tool to check file integrity, data types, and compliance with the GTFS
-standard.
+standard. They also provide an [online
+version](https://gtfs-validator.mobilitydata.org/) where you can upload a feed
+to check against the reference and best practices.
 
 [*GTFS-Lite*](https://gtfs-lite.readthedocs.io/) is a Python package to read
 GTFS data sets into {class}`gtfslite.gtfs.GTFS` objects that store the

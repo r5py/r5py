@@ -47,7 +47,7 @@ transport_network = r5py.TransportNetwork(
 )
 ```
 
-# Advanced usage
+# Advanced use
 
 ## Snap origins and destination to the street network
 
@@ -73,7 +73,7 @@ geopandas.GeoDataFrame(
 
 ```
 
-Sometimes, origin or destination points are far off the walkable, cyclable, or
+Sometimes, origin or destination points are far from the walkable, cyclable, or
 drivable street network. Especially when using a regular grid of points, many
 origins or destinations of a data set might be in the middle of a swamp (example
 above), on top of a mountain, or in the deep forest.
@@ -140,7 +140,7 @@ overview_map = origins.set_geometry("lines").explore(
 )
 
 # remove added columns so `origins` is clean for the next cell
-origins = origins[["id", "geometry"]]
+origins = origins[["id", "geometry"]].copy()
 
 overview_map
 ```

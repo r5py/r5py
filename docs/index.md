@@ -3,16 +3,16 @@
 
 :::{thumbnail} _static/images/HowWellDoesPublicTransportWorkForSlowWalkers_1200x720px.png
 :alt: A map showing the Helsinki metropolitan area, and how walking slowly changes the efficieny of the public transport network.
-:title: A travel time matrix made with <em>r5py</em>
+:title: An analysis using travel time matrices made with <em>r5py</em>
 :show_caption: 1
 :class: align-default
 :::
 
 
 **R⁵py** is a Python library for rapid realistic routing on multimodal
-transport networks (walk, bike, public transport and car).  It provides a
+transport networks (walk, bike, public transport, and car).  It provides a
 simple and friendly interface to R⁵, the Rapid Realistic Routing on
-Real-world and Reimagined networks, the [routing
+Real-world and Reimagined networks, a [routing
 engine](https://github.com/conveyal/r5) developed by Conveyal. *r5py* is
 inspired by [r5r, a wrapper for R](https://ipeagit.github.io/r5r/), and it is
 designed to interact with [GeoPandas](https://geopandas.org/) GeoDataFrames.

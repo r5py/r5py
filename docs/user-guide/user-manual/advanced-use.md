@@ -140,7 +140,7 @@ overview_map = origins.set_geometry("lines").explore(
 )
 
 # remove added columns so `origins` is clean for the next cell
-origins = origins[["id", "geometry"]]
+origins = origins[["id", "geometry"]].copy()
 
 overview_map
 ```

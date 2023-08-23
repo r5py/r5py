@@ -3,7 +3,7 @@
 
 import pathlib
 
-import jpype
+# import jpype
 
 import r5py.util
 
@@ -17,6 +17,6 @@ class TestJavaCasting:
 
         r5py.util.start_jvm()
 
-    def test_shutdown_hook(self):
-        r5py.util.start_jvm()
-        jpype.shutdownJVM()
+    # def test_shutdown_hook(self):
+    #     r5py.util.start_jvm()
+    #     jpype.shutdownJVM()

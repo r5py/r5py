@@ -41,14 +41,17 @@ class DataSet(pathlib.Path):
         super().__init__()
         self.remote_url = remote_url
         self.checksum = sha256_checksum
-        self.cached_path = pathlib.Path(config.CACHE_DIR) / pathlib.Path(remote_url).name
+        self.cached_path = (
+            pathlib.Path(config.CACHE_DIR) / pathlib.Path(remote_url).name
+        )
         self._downloaded = False
 
     def _download_remote_file(self):
         if not self._downloaded:
             try:
                 assert (
-                    hashlib.sha256(self.cached_path.read_bytes()).hexdigest() == self.checksum
+                    hashlib.sha256(self.cached_path.read_bytes()).hexdigest()
+                    == self.checksum
                 )
             except (AssertionError, FileNotFoundError):
                 if config.arguments.verbose:

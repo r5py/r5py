@@ -26,7 +26,10 @@ class TestDataSet:
             pass
 
         data_set = DataSet(sample_data_set_url, sample_data_set_sha256)
-        with pytest.warns(RuntimeWarning, match="First access to .*, downloading remote file to local cache"):
+        with pytest.warns(
+            RuntimeWarning,
+            match="First access to .*, downloading remote file to local cache",
+        ):
             assert data_set.exists()
 
         data_set.unlink()

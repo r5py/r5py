@@ -81,7 +81,9 @@ DETAILED_ITINERARIES_WALK = (
 
 
 SAMPLE_DATA_SET_URL = "https://raw.githubusercontent.com/r5py/r5py.sampledata.sao_paulo/main/data/spo_hexgrid.csv"
-SAMPLE_DATA_SET_SHA256 = "769660f8f1bc95d2741bbc4225e5e0e77e73461ea8b3e225a58e397b0748bdd4"
+SAMPLE_DATA_SET_SHA256 = (
+    "769660f8f1bc95d2741bbc4225e5e0e77e73461ea8b3e225a58e397b0748bdd4"
+)
 
 
 @pytest.fixture

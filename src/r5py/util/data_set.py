@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-"""Download sample data on demand and supply a `pathlib.Path` object pointing to them."""
+"""A remote data set that is downloaded on demand."""
 
 
 import hashlib

@@ -181,12 +181,43 @@ myst_nb.glue("destinations_length", destinations_length, display=False)
 myst_nb.glue("matrix_length", matrix_length, display=False)
 ```
 
-As {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` creates an
+:::{dropdown} A note about transit travel times and travel time windows
+:open:
+:color: light
+:margin: 1 5 0 0
+
+With transit travel times, individuals can face (sometimes significantly)
+different total travel times depending on when they start their journey. For
+example, a rider taking a bus that comes every 15 minutes on the 15-minute mark
+will face a travel time that is 14 minutes longer if they arrive at the stop at
+09:01 versus if they arrive at 09:15.
+
+To account for that, the R5 engine computes a travel time for every minute in a
+specified interval, and reports a median (or, with some customization a
+percentile other than the median) travel time over that intervale. For example,
+if the specified window is 60 minutes long and the `departure` parameter is set
+to 09:00, then the reported travel time will be the median of the 60
+minute-by-minute travel times between 09:00 and 10:00.
+
+In r5py the default `departure_time_window` (the interval over which to sample)
+is set to 10 minutes. This is done to allow for a result that is as close as
+possible to a "single" travel time measure.
+
+**Be careful** as choosing very low intervals (or even not-very-low) intervals
+can have some adverse effects on the ability of R5 to find a route to a
+destination. If you are working with transit schedules that have very low
+frequencies (large gaps in time between subsequent vehicles), you may want to
+ensure that `departure_time_window` is set significantly higher than these
+headway gaps. The reasons for this are quite technical, but you can read more if
+you are interested in the discussion on this issue by visiting [this GitHub
+issue](https://github.com/r5py/r5py/issues/292).
+:::
+
+The {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` creates an
 all-to-all matrix in long format. In other words, the results contain one row
 for every combination of origins and destinations. Since we have
 {glue:}`origins_length` origins and {glue:}`destinations_length` destinations,
 the output travel time matrix is {glue:}`matrix_length` rows long.
-
 
 Alternatively, and possibly more intuitively, we can display the travel time
 matrix table as a matrix in wide format, using {meth}`pandas.DataFrame.pivot()`:

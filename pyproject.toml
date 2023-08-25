@@ -45,10 +45,13 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 doc = ["contextily", "folium", "h3", "mapclassify", "matplotlib", "myst-nb",
-        "nbsphinx", "pybtex-apa7-style", "shapely", "sphinx",
+        "nbsphinx", "pybtex-apa7-style", "r5py.sampledata.helsinki",
+        "r5py.sampledata.sao_paulo", "shapely", "sphinx",
         "sphinx-book-theme", "sphinx-design", "sphinxcontrib-bibtex",
         "sphinxcontrib-images"]
-test = ["pytest", "pytest-asyncio", "pytest-cov", "pytest-lazy-fixture"]
+test = ["pytest", "pytest-asyncio", "pytest-cov", "pytest-lazy-fixture"
+        "r5py.sampledata.helsinki", "r5py.sampledata.sao_paulo"]
+
 
 [project.urls]
 Documentation = "https://r5py.readthedocs.org/"

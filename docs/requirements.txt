@@ -30,3 +30,5 @@ folium
 h3>=4.0.0b2
 mapclassify
 matplotlib
+r5py.sampledata.helsinki --install-option="--no-deps"
+r5py.sampledata.sao_paulo --install-option="--no-deps"

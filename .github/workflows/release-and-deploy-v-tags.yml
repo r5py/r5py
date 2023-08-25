@@ -6,6 +6,7 @@ on:
   push:
     tags:
       - v*.*.*
+      - v*.*.*.dev*
 
 jobs:
   build:
@@ -17,7 +18,7 @@ jobs:
     name: Update stable branch to point to this release
     runs-on: ubuntu-latest
     needs: [build]
-    if: ! contains(github.ref, 'dev')
+    if: "!contains(github.ref, 'dev')"
     permissions: write-all
     steps:
       - name: Clone repository, check-out stable
@@ -52,7 +53,7 @@ jobs:
     name: Create a new release
     runs-on: ubuntu-latest
     needs: [deploy]
-    if: ! contains(github.ref, 'dev')
+    if: "!contains(github.ref, 'dev')"
     permissions:
       contents: write
     steps:

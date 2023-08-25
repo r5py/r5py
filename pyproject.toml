@@ -49,7 +49,7 @@ doc = ["contextily", "folium", "h3", "mapclassify", "matplotlib", "myst-nb",
         "r5py.sampledata.sao_paulo", "shapely", "sphinx",
         "sphinx-book-theme", "sphinx-design", "sphinxcontrib-bibtex",
         "sphinxcontrib-images"]
-test = ["pytest", "pytest-asyncio", "pytest-cov", "pytest-lazy-fixture"
+test = ["pytest", "pytest-asyncio", "pytest-cov", "pytest-lazy-fixture",
         "r5py.sampledata.helsinki", "r5py.sampledata.sao_paulo"]
 
 

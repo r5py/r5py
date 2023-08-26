@@ -124,3 +124,37 @@ OpenJDK has been installed as a dependency, and you are ready to go. If you used
 Consider installing it from your system’s package manager, or the official
 [Microsoft build](https://learn.microsoft.com/en-gb/java/openjdk/download) in
 case you work on Windows.
+
+
+## Sample data sets
+
+For the examples in the user manual, we prepared sample data sets, covering the
+city centres of Helsinki, Finland, and São Paulo, Brazil, both cities that
+researchers who contributed to *r5py* are familiar with. 
+
+These sample data sets are packaged separately. If you work through the examples
+independently, be sure to install `r5py.sampledata.helsinki` and
+`r5py.sampledata.sao_paulo`, using either `pip` or `conda`/`mamba`:
+
+```
+pip install r5py.sampledata.helsinki r5py.sampledata.sao_paulo
+```
+
+```
+conda install --channel conda-forge r5py.sampledata.helsinki r5py.sampledata.sao_paulo
+```
+
+The two packages then provide {class}`pathlib.Path` objects that point to sample
+data sets, and can be used directly in {meth}`geopandas.read_file()`,
+{meth}`pandas.read_csv()`, {class}`{r5py.TransportNetwork()`, and any other
+method or function that expects a file path.
+
+
+:::{admonition} Data is downloaded on demand 
+:class: caution
+
+Note that the `r5py.sampledata.*` packages do not contain the actual data sets.
+Instead, the data sets are downloaded to a cache directory upon first use. This
+means that **you need an internet connection when you first access a data set**.
+On subsequent runs, the files are served from your computer’s cache.
+:::

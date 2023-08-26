@@ -9,8 +9,9 @@ build:
 
 python:
     install:
+        - method: pip
+        - path: .
         - requirements: docs/requirements.txt
-    system_packages: true
 
 sphinx:
     configuration: docs/conf.py

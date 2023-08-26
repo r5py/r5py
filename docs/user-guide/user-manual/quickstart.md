@@ -31,24 +31,6 @@ configuration
 :::
 
 
-```{code-cell}
-:tags: [remove-input, remove-output]
-
-# this cell is hidden from READTHEDOCS output
-# it’s used to set sys.path to point to the local *r5py* source code,
-# and to define a `DATA_DIRECTORY` pathlib.Path
-import pathlib
-import sys
-
-NOTEBOOK_DIRECTORY = pathlib.Path().resolve()
-DOCS_DIRECTORY = NOTEBOOK_DIRECTORY.parent.parent
-DATA_DIRECTORY = DOCS_DIRECTORY / "_static" / "data"
-R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
-
-sys.path.insert(0, str(R5PY_DIRECTORY))
-```
-
-
 One of the core functionalities of *r5py* is to compute travel time matrices
 efficiently, and for large extents such as entire cities or countries. This
 page walks you through the - pleasantly few - steps required to do so.
@@ -63,31 +45,41 @@ cells in a population grid data set to the city’s main railway station.
 As we intend to compute the travel times from the centre points of population grid
 cells to the railway station, we need to know the locations of these places. 
 
-For this example, we prepared the data ahead of time: `population_grid` is a
-[`geopandas.GeoDataFrame`](https://geopandas.org/en/stable/docs/user_guide/data_structures.html)
-containing a 250 ⨉ 250 m grid covering parts of downtown Helsinki, and obtained
-from the [Helsinki Region Environmental Services
-(HSY)](https://hri.fi/data/en_GB/dataset/vaestotietoruudukko). The
-[constant](https://stackoverflow.com/q/44636868) `RAILWAY_STATION` is a
-[`shapely.Point`](https://shapely.readthedocs.io/en/stable/reference/shapely.Point.html),
-its coordinates refer to Helsinki’s main railway station in the
+For this example, we prepared the data ahead of time. If you repeat the code
+examples independently, [install
+`r5py.sampledata.helsinki`](../installation/installation.md#sample-data-sets).
+`r5py.sampledata.helsinki.population_grid` is a vector data set in [GeoPackage
+(GPKG)](http://www.opengeospatial.org/standards/geopackage) format containing a
+250 ⨉ 250 m grid covering parts of downtown Helsinki, and obtained from the
+[Helsinki Region Environmental Services
+(HSY)](https://hri.fi/data/en_GB/dataset/vaestotietoruudukko). We open the file
+as a {class}`geopandas.GeoDataFrame`.
+
+Because, in our example, we only use one destination, the railway station, we
+define its location as a {class}`geopandas.GeoDataFrame` containing one
+geometry, a {class}`shapely.Point`, the coordinates of which refer to Helsinki’s
+main railway station in the
 [`EPSG:4326`](https://spatialreference.org/ref/epsg/4326/) reference system.
 
 ```{code-cell}
 import geopandas
-population_grid = geopandas.read_file(DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg")
-
+import r5py.sampledata.helsinki
 import shapely
-RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
+
+population_grid = geopandas.read_file(r5py.sampledata.helsinki.population_grid)
+
+railway_station = geopandas.GeoDataFrame(
+    {
+        "id": ["railway_station"],
+        "geometry": [shapely.Point(24.941521, 60.170666)]
+    },
+    crs="EPSG:4326",
+)
 ```
 
 ```{code-cell}
-import folium
-import geopandas
-import shapely
-
 overview_map = population_grid.explore("population", cmap="Reds")
-folium.Marker((RAILWAY_STATION.y, RAILWAY_STATION.x)).add_to(overview_map)
+overview_map = railway_station.explore(m=overview_map, marker_type="marker")
 overview_map
 ```
 
@@ -104,24 +96,23 @@ understands and reads the following types of transport networks:
 - a public transport schedule from one or more
   [GTFS](https://en.wikipedia.org/wiki/GTFS) files (optional).
 
-For the quickstart example, you find sample data sets in the `DATA_DIRECTORY`
-([`docs/_static/data`](https://github.com/r5py/r5py/tree/main/docs/_static/data/)
-in the source code repository).
+For the quickstart example, you find sample data sets in the
+`r5py.sampledata.helsinki` package (see [above](#origins-and-destination)).
 
 To import the street and public transport networks, instantiate an
 {class}`r5py.TransportNetwork` with the file paths to the OSM extract and to
-zero or more GTFS files:
+zero or more GTFS files. With the sample data set, the file paths are in the
+`r5py.sampledata.helsinki` namespace:
 
 ```{code-cell}
 :tags: ["remove-output"]
 
 import r5py
+from r5py.sampledata.helsinki import osm_pbf, gtfs
 
 transport_network = r5py.TransportNetwork(
-    DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf",
-    [
-        DATA_DIRECTORY / "Helsinki" / "GTFS.zip",
-    ]
+    osm_pbf,
+    [gtfs],
 )
 ```
 
@@ -167,13 +158,7 @@ import datetime
 origins = population_grid.copy()
 origins.geometry = origins.geometry.centroid
 
-destinations = geopandas.GeoDataFrame(
-        {
-            "id": [1],
-            "geometry": [RAILWAY_STATION]
-        },
-        crs="EPSG:4326",
-)
+destinations = railway_station.copy()
 
 travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
     transport_network,
@@ -209,7 +194,7 @@ Simply use the {meth}`to_csv()<pandas.DataFrame.to_csv()>` method of pandas data
 frames:
 
 ```{code-cell}
-travel_times.to_csv(DATA_DIRECTORY / "travel_times_to_helsinki_railway_station.csv")
+travel_times.to_csv("travel_times_to_helsinki_railway_station.csv")
 ```
 
 

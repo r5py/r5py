@@ -46,12 +46,7 @@ class SampleDataSet(pathlib.Path):
         self.cached_path = (
             pathlib.Path(config.CACHE_DIR) / pathlib.Path(remote_url).name
         )
-        self._downloaded = False
-
-    def __getattr__(self, attr):
-        if not self._downloaded:
-            self._download_remote_file()
-        return super().__getattr__(attr)
+        self._download_remote_file()
 
     def _download_remote_file(self):
         try:
@@ -70,4 +65,3 @@ class SampleDataSet(pathlib.Path):
                 self.remote_url, self.checksum
             ) as response:
                 self.cached_path.write_bytes(response.content)
-        self.downloaded = True

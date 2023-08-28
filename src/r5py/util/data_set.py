@@ -44,31 +44,22 @@ class DataSet(pathlib.Path):
         self.cached_path = (
             pathlib.Path(config.CACHE_DIR) / pathlib.Path(remote_url).name
         )
-        self._downloaded = False
+        self._download_remote_file()
 
     def _download_remote_file(self):
-        if not self._downloaded:
-            try:
-                assert (
-                    hashlib.sha256(self.cached_path.read_bytes()).hexdigest()
-                    == self.checksum
+        try:
+            assert (
+                hashlib.sha256(self.cached_path.read_bytes()).hexdigest()
+                == self.checksum
+            )
+        except (AssertionError, FileNotFoundError):
+            if config.arguments.verbose:
+                warnings.warn(
+                    f"First access to {pathlib.Path(self.remote_url).name}, "
+                    "downloading remote file to local cache",
+                    RuntimeWarning,
                 )
-            except (AssertionError, FileNotFoundError):
-                if config.arguments.verbose:
-                    warnings.warn(
-                        f"First access to {pathlib.Path(self.remote_url).name}, "
-                        "downloading remote file to local cache",
-                        RuntimeWarning,
-                    )
-                with ValidatingRequestsSession() as session, session.get(
-                    self.remote_url, self.checksum
-                ) as response:
-                    self.cached_path.write_bytes(response.content)
-
-    def __str__(self):
-        self._download_remote_file()
-        return super().__str__()
-
-    def __fspath__(self):
-        self._download_remote_file()
-        return super().__fspath__()
+            with ValidatingRequestsSession() as session, session.get(
+                self.remote_url, self.checksum
+            ) as response:
+                self.cached_path.write_bytes(response.content)

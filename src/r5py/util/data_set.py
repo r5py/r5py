@@ -22,9 +22,11 @@ class DataSet(pathlib.Path):
     # cf. https://stackoverflow.com/a/66613346/463864
     _flavour = type(pathlib.Path())._flavour
 
+    _CACHE_DIR = pathlib.Path(config.CACHE_DIR) / "sampledata"
+
     def __new__(cls, remote_url, sha256_checksum):
         # pathlib.Path does everything in __new__, rather than __init__
-        cached_path = pathlib.Path(config.CACHE_DIR) / pathlib.Path(remote_url).name
+        cached_path = cls._CACHE_DIR / pathlib.Path(remote_url).name
         return super().__new__(cls, cached_path)
 
     def __init__(self, remote_url, sha256_checksum, *args, **kwargs):

@@ -30,12 +30,6 @@ advanced-use
 configuration
 :::
 
-```{code-cell}
-import sys
-sys.path.append(["--verbose"])
-
-```
-
 
 One of the core functionalities of *r5py* is to compute travel time matrices
 efficiently, and for large extents such as entire cities or countries. This
@@ -115,9 +109,6 @@ zero or more GTFS files. With the sample data set, the file paths are in the
 
 import r5py
 from r5py.sampledata.helsinki import osm_pbf, gtfs
-
-print(osm_pbf)
-print(gtfs)
 
 transport_network = r5py.TransportNetwork(
     osm_pbf,

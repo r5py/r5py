@@ -43,9 +43,7 @@ class SampleDataSet(pathlib.Path):
         super().__init__()
         self.remote_url = remote_url
         self.checksum = sha256_checksum
-        self.cached_path = (
-            pathlib.Path(config.CACHE_DIR) / pathlib.Path(remote_url).name
-        )
+        self.cached_path = self._CACHE_DIR / pathlib.Path(remote_url).name
         self._download_remote_file()
 
     def _download_remote_file(self):
@@ -61,6 +59,7 @@ class SampleDataSet(pathlib.Path):
                     "downloading remote file to local cache",
                     RuntimeWarning,
                 )
+            self.cached_path.parent.mkdir(exist_ok=True)
             with ValidatingRequestsSession() as session, session.get(
                 self.remote_url, self.checksum
             ) as response:

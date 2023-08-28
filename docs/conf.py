@@ -14,7 +14,7 @@ import matplotlib.pyplot
 
 # -- Add project paths -------------------------------------------------------
 sys.path = [
-    str(pathlib.Path().resolve().parent / "src"),
+    # str(pathlib.Path().resolve().parent / "src"),
     str(pathlib.Path().resolve()),
     str(pathlib.Path().resolve() / "_extensions"),
 ] + sys.path

@@ -32,7 +32,7 @@ configuration
 
 ```{code-cell}
 import sys
-sys.append(["--verbose"])
+sys.path.append(["--verbose"])
 
 ```
 

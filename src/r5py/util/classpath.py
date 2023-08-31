@@ -89,5 +89,6 @@ def find_r5_classpath(arguments):
 import sys  # noqa: E402
 sys.argv.append("--verbose")
 print(config.arguments)
-R5_CLASSPATH = find_r5_classpath(Config().arguments)
+R5_CLASSPATH = find_r5_classpath(config.arguments)
+print(R5_CLASSPATH)
 sys.argv = sys.argv[:-1]

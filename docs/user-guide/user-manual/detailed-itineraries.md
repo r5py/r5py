@@ -302,6 +302,7 @@ Let’s also add the origins and the destination to the map:
 ```{code-cell}
 import folium
 import folium.plugins
+import pandas
 
 folium.Marker(
     (RAILWAY_STATION.y, RAILWAY_STATION.x),

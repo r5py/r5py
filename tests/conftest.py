@@ -80,6 +80,12 @@ DETAILED_ITINERARIES_WALK = (
 )
 
 
+SAMPLE_DATA_SET_URL = "https://raw.githubusercontent.com/r5py/r5py.sampledata.sao_paulo/main/data/spo_hexgrid.csv"
+SAMPLE_DATA_SET_SHA256 = (
+    "769660f8f1bc95d2741bbc4225e5e0e77e73461ea8b3e225a58e397b0748bdd4"
+)
+
+
 @pytest.fixture
 def data_columns_with_breakdown():
     yield [
@@ -252,6 +258,16 @@ def regional_task(
     del regional_task
     time.sleep(0.5)
     jpype.java.lang.System.gc()
+
+
+@pytest.fixture
+def sample_data_set_sha256():
+    yield SAMPLE_DATA_SET_SHA256
+
+
+@pytest.fixture
+def sample_data_set_url():
+    yield SAMPLE_DATA_SET_URL
 
 
 @pytest.fixture(scope="session")

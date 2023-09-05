@@ -82,7 +82,7 @@ html_theme = "sphinx_book_theme"
 html_theme_options = {
     "collapse_navigation": False,
     "launch_buttons": {
-        "binderhub_url": "https://notebooks.gesis.org",
+        "binderhub_url": "https://mybinder.org",
         "notebook_interface": "classic",
     },
     "path_to_docs": "docs",

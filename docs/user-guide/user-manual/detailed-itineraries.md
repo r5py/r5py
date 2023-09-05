@@ -47,6 +47,20 @@ pandas.set_option("display.max_columns", None)
 ```{code-cell}
 :tags: [remove-input, remove-output]
 
+# also this cell is hidden from READTHEDOCS output
+# it’s used to set a stricter memory limit in binderhub notebooks
+# as otherwise, the examples would fail
+
+import os
+
+if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
+    max_memory = int(os.environ["MEM_LIMIT"]) / 2
+    sys.argv.extend(["--max-memory", f"{max_memory}"])
+```
+
+```{code-cell}
+:tags: [remove-input, remove-output]
+
 # also this cell is hidden in READTHEDOCS
 # it loads input geodata for the examples below
 
@@ -288,6 +302,7 @@ Let’s also add the origins and the destination to the map:
 ```{code-cell}
 import folium
 import folium.plugins
+import pandas
 
 folium.Marker(
     (RAILWAY_STATION.y, RAILWAY_STATION.x),

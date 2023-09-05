@@ -30,6 +30,20 @@ R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
 sys.path.insert(0, str(R5PY_DIRECTORY))
 ```
 
+```{code-cell}
+:tags: [remove-input, remove-output]
+
+# also this cell is hidden from READTHEDOCS output
+# it’s used to set a stricter memory limit in binderhub notebooks
+# as otherwise, the examples would fail
+
+import os
+
+if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
+    max_memory = int(os.environ["MEM_LIMIT"]) / 2
+    sys.argv.extend(["--max-memory", f"{max_memory}"])
+```
+
 :::{dropdown} What is a travel time matrix?
 :open:
 :color: light

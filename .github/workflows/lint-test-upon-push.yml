@@ -73,7 +73,7 @@ jobs:
 
       - name: Install JVM (from conda-forge)
         if: ${{ matrix.jdk_from == 'conda-forge' }}
-        run: conda install openjdk
+        run: conda install 'openjdk>=11'
 
       - name: Make sure pytest{,-asyncio,-cov,-lazy-fixture} are installed
         shell: bash -l {0}

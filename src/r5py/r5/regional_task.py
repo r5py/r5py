@@ -57,8 +57,9 @@ class RegionalTask:
 
         In **r5py**, there is usually no need to explicitely create a
         `RegionalTask`. Rather, the constructors to the computation classes
-        (`TravelTimeMatrixComputer`, `AccessibilityEstimator`, ...) accept
-        the arguments, and pass them through to an internally handled `RegionalTask`.
+        (`TravelTimeMatrixComputer`, `AccessibilityEstimator`, ...) accept the
+        arguments, and pass them through to an internally handled
+        `RegionalTask`.
 
         Arguments
         ---------
@@ -67,31 +68,30 @@ class RegionalTask:
         origin : shapely.geometry.Point
             Point to route from
         destinations : geopandas.GeoDataFrame
-            Points to route to, has to have at least an ``id`` column
-            and a geometry
+            Points to route to, has to have at least an ``id`` column and a
+            geometry
         departure : datetime.datetime
             Find public transport connections leaving every minute within
-            ``departure_time_window`` after ``departure``.
-            Default: current date and time
+            ``departure_time_window`` after ``departure``. Default: current date
+            and time
         departure_time_window : datetime.timedelta
-            (see ``departure``)
-            Default: 10 minutes
+            (see ``departure``) Default: 10 minutes
         percentiles : list[int]
             Return the travel time for these percentiles of all computed trips,
-            by travel time. By default, return the median travel time.
-            Default: [50]
+            by travel time. By default, return the median travel time. Default:
+            [50]
         transport_modes : list[r5py.TransportMode] or list[str]
-            The mode of transport to use for routing. Can be a r5py mode enumerable, or a string representation (e.g. "TRANSIT")
-            Default: [r5py.TransportMode.TRANSIT] (all public transport)
+            The mode of transport to use for routing. Can be a r5py mode
+            enumerable, or a string representation (e.g. "TRANSIT") Default:
+            [r5py.TransportMode.TRANSIT] (all public transport)
         access_modes : list[r5py.TransportMode] or list[str]
-            Mode of transport to public transport stops. Can be a r5py mode object, or a string representation (e.g. "WALK")
-            Default: [r5py.TransportMode.WALK]
+            Mode of transport to public transport stops. Can be a r5py mode
+            object, or a string representation (e.g. "WALK") Default:
+            [r5py.TransportMode.WALK]
         egress_modes : list[r5py.TransportMode]
-            Mode of transport from public transport stops.
-            Default: access_modes
+            Mode of transport from public transport stops. Default: access_modes
         max_time : datetime.timedelta
-            Maximum trip duration.
-            Default: 2 hours
+            Maximum trip duration. Default: 2 hours
         max_time_walking : datetime.timedelta
             Maximum time spent walking, potentially including access and egress
             Default: max_time
@@ -99,24 +99,19 @@ class RegionalTask:
             Maximum time spent cycling, potentially including access and egress
             Default: max_time
         max_time_driving : datetime.timedelta
-            Maximum time spent driving
-            Default: max_time
+            Maximum time spent driving Default: max_time
         speed_walking : float
-            Mean walking speed for routing, km/h.
-            Default: 3.6 km/h
+            Mean walking speed for routing, km/h. Default: 3.6 km/h
         speed_cycling : float
-            Mean cycling speed for routing, km/h.
-            Default: 12.0 km/h
+            Mean cycling speed for routing, km/h. Default: 12.0 km/h
         max_public_transport_rides : int
-            Use at most ``max_public_transport_rides`` consecutive public transport
-            connections. Default: 8
+            Use at most ``max_public_transport_rides`` consecutive public
+            transport connections. Default: 8
         max_bicycle_traffic_stress : int
-            Maximum stress level for cyclist routing, ranges from 1-4
-            see https://docs.conveyal.com/learn-more/traffic-stress
-            Default: 3
+            Maximum stress level for cyclist routing, ranges from 1-4 see
+            https://docs.conveyal.com/learn-more/traffic-stress Default: 3
         breakdown : bool
-            Compute a more detailed breakdown of the routes.
-            Default: False
+            Compute a more detailed breakdown of the routes. Default: False
         """
         self._regional_task = com.conveyal.r5.analyst.cluster.RegionalTask()
         self.scenario = Scenario()
@@ -251,14 +246,22 @@ class RegionalTask:
 
     @property
     def departure_time_window(self):
-        """Find public transport connections leaving within ``departure_time_window`` after ``departure`` (datetime.timedelta)."""
+        """Find public transport connections leaving within
+        ``departure_time_window`` after ``departure`` (datetime.timedelta).
+
+        **Note:** The value of ``departure_time_window`` should be set with some
+        caution. Specifically, setting values near or below the typical headways
+        in the studied transit network may lead to routing problems. See `this
+        GitHub discussion <https://github.com/r5py/r5py/issues/292>`_ for
+        details.
+        """
         return self._departure_time_window
 
     @departure_time_window.setter
     def departure_time_window(self, departure_time_window: datetime.timedelta):
         if departure_time_window.total_seconds() < 300:
             warnings.warn(
-                "The provided departure time window is below 5 minutes. This may cause adverse effects with headway-based GTFS datasets.",
+                "The provided departure time window is below 5 minutes. This may cause adverse effects with routing.",
                 RuntimeWarning,
             )
         self._departure_time_window = departure_time_window

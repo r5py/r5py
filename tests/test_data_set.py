@@ -73,14 +73,12 @@ class TestDataSet:
         except FileNotFoundError:
             pass
 
-        with (
-            pytest.warns(
-                RuntimeWarning,
-                match="First access to .*, downloading remote file to local cache",
-            ) and pytest.warns(
-                DeprecationWarning,
-                match="r5py.util.data_set.DataSet is deprecated, use r5py.util.sample_data_set.SampleDataSet, instead"
-            )
+        with pytest.warns(
+            RuntimeWarning,
+            match="First access to .*, downloading remote file to local cache",
+        ) and pytest.warns(
+            DeprecationWarning,
+            match="r5py.util.data_set.DataSet is deprecated, use r5py.util.sample_data_set.SampleDataSet, instead",
         ):
             data_set = DataSet(sample_data_set_url, sample_data_set_sha256)
             assert data_set.exists()
@@ -91,7 +89,7 @@ class TestDataSet:
     def test_data_set(self, sample_data_set_url, sample_data_set_sha256):
         with pytest.warns(
             DeprecationWarning,
-            match="r5py.util.data_set.DataSet is deprecated, use r5py.util.sample_data_set.SampleDataSet, instead"
+            match="r5py.util.data_set.DataSet is deprecated, use r5py.util.sample_data_set.SampleDataSet, instead",
         ):
             data_set = DataSet(sample_data_set_url, sample_data_set_sha256)
         assert data_set.exists()
@@ -100,7 +98,7 @@ class TestDataSet:
     def test_data_set_invalid_hash(self, sample_data_set_url, sample_data_set_sha256):
         with pytest.warns(
             DeprecationWarning,
-            match="r5py.util.data_set.DataSet is deprecated, use r5py.util.sample_data_set.SampleDataSet, instead"
+            match="r5py.util.data_set.DataSet is deprecated, use r5py.util.sample_data_set.SampleDataSet, instead",
         ):
             data_set = DataSet(sample_data_set_url, sample_data_set_sha256)
         data_set.write_text("foobar")  # change file, invalidate checksum
@@ -109,7 +107,7 @@ class TestDataSet:
         # try again:
         with pytest.warns(
             DeprecationWarning,
-            match="r5py.util.data_set.DataSet is deprecated, use r5py.util.sample_data_set.SampleDataSet, instead"
+            match="r5py.util.data_set.DataSet is deprecated, use r5py.util.sample_data_set.SampleDataSet, instead",
         ):
             data_set = DataSet(sample_data_set_url, sample_data_set_sha256)
         assert data_set.exists()

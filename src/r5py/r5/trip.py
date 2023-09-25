@@ -45,15 +45,20 @@ class Trip:
 
     def as_table(self):
         """
-        Return a table (list of lists) of this trip’s legs.
+        Return a table (list of lists) of this trip's legs.
 
         Returns
         =======
         list : detailed information about this trip and its legs (segments):
         ``segment``, ``transport_mode``, ``departure_time``, ``distance``,
-        ``travel_time``, ``wait_time``, ``route``, ``geometry``
+        ``travel_time``, ``wait_time``, ``feed``, ``agency_id``, ``route_id``, ``start_stop_id``, ``end_stop_id``, ``geometry``
         """
         return [[segment] + leg.as_table_row() for segment, leg in enumerate(self.legs)]
+
+    @property
+    def agency_ids(self):
+        """The public transport agency name(s) used on this trip."""
+        return [leg.agency_id for leg in self.legs]
 
     @property
     def distance(self):
@@ -72,9 +77,9 @@ class Trip:
         )
 
     @property
-    def routes(self):
+    def route_ids(self):
         """The public transport route(s) used on this trip."""
-        return [leg.route for leg in self.legs]
+        return [leg.route_id for leg in self.legs]
 
     @property
     def transport_modes(self):

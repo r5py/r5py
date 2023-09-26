@@ -179,9 +179,7 @@ class TestDetailedItinerariesComputer:
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
-        assert isinstance(
-            detailed_itineraries_computer.transport_network, r5py.TransportNetwork
-        )
+        assert isinstance(detailed_itineraries_computer.transport_network, r5py.TransportNetwork)
 
     def test_detailed_itineraries_initialization_with_files(
         self,
@@ -193,9 +191,7 @@ class TestDetailedItinerariesComputer:
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
-        assert isinstance(
-            detailed_itineraries_computer.transport_network, r5py.TransportNetwork
-        )
+        assert isinstance(detailed_itineraries_computer.transport_network, r5py.TransportNetwork)
 
     @pytest.mark.parametrize(
         [
@@ -366,15 +362,11 @@ class TestDetailedItinerariesComputer:
         travel_details = detailed_itineraries_computer.compute_travel_details()
 
         travel_details = (
-            travel_details.groupby(["from_id", "to_id", "option"])
-            .sum(["travel_time", "distance"])
-            .reset_index()
+            travel_details.groupby(["from_id", "to_id", "option"]).sum(["travel_time", "distance"]).reset_index()
         )
 
         travel_details = travel_details.set_index(["from_id", "to_id"]).sort_index()
-        expected_travel_details = expected_travel_details.set_index(
-            ["from_id", "to_id"]
-        ).sort_index()
+        expected_travel_details = expected_travel_details.set_index(["from_id", "to_id"]).sort_index()
 
         pandas.testing.assert_frame_equal(travel_details, expected_travel_details)
 
@@ -385,9 +377,7 @@ class TestDetailedItinerariesComputer:
         population_grid_points,
         departure_datetime,
     ):
-        origins = pandas.concat(
-            [population_grid_points[-3:], unsnappable_points]
-        ).reset_index(drop=False)
+        origins = pandas.concat([population_grid_points[-3:], unsnappable_points]).reset_index(drop=False)
         with pytest.warns(
             RuntimeWarning,
             match="Some destination points could not be snapped to the street network",
@@ -407,9 +397,7 @@ class TestDetailedItinerariesComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        with pytest.raises(
-            ValueError, match="After snapping, no valid origin points remain"
-        ):
+        with pytest.raises(ValueError, match="After snapping, no valid origin points remain"):
             with pytest.warns(
                 RuntimeWarning,
                 match="Some origin points could not be snapped to the street network",
@@ -430,9 +418,7 @@ class TestDetailedItinerariesComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        destinations = pandas.concat(
-            [population_grid_points[-3:], unsnappable_points]
-        ).reset_index(drop=False)
+        destinations = pandas.concat([population_grid_points[-3:], unsnappable_points]).reset_index(drop=False)
         with pytest.warns(
             RuntimeWarning,
             match="Some destination points could not be snapped to the street network",
@@ -454,9 +440,7 @@ class TestDetailedItinerariesComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        with pytest.raises(
-            ValueError, match="After snapping, no valid destination points remain"
-        ):
+        with pytest.raises(ValueError, match="After snapping, no valid destination points remain"):
             with pytest.warns(
                 RuntimeWarning,
                 match="Some destination points could not be snapped to the street network",
@@ -529,9 +513,7 @@ class TestDetailedItinerariesComputer:
             transport_network,
             origins=origins,
             departure=departure_datetime,
-            departure_time_window=datetime.timedelta(
-                hours=1
-            ),  # using old default for simplicity
+            departure_time_window=datetime.timedelta(hours=1),  # using old default for simplicity
             transport_modes=[transport_mode],
         )
         if transport_mode == r5py.TransportMode.TRANSIT:
@@ -543,15 +525,9 @@ class TestDetailedItinerariesComputer:
         else:
             travel_details = detailed_itineraries_computer.compute_travel_details()
 
-        travel_details.travel_time = travel_details.travel_time.apply(
-            lambda t: t.total_seconds()
-        )
-        travel_details.wait_time = travel_details.wait_time.apply(
-            lambda t: None if t is None else t.total_seconds()
-        )
-        travel_details.transport_mode = travel_details.transport_mode.apply(
-            lambda t: t.value
-        )
+        travel_details.travel_time = travel_details.travel_time.apply(lambda t: t.total_seconds())
+        travel_details.wait_time = travel_details.wait_time.apply(lambda t: None if t is None else t.total_seconds())
+        travel_details.transport_mode = travel_details.transport_mode.apply(lambda t: t.value)
 
         travel_details.replace(to_replace=[None], value=numpy.nan, inplace=True)
 

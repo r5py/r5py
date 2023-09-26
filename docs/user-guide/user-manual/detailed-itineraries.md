@@ -170,18 +170,18 @@ As you can see, the result contains much more information than earlier.
 Depending on your screen size, you might even have to scroll further right to
 see all columns.
 
-Especially in the case of public transport routes, or when choosing a list of
-different {attr}`transport_modes<r5py.RegionalTask.transport_modes>`, also the
-table structure of the results is more complex: For each origin/destination
-pair, one or more possible `option` is reported, which in turn can consist of
-one or more `segment`s. Both options and segments are numbered sequentially,
-starting at `0`.
+For public transport routes or when a variety of
+{attr}`transport_modes<r5py.RegionalTask.transport_modes>` are used, the
+structure of the results is more complex: For each origin-destination pair, one
+or more possible `option` is reported, which in turn can consist of one or more
+`segment`s. Both options and segments are numbered sequentially, starting at
+`0`.
 
 Each segment, then, represents one row in the results table, and provides
 information about the transport mode used for a segment, time travelled,
-possible wait time (before the departure of a public transport vehicle), the
-route (e.g., bus number, metro line), and finally a line geometry representing
-the travelled path.
+possible wait time (before the departure of a public transport vehicle),
+information about the feed and agency, the route identifier, the starting and
+ending stop used, and finally a line geometry representing the travelled path.
 
 See the following table for a complete list of columns returned by
 {meth}`DetailedItinerariesComputer.compute_travel_details()<r5py.DetailedItinerariesComputer.compute_travel_details()>`:
@@ -219,10 +219,31 @@ transport, see [note below](detailed-geometries-with-upstream-r5).
 : if the current segment is a public transport vehicle: wait time between the
 arrival of the previous trip segment and the departure of the current segment.
 
-`route` ({class}`str`)
-: if the current segment is a public transport vehicle: the route number (or
-other id), as specified in the input GTFS data set, e.g. bus numbers, metro line
-names
+`feed` ({class}`str`)
+: if the current segment is a public transport vehicle: the GTFS feed identifier
+used for this trip, which should match the filename provided. This is useful
+when a given transport network consists of multiple GTFS feeds.
+
+`agency_id` ({class}`str`)
+: if the current segment is a public transport vehicle: the GTFS agency
+identifier found in the
+[`agency.txt`](https://gtfs.org/schedule/reference/#agencytxt) file in the
+provided GTFS feed. Most feeds have just one agency, but multiple are possible.
+
+`route_id` ({class}`str`)
+: if the current segment is a public transport vehicle: the GTFS route id found
+in the [`routes.txt`](https://gtfs.org/schedule/reference/#routestxt) file in
+the provided GTFS feed.
+
+`start_stop_id` ({class}`str`) 
+: if the current segment is a public transport vehicle: the GTFS stop id found
+in the [`stops.txt`](https://gtfs.org/schedule/reference/#stopstxt) which was
+used as the boarding stop for that vehicle.
+
+`end_stop_id` ({class}`str`) 
+: if the current segment is a public transport vehicle: the GTFS stop id found
+in the [`stops.txt`](https://gtfs.org/schedule/reference/#stopstxt) which was
+used as the alighting stop for that vehicle.
 
 `geometry` ({class}`shapely.LineString`)
 : the path travelled on the current segment. For public transport, see [note
@@ -377,7 +398,9 @@ travel_details = travel_details[
         "distance",
         "travel time (min)",
         "wait time (min)",
-        "route",
+        "feed",
+        "agency_id",
+        "route_id",
         "geometry",
     ]
 ]

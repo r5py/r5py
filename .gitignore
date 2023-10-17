@@ -35,3 +35,5 @@ docs/jupyter_execute/
 .coverage
 coverage.xml
 .vscode/*
+
+.config/r5py.yml

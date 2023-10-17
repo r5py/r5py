@@ -15,10 +15,12 @@ class TestConfig:
         assert os.environ["HOME"] == "."
 
     def test_custom_temporary_directory(self, tmp_path):
-        sys.argv.extend([
-            "--temporary-directory",
-            f"{tmp_path}",
-        ])
-        assert (
-            r5py.util.config.Config().arguments.temporary_directory.is_relative_to(tmp_path)
+        sys.argv.extend(
+            [
+                "--temporary-directory",
+                f"{tmp_path}",
+            ]
+        )
+        assert r5py.util.config.Config().arguments.temporary_directory.is_relative_to(
+            tmp_path
         )

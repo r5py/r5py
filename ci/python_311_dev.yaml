@@ -8,7 +8,7 @@ dependencies:
     - configargparse
     - filelock
     - fiona
-    - geopandas
+    - geopandas<0.14
     - importlib_resources
     - joblib
     - jpype1

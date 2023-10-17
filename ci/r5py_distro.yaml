@@ -7,7 +7,7 @@ dependencies:
     - python=3.11
     - folium
     - fiona
-    - geopandas
+    - geopandas<0.14
     - importlib_resources
     - matplotlib
     - mapclassify

@@ -18,8 +18,7 @@ jupytext:
 # it’s used to
 #    - set sys.path to point to the local *r5py* source code, to
 #    - use a different upstream R5 jar, so we can display the
-#      geometries of public transport routes, to
-#    - define a `DATA_DIRECTORY` pathlib.Path, and to
+#      geometries of public transport routes, and to
 #    - force pandas to show all columns of the (very wide)
 #      result data set
 

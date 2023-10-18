@@ -146,7 +146,7 @@ conda install --channel conda-forge r5py.sampledata.helsinki r5py.sampledata.sao
 
 The two packages then provide {class}`pathlib.Path` objects that point to sample
 data sets, and can be used directly in {meth}`geopandas.read_file()`,
-{meth}`pandas.read_csv()`, {class}`{r5py.TransportNetwork()`, and any other
+{meth}`pandas.read_csv()`, {class}`r5py.TransportNetwork()`, and any other
 method or function that expects a file path.
 
 

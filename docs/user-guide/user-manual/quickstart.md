@@ -36,7 +36,7 @@ configuration
 
 # this cell is hidden from READTHEDOCS output
 # it’s used to set a stricter memory limit in binderhub notebooks
-# as otherwise, the examples would fail
+# as, otherwise, the examples would fail
 
 import os
 
@@ -58,17 +58,24 @@ cells in a population grid data set to the city’s main railway station.
 ## Origins and destination
 
 As we intend to compute the travel times from the centre points of population grid
-cells to the railway station, we need to know the locations of these places. 
+cells to the railway station, we need to know the locations of these places.
+
+:::{admonition} Sample data set
+:class: info
 
 For this example, we prepared the data ahead of time. If you repeat the code
 examples independently, [install
 `r5py.sampledata.helsinki`](../installation/installation.md#sample-data-sets).
+
 `r5py.sampledata.helsinki.population_grid` is a vector data set in [GeoPackage
 (GPKG)](http://www.opengeospatial.org/standards/geopackage) format containing a
 250 ⨉ 250 m grid covering parts of downtown Helsinki, and obtained from the
 [Helsinki Region Environmental Services
-(HSY)](https://hri.fi/data/en_GB/dataset/vaestotietoruudukko). We open the file
-as a {class}`geopandas.GeoDataFrame`.
+(HSY)](https://hri.fi/data/en_GB/dataset/vaestotietoruudukko).
+
+:::
+
+We open the sample data set file using {meth}`geopandas.GeoDataFrame.read_file()`.
 
 Because, in our example, we only use one destination, the railway station, we
 define its location as a {class}`geopandas.GeoDataFrame` containing one
@@ -86,7 +93,7 @@ population_grid = geopandas.read_file(r5py.sampledata.helsinki.population_grid)
 railway_station = geopandas.GeoDataFrame(
     {
         "id": ["railway_station"],
-        "geometry": [shapely.Point(24.941521, 60.170666)]
+        "geometry": [shapely.Point(24.94152, 60.17066)]
     },
     crs="EPSG:4326",
 )
@@ -123,19 +130,19 @@ zero or more GTFS files. With the sample data set, the file paths are in the
 :tags: ["remove-output"]
 
 import r5py
-from r5py.sampledata.helsinki import osm_pbf, gtfs
+import r5py.sampledata.helsinki
 
 transport_network = r5py.TransportNetwork(
-    osm_pbf,
-    [gtfs],
+    r5py.sampledata.helsinki.osm_pbf,
+    [r5py.sampledata.helsinki.gtfs],
 )
 ```
 
 At this stage, *r5py* has created a routable transport network, that is stored
 in the `transport_network` variable. We can now use this network for travel time
 calculations. Depending on the extent of the network, this step can take up to
-several minutes. However, you can reuse the same `TransportNetwork` instance in
-subsequent analyses.
+several minutes. Once loaded, you can reuse the same `TransportNetwork` instance
+in subsequent analyses.
 
 
 ## Compute a travel time matrix
@@ -153,9 +160,9 @@ the following input arguments:
 - a `transport_network` ({class}`r5py.TransportNetwork`), such as the one we
   just created,
 - `origins`, a {class}`geopandas.GeoDataFrame` with one or more points
-  representing the departure points of routes, 
+  representing the departure points of routes,
 - `destinations`, a {class}`geopandas.GeoDataFrame` with one or more points
-  representing the destinations of routes, 
+  representing the destinations of routes,
 - `departure`, a {class}`datetime.datetime`
   refering to the departure date and time for routing, and
 - `transport_modes`, a list of {class}`r5py.TransportMode`s: the travel modes

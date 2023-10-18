@@ -18,14 +18,12 @@ kernelspec:
 :tags: [remove-input, remove-output]
 
 # this cell is hidden from output
-# it’s used to set sys.path to point to the local repo,
-# and to define a `DATA_DIRECTORY` pathlib.Path
+# it’s used to set sys.path to point to the local repo
 import pathlib
 import sys
 
 NOTEBOOK_DIRECTORY = pathlib.Path().resolve()
 DOCS_DIRECTORY = NOTEBOOK_DIRECTORY.parent.parent
-DATA_DIRECTORY = DOCS_DIRECTORY / "_static" / "data"
 R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
 sys.path.insert(0, str(R5PY_DIRECTORY))
 ```
@@ -90,17 +88,19 @@ required for computing a travel time matrix:
 In the example below, we first create a
 {class}`TransportNetwork<r5py.TransportNetwork>`. To do so, we load an
 OpenStreetMap extract of the São Paulo city centre as well as a public transport
-schedule in GTFS format covering the same area:
+schedule in GTFS format covering the same area. Again, we use the [sample data
+sets that can be installed separately](../installation/installation.md#sample-data-sets)
 
 ```{code-cell}
 :tags: [remove-output]
 
 import r5py
+import r5py.sampledata.sao_paulo
 
 transport_network = r5py.TransportNetwork(
-    DATA_DIRECTORY / "São Paulo" / "spo_osm.pbf",
+    r5py.sampledata.sao_paulo.osm_pbf,
     [
-        DATA_DIRECTORY / "São Paulo" / "spo_gtfs.zip",
+        r5py.sampledata.sao_paulo.gtfs,
     ]
 )
 ```
@@ -120,7 +120,7 @@ The `id` column refers to the H3 address of the grid cells.
 ```{code-cell}
 import geopandas
 
-hexagon_grid = geopandas.read_file(DATA_DIRECTORY / "São Paulo" / "spo_hexgrid_EPSG32723.gpkg.zip")
+hexagon_grid = geopandas.read_file(r5py.sampledata.sao_paulo.hexgrid_gpkg)
 hexagon_grid
 ```
 
@@ -284,7 +284,7 @@ hexagons_with_travel_time_to_centre.explore(
 ```
 
 You can clearly see how travel times do not increase uniformly, but are shorter
-along the major transport axis (metro, railways, bus corridors).
+along the major transport axes (metro, railways, bus corridors).
 
 
 ***

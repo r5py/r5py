@@ -95,7 +95,11 @@ class TransportNetwork:
         # first, close the open osm_file,
         # delete Java objects, and
         # trigger Java garbage collection
-        self.osm_file.close()
+        try:
+            self.osm_file.close()
+        except jpype.JVMNotRunning:
+            # JVM was stopped already, file should be closed
+            pass
         try:
             del self.street_layer
         except AttributeError:  # might not have been accessed a single time

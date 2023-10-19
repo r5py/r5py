@@ -7,11 +7,11 @@ dependencies:
     - python=3.11
     - folium
     - fiona
-    - geopandas<0.14
+    - geopandas
     - importlib_resources
     - matplotlib
     - mapclassify
     - numpy
-    - pandas<2.1.0
+    - pandas
     - r5py
     - shapely

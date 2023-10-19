@@ -70,7 +70,6 @@ filterwarnings = [
     "ignore:Could not find R5 jar, trying to download it from upstream",
     "ignore:Successfully downloaded r5-"
 ]
-pythonpath = ["src"]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 

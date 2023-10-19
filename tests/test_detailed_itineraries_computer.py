@@ -4,7 +4,6 @@ import datetime
 
 import geopandas
 import geopandas.testing
-import numpy
 import pandas
 import pytest
 

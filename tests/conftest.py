@@ -25,8 +25,6 @@ import shapely
 DATA_DIRECTORY = (
     pathlib.Path(__file__).resolve().parent.parent / "docs" / "_static" / "data"
 )
-
-
 ORIGINS_INVALID_NO_ID = (
     DATA_DIRECTORY / "test_data" / "test_invalid_points_no_id_column.geojson"
 )

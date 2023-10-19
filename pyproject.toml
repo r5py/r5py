@@ -44,11 +44,11 @@ license = {text = "GPL-3.0-or-later or MIT"}
 dynamic = ["version"]
 
 [project.optional-dependencies]
-docs = ["contextily", "folium", "h3", "mapclassify", "matplotlib", "myst-nb",
-        "nbsphinx", "pybtex-apa7-style", "r5py.sampledata.helsinki",
-        "r5py.sampledata.sao_paulo", "shapely", "sphinx",
-        "sphinx-book-theme", "sphinx-design", "sphinxcontrib-bibtex",
-        "sphinxcontrib-images"]
+docs = ["contextily", "folium", "GitPython", "h3>=4.0.0b2", "jupyterlab_myst",
+        "mapclassify", "matplotlib", "myst-nb", "nbsphinx", "pybtex-apa7-style",
+        "r5py.sampledata.helsinki>=0.1.1.dev1", "r5py.sampledata.sao_paulo>=0.1.1.dev1",
+        "shapely", "sphinx", "sphinx-book-theme", "sphinx-design",
+        "sphinxcontrib-bibtex", "sphinxcontrib-images"]
 tests = ["pytest", "pytest-asyncio", "pytest-cov", "pytest-lazy-fixture",
         "r5py.sampledata.helsinki", "r5py.sampledata.sao_paulo"]
 

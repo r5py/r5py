@@ -27,11 +27,6 @@ DATA_DIRECTORY = (
 )
 
 
-OSM_PBF = DATA_DIRECTORY / "Helsinki" / "kantakaupunki.osm.pbf"
-GTFS = DATA_DIRECTORY / "Helsinki" / "GTFS.zip"
-POPULATION_GRID = DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg"
-
-
 ORIGINS_INVALID_NO_ID = (
     DATA_DIRECTORY / "test_data" / "test_invalid_points_no_id_column.geojson"
 )
@@ -132,17 +127,23 @@ def detailed_itineraries_walk():
 
 @pytest.fixture
 def gtfs_file():
-    yield GTFS
+    import r5py.sampledata.helsinki
+
+    yield r5py.sampledata.helsinki.gtfs
 
 
 @pytest.fixture
 def not_a_gtfs_file():
-    yield OSM_PBF
+    import r5py.sampledata.helsinki
+
+    yield r5py.sampledata.helsinki.osm_pbf
 
 
 @pytest.fixture
 def gtfs_file_path():
-    yield GTFS
+    import r5py.sampledata.helsinki
+
+    yield r5py.sampledata.helsinki.gtfs
 
 
 @pytest.fixture
@@ -175,12 +176,16 @@ def origins_valid_ids():
 
 @pytest.fixture
 def osm_pbf_file_path():
-    yield OSM_PBF
+    import r5py.sampledata.helsinki
+
+    yield r5py.sampledata.helsinki.osm_pbf
 
 
 @pytest.fixture(scope="session")
 def population_grid():
-    yield geopandas.read_file(POPULATION_GRID)
+    import r5py.sampledata.helsinki
+
+    yield geopandas.read_file(r5py.sampledata.helsinki.population_grid)
 
 
 @pytest.fixture(scope="session")
@@ -277,7 +282,9 @@ def snapped_population_grid_points():
 
 @pytest.fixture
 def transport_network_files_tuple():
-    yield OSM_PBF, [GTFS]
+    import r5py.sampledata.helsinki
+
+    yield r5py.sampledata.helsinki.osm_pbf, [r5py.sampledata.helsinki.gtfs]
 
 
 @pytest.fixture
@@ -304,7 +311,9 @@ def transport_network_from_test_directory():
 def transport_network_from_test_files():
     import r5py
 
-    transport_network = r5py.TransportNetwork(OSM_PBF, [GTFS])
+    transport_network = r5py.TransportNetwork(
+        r5py.sampledata.helsinki.osm_pbf, [r5py.sampledata.helsinki.gtfs]
+    )
     yield transport_network
 
     del transport_network
@@ -316,8 +325,9 @@ def transport_network_from_test_files():
 @pytest.fixture(scope="session")
 def transport_network_from_test_files_without_gtfs():
     import r5py
+    import r5py.sampledata.helsinki
 
-    transport_network = r5py.TransportNetwork(OSM_PBF, [])
+    transport_network = r5py.TransportNetwork(r5py.sampledata.helsinki.osm_pbf, [])
     yield transport_network
 
     del transport_network

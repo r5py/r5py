@@ -37,6 +37,8 @@ dependencies:
     - pytest-asyncio
     - pytest-cov
     - pytest-lazy-fixture
+    - r5py.sampledata.helsinki>=0.1.1dev1
+    - r5py.sampledata.sao_paulo>=0.1.1dev1
     - shapely
     - sphinx
     - sphinx-book-theme

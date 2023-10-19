@@ -30,5 +30,5 @@ folium
 h3>=4.0.0b2
 mapclassify
 matplotlib
-r5py.sampledata.helsinki>=0.1.1.dev0
-r5py.sampledata.sao_paulo>=0.1.1.dev0
+r5py.sampledata.helsinki>=0.1.1.dev1
+r5py.sampledata.sao_paulo>=0.1.1.dev1

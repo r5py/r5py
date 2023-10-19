@@ -17,21 +17,7 @@ kernelspec:
 ```{code-cell}
 :tags: [remove-input, remove-output]
 
-# this cell is hidden from output
-# it’s used to set sys.path to point to the local repo
-import pathlib
-import sys
-
-NOTEBOOK_DIRECTORY = pathlib.Path().resolve()
-DOCS_DIRECTORY = NOTEBOOK_DIRECTORY.parent.parent
-R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
-sys.path.insert(0, str(R5PY_DIRECTORY))
-```
-
-```{code-cell}
-:tags: [remove-input, remove-output]
-
-# also this cell is hidden from READTHEDOCS output
+# this cell is hidden from READTHEDOCS output
 # it’s used to set a stricter memory limit in binderhub notebooks
 # as otherwise, the examples would fail
 

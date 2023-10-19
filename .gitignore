@@ -30,6 +30,8 @@ docs/data/*.mapdb
 docs/data/*.mapdb.p
 **/.ipynb_checkpoints
 docs/jupyter_execute/
+docs/user-guide/user-manual/travel_times_to_helsinki_railway_station.csv
+docs/user-guide/user-manual/detailed_itineraries.gpkg
 
 .tox
 .coverage

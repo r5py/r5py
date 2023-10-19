@@ -117,7 +117,7 @@ class BaseTravelTimeMatrixComputer:
         pandas.DataFrame
             Data frame in which all MAX_INT32 have been replaced by `numpy.nan`.
         """
-        return data_set.applymap(lambda x: numpy.nan if x == MAX_INT32 else x)
+        return data_set.map(lambda x: numpy.nan if x == MAX_INT32 else x)
 
     def _prepare_origins_destinations(self):
         """

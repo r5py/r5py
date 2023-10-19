@@ -24,7 +24,7 @@ dependencies = [
     "joblib",
     "jpype1",
     "numpy",
-    "pandas",
+    "pandas>=2.1.0",
     "psutil",
     "pyproj",
     "requests",

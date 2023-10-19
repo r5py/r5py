@@ -79,12 +79,13 @@ jobs:
         shell: bash -l {0}
         run: |
           mamba install -c conda-forge pytest pytest-asyncio pytest-cov pytest-lazy-fixture pip
-          pip install --no-dependencies r5py.sampledata.helsinki r5py.sampledata.sao_paulo
+          pip install .[test]
 
       - name: Check environment
         run: |
           conda info
           conda list
+          pip list --verbose
 
       - name: Test r5py
         run: python -m pytest

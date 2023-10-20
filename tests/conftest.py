@@ -277,8 +277,8 @@ def transport_network_from_test_directory(tmp_path):
     import r5py
     import r5py.sampledata.helsinki
 
-    r5py.sampledata.helsinki.osm_pbf.copy_to(tmp_path)
-    r5py.sampledata.helsinki.gtfs.copy_to(tmp_path)
+    r5py.sampledata.helsinki.osm_pbf.symlink_to(tmp_path)
+    r5py.sampledata.helsinki.gtfs.symlink_to(tmp_path)
 
     transport_network = r5py.TransportNetwork.from_directory(tmp_path)
     yield transport_network

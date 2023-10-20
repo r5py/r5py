@@ -273,12 +273,14 @@ def transport_network(transport_network_from_test_files):
 
 
 @pytest.fixture(scope="session")
-def transport_network_from_test_directory():
+def transport_network_from_test_directory(tmp_path):
     import r5py
+    import r5py.sampledata.helsinki
 
-    transport_network = r5py.TransportNetwork.from_directory(
-        DATA_DIRECTORY / "Helsinki"
-    )
+    r5py.sampledata.helsinki.osm_pbf.copy_to(tmp_path)
+    r5py.sampledata.helsinki.gtfs.copy_to(tmp_path)
+
+    transport_network = r5py.TransportNetwork.from_directory(tmp_path)
     yield transport_network
 
     del transport_network

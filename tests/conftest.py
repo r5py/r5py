@@ -296,6 +296,7 @@ def transport_network_from_test_directory(tmp_path):
 @pytest.fixture(scope="session")
 def transport_network_from_test_files():
     import r5py
+    import r5py.sampledata.helsinki
 
     transport_network = r5py.TransportNetwork(
         r5py.sampledata.helsinki.osm_pbf, [r5py.sampledata.helsinki.gtfs]

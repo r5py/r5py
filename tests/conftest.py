@@ -272,7 +272,7 @@ def transport_network(transport_network_from_test_files):
     yield transport_network_from_test_files
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def transport_network_from_test_directory(tmp_path):
     import r5py
     import r5py.sampledata.helsinki

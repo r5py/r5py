@@ -77,7 +77,6 @@ jobs:
         run: conda install 'openjdk>=11'
 
       - name: Install test dependencies
-        shell: bash -l {0}
         run: |
           mamba install -c conda-forge pytest pytest-asyncio pytest-cov pytest-lazy-fixture pip
           pip install .[tests]

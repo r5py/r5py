@@ -43,12 +43,14 @@ class TransportNetwork:
 
         Arguments
         ---------
-        osm_pbf : str
+        osm_pbf : str | pathlib.Path
             file path of an OpenStreetMap extract in PBF format
-        gtfs : list[str]
-            paths to public transport schedule information in GTFS format
+        gtfs : str | pathlib.Path | list[str] | list[pathlib.Path]
+            path(s) to public transport schedule information in GTFS format
         """
         osm_pbf = self._working_copy(pathlib.Path(osm_pbf)).absolute()
+        if isinstance(gtfs, (str, pathlib.Path)):
+            gtfs = [gtfs]
         gtfs = [str(self._working_copy(path).absolute()) for path in gtfs]
 
         transport_network = com.conveyal.r5.transit.TransportNetwork()

@@ -272,22 +272,24 @@ def transport_network(transport_network_from_test_files):
     yield transport_network_from_test_files
 
 
-@pytest.fixture
-def transport_network_from_test_directory(tmp_path):
+@pytest.fixture(scope="session")
+def transport_network_from_test_directory():
     import r5py
     import r5py.sampledata.helsinki
+    from .temporary_directory import TemporaryDirectory
 
-    (tmp_path / r5py.sampledata.helsinki.osm_pbf.name).symlink_to(
-        r5py.sampledata.helsinki.osm_pbf
-    )
-    (tmp_path / r5py.sampledata.helsinki.gtfs.name).symlink_to(
-        r5py.sampledata.helsinki.gtfs
-    )
+    with TemporaryDirectory() as temp_directory:
+        (temp_directory / r5py.sampledata.helsinki.osm_pbf.name).symlink_to(
+            r5py.sampledata.helsinki.osm_pbf
+        )
+        (temp_directory / r5py.sampledata.helsinki.gtfs.name).symlink_to(
+            r5py.sampledata.helsinki.gtfs
+        )
 
-    transport_network = r5py.TransportNetwork.from_directory(tmp_path)
-    yield transport_network
+        transport_network = r5py.TransportNetwork.from_directory(temp_directory)
+        yield transport_network
 
-    del transport_network
+        del transport_network
 
     time.sleep(0.5)
     jpype.java.lang.System.gc()

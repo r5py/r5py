@@ -47,31 +47,6 @@ if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
     sys.argv.extend(["--max-memory", f"{max_memory}"])
 ```
 
-```{code-cell}
-:tags: [remove-input, remove-output]
-
-# also this cell is hidden in READTHEDOCS
-# it loads input geodata for the examples below
-
-# if you opened this notebook elsewhere, be sure to run
-# this cell, so data is read from disk
-
-import geopandas
-import r5py
-import r5py.sampledata.helsinki
-import shapely
-
-population_grid = geopandas.read_file(r5py.sampledata.helsinki.population_grid)
-RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
-
-transport_network = r5py.TransportNetwork(
-    r5py.sampledata.helsinki.osm_pbf,
-    [
-        r5py.sampledata.helsinki.gtfs,
-    ]
-)
-```
-
 
 # Compute travel times with a detailed breakdown of the routing results
 
@@ -104,6 +79,26 @@ origin points and one single destination (the railway station) in our sample
 data of Helsinki.
 
 :::
+
+
+```{code-cell}
+:tags: [remove-output]
+
+import geopandas
+import r5py
+import r5py.sampledata.helsinki
+import shapely
+
+population_grid = geopandas.read_file(r5py.sampledata.helsinki.population_grid)
+RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
+
+transport_network = r5py.TransportNetwork(
+    r5py.sampledata.helsinki.osm_pbf,
+    [
+        r5py.sampledata.helsinki.gtfs,
+    ]
+)
+```
 
 
 ```{code-cell}

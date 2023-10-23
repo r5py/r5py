@@ -12,6 +12,6 @@ dependencies:
     - matplotlib
     - mapclassify
     - numpy
-    - pandas<2.1.0
+    - pandas
     - r5py
     - shapely

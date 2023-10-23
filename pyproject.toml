@@ -24,13 +24,13 @@ dependencies = [
     "joblib",
     "jpype1",
     "numpy",
-    "pandas",
+    "pandas>=2.1.0",
     "psutil",
     "pyproj",
     "requests",
     "shapely>=2.0"
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -70,7 +70,6 @@ filterwarnings = [
     "ignore:Could not find R5 jar, trying to download it from upstream",
     "ignore:Successfully downloaded r5-"
 ]
-pythonpath = ["src"]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 

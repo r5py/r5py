@@ -180,3 +180,44 @@ class Test_TransportNetwork:
 
         transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
         del transport_network
+
+    @pytest.mark.parametrize(
+        ["osm_pbf", "gtfs"],
+        [
+            (
+                pathlib.Path(pytest.lazy_fixture("osm_pbf_file_path")),
+                pathlib.Path(pytest.lazy_fixture("gtfs_file_path")),
+            ),
+            (
+                pathlib.Path(pytest.lazy_fixture("osm_pbf_file_path")),
+                [pathlib.Path(pytest.lazy_fixture("gtfs_file_path"))],
+            ),
+            (
+                pathlib.Path(pytest.lazy_fixture("osm_pbf_file_path")),
+                str(pytest.lazy_fixture("gtfs_file_path")),
+            ),
+            (
+                pathlib.Path(pytest.lazy_fixture("osm_pbf_file_path")),
+                [str(pytest.lazy_fixture("gtfs_file_path"))],
+            ),
+            (
+                str(pytest.lazy_fixture("osm_pbf_file_path")),
+                pathlib.Path(pytest.lazy_fixture("gtfs_file_path")),
+            ),
+            (
+                str(pytest.lazy_fixture("osm_pbf_file_path")),
+                [pathlib.Path(pytest.lazy_fixture("gtfs_file_path"))],
+            ),
+            (
+                str(pytest.lazy_fixture("osm_pbf_file_path")),
+                str(pytest.lazy_fixture("gtfs_file_path")),
+            ),
+            (
+                str(pytest.lazy_fixture("osm_pbf_file_path")),
+                [str(pytest.lazy_fixture("gtfs_file_path"))],
+            ),
+        ]
+    )
+    def test_argument_types(self, osm_pbf, gtfs):
+        transport_network = r5py.TransportNetwork(osm_pbf, gtfs)
+        del transport_network

@@ -46,7 +46,6 @@ jobs:
           - ci/python_311.yaml
           - ci/python_310.yaml
           - ci/python_39.yaml
-          - ci/python_38.yaml
         jdk_from:
           - conda-forge
           - system
@@ -77,9 +76,10 @@ jobs:
         if: ${{ matrix.jdk_from == 'conda-forge' }}
         run: conda install 'openjdk>=11'
 
-      - name: Make sure pytest{,-asyncio,-cov,-lazy-fixture} are installed
-        shell: bash -l {0}
-        run: mamba install -c conda-forge pytest pytest-asyncio pytest-cov pytest-lazy-fixture
+      - name: Install test dependencies
+        run: |
+          mamba install -c conda-forge pytest pytest-asyncio pytest-cov pytest-lazy-fixture pip
+          pip install .[tests]
 
       - name: Check environment
         run: |

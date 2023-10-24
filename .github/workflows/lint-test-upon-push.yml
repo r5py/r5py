@@ -85,6 +85,7 @@ jobs:
         run: |
           conda info
           conda list
+          pip list --verbose
 
       - name: Test r5py
         run: python -m pytest

@@ -182,42 +182,29 @@ class Test_TransportNetwork:
         del transport_network
 
     @pytest.mark.parametrize(
-        ["osm_pbf", "gtfs"],
+        ["osm_pbf_type", "gtfs_type", "gtfs_is_list"],
         [
-            (
-                pathlib.Path(pytest.lazy_fixture("osm_pbf_file_path")),
-                pathlib.Path(pytest.lazy_fixture("gtfs_file_path")),
-            ),
-            (
-                pathlib.Path(pytest.lazy_fixture("osm_pbf_file_path")),
-                [pathlib.Path(pytest.lazy_fixture("gtfs_file_path"))],
-            ),
-            (
-                pathlib.Path(pytest.lazy_fixture("osm_pbf_file_path")),
-                str(pytest.lazy_fixture("gtfs_file_path")),
-            ),
-            (
-                pathlib.Path(pytest.lazy_fixture("osm_pbf_file_path")),
-                [str(pytest.lazy_fixture("gtfs_file_path"))],
-            ),
-            (
-                str(pytest.lazy_fixture("osm_pbf_file_path")),
-                pathlib.Path(pytest.lazy_fixture("gtfs_file_path")),
-            ),
-            (
-                str(pytest.lazy_fixture("osm_pbf_file_path")),
-                [pathlib.Path(pytest.lazy_fixture("gtfs_file_path"))],
-            ),
-            (
-                str(pytest.lazy_fixture("osm_pbf_file_path")),
-                str(pytest.lazy_fixture("gtfs_file_path")),
-            ),
-            (
-                str(pytest.lazy_fixture("osm_pbf_file_path")),
-                [str(pytest.lazy_fixture("gtfs_file_path"))],
-            ),
-        ]
+            (pathlib.Path, pathlib.Path, False),
+            (pathlib.Path, pathlib.Path, True),
+            (pathlib.Path, str, False),
+            (pathlib.Path, str, True),
+            (str, pathlib.Path, False),
+            (str, pathlib.Path, True),
+            (str, str, False),
+            (str, str, True),
+        ],
     )
-    def test_argument_types(self, osm_pbf, gtfs):
+    def test_argument_types(
+        self,
+        osm_pbf_file_path,
+        gtfs_file_path,
+        osm_pbf_type,
+        gtfs_type,
+        gtfs_is_list,
+    ):
+        osm_pbf = osm_pbf_type(osm_pbf_file_path)
+        gtfs = gtfs_type(gtfs_file_path)
+        if gtfs_is_list:
+            gtfs = [gtfs]
         transport_network = r5py.TransportNetwork(osm_pbf, gtfs)
         del transport_network

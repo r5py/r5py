@@ -24,3 +24,4 @@ class TestConfig:
         assert r5py.util.config.Config().arguments.temporary_directory.is_relative_to(
             tmp_path
         )
+        sys.argv = sys.argv[:-2]

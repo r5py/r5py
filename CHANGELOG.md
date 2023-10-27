@@ -1,3 +1,12 @@
+- **0.1.1** (2023-10-25):
+    - BREAKING: retired support for Python 3.8
+    - implemented support for pandas>=2.1 and geopandas>=0.14
+    - added --temporary-directory configuration option/argument
+    - created sample data packages r5py.sampledata.helsinki and
+      r5py.sampledata.sao_paulo
+    - improved documentation
+    - numerous smaller fixes
+
 - **0.1.0** (2023-08-15):
     - added class to compute detailed itineraries
     - simplified transport modes

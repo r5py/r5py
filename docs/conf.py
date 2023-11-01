@@ -14,7 +14,6 @@ import matplotlib.pyplot
 
 # -- Add project paths -------------------------------------------------------
 sys.path = [
-    str(pathlib.Path().resolve().parent / "src"),
     str(pathlib.Path().resolve()),
     str(pathlib.Path().resolve() / "_extensions"),
 ] + sys.path
@@ -85,6 +84,7 @@ html_theme_options = {
         "binderhub_url": "https://mybinder.org",
         "notebook_interface": "classic",
     },
+    "navigation_with_keys": False,
     "path_to_docs": "docs",
     "repository_branch": BINDER_REF,
     "repository_url": "https://github.com/r5py/r5py/",

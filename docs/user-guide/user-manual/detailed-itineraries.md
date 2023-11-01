@@ -16,30 +16,19 @@ jupytext:
 
 # this cell is hidden from READTHEDOCS output
 # it’s used to
-#    - set sys.path to point to the local *r5py* source code, to
 #    - use a different upstream R5 jar, so we can display the
-#      geometries of public transport routes, to
-#    - define a `DATA_DIRECTORY` pathlib.Path, and to
+#      geometries of public transport routes, and to
 #    - force pandas to show all columns of the (very wide)
 #      result data set
 
-import pathlib
 import sys
-
 import pandas
-
-NOTEBOOK_DIRECTORY = pathlib.Path().resolve()
-DOCS_DIRECTORY = NOTEBOOK_DIRECTORY.parent.parent
-DATA_DIRECTORY = DOCS_DIRECTORY / "_static" / "data"
-R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
 
 sys.argv.extend([
     "--r5-classpath",
     "https://github.com/DigitalGeographyLab/r5/releases/download/"
     "v6.9-post16-g1054c1e-20230619/r5-v6.9-post16-g1054c1e-20230619-all.jar"
 ])
-
-sys.path.insert(0, str(R5PY_DIRECTORY))
 
 pandas.set_option("display.max_columns", None)
 ```
@@ -56,30 +45,6 @@ import os
 if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
     max_memory = int(os.environ["MEM_LIMIT"]) / 2
     sys.argv.extend(["--max-memory", f"{max_memory}"])
-```
-
-```{code-cell}
-:tags: [remove-input, remove-output]
-
-# also this cell is hidden in READTHEDOCS
-# it loads input geodata for the examples below
-
-# if you opened this notebook elsewhere, be sure to run
-# this cell, so data is read from disk
-
-import geopandas
-import r5py
-import shapely
-
-population_grid = geopandas.read_file(DATA_DIRECTORY / "Helsinki" / "population_grid_2020.gpkg")
-RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
-
-transport_network = r5py.TransportNetwork(
-    f"{DATA_DIRECTORY}/Helsinki/kantakaupunki.osm.pbf",
-    [
-        f"{DATA_DIRECTORY}/Helsinki/GTFS.zip",
-    ]
-)
 ```
 
 
@@ -114,6 +79,26 @@ origin points and one single destination (the railway station) in our sample
 data of Helsinki.
 
 :::
+
+
+```{code-cell}
+:tags: [remove-output]
+
+import geopandas
+import r5py
+import r5py.sampledata.helsinki
+import shapely
+
+population_grid = geopandas.read_file(r5py.sampledata.helsinki.population_grid)
+RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
+
+transport_network = r5py.TransportNetwork(
+    r5py.sampledata.helsinki.osm_pbf,
+    [
+        r5py.sampledata.helsinki.gtfs,
+    ]
+)
+```
 
 
 ```{code-cell}
@@ -405,6 +390,6 @@ travel_details = travel_details[
     ]
 ]
 
-travel_details.to_file(DATA_DIRECTORY / "detailed_itineraries.gpkg")
+travel_details.to_file("detailed_itineraries.gpkg")
 
 ```

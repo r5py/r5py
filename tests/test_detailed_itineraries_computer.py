@@ -4,7 +4,6 @@ import datetime
 
 import geopandas
 import geopandas.testing
-import numpy
 import pandas
 import pytest
 
@@ -553,13 +552,12 @@ class TestDetailedItinerariesComputer:
             lambda t: t.value
         )
 
-        travel_details.replace(to_replace=[None], value=numpy.nan, inplace=True)
-
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
 
         geopandas.testing.assert_geodataframe_equal(
             travel_details,
             expected_travel_details,
             check_less_precise=True,  # geometries
+            check_dtype=False,
             normalize=True,
         )

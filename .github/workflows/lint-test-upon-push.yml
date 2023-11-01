@@ -6,6 +6,8 @@ on:
   pull_request:
   workflow_call:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * SUN'  # run at midnight every Sunday
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -44,7 +46,6 @@ jobs:
           - ci/python_311.yaml
           - ci/python_310.yaml
           - ci/python_39.yaml
-          - ci/python_38.yaml
         jdk_from:
           - conda-forge
           - system
@@ -75,14 +76,16 @@ jobs:
         if: ${{ matrix.jdk_from == 'conda-forge' }}
         run: conda install 'openjdk>=11'
 
-      - name: Make sure pytest{,-asyncio,-cov,-lazy-fixture} are installed
-        shell: bash -l {0}
-        run: mamba install -c conda-forge pytest pytest-asyncio pytest-cov pytest-lazy-fixture
+      - name: Install test dependencies
+        run: |
+          mamba install -c conda-forge pytest pytest-asyncio pytest-cov pytest-lazy-fixture pip
+          pip install .[tests]
 
       - name: Check environment
         run: |
           conda info
           conda list
+          pip list --verbose
 
       - name: Test r5py
         run: python -m pytest

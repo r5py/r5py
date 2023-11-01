@@ -141,12 +141,11 @@ instructions](https://geopandas.org/en/stable/gallery/create_geopandas_from_pand
 to convert them into a {class}`geopandas.GeoDataFrame`.
 
 
-## Sample datasets
+## Sample data sets
 
-In this documentation, we use some sample data sets that you can also find in the
-[source code
-repository](https://github.com/r5py/r5py/tree/main/docs/_static/data/). In
-particular, the sample data comprises of the following data sets:
+In this documentation, we use some sample data sets that you can [install
+separately](../installation/installation.md#sample-data-sets). In particular,
+the sample data comprises of the following data sets:
 
 - Helsinki, Finland
   - A population grid data set of Helsinki city centre, obtained from the

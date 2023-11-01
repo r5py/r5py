@@ -15,34 +15,19 @@ kernelspec:
 ```{code-cell}
 :tags: [remove-input, remove-output]
 
-# this cell is hidden from output
-# it’s used to set sys.path to point to the local repo,
-# and to define a `DATA_DIRECTORY` pathlib.Path
-import pathlib
-import sys
-
-NOTEBOOK_DIRECTORY = pathlib.Path().resolve()
-DOCS_DIRECTORY = NOTEBOOK_DIRECTORY.parent.parent
-DATA_DIRECTORY = DOCS_DIRECTORY / "_static" / "data"
-R5PY_DIRECTORY = DOCS_DIRECTORY.parent / "src"
-sys.path.insert(0, str(R5PY_DIRECTORY))
-```
-
-```{code-cell}
-:tags: [remove-input, remove-output]
-
-# also this cell is hidden in READTHEDOCS
+# this cell is hidden in READTHEDOCS
 # it loads input geodata for the examples below
 
 # if you opened this notebook elsewhere, be sure to run
 # this cell, so data is read from disk
 
 import r5py
+import r5py.sampledata.helsinki
 
 transport_network = r5py.TransportNetwork(
-    f"{DATA_DIRECTORY}/Helsinki/kantakaupunki.osm.pbf",
+    r5py.sampledata.helsinki.osm_pbf,
     [
-        f"{DATA_DIRECTORY}/Helsinki/GTFS.zip",
+        r5py.sampledata.helsinki.gtfs,
     ]
 )
 ```

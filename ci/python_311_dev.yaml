@@ -13,7 +13,7 @@ dependencies:
     - joblib
     - jpype1
     - numpy
-    - pandas<2.1.0
+    - pandas
     - pyproj
     - psutil
     - requests
@@ -37,6 +37,8 @@ dependencies:
     - pytest-asyncio
     - pytest-cov
     - pytest-lazy-fixture
+    - r5py.sampledata.helsinki>=0.1.1dev2
+    - r5py.sampledata.sao_paulo>=0.1.1dev2
     - shapely
     - sphinx
     - sphinx-book-theme

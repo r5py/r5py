@@ -119,7 +119,7 @@ hexagon_grid.explore()
 
 *R5py* expects origins and destinations to be point geometries. For grid cells,
 the geometric center point (‘centroid’) is a good approximisation. One can use
-{attr}`geopandas.GeoDataSeries.centroid` to quickly derive a centroid (point)
+{attr}`geopandas.GeoSeries.centroid` to quickly derive a centroid (point)
 geometry from a polygon. We will create one data frame for origins, and one for
 destinations:
 

@@ -181,10 +181,8 @@ myst_nb.glue("destinations_length", destinations_length, display=False)
 myst_nb.glue("matrix_length", matrix_length, display=False)
 ```
 
-:::{dropdown} A note about transit travel times and travel time windows
-:open:
-:color: light
-:margin: 1 5 0 0
+:::{admonition} A note about transit travel times and travel time windows
+:class: attention
 
 With transit travel times, individuals can face (sometimes significantly)
 different total travel times depending on when they start their journey. For
@@ -203,7 +201,7 @@ In r5py the default `departure_time_window` (the interval over which to sample)
 is set to 10 minutes. This is done to allow for a result that is as close as
 possible to a "single" travel time measure.
 
-**Be careful** as choosing very low intervals (or even not-very-low) intervals
+**Be careful** as choosing very low intervals (or even not-very-low intervals)
 can have some adverse effects on the ability of R5 to find a route to a
 destination. If you are working with transit schedules that have very low
 frequencies (large gaps in time between subsequent vehicles), you may want to

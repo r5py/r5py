@@ -37,7 +37,7 @@ start_jvm()
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
 
-    def __init__(self, osm_pbf, gtfs=[]):
+    def __init__(self, osm_pbf, gtfs=[], custom_cost_data=None):
         """
         Load a transport network.
 
@@ -47,6 +47,9 @@ class TransportNetwork:
             file path of an OpenStreetMap extract in PBF format
         gtfs : str | pathlib.Path | list[str] | list[pathlib.Path]
             path(s) to public transport schedule information in GTFS format
+        custom_cost_data: List[Dict[str, float]]
+            custom cost data to be used in custom cost (exposure) routing
+            with CustomCostTransportNetwork. Key value pair consist of: osmid, custom cost per edge (way)
         """
         osm_pbf = self._working_copy(pathlib.Path(osm_pbf)).absolute()
         if isinstance(gtfs, (str, pathlib.Path)):
@@ -64,27 +67,36 @@ class TransportNetwork:
         self.osm_file = osm_file  # keep the mapdb open, close in destructor
 
         transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
+        if custom_cost_data:
+            transport_network = self.add_custom_cost_data_to_network(
+                transport_network, custom_cost_data
+            )
         transport_network.streetLayer.loadFromOsm(osm_file)
         transport_network.streetLayer.parentNetwork = transport_network
         transport_network.streetLayer.indexStreets()
 
         transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
-        for gtfs_file in gtfs:
-            gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(gtfs_file)
-            transport_network.transitLayer.loadFromGtfs(gtfs_feed)
-            gtfs_feed.close()
-        transport_network.transitLayer.parentNetwork = transport_network
+        # only load GTFS if provided
+        # also, custom cost routing does not (yet) support GTFS
+        if gtfs and custom_cost_data:
+            for gtfs_file in gtfs:
+                gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(
+                    gtfs_file
+                )
+                transport_network.transitLayer.loadFromGtfs(gtfs_feed)
+                gtfs_feed.close()
+            transport_network.transitLayer.parentNetwork = transport_network
 
-        transport_network.streetLayer.associateStops(transport_network.transitLayer)
-        transport_network.streetLayer.buildEdgeLists()
+            transport_network.streetLayer.associateStops(transport_network.transitLayer)
+            transport_network.streetLayer.buildEdgeLists()
 
-        transport_network.transitLayer.rebuildTransientIndexes()
+            transport_network.transitLayer.rebuildTransientIndexes()
 
-        transfer_finder = com.conveyal.r5.transit.TransferFinder(transport_network)
-        transfer_finder.findTransfers()
-        transfer_finder.findParkRideTransfer()
+            transfer_finder = com.conveyal.r5.transit.TransferFinder(transport_network)
+            transfer_finder.findTransfers()
+            transfer_finder.findParkRideTransfer()
 
-        transport_network.transitLayer.buildDistanceTables(None)
+            transport_network.transitLayer.buildDistanceTables(None)
 
         self._transport_network = transport_network
 
@@ -148,6 +160,11 @@ class TransportNetwork:
             self._cache_directory.rmdir()
         except OSError:  # not empty
             pass  # the JVM destructor is going to take care of this
+
+    def add_custom_cost_data_to_network(self, *args, **kwargs):
+        """Custom hook for handling custom cost data"""
+        # used with the CustomCostTransportNetwork subclass
+        pass
 
     @classmethod
     def from_directory(cls, path):

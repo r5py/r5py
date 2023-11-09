@@ -33,10 +33,15 @@ class DirectLeg(TripLeg):
         distance = street_segment.distance / 1000.0  # millimetres!
         travel_time = datetime.timedelta(seconds=street_segment.duration)
         geometry = shapely.from_wkt(str(street_segment.geometry))
+        osm_ids = []
+
+        if hasattr(street_segment, "streetEdges"):
+            osm_ids = [edge_info.edgeOsmId for edge_info in street_segment.streetEdges]
 
         super().__init__(
             transport_mode=transport_mode,
             distance=distance,
             travel_time=travel_time,
             geometry=geometry,
+            osm_ids=osm_ids,
         )

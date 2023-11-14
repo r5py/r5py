@@ -56,11 +56,6 @@ class Trip:
         return [[segment] + leg.as_table_row() for segment, leg in enumerate(self.legs)]
 
     @property
-    def agency_ids(self):
-        """The public transport agency name(s) used on this trip."""
-        return [leg.agency_id for leg in self.legs]
-
-    @property
     def distance(self):
         """Overall distance of this trip in metres (float)."""
         try:

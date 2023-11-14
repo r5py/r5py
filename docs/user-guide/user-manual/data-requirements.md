@@ -114,13 +114,16 @@ version](https://gtfs-validator.mobilitydata.org/) where you can upload a feed
 to check against the reference and best practices.
 
 [*GTFS-Lite*](https://gtfs-lite.readthedocs.io/) is a Python package to read
-GTFS data sets into {class}`gtfslite.gtfs.GTFS` objects that store the
-information on stops, routes, fares, etc., in {class}`pandas.DataFrame`s. Use
+GTFS data sets into {class}`gtfslite.GTFS` objects that store the information on
+stops, routes, fares, etc., in {class}`pandas.DataFrame`s. Use
 {meth}`GTFS.routes_summary()<gtfslite.gtfs.GTFS.routes_summary()>`,
 {meth}`GTFS.stop_summary()<gtfslite.gtfs.GTFS.stop_summary()>`, and
-{meth}`GTFS.summary()<gtfslite.gtfs.GTFS.summary()>` to gain a quick overview
-of the scope of a GTFS data set.
-
+{meth}`GTFS.summary()<gtfslite.gtfs.GTFS.summary()>` to gain a quick overview of
+the scope of a GTFS data set. If you want to check if there is *any* service on
+a given date, then use
+{meth}`GTFS.date_trips()<gtfslite.gtfs.GTFS.date_trips()>` to produce a
+comprehensive list of trips that run on a given calendar date. This will account
+for exceptions in the GTFS specification. 
 :::
 
 

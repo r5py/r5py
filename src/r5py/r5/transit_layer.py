@@ -63,14 +63,6 @@ class TransitLayer:
             raise ValueError("No GTFS data set loaded") from exception
         return end_date
 
-    def covers(self, point_in_time):
-        """Check whether `point_in_time` is covered by GTFS data sets."""
-        try:
-            covers = self.start_date <= point_in_time <= self.end_date
-        except ValueError:  # no GTFS data loaded
-            covers = False
-        return covers
-
     def get_street_vertex_for_stop(self, stop):
         """
         Get the street layer’s vertex corresponding to `stop`.

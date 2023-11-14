@@ -214,18 +214,6 @@ class RegionalTask:
 
     @departure.setter
     def departure(self, departure):
-        # fmt: off
-        if (
-            [mode for mode in self.transport_modes if mode.is_transit_mode]
-            and not self.transport_network.transit_layer.covers(departure)
-        ):
-            # fmt: on
-            warnings.warn(
-                f"Departure time {departure} is outside of the time range "
-                "covered by currently loaded GTFS data sets.",
-                RuntimeWarning,
-            )
-
         self._departure = departure
         self._regional_task.date = java.time.LocalDate.of(
             departure.year, departure.month, departure.day

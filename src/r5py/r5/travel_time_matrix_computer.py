@@ -112,7 +112,7 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
         if self.request.percentiles == [50]:
             od_matrix = od_matrix.rename(columns={"travel_time_p50": "travel_time"})
 
-        if results.osmIdResults:
+        if hasattr(results, "osmIdResults"):
             od_matrix[f"osm_ids"] = results.osmIdResults
 
         # R5’s NULL value is MAX_INT32

@@ -42,7 +42,7 @@ def convert_custom_cost_data_to_custom_cost_instance(
         this is used to get different route suggestions by weighting the custom cost field
     custom_cost_data : jpype.java.util.HashMap[Long, Double]
         custom cost data to be used in routing.
-        
+
     Returns:
     --------
     custom_cost_java_instance : com.conveyal.r5.rastercost.CustomCostField
@@ -54,20 +54,21 @@ def convert_custom_cost_data_to_custom_cost_instance(
     )
 
 
-def convert_custom_cost_instances_to_java_list(*custom_cost_instances):
+def convert_custom_cost_instances_to_java_list(custom_cost_instances):
     """
     Convert custom cost instance(s) into the Java List format.
     R5 expects a List of CustomCostField instances.
 
     Parameters:
     -----------
-    *custom_cost_instances : com.conveyal.r5.rastercost.CustomCostField
-        Custom cost instance(s) to be used in routing.
+    custom_cost_instances : List[com.conveyal.r5.rastercost.CustomCostField]
+        Python list of Custom cost instance(s)
 
     Returns:
     --------
     custom_cost_java_list : jpype.java.util.List
-        List of CustomCostFiled instances in Java format
+        Java array list of CustomCostField instances
     """
     CostField = jpype.JClass("com.conveyal.r5.rastercost.CustomCostField")
-    return CostField.wrapToEdgeStoreCostFieldsList(custom_cost_instances)
+    custom_cost_java_array = jpype.JArray(CostField)(custom_cost_instances)
+    return CostField.wrapToEdgeStoreCostFieldsList(custom_cost_java_array)

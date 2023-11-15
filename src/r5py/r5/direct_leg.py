@@ -36,7 +36,9 @@ class DirectLeg(TripLeg):
         osm_ids = []
 
         if hasattr(street_segment, "streetEdges"):
-            osm_ids = [edge_info.edgeOsmId for edge_info in street_segment.streetEdges]
+            for edge_info in street_segment.streetEdges:
+                if hasattr(edge_info, "edgeOsmId"):
+                    osm_ids.append(edge_info.edgeOsmId)
 
         super().__init__(
             transport_mode=transport_mode,

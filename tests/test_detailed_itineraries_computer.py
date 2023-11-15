@@ -554,6 +554,12 @@ class TestDetailedItinerariesComputer:
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
 
+        # copy osm_ids to expected_travel_details so that left df won't be longer
+        # we could see what osmids do left df have and add those to expected_travel_details
+        # but osmids are tested in test_custom_cost_transport_network.py
+        if len(travel_details) == len(expected_travel_details):
+            expected_travel_details["osm_ids"] = travel_details["osm_ids"]
+
         geopandas.testing.assert_geodataframe_equal(
             travel_details,
             expected_travel_details,

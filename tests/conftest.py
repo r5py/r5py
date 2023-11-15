@@ -19,7 +19,6 @@ import jpype
 import geopandas
 import pandas
 import pytest
-import r5py
 from r5py.util.custom_cost_conversions import (
     convert_custom_cost_data_to_custom_cost_instance,
     convert_custom_cost_instances_to_java_list,
@@ -375,6 +374,9 @@ def walking_times_not_snapped():
     yield pandas.read_csv(WALKING_TIMES_NOT_SNAPPED)
 
 
+# custom cost routing tests related fixtures
+
+
 @pytest.fixture(scope="session")
 def custom_cost_test_values():
     return {12345: 1.0, 67890: 1.5, 54321: 1.25, 98765: 1.1}
@@ -397,18 +399,17 @@ def custom_cost_list(custom_cost_instance):
     return convert_custom_cost_instances_to_java_list(custom_cost_instance)
 
 
-# custom cost routing tests related fixtures
-
-
 @pytest.fixture(scope="session")
 def custom_cost_transport_network(custom_cost_transport_network_from_test_files):
     return custom_cost_transport_network_from_test_files
 
 
 @pytest.fixture(scope="session")
-def custom_cost_transport_network_from_test_files(custom_cost_list):
+def custom_cost_transport_network_from_test_files(osmid_value_dict):
+    import r5py
+
     custom_cost_transport_network = r5py.CustomCostTransportNetwork(
-        r5py.sampledata.helsinki.osm_pbf, custom_cost_list
+        r5py.sampledata.helsinki.osm_pbf, ["test_cost"], [1.1], [osmid_value_dict]
     )
     yield custom_cost_transport_network
 
@@ -418,70 +419,94 @@ def custom_cost_transport_network_from_test_files(custom_cost_list):
     jpype.java.lang.System.gc()
 
 
-# populate a dict with osmid and RANDOM NUMBER VALUES from a csv filep containing Helsinki osmid's
-# so that the custom cost values (osmids) are found in the transport network
+# csv reader helper function
+def read_osmid_values(csv_file_path, value_generator):
+    osmid_values = {}
+    with open(csv_file_path, mode="r", newline="") as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)  # skip header
+        for row in reader:
+            osmid, value = row
+            osmid_values[osmid] = value_generator(value)
+    return osmid_values
+
+
+# use Helsinki osmid's so that the custom cost values (osmids) are found in the transport network
 @pytest.fixture(scope="session")
 def osmid_value_dict():
-    csv_file_path = "tests/data/test_custom_cost_helsinki_osmid_doubles.csv"
-    temp_dict = {}
-    with open(csv_file_path, mode="r", newline="") as csvfile:
-        reader = csv.reader(csvfile)
-        next(reader)  # skip header
-        for row in reader:
-            osmid, value = row
-            temp_dict[osmid] = float(value)
-    return temp_dict
+    return read_osmid_values(
+        "tests/data/test_osm_data_custom_cost_kantakaupunki.csv", lambda v: float(v)
+    )
 
 
-# populate a dict with osmid and ZERO VALUES from a csv filep containing Helsinki osmid's
-# so that the custom cost values (osmids) are found in the transport network
+@pytest.fixture(scope="session")
+def osmid_negative_value_dict():
+    return read_osmid_values(
+        "tests/data/test_osm_data_negative_custom_cost_kantakaupunki.csv",
+        lambda v: -abs(float(v)),
+    )
+
+
+# run the generator function with a lambda that returns 0.0 to all
 @pytest.fixture(scope="session")
 def osmid_zero_dict():
-    csv_file_path = "tests/data/test_custom_cost_helsinki_osmid_zeros.csv"
-    temp_dict = {}
-    with open(csv_file_path, mode="r", newline="") as csvfile:
-        reader = csv.reader(csvfile)
-        next(reader)  # skip header
-        for row in reader:
-            osmid, value = row
-            temp_dict[osmid] = float(value)
-    return temp_dict
+    return read_osmid_values(
+        "tests/data/test_osm_data_custom_cost_kantakaupunki.csv", lambda v: 0.0
+    )
 
 
 @pytest.fixture(scope="session")
-def custom_cost_transport_network_random_values(osmid_value_dict):
+def single_cost_custom_cost_transport_network(osmid_value_dict):
+    import r5py
+
     # create a network with random values as custom costs
-    hashmap = convert_python_dict_to_java_hashmap(osmid_value_dict)
-    custom_cost_instance = convert_custom_cost_data_to_custom_cost_instance(
-        "test_name_2", 1.1, hashmap
-    )
-    custom_cost_list_with_values = convert_custom_cost_instances_to_java_list(
-        custom_cost_instance
-    )
     custom_cost_transport_network = r5py.CustomCostTransportNetwork(
-        r5py.sampledata.helsinki.osm_pbf, custom_cost_list_with_values
+        r5py.sampledata.helsinki.osm_pbf, ["random_cost"], [1.2], [osmid_value_dict]
+    )
+    return custom_cost_transport_network
+
+
+@pytest.fixture(scope="session")
+def single_cost_negative_custom_cost_transport_network(osmid_negative_value_dict):
+    import r5py
+
+    # create a network with random values as custom costs
+    custom_cost_transport_network = r5py.CustomCostTransportNetwork(
+        r5py.sampledata.helsinki.osm_pbf,
+        ["random_cost"],
+        [1.2],
+        [osmid_negative_value_dict],
+    )
+    return custom_cost_transport_network
+
+
+@pytest.fixture(scope="session")
+def multi_cost_custom_cost_transport_network(osmid_value_dict):
+    import r5py
+
+    # create a network with random values as custom costs
+    custom_cost_transport_network = r5py.CustomCostTransportNetwork(
+        r5py.sampledata.helsinki.osm_pbf,
+        ["random_cost_1", "random_cost_2"],
+        [1.1, 1.2],
+        [osmid_value_dict, osmid_value_dict],
     )
     return custom_cost_transport_network
 
 
 @pytest.fixture(scope="session")
 def custom_cost_transport_network_zero_values(osmid_zero_dict):
+    import r5py
+
     # create a network with random values as custom costs
-    zero_hashmap = convert_python_dict_to_java_hashmap(osmid_zero_dict)
-    zero_custom_cost_instance = convert_custom_cost_data_to_custom_cost_instance(
-        "test_name_3", 1.2, zero_hashmap
-    )
-    zero_custom_cost_list_with_zero_values = convert_custom_cost_instances_to_java_list(
-        zero_custom_cost_instance
-    )
     zero_custom_cost_transport_network = r5py.CustomCostTransportNetwork(
-        r5py.sampledata.helsinki.osm_pbf, zero_custom_cost_list_with_zero_values
+        r5py.sampledata.helsinki.osm_pbf, ["test_name"], [1.3], [osmid_zero_dict]
     )
     return zero_custom_cost_transport_network
 
 
 @pytest.fixture(scope="session")
-def origin_point():
+def origin_point_custom_cost():
     return geopandas.GeoDataFrame(
         {"id": [1], "geometry": [shapely.Point(24.94222, 60.17166)]},
         crs="EPSG:4326",
@@ -505,14 +530,6 @@ def multiple_origin_points():
 
 
 @pytest.fixture(scope="session")
-def destination_point():
-    return geopandas.GeoDataFrame(
-        {"id": [1], "geometry": [shapely.Point(24.94123, 60.17432)]},
-        crs="EPSG:4326",
-    )
-
-
-@pytest.fixture(scope="session")
 def multiple_destination_points():
     return geopandas.GeoDataFrame(
         {
@@ -530,8 +547,25 @@ def multiple_destination_points():
 # fixture factory for shifting between different OD-pairs
 # used to test one-to-many and many-to-many routing
 @pytest.fixture
-def origin_point_factory(request, origin_point, multiple_origin_points):
+def origin_point_factory(request, origin_point_custom_cost, multiple_origin_points):
     if request.param == "single":
-        return origin_point
+        return origin_point_custom_cost
     elif request.param == "multiple":
         return multiple_origin_points
+
+
+# fixture factory for shifting between different OD-pairs
+# used to test one-to-many and many-to-many routing
+@pytest.fixture
+def custom_cost_transport_network_factory(
+    request,
+    single_cost_custom_cost_transport_network,
+    single_cost_negative_custom_cost_transport_network,
+    multi_cost_custom_cost_transport_network,
+):
+    if request.param == "single":
+        return single_cost_custom_cost_transport_network
+    elif request.param == "negative":
+        return single_cost_negative_custom_cost_transport_network
+    elif request.param == "multiple":
+        return multi_cost_custom_cost_transport_network

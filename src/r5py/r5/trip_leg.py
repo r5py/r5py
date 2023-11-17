@@ -29,6 +29,14 @@ class TripLeg:
         "geometry",
     ]
 
+    COLUMN_DTYPES = {
+        "feed": str,
+        "agency_id": str,
+        "route_id": str,
+        "start_stop_id": str,
+        "end_stop_id": str,
+    }
+
     def __init__(
         self,
         transport_mode=None,

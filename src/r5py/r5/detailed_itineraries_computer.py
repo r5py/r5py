@@ -13,6 +13,7 @@ import pandas
 
 from .base_travel_time_matrix_computer import BaseTravelTimeMatrixComputer
 from .trip import Trip
+from .trip_leg import TripLeg
 from .trip_planner import ACCURATE_GEOMETRIES, TripPlanner
 
 

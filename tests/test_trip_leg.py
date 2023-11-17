@@ -11,13 +11,12 @@ import r5py
 class TestTripLeg:
     def test_repr(self):
         trip_leg = r5py.r5.trip_leg.TripLeg(
-            r5py.TransportMode.TRANSIT,
-            datetime.datetime(2023, 4, 25, 15, 30),
-            12.67,
-            datetime.timedelta(minutes=10),
-            datetime.timedelta(minutes=2),
-            "48A",
-            shapely.LineString([[0, 0], [1, 1], [2, 2]]),
+            transport_mode=r5py.TransportMode.TRANSIT,
+            departure_time=datetime.datetime(2023, 4, 25, 15, 30),
+            distance=12.67,
+            travel_time=datetime.timedelta(minutes=10),
+            wait_time=datetime.timedelta(minutes=2),
+            geometry=shapely.LineString([[0, 0], [1, 1], [2, 2]]),
         )
         assert (
             repr(trip_leg)
@@ -96,13 +95,17 @@ class TestTripLeg:
 
     def test_as_table_row(self):
         trip_leg = r5py.r5.trip_leg.TripLeg(
-            r5py.TransportMode.TRANSIT,
-            datetime.datetime(2023, 4, 25, 15, 30),
-            12.67,
-            datetime.timedelta(minutes=10),
-            datetime.timedelta(minutes=2),
-            "48A",
-            shapely.LineString([[0, 0], [1, 1], [2, 2]]),
+            transport_mode=r5py.TransportMode.TRANSIT,
+            departure_time=datetime.datetime(2023, 4, 25, 15, 30),
+            distance=12.67,
+            travel_time=datetime.timedelta(minutes=10),
+            wait_time=datetime.timedelta(minutes=2),
+            feed="GTFS",
+            agency_id="HSR",
+            route_id="48A",
+            start_stop_id="20302",
+            end_stop_id="18803",
+            geometry=shapely.LineString([[0, 0], [1, 1], [2, 2]]),
         )
         assert trip_leg.as_table_row() == [
             r5py.TransportMode.TRANSIT,
@@ -110,7 +113,11 @@ class TestTripLeg:
             12.67,
             datetime.timedelta(minutes=10),
             datetime.timedelta(minutes=2),
+            "GTFS",
+            "HSR",
             "48A",
+            "20302",
+            "18803",
             shapely.LineString([[0, 0], [1, 1], [2, 2]]),
         ]
 

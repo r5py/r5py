@@ -127,11 +127,7 @@ class TestDetailedItinerariesComputerInputValidation:
             destinations=destinations,
             departure=departure_datetime,
         )
-        with pytest.warns(
-            RuntimeWarning,
-            match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`",
-        ):
-            _ = detailed_itineraries_computer_computer.compute_travel_details()
+        _ = detailed_itineraries_computer_computer.compute_travel_details()
 
     def test_try_to_route_without_origins(
         self,
@@ -533,14 +529,7 @@ class TestDetailedItinerariesComputer:
             ),  # using old default for simplicity
             transport_modes=[transport_mode],
         )
-        if transport_mode == r5py.TransportMode.TRANSIT:
-            with pytest.warns(
-                RuntimeWarning,
-                match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`",
-            ):
-                travel_details = detailed_itineraries_computer.compute_travel_details()
-        else:
-            travel_details = detailed_itineraries_computer.compute_travel_details()
+        travel_details = detailed_itineraries_computer.compute_travel_details()
 
         travel_details.travel_time = travel_details.travel_time.apply(
             lambda t: t.total_seconds()
@@ -551,6 +540,7 @@ class TestDetailedItinerariesComputer:
         travel_details.transport_mode = travel_details.transport_mode.apply(
             lambda t: t.value
         )
+        travel_details["departure_time"] = travel_details["departure_time"].astype("datetime64[ns]")
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
 

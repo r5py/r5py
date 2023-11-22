@@ -232,13 +232,10 @@ With this in mind, *r5py* does not attempt to compute the distance of public
 transport segments if `SAVE_SHAPES = false`, as distances would be very crude
 approximations, only. Instead it reports `NaN`/`None`.
 
-The [Digital Geography
-Lab](https://www.helsinki.fi/en/researchgroups/digital-geography-lab) maintains
-a patched version of R⁵ in its [GitHub
-repositories](https://github.com/DigitalGeographyLab/r5/releases). If you want
-to refrain from compiling your own R⁵ jar, but still would like to use detailed
-geometries of public transport routes, follow the instructions in [Advanced
-use](advanced-use.md#use-a-custom-installation-of-r⁵).
+R⁵py ships with a version of R⁵ that has been patched to retain geometries.
+Unless you use a [custom R⁵
+jar](advanced-use.md#use-a-custom-installation-of-r⁵), you should not be
+bothered by this.
 :::
 
 

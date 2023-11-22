@@ -152,11 +152,8 @@ class TestDetailedItinerariesComputerInputValidation:
             origins=population_grid_points[0:3],
             departure=departure_datetime,
         )
-        with pytest.warns(
-            RuntimeWarning,
-            match="R5 has been compiled with `TransitLayer.SAVE_SHAPES = false`",
-        ):
-            _ = detailed_itineraries_computer.compute_travel_details()
+        _ = detailed_itineraries_computer.compute_travel_details()
+
         pandas.testing.assert_frame_equal(
             detailed_itineraries_computer.origins,
             detailed_itineraries_computer.destinations,

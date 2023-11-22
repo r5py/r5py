@@ -156,7 +156,7 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
             )
             od_matrix = pandas.concat(
                 [matrix.astype(matrices[0].dtypes) for matrix in matrices],
-                ignore_index=True
+                ignore_index=True,
             )
 
         od_matrix = geopandas.GeoDataFrame(od_matrix, crs=self._origins_crs)

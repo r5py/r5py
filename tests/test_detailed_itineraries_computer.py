@@ -537,7 +537,9 @@ class TestDetailedItinerariesComputer:
         travel_details.transport_mode = travel_details.transport_mode.apply(
             lambda t: t.value
         )
-        travel_details["departure_time"] = travel_details["departure_time"].astype("datetime64[ns]")
+        travel_details["departure_time"] = travel_details["departure_time"].astype(
+            "datetime64[ns]"
+        )
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
 

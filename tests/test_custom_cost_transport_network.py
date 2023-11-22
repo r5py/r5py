@@ -17,11 +17,58 @@ import r5py.sampledata.helsinki
 import com.conveyal.r5
 
 
-# Create a custom cost test data
-
-
 class Test_CustomCostTransportNetwork:
     """Test the CustomCostTransportNetwork and custom cost related logic."""
+
+    # unify routing for tests, scope function so that the routing results aren't cached
+    @pytest.fixture(scope="function")
+    def custom_cost_routing_results(
+        self,
+        routing_computer_class,
+        origin_point_factory,
+        multiple_destination_points,
+        custom_cost_transport_network_selector,
+        custom_cost_transport_network_zero_values,
+        transport_mode,
+    ):
+        travel_time_matrix_computer_with_custom_values = routing_computer_class(
+            custom_cost_transport_network_selector,
+            origins=origin_point_factory,
+            destinations=multiple_destination_points,
+            transport_modes=[transport_mode],
+        )
+
+        travel_time_matrix_computer_with_zero_values = routing_computer_class(
+            custom_cost_transport_network_zero_values,
+            origins=origin_point_factory,
+            destinations=multiple_destination_points,
+            transport_modes=[transport_mode],
+        )
+
+        if issubclass(routing_computer_class, DetailedItinerariesComputer):
+            # DetailedItinerariesComputer logic
+            custom_cost_values_router_results = (
+                travel_time_matrix_computer_with_custom_values.compute_travel_details()
+            )
+            zero_cost_values_router_results = (
+                travel_time_matrix_computer_with_zero_values.compute_travel_details()
+            )
+        else:
+            # TravelTimeMatrixComputer logic
+            custom_cost_values_router_results = (
+                travel_time_matrix_computer_with_custom_values.compute_travel_times()
+            )
+            zero_cost_values_router_results = (
+                travel_time_matrix_computer_with_zero_values.compute_travel_times()
+            )
+
+        assert not custom_cost_values_router_results.empty
+        assert not zero_cost_values_router_results.empty
+
+        # Return a tuple or a dict with the results
+        yield custom_cost_values_router_results, zero_cost_values_router_results
+        del custom_cost_values_router_results
+        del zero_cost_values_router_results
 
     # check that correct r5 is being used with Green Paths 2 patch, which supports custom costs
     @pytest.mark.skipif(
@@ -30,8 +77,6 @@ class Test_CustomCostTransportNetwork:
     )
     def test_correct_version_of_r5(self):
         assert r5_supports_custom_costs()
-
-    # test conversions
 
     @pytest.mark.skipif(
         r5_supports_custom_costs() is False,
@@ -58,9 +103,9 @@ class Test_CustomCostTransportNetwork:
             custom_cost_instance, com.conveyal.r5.rastercost.CustomCostField
         )
         assert custom_cost_instance.getDisplayKey() == "test_name"
-        assert custom_cost_instance.sensitivityCoefficient == 1.3
+        assert custom_cost_instance.getSensitivityCoefficient() == 1.3
         assert custom_cost_instance.getDisplayValue(12345) == 1.0
-        assert custom_cost_instance.customCostMap.isEmpty() == False
+        assert custom_cost_instance.getCustomCostFactors().isEmpty() == False
 
     @pytest.mark.skipif(
         r5_supports_custom_costs() is False,
@@ -85,7 +130,7 @@ class Test_CustomCostTransportNetwork:
             com.conveyal.r5.transit.TransportNetwork,
         )
 
-    # test custom cost transport network initialisation and validation
+    # TEST CUSTOM COST TRANSPORT NETWORK INITIALIZATION AND VALIDATION
 
     @pytest.mark.parametrize(
         "names, sensitivities, custom_cost_datas",
@@ -169,18 +214,18 @@ class Test_CustomCostTransportNetwork:
             else:
                 raise
 
-    # custom cost routing tests
+    # TEST CUSTOM COST ROUTING
 
     @pytest.mark.parametrize(
         "routing_computer_class",
         [TravelTimeMatrixComputer, DetailedItinerariesComputer],
     )
     @pytest.mark.parametrize(
-        "origin_point_factory", ["single", "multiple"], indirect=True
+        "origin_point_factory", ["single_point", "multiple_points"], indirect=True
     )
     @pytest.mark.parametrize(
-        "custom_cost_transport_network_factory",
-        ["single", "negative", "multiple"],
+        "custom_cost_transport_network_selector",
+        ["single_cost", "negative_cost", "multiple_cost"],
         indirect=True,
     )
     @pytest.mark.parametrize(
@@ -190,54 +235,22 @@ class Test_CustomCostTransportNetwork:
         r5_supports_custom_costs() is False,
         reason="R5 version does not support custom costs",
     )
-    def test_custom_cost_routing_one_to_many(
+    def test_custom_cost_routing(
         self,
+        custom_cost_routing_results,
         routing_computer_class,
-        transport_mode,
-        origin_point_factory,
-        multiple_destination_points,
-        custom_cost_transport_network_factory,
-        custom_cost_transport_network_zero_values,
+        custom_cost_transport_network_selector,
     ):
         """Test custom cost routing with both: TravelTimeMatrixComputer and DetailedItinerariesComputer.
         Test TravelTimeMatrixComputer with one-to-many and many-to-many OD-pairs and DetailedItinerariesComputer with one-to-one routing.
         Compare all results with custom cost values and zero custom cost values to verify the applied custom costs during routing.
         Test both active transport modes: walking and cycling.
         """
-        travel_time_matrix_computer_with_custom_values = routing_computer_class(
-            custom_cost_transport_network_factory,
-            origins=origin_point_factory,
-            destinations=multiple_destination_points,
-            transport_modes=[transport_mode],
-        )
-
-        travel_time_matrix_computer_with_zero_values = routing_computer_class(
-            custom_cost_transport_network_zero_values,
-            origins=origin_point_factory,
-            destinations=multiple_destination_points,
-            transport_modes=[transport_mode],
-        )
-
-        # different names with different routing computers
-        if issubclass(routing_computer_class, DetailedItinerariesComputer):
-            # using DetailedItinerariesComputer
-            custom_cost_values_router_results = (
-                travel_time_matrix_computer_with_custom_values.compute_travel_details()
-            )
-            zero_cost_values_router_results = (
-                travel_time_matrix_computer_with_zero_values.compute_travel_details()
-            )
-        else:
-            # using TravelTimeMatrixComputer
-            custom_cost_values_router_results = (
-                travel_time_matrix_computer_with_custom_values.compute_travel_times()
-            )
-            zero_cost_values_router_results = (
-                travel_time_matrix_computer_with_zero_values.compute_travel_times()
-            )
-
-        assert not custom_cost_values_router_results.empty
-        assert not zero_cost_values_router_results.empty
+        # use the results from the fixture
+        (
+            custom_cost_values_router_results,
+            zero_cost_values_router_results,
+        ) = custom_cost_routing_results
 
         travel_times_with_custom_costs = list(
             custom_cost_values_router_results["travel_time"].values
@@ -248,7 +261,7 @@ class Test_CustomCostTransportNetwork:
 
         # check that NEGATIVE custom costs are applied correctly
         # i.e. that all the travel times are SHORTER
-        if custom_cost_transport_network_factory == "negative":
+        if custom_cost_transport_network_selector == "negative_cost":
             assert all(
                 a < b
                 for a, b in zip(
@@ -256,8 +269,8 @@ class Test_CustomCostTransportNetwork:
                 )
             )
         elif (
-            custom_cost_transport_network_factory == "single"
-            or custom_cost_transport_network_factory == "multiple"
+            custom_cost_transport_network_selector == "single_cost"
+            or custom_cost_transport_network_selector == "multiple_cost"
         ):
             # check that POSITIVE custom costs are applied correctly
             # i.e. that all the travel times are LONGER
@@ -268,6 +281,47 @@ class Test_CustomCostTransportNetwork:
                 )
             )
 
+        # for detailed itineraries, check also that the geometries are different
+        if issubclass(routing_computer_class, DetailedItinerariesComputer):
+            osmids_with_custom_costs = list(
+                custom_cost_values_router_results["geometry"].values
+            )
+            osmids_with_zero_costs = list(
+                zero_cost_values_router_results["geometry"].values
+            )
+            assert osmids_with_custom_costs != osmids_with_zero_costs
+
+    @pytest.mark.parametrize(
+        "routing_computer_class",
+        [TravelTimeMatrixComputer, DetailedItinerariesComputer],
+    )
+    @pytest.mark.parametrize(
+        "origin_point_factory", ["single_point", "multiple_points"], indirect=True
+    )
+    @pytest.mark.parametrize(
+        "custom_cost_transport_network_selector",
+        ["single_cost", "negative_cost", "multiple_cost"],
+        indirect=True,
+    )
+    @pytest.mark.parametrize(
+        "transport_mode", [r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE]
+    )
+    @pytest.mark.skipif(
+        r5_supports_custom_costs() is False,
+        reason="R5 version does not support custom costs",
+    )
+    def test_custom_cost_routing_correct_osmids(
+        self,
+        custom_cost_routing_results,
+        origin_point_factory,
+        multiple_destination_points,
+    ):
+        """Test that the custom cost routing results contain correct osmids."""
+        (
+            custom_cost_values_router_results,
+            zero_cost_values_router_results,
+        ) = custom_cost_routing_results
+        # use the results from the fixture
         osmids_with_custom_costs = custom_cost_values_router_results["osm_ids"].values
         osmids_with_zero_costs = zero_cost_values_router_results["osm_ids"].values
 
@@ -306,12 +360,123 @@ class Test_CustomCostTransportNetwork:
             for j in range(i + 1, len(osmids_with_custom_costs_pylist))
         )
 
-        # for detailed itineraries, check also that the geometries are different
-        if issubclass(routing_computer_class, DetailedItinerariesComputer):
-            osmids_with_custom_costs = list(
-                custom_cost_values_router_results["geometry"].values
+    @pytest.mark.parametrize(
+        "method_name",
+        ["get_base_travel_times", "get_custom_cost_additional_travel_times"],
+    )
+    @pytest.mark.parametrize(
+        "routing_computer_class",
+        [TravelTimeMatrixComputer, DetailedItinerariesComputer],
+    )
+    # only test multiple points for not having excessive amount of tests, single point is tested in previous tests
+    @pytest.mark.parametrize("origin_point_factory", ["multiple_points"], indirect=True)
+    @pytest.mark.parametrize(
+        "custom_cost_transport_network_selector",
+        ["single_cost", "negative_cost", "multiple_cost"],
+        indirect=True,
+    )
+    # test only walking for not having excessive amount of tests
+    # travel modes are tested in previous tests
+    @pytest.mark.parametrize("transport_mode", [r5py.TransportMode.WALK])
+    @pytest.mark.parametrize(
+        "osmids", [[], [1000813187, 1000813188], ["1000813187", "1000813188"]]
+    )
+    @pytest.mark.parametrize("merged", [True, False])
+    @pytest.mark.skipif(
+        r5_supports_custom_costs() is False,
+        reason="R5 version does not support custom costs",
+    )
+    def test_custom_cost_routing_base_costs_and_custom_costs(
+        self,
+        method_name,
+        custom_cost_transport_network_selector,
+        custom_cost_routing_results,
+        osmids,
+        merged,
+    ):
+        """Test base travel times and custom cost additional travel times are valid."""
+        # route with custom costs
+        _, _ = custom_cost_routing_results
+
+        if method_name == "get_base_travel_times":
+            base_travel_times = (
+                custom_cost_transport_network_selector.get_base_travel_times()
             )
-            osmids_with_zero_costs = list(
-                zero_cost_values_router_results["geometry"].values
+        elif method_name == "get_custom_cost_additional_travel_times":
+            base_travel_times = (
+                custom_cost_transport_network_selector.get_custom_cost_additional_travel_times()
             )
-            assert osmids_with_custom_costs != osmids_with_zero_costs
+
+        # check for correct types
+        assert isinstance(base_travel_times, list)
+        assert isinstance(base_travel_times[0], tuple)
+        assert isinstance(base_travel_times[0][0], str)
+        assert isinstance(base_travel_times[0][1], dict)
+
+        # set to variables for easier reading
+        FIRST_CUSTOM_COST_NAME = base_travel_times[0][0]
+        SECOND_CUSTOM_COST_NAME = (
+            base_travel_times[1][0] if len(base_travel_times) >= 2 else None
+        )
+        FIRST_CUSTOM_COST_VALUES = base_travel_times[0][1]
+        SECOND_CUSTOM_COST_VALUES = (
+            base_travel_times[1][1] if len(base_travel_times) >= 2 else None
+        )
+
+        # see that the expected osmids are to be found in the results
+        # check values, osmid filtering and merging results
+        if osmids:
+            for osmid in osmids:
+                assert str(osmid) in FIRST_CUSTOM_COST_VALUES
+                if SECOND_CUSTOM_COST_VALUES:
+                    assert str(osmid) in SECOND_CUSTOM_COST_VALUES
+
+        if (
+            custom_cost_transport_network_selector == "single_cost"
+            or custom_cost_transport_network_selector == "negative_cost"
+        ):
+            # should have one tuple
+            assert len(base_travel_times) == 1
+            # check the name of 1st custom cost
+            if merged:
+                assert FIRST_CUSTOM_COST_NAME == "merged_custom_costs:_random_cost_1"
+            else:
+                assert FIRST_CUSTOM_COST_NAME == "random_cost_1"
+            # check that has osmids
+            assert len(list(FIRST_CUSTOM_COST_VALUES.items())) > 0
+            assert len(list(FIRST_CUSTOM_COST_VALUES.keys())) > 0
+            assert len(list(FIRST_CUSTOM_COST_VALUES.values())) > 0
+
+        elif custom_cost_transport_network_selector == "multiple_cost":
+            if merged:
+                # should have one merged tuple
+                assert len(base_travel_times) == 1
+                # name should be exactly this
+                assert (
+                    FIRST_CUSTOM_COST_NAME
+                    == "merged_custom_costs:_random_cost_1_random_cost_2"
+                )
+                # check that has osmids
+                assert len(FIRST_CUSTOM_COST_VALUES) > 0
+            # should have two tuples
+            elif not merged:
+                assert len(base_travel_times) == 2
+                assert FIRST_CUSTOM_COST_NAME == "random_cost_1"
+                assert SECOND_CUSTOM_COST_NAME == "random_cost_2"
+                # check that both custom costs have osmids
+                assert len(FIRST_CUSTOM_COST_VALUES) > 0
+                assert len(SECOND_CUSTOM_COST_VALUES) > 0
+                if method_name == "get_base_travel_times":
+                    # check that the osmids are same for base traveltimes
+                    for osmid, base_travel_time in FIRST_CUSTOM_COST_VALUES.items():
+                        # check that if a value with same osmid exists in the other custom cost
+                        # it the same as the value in the first custom cost
+                        # for base travel times should be same for edges
+                        if osmid in SECOND_CUSTOM_COST_VALUES:
+                            assert base_travel_time == SECOND_CUSTOM_COST_VALUES[osmid]
+                            # check osmid type
+                            assert isinstance(osmid, int)
+                            assert str(osmid).isdigit()
+                elif method_name == "get_custom_cost_additional_travel_times":
+                    # check that the osmids are different for addition costs
+                    assert FIRST_CUSTOM_COST_VALUES != SECOND_CUSTOM_COST_VALUES

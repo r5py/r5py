@@ -379,29 +379,29 @@ def walking_times_not_snapped():
 
 @pytest.fixture(scope="session")
 def custom_cost_test_values():
-    return {12345: 1.0, 67890: 1.5, 54321: 1.25, 98765: 1.1}
+    yield {12345: 1.0, 67890: 1.5, 54321: 1.25, 98765: 1.1}
 
 
 @pytest.fixture(scope="session")
 def custom_cost_hashmap(custom_cost_test_values):
-    return convert_python_dict_to_java_hashmap(custom_cost_test_values)
+    yield convert_python_dict_to_java_hashmap(custom_cost_test_values)
 
 
 @pytest.fixture(scope="session")
 def custom_cost_instance(custom_cost_hashmap):
-    return convert_custom_cost_data_to_custom_cost_instance(
+    yield convert_custom_cost_data_to_custom_cost_instance(
         "test_name", 1.3, custom_cost_hashmap
     )
 
 
 @pytest.fixture(scope="session")
 def custom_cost_list(custom_cost_instance):
-    return convert_custom_cost_instances_to_java_list(custom_cost_instance)
+    yield convert_custom_cost_instances_to_java_list(custom_cost_instance)
 
 
 @pytest.fixture(scope="session")
 def custom_cost_transport_network(custom_cost_transport_network_from_test_files):
-    return custom_cost_transport_network_from_test_files
+    yield custom_cost_transport_network_from_test_files
 
 
 @pytest.fixture(scope="session")
@@ -434,14 +434,14 @@ def read_osmid_values(csv_file_path, value_generator):
 # use Helsinki osmid's so that the custom cost values (osmids) are found in the transport network
 @pytest.fixture(scope="session")
 def osmid_value_dict():
-    return read_osmid_values(
+    yield read_osmid_values(
         "tests/data/test_osm_data_custom_cost_kantakaupunki.csv", lambda v: float(v)
     )
 
 
 @pytest.fixture(scope="session")
 def osmid_negative_value_dict():
-    return read_osmid_values(
+    yield read_osmid_values(
         "tests/data/test_osm_data_negative_custom_cost_kantakaupunki.csv",
         lambda v: -abs(float(v)),
     )
@@ -450,7 +450,7 @@ def osmid_negative_value_dict():
 # run the generator function with a lambda that returns 0.0 to all
 @pytest.fixture(scope="session")
 def osmid_zero_dict():
-    return read_osmid_values(
+    yield read_osmid_values(
         "tests/data/test_osm_data_custom_cost_kantakaupunki.csv", lambda v: 0.0
     )
 
@@ -461,9 +461,9 @@ def single_cost_custom_cost_transport_network(osmid_value_dict):
 
     # create a network with random values as custom costs
     custom_cost_transport_network = r5py.CustomCostTransportNetwork(
-        r5py.sampledata.helsinki.osm_pbf, ["random_cost"], [1.2], [osmid_value_dict]
+        r5py.sampledata.helsinki.osm_pbf, ["random_cost_1"], [1.2], [osmid_value_dict]
     )
-    return custom_cost_transport_network
+    yield custom_cost_transport_network
 
 
 @pytest.fixture(scope="session")
@@ -473,11 +473,11 @@ def single_cost_negative_custom_cost_transport_network(osmid_negative_value_dict
     # create a network with random values as custom costs
     custom_cost_transport_network = r5py.CustomCostTransportNetwork(
         r5py.sampledata.helsinki.osm_pbf,
-        ["random_cost"],
+        ["random_cost_1"],
         [1.2],
         [osmid_negative_value_dict],
     )
-    return custom_cost_transport_network
+    yield custom_cost_transport_network
 
 
 @pytest.fixture(scope="session")
@@ -491,7 +491,7 @@ def multi_cost_custom_cost_transport_network(osmid_value_dict):
         [1.1, 1.2],
         [osmid_value_dict, osmid_value_dict],
     )
-    return custom_cost_transport_network
+    yield custom_cost_transport_network
 
 
 @pytest.fixture(scope="session")
@@ -502,12 +502,12 @@ def custom_cost_transport_network_zero_values(osmid_zero_dict):
     zero_custom_cost_transport_network = r5py.CustomCostTransportNetwork(
         r5py.sampledata.helsinki.osm_pbf, ["test_name"], [1.3], [osmid_zero_dict]
     )
-    return zero_custom_cost_transport_network
+    yield zero_custom_cost_transport_network
 
 
 @pytest.fixture(scope="session")
 def origin_point_custom_cost():
-    return geopandas.GeoDataFrame(
+    yield geopandas.GeoDataFrame(
         {"id": [1], "geometry": [shapely.Point(24.94222, 60.17166)]},
         crs="EPSG:4326",
     )
@@ -515,7 +515,7 @@ def origin_point_custom_cost():
 
 @pytest.fixture(scope="session")
 def multiple_origin_points():
-    return geopandas.GeoDataFrame(
+    yield geopandas.GeoDataFrame(
         {
             "id": [1, 2, 3, 4],
             "geometry": [
@@ -531,7 +531,7 @@ def multiple_origin_points():
 
 @pytest.fixture(scope="session")
 def multiple_destination_points():
-    return geopandas.GeoDataFrame(
+    yield geopandas.GeoDataFrame(
         {
             "id": [1, 2, 3],
             "geometry": [
@@ -548,24 +548,24 @@ def multiple_destination_points():
 # used to test one-to-many and many-to-many routing
 @pytest.fixture
 def origin_point_factory(request, origin_point_custom_cost, multiple_origin_points):
-    if request.param == "single":
-        return origin_point_custom_cost
-    elif request.param == "multiple":
-        return multiple_origin_points
+    if request.param == "single_point":
+        yield origin_point_custom_cost
+    elif request.param == "multiple_points":
+        yield multiple_origin_points
 
 
 # fixture factory for shifting between different OD-pairs
 # used to test one-to-many and many-to-many routing
 @pytest.fixture
-def custom_cost_transport_network_factory(
+def custom_cost_transport_network_selector(
     request,
     single_cost_custom_cost_transport_network,
     single_cost_negative_custom_cost_transport_network,
     multi_cost_custom_cost_transport_network,
 ):
-    if request.param == "single":
-        return single_cost_custom_cost_transport_network
-    elif request.param == "negative":
-        return single_cost_negative_custom_cost_transport_network
-    elif request.param == "multiple":
-        return multi_cost_custom_cost_transport_network
+    if request.param == "single_cost":
+        yield single_cost_custom_cost_transport_network
+    elif request.param == "negative_cost":
+        yield single_cost_negative_custom_cost_transport_network
+    elif request.param == "multiple_cost":
+        yield multi_cost_custom_cost_transport_network

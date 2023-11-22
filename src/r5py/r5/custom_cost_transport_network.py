@@ -4,13 +4,15 @@
 import com.conveyal.r5
 from r5py.r5.transport_network import TransportNetwork
 from r5py.util.custom_cost_conversions import (
-    convert_custom_cost_data_to_custom_cost_instance,
-    convert_custom_cost_instances_to_java_list,
-    convert_python_dict_to_java_hashmap,
+    convert_java_hashmap_to_python_dict,
+    convert_python_custom_costs_to_java_custom_costs,
 )
-from r5py.util.exceptions import CustomCostConversionError, CustomCostDataError
+from r5py.util.exceptions import CustomCostDataError
+from r5py.util.jvm import start_jvm
 
 __all__ = ["CustomCostTransportNetwork"]
+
+start_jvm()
 
 
 def r5_supports_custom_costs():
@@ -115,41 +117,127 @@ class CustomCostTransportNetwork(TransportNetwork):
         )
         transport_network.streetLayer.vertexStore = vertex_store
         transport_network.streetLayer.edgeStore = edge_store
-        converted_custom_cost_data = (
-            self.convert_python_custom_costs_to_java_custom_costs()
+        converted_custom_cost_data = convert_python_custom_costs_to_java_custom_costs(
+            self.names, self.sensitivities, self.custom_cost_datas
         )
         transport_network.streetLayer.edgeStore.costFields = converted_custom_cost_data
+        self._transport_network = transport_network
         return transport_network
 
-    # used to automatically do the conversion from python to java custom cost data
-    def convert_python_custom_costs_to_java_custom_costs(self):
-        """Convert custom cost python dict items into the Java HashMap (Long, Double) format.
+    def _fetch_network_custom_cost_travel_time_product(
+        self, method_name, osmids=[], merged=False
+    ):
+        """
+        Retrieve custom cost travel time related product hashmap per osmid from the network edges.
+        Ensure that this method is executed post-routing.
+        Should not be called directly, use get_base_travel_times or get_additional_travel_times instead.
+
+        Arguments:
+        ----------
+        method_name : str
+            name of the method to be called from the custom cost transport network
+            this can be either: getAdditionalTravelTimes or getTravelTimes
+            getAdditionalTravelTimes returns the additional travel times from the custom cost instances
+            getTravelTimes returns the base travel times from the custom cost instances
+            both methods return a Java HashMap with Osmid as key and travel time as value
+
+            note: in getTravelTimes the value is actual seconds but in getAdditionalTravelTimes
+            the value more of a cost than actual seconds
+
+        osmids : List[str | int] (optional)
+            list of osmids to get travel times for. If not provided, return all travel times.
+
+        merged : bool, default False
+            define if the base travel times should be merged into a single dict or not
 
         Returns:
         --------
-        custom_cost_list: jpype.java.util.List
-            java list of custom cost instance(s)
+        travel_times_per_custom_cost: List[Tuple[str, Dict[str, int]]]
+            list of tuples of custom cost name and travel times per custom cost routing
+
         """
         try:
-            custom_cost_instances = []
-            for name, sensitivity, custom_cost in zip(
-                self.names, self.sensitivities, self.custom_cost_datas
-            ):
-                # convert custom cost item from python dict to java hashmap
-                java_hashmap_custom_cost = convert_python_dict_to_java_hashmap(
-                    custom_cost
-                )
-                # convert custom cost params to java customCostField instance
-                custom_cost_instance = convert_custom_cost_data_to_custom_cost_instance(
-                    name, sensitivity, java_hashmap_custom_cost
-                )
-                custom_cost_instances.append(custom_cost_instance)
-            # convert all java custom cost instances to java list
-            custom_cost_list = convert_custom_cost_instances_to_java_list(
-                custom_cost_instances
+            cost_fields_list = list(
+                self._transport_network.streetLayer.edgeStore.costFields
             )
-            return custom_cost_list
+            travel_times_per_custom_cost = [
+                (
+                    str(cost_field.getDisplayKey()),
+                    convert_java_hashmap_to_python_dict(
+                        getattr(cost_field, method_name)()
+                    ),
+                )
+                for cost_field in cost_fields_list
+            ]
+
+            # if osmids provided, filter the osm dict value result to only include the osmids provided
+            if osmids:
+                travel_times_per_custom_cost = [
+                    (
+                        str(display_key),
+                        {
+                            str(osmid): osmid_dict[str(osmid)]
+                            for osmid in osmids
+                            if str(osmid) in osmid_dict.keys()
+                        }
+                    )
+                    for display_key, osmid_dict in travel_times_per_custom_cost
+                ]
+
+            # if merged flag is True, merge all results into a single dict
+            if merged:
+                merged_name = "merged_custom_costs:"
+                merged_travel_times = {}
+                for name, base_travel_times in travel_times_per_custom_cost:
+                    merged_travel_times.update(base_travel_times)
+                    merged_name+= f"_{name}"
+                # return all base travel times merged in a single dict in a list
+                return [(merged_name, merged_travel_times)]
+            # return times per custom cost routing
+            return travel_times_per_custom_cost
         except:
-            raise CustomCostConversionError(
-                "Failed to convert python custom cost data to java custom cost data. Custom_cost_data must be provided for custom cost transport network"
+            raise CustomCostDataError(
+                "Failed to get base travel times from custom cost transport network."
             )
+
+    # kept two similar getters for intuitive abstraction, naming and clarity for user
+
+    def get_base_travel_times(self, osmids=[], merged=False):
+        """Get base travel times from edges used during routing from custom costs instances.
+
+        Arguments:
+        ----------
+        osmids : List[str | int] (optional)
+            list of osmids to get base travel times for. If not provided, return all base travel times.
+        merged : bool, default False
+            define if the base travel times should be merged into a single dict or not
+
+        Returns:
+        --------
+        List[Tuple[str, Dict[str, int]]]
+            list of tuples of custom cost name and base travel times
+            each tuple represents one custom cost, if merged is True, only one tuple is returned
+        """
+        return self._fetch_network_custom_cost_travel_time_product(
+            "getBaseTraveltimes", osmids, merged
+        )
+
+    def get_custom_cost_additional_travel_times(self, osmids=[], merged=False):
+        """Get custom cost addition travel times from edges used during routing from custom costs instances.
+
+        Arguments:
+        ----------
+        osmids : List[str] (optional)
+            list of osmids to get additional custom costs for. If not provided, return all base travel times.
+        merged : bool, default False
+            define if the base travel times should be merged into a single dict or not
+
+        Returns:
+        --------
+        List[Tuple[str, Dict[str, int]]]
+            list of tuples of custom cost name and additional travel timecosts
+            each tuple represents one custom cost, if merged is True, only one tuple is returned
+        """
+        return self._fetch_network_custom_cost_travel_time_product(
+            "getcustomCostAdditionalTraveltimes", osmids, merged
+        )

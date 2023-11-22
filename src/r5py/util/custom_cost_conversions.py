@@ -2,6 +2,7 @@ import jpype
 import jpype.imports
 
 import com.conveyal.r5
+from r5py.util.exceptions import CustomCostConversionError
 
 
 def convert_python_dict_to_java_hashmap(custom_cost_data):
@@ -72,3 +73,57 @@ def convert_custom_cost_instances_to_java_list(custom_cost_instances):
     CostField = jpype.JClass("com.conveyal.r5.rastercost.CustomCostField")
     custom_cost_java_array = jpype.JArray(CostField)(custom_cost_instances)
     return CostField.wrapToEdgeStoreCostFieldsList(custom_cost_java_array)
+
+
+def convert_java_hashmap_to_python_dict(hashmap):
+    """
+    Convert Java HashMap to Python dict.
+
+    Arguments:
+    ----------
+    hashmap : jpype.java.util.HashMap
+        Java HashMap to be converted to Python dict
+
+    Returns:
+    --------
+    base_travel_time_values : Dict[str, float]
+        Python dict with str keys and float values
+    """
+    base_travel_time_values = {}
+    for key, value in hashmap.entrySet().toArray():
+        base_travel_time_values[str(key)] = float(value)
+    return base_travel_time_values
+
+
+def convert_python_custom_costs_to_java_custom_costs(
+    names, sensitivities, custom_cost_datas
+):
+    """
+    Convert custom cost python dict items into the Java HashMap (Long, Double) format.
+
+    Returns:
+    --------
+    custom_cost_list: jpype.java.util.List
+        java list of custom cost instance(s)
+    """
+    try:
+        custom_cost_instances = []
+        for name, sensitivity, custom_cost in zip(
+            names, sensitivities, custom_cost_datas
+        ):
+            # convert custom cost item from python dict to java hashmap
+            java_hashmap_custom_cost = convert_python_dict_to_java_hashmap(custom_cost)
+            # convert custom cost params to java customCostField instance
+            custom_cost_instance = convert_custom_cost_data_to_custom_cost_instance(
+                name, sensitivity, java_hashmap_custom_cost
+            )
+            custom_cost_instances.append(custom_cost_instance)
+        # convert all java custom cost instances to java list
+        custom_cost_list = convert_custom_cost_instances_to_java_list(
+            custom_cost_instances
+        )
+        return custom_cost_list
+    except:
+        raise CustomCostConversionError(
+            "Failed to convert python custom cost data to java custom cost data. Custom_cost_data must be provided for custom cost transport network"
+        )

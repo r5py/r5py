@@ -4,8 +4,13 @@ build:
     os: ubuntu-22.04
     tools:
         python: "3.11"
-    apt_packages:
-        - default-jre
+#    apt_packages:
+#        - default-jre
+    jobs:
+      post_system_dependencies:
+        - echo "deb http://archive.ubuntu.com/ubuntu/ jammy-proposed restricted main multiverse universe" >> /etc/apt/sources.list
+        - apt-get update
+        - apt-get install -y openjdk-21-jre/jammy-proposed
 
 python:
     install:

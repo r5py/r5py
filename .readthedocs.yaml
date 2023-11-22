@@ -5,7 +5,8 @@ build:
     tools:
         python: "3.11"
     apt_packages:
-        - default-jre
+        #- default-jre
+        - openjdk-21-jre
 
 python:
     install:

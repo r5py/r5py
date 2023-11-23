@@ -132,7 +132,7 @@ class TripLeg:
                 f"{first_point} -> {last_point}"
                 ">"
             )
-        except AttributeError:
+        except (AttributeError, IndexError):
             _repr = f"<{self.__class__.__name__}>"
         return _repr
 

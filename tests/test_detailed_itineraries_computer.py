@@ -532,7 +532,7 @@ class TestDetailedItinerariesComputer:
             lambda t: t.total_seconds()
         )
         travel_details.wait_time = travel_details.wait_time.apply(
-            lambda t: None if t is None else t.total_seconds()
+            lambda t: t.total_seconds()
         )
         travel_details.transport_mode = travel_details.transport_mode.apply(
             lambda t: t.value

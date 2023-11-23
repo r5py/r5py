@@ -567,5 +567,3 @@ class TestDetailedItinerariesComputer:
             check_dtype=False,
             normalize=True,
         )
-
-# just a bogus edit to try to trigger github to re-render the PR diff

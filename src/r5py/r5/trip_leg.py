@@ -33,7 +33,7 @@ class TripLeg:
     def __init__(
         self,
         transport_mode=None,
-        departure_time=numpy.datetime64('NaT'),
+        departure_time=numpy.datetime64("NaT"),
         distance=None,
         travel_time=datetime.timedelta(seconds=0),
         wait_time=datetime.timedelta(seconds=0),

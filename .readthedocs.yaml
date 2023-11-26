@@ -11,6 +11,9 @@ build:
           - update-alternatives --config java
           - which java
 
+conda:
+  environment: ci/python_311_dev.yaml
+
 python:
     install:
         - method: pip

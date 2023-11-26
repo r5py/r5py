@@ -6,6 +6,10 @@ build:
         python: "3.11"
     apt_packages:
         - openjdk-17-jre
+    jobs:
+        post_system_dependencies:
+          - update-alternatives java
+          - which java
 
 python:
     install:

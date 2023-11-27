@@ -4,8 +4,9 @@ build:
     os: ubuntu-22.04
     tools:
         python: "3.11"
-    apt_packages:
-        - openjdk-17-jre
+
+conda:
+    environment: ci/python_311_dev.yaml
 
 python:
     install:

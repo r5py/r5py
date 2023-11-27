@@ -6,8 +6,9 @@ build:
         python: "mambaforge-22.9"
     jobs:
         post_create_environment: 
+          #- source etc/conda/activate.d/openjdk_activate.sh
           - mamba info
-          - mamba list
+          - mamba list --verbose
           - echo $JAVA_HOME
 
 conda:

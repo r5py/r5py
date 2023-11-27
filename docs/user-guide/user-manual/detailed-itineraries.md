@@ -16,20 +16,10 @@ jupytext:
 
 # this cell is hidden from READTHEDOCS output
 # it’s used to
-#    - use a different upstream R5 jar, so we can display the
-#      geometries of public transport routes, and to
 #    - force pandas to show all columns of the (very wide)
 #      result data set
 
-import sys
 import pandas
-
-sys.argv.extend([
-    "--r5-classpath",
-    "https://github.com/DigitalGeographyLab/r5/releases/download/"
-    "v6.9-post16-g1054c1e-20230619/r5-v6.9-post16-g1054c1e-20230619-all.jar"
-])
-
 pandas.set_option("display.max_columns", None)
 ```
 

@@ -9,6 +9,7 @@ build:
           #- source etc/conda/activate.d/openjdk_activate.sh
           - mamba info
           - mamba list --verbose
+          - find /home/docs/checkouts/readthedocs.org/user_builds/r5py/conda/
           - echo $JAVA_HOME
 
 conda:

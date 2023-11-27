@@ -7,8 +7,6 @@ build:
     jobs:
         post_create_environment: 
           #- source etc/conda/activate.d/openjdk_activate.sh
-          - mamba info
-          - mamba list --verbose
           - find /home/docs/checkouts/readthedocs.org/user_builds/r5py/conda/ | grep openjdk
           - cat /home/docs/checkouts/readthedocs.org/user_builds/r5py/conda/*/etc/conda/activate.d/openjdk_activate.sh
           - export JAVA_HOME="${CONDA_PREFIX}/lib/jvm"

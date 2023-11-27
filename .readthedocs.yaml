@@ -11,7 +11,8 @@ build:
           - mamba list --verbose
           - find /home/docs/checkouts/readthedocs.org/user_builds/r5py/conda/ | grep openjdk
           - cat /home/docs/checkouts/readthedocs.org/user_builds/r5py/conda/*/etc/conda/activate.d/openjdk_activate.sh
-          - source /home/docs/checkouts/readthedocs.org/user_builds/r5py/conda/*/etc/conda/activate.d/openjdk_activate.sh
+          - export JAVA_HOME="${CONDA_PREFIX}/lib/jvm"
+          - export JAVA_LD_LIBRARY_PATH="${JAVA_HOME}/lib/server"
           - echo $JAVA_HOME
 
 conda:

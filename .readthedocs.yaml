@@ -5,14 +5,7 @@ build:
     tools:
         python: "3.11"
     apt_packages:
-        - openjdk-17-jre
-    jobs:
-        post_system_dependencies:
-          - update-alternatives --config java
-          - which java
-
-conda:
-  environment: ci/python_311_dev.yaml
+        - default-jre
 
 python:
     install:

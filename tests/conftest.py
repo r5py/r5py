@@ -36,8 +36,10 @@ ORIGINS_INVALID_DUPLICATE_IDS = (
 ORIGINS_VALID_IDS = DATA_DIRECTORY / "test_valid_points_data.geojson"
 SINGLE_VALID_ORIGIN = DATA_DIRECTORY / "test_valid_single_point_data.geojson"
 
-R5_JAR_URL = "https://github.com/conveyal/r5/releases/download/v6.9/r5-v6.9-all.jar"
-R5_JAR_SHA256 = "a7e1c5ff8786a9fb9191073b8f31a6933b862f44b9ff85b2c00a68c85491274d"
+R5_JAR_URL = (
+    "https://github.com/r5py/r5/releases/download/v7.0-r5py/r5-v7.0-r5py-all.jar"
+)
+R5_JAR_SHA256 = "b126b0bf9dbcb3e2e78055fa6ea22159d866bc589c0bbf7bd258f8aca63fcac9"
 R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
 R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
     "14aa2347be79c280e4d0fd3a137fb8f5bf2863261a1e48e1a122df1a52a0f453"

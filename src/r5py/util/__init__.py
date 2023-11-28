@@ -3,6 +3,8 @@
 """Utility functions, e.g., starting a JVM, and accessing configuration."""
 
 from .jvm import start_jvm
+from . import environment  # noqa: F401
+
 from .camel_to_snake_case import camel_to_snake_case
 from .config import Config
 from .contains_gtfs_data import contains_gtfs_data

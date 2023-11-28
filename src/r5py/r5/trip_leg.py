@@ -4,6 +4,11 @@
 """Represent one leg of a trip."""
 
 
+import datetime
+import numpy
+import shapely
+
+
 __all__ = ["TripLeg"]
 
 
@@ -29,12 +34,12 @@ class TripLeg:
     def __init__(
         self,
         transport_mode=None,
-        departure_time=None,
+        departure_time=numpy.datetime64("NaT"),
         distance=None,
-        travel_time=None,
-        wait_time=None,
+        travel_time=datetime.timedelta(seconds=0),
+        wait_time=datetime.timedelta(seconds=0),
         route=None,
-        geometry=None,
+        geometry=shapely.LineString(),
         osm_ids=None,
     ):
         """
@@ -130,7 +135,7 @@ class TripLeg:
                 f"{first_point} -> {last_point}"
                 ">"
             )
-        except AttributeError:
+        except (AttributeError, IndexError):
             _repr = f"<{self.__class__.__name__}>"
         return _repr
 

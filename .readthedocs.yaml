@@ -4,11 +4,6 @@ build:
     os: ubuntu-22.04
     tools:
         python: "mambaforge-22.9"
-    jobs:
-        post_create_environment: 
-         - JAVA_HOME="${CONDA_PREFIX}/lib/jvm"
-         - JAVA_LD_LIBRARY_PATH="${JAVA_HOME}/lib/server"
-         - echo $JAVA_HOME
 
 conda:
     environment: ci/python_311_dev.yaml

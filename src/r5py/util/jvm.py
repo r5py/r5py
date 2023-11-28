@@ -26,6 +26,14 @@ def start_jvm():
     line and configuration options.
     """
     if not jpype.isJVMStarted():
+        # sometimes (e.g., on readthedocs runners using a conda environment),
+        # JAVA_HOME is left undefined, and jpype cannot find the JVM path
+        if (
+            "JAVA_HOME" not in os.environ
+            and "CONDA_PREFIX" in os.environ
+        ):
+            os.environ["JAVA_HOME"] = f"{os.environ['CONDA_PREFIX']}/lib/jvm"
+
         # preload signal handling; this, among other things, prevents some of
         # the warning messages we have been seeing
         # (cf. https://stackoverflow.com/q/15790403 and

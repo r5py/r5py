@@ -114,7 +114,8 @@ Development Kit* is available, see instructions below.
 ### Java Development Kit
 
 *R5py* relies on one notable external dependency: a Java environment.
-To interface with R⁵, *r5py* requires a *Java Development Kit* (jdk).
+To interface with R⁵, *r5py* requires a *Java Development Kit* (jdk), version 21
+or later.
 
 If you installed *r5py* using `conda` or `mamba`, an appropriate version of
 OpenJDK has been installed as a dependency, and you are ready to go. If you used

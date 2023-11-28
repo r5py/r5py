@@ -150,11 +150,12 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
             verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
             n_jobs=self.NUM_THREADS,
         ) as parallel:
+            matrices = parallel(
+                joblib.delayed(self._travel_details_per_od_pair)(from_id, to_id)
+                for _, (from_id, to_id) in self.od_pairs.iterrows()
+            )
             od_matrix = pandas.concat(
-                parallel(
-                    joblib.delayed(self._travel_details_per_od_pair)(from_id, to_id)
-                    for _, (from_id, to_id) in self.od_pairs.iterrows()
-                ),
+                [matrix.astype(matrices[0].dtypes) for matrix in matrices],
                 ignore_index=True,
             )
 

@@ -59,7 +59,7 @@ jobs:
         uses: actions/setup-java@v3
         with: 
           distribution: temurin
-          java-version: 18
+          java-version: 21
 
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2.2.0
@@ -74,7 +74,7 @@ jobs:
 
       - name: Install JVM (from conda-forge)
         if: ${{ matrix.jdk_from == 'conda-forge' }}
-        run: conda install 'openjdk>=11'
+        run: conda install 'openjdk>=21'
 
       - name: Install test dependencies
         run: |

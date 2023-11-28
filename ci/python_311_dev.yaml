@@ -32,7 +32,7 @@ dependencies:
     - myst-nb
     - nbsphinx
     - nbstripout
-    - openjdk
+    - openjdk>=21
     - pytest
     - pytest-asyncio
     - pytest-cov

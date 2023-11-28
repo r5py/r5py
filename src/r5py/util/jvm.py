@@ -29,6 +29,18 @@ def start_jvm():
         print(os.environ)
         # sometimes (e.g., on readthedocs runners using a conda environment),
         # JAVA_HOME is left undefined, and jpype cannot find the JVM path
+        #
+        # to further complicate things, readthedocs does not export
+        # CONDA_PREFIX, but we can reconstruct it from CONDA_ENVS_PATH and CONDA_DEFAULT_ENV
+        if (
+            "CONDA_PREFIX" not in os.environ
+            and "CONDA_DEFAULT_ENV" in os.environ
+            and "CONDA_ENVS_PATH" in os.environ
+        ):
+            os.environ["CONDA_PREFIX"] = str(
+                pathlib.Path(os.environ["CONDA_ENVS_PATH"])
+                / os.environ["CONDA_DEFAULT_ENV"]
+            )
         if "JAVA_HOME" not in os.environ and "CONDA_PREFIX" in os.environ:
             os.environ["JAVA_HOME"] = f"{os.environ['CONDA_PREFIX']}/lib/jvm"
 

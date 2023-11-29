@@ -133,7 +133,7 @@ class Test_CustomCostTransportNetwork:
     # TEST CUSTOM COST TRANSPORT NETWORK INITIALIZATION AND VALIDATION
 
     @pytest.mark.parametrize(
-        "names, sensitivities, custom_cost_datas",
+        "names, sensitivities, custom_cost_data_sets",
         [
             ("test_cost", 1.1, []),
             ([], 1.1, [{"12345": 1.0, "67890": 1.5}]),
@@ -161,7 +161,7 @@ class Test_CustomCostTransportNetwork:
         reason="R5 version does not support custom costs",
     )
     def test_custom_cost_params_invalid_params(
-        self, names, sensitivities, custom_cost_datas
+        self, names, sensitivities, custom_cost_data_sets
     ):
         from r5py.util.exceptions import CustomCostDataError
 
@@ -171,14 +171,14 @@ class Test_CustomCostTransportNetwork:
                     r5py.sampledata.helsinki.osm_pbf,
                     names,
                     sensitivities,
-                    custom_cost_datas,
+                    custom_cost_data_sets,
                 )
 
     @pytest.mark.skipif(
         r5_supports_custom_costs() is False,
         reason="R5 version does not support custom costs",
     )
-    def test_multiple_custom_cost_datas(self):
+    def test_multiple_custom_cost_data_sets(self):
         custom_cost_transport_network = r5py.CustomCostTransportNetwork(
             r5py.sampledata.helsinki.osm_pbf,
             ["test_cost_1", "test_cost_2"],
@@ -187,7 +187,7 @@ class Test_CustomCostTransportNetwork:
         )
         assert custom_cost_transport_network.names == ["test_cost_1", "test_cost_2"]
         assert custom_cost_transport_network.sensitivities == [1.1, 1.2]
-        assert custom_cost_transport_network.custom_cost_datas == [
+        assert custom_cost_transport_network.custom_cost_data_sets == [
             {"1": 1.1, "2": 1.2},
             {"3": 1.3, "4": 1.4},
         ]

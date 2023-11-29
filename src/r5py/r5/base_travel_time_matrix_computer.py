@@ -72,9 +72,7 @@ class BaseTravelTimeMatrixComputer:
             ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
             ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
         """
-        if not isinstance(transport_network, TransportNetwork) and not isinstance(
-            transport_network, CustomCostTransportNetwork
-        ):
+        if not isinstance(transport_network, TransportNetwork):
             transport_network = TransportNetwork(*transport_network)
         self.transport_network = transport_network
 

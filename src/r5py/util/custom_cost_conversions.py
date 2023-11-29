@@ -96,7 +96,7 @@ def convert_java_hashmap_to_python_dict(hashmap):
 
 
 def convert_python_custom_costs_to_java_custom_costs(
-    names, sensitivities, custom_cost_datas
+    names, sensitivities, custom_cost_data_sets
 ):
     """
     Convert custom cost python dict items into the Java HashMap (Long, Double) format.
@@ -109,7 +109,7 @@ def convert_python_custom_costs_to_java_custom_costs(
     try:
         custom_cost_instances = []
         for name, sensitivity, custom_cost in zip(
-            names, sensitivities, custom_cost_datas
+            names, sensitivities, custom_cost_data_sets
         ):
             # convert custom cost item from python dict to java hashmap
             java_hashmap_custom_cost = convert_python_dict_to_java_hashmap(custom_cost)

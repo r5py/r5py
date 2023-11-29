@@ -36,11 +36,11 @@ def r5_supports_custom_costs():
 class CustomCostTransportNetwork(TransportNetwork):
     """Inherit from TransportNetwork, adds custom cost data routing functionality."""
 
-    def __init__(self, osm_pbf, names, sensitivities, custom_cost_datas):
+    def __init__(self, osm_pbf, names, sensitivities, custom_cost_data_sets):
         """
         Initialise a transport network with custom costs.
         Supports multiple custom costs. Must always have the same number of:
-        names, sensitivities, and custom_cost_datas.
+        names, sensitivities, and custom_cost_data_sets.
 
         Arguments
         ---------
@@ -50,7 +50,7 @@ class CustomCostTransportNetwork(TransportNetwork):
             name(s) of the custom cost(s)
         sensitivities : List[float] | List[int]
             sensitivities of the custom cost(s)
-        custom_cost_datas : List[Dict[str, float]]
+        custom_cost_data_sets : List[Dict[str, float]]
             custom cost data(s) to be used in routing.
             str key is osmid, float value is custom costs per edge (way).
             multiple custom cost data can be provided as a list of python dicts,
@@ -60,26 +60,26 @@ class CustomCostTransportNetwork(TransportNetwork):
         # crash if custom costs are NOT supported in the used version of R5
         # either use TransportNetwork (without custom costs) or change to correct version of R5
         if not r5_supports_custom_costs():
-            raise ImportError(
+            raise RuntimeError(
                 """Custom costs are not supported in this version of R5.
                 Correct (Green Paths 2 / r5_gp2) R5 version can be found here:
                 https://github.com/DigitalGeographyLab/r5_gp2.
                 """
             )
-        self.validate_custom_cost_params(names, sensitivities, custom_cost_datas)
+        self.validate_custom_cost_params(names, sensitivities, custom_cost_data_sets)
         self.names = names
         self.sensitivities = sensitivities
-        self.custom_cost_datas = custom_cost_datas
+        self.custom_cost_data_sets = custom_cost_data_sets
         # GTFS is currently not supported for custom cost transport network
         super().__init__(osm_pbf, gtfs=[])
 
-    def validate_custom_cost_params(self, names, sensitivities, custom_cost_datas):
+    def validate_custom_cost_params(self, names, sensitivities, custom_cost_data_sets):
         """Validate custom cost parameters."""
         # parameters are lists and non-empty
         params = {
             "names": names,
             "sensitivities": sensitivities,
-            "custom_cost_datas": custom_cost_datas,
+            "custom_cost_data_sets": custom_cost_data_sets,
         }
         for param_name, param_value in params.items():
             if not isinstance(param_value, list):
@@ -90,12 +90,12 @@ class CustomCostTransportNetwork(TransportNetwork):
         # lists are of the same length
         if len(set(map(len, params.values()))) != 1:
             raise CustomCostDataError(
-                "names, sensitivities, and custom_cost_datas must be of the same length"
+                "names, sensitivities, and custom_cost_data_sets must be of the same length"
             )
 
         # check individual item types
         for name, sensitivity, custom_cost_data in zip(
-            names, sensitivities, custom_cost_datas
+            names, sensitivities, custom_cost_data_sets
         ):
             if not isinstance(name, str):
                 raise CustomCostDataError("Names must be strings")
@@ -106,7 +106,7 @@ class CustomCostTransportNetwork(TransportNetwork):
                 for key, value in custom_cost_data.items()
             ):
                 raise CustomCostDataError(
-                    "Custom_cost_datas must be dicts with string keys and float values"
+                    "custom_cost_data_sets must be dicts with string keys and float values"
                 )
 
     def add_custom_cost_data_to_network(self, transport_network):
@@ -118,7 +118,7 @@ class CustomCostTransportNetwork(TransportNetwork):
         transport_network.streetLayer.vertexStore = vertex_store
         transport_network.streetLayer.edgeStore = edge_store
         converted_custom_cost_data = convert_python_custom_costs_to_java_custom_costs(
-            self.names, self.sensitivities, self.custom_cost_datas
+            self.names, self.sensitivities, self.custom_cost_data_sets
         )
         transport_network.streetLayer.edgeStore.costFields = converted_custom_cost_data
         self._transport_network = transport_network

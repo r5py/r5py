@@ -57,7 +57,14 @@ WALKING_DETAILS_NOT_SNAPPED = DATA_DIRECTORY / "test_walking_details_not_snapped
 DETAILED_ITINERARIES_BICYCLE = (
     DATA_DIRECTORY / "test_detailed_itineraries_bicycle.gpkg.zip"
 )
-DETAILED_ITINERARIES_CAR = DATA_DIRECTORY / "test_detailed_itineraries_car.gpkg.zip"
+# vanilla r5 uses mph for car speeds and has turn costs
+# DGL r5 and r5_gp2 (Green Paths 2) use km/h and no turn costs
+DETAILED_ITINERARIES_CAR_MPH = (
+    DATA_DIRECTORY / "test_detailed_itineraries_car_mph.gpkg.zip"
+)
+DETAILED_ITINERARIES_CAR_KMH = (
+    DATA_DIRECTORY / "test_detailed_itineraries_car_kmh.gpkg.zip"
+)
 DETAILED_ITINERARIES_TRANSIT = (
     DATA_DIRECTORY / "test_detailed_itineraries_transit.gpkg.zip"
 )
@@ -99,8 +106,13 @@ def detailed_itineraries_bicycle():
 
 
 @pytest.fixture
-def detailed_itineraries_car():
-    yield geopandas.read_file(DETAILED_ITINERARIES_CAR)
+def detailed_itineraries_car_mph():
+    yield geopandas.read_file(DETAILED_ITINERARIES_CAR_MPH)
+
+
+@pytest.fixture
+def detailed_itineraries_car_kmh():
+    yield geopandas.read_file(DETAILED_ITINERARIES_CAR_KMH)
 
 
 @pytest.fixture

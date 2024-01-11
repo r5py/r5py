@@ -200,12 +200,16 @@ class RegionalTask:
         # The value is a static property of com.conveyal.r5.analyst.cluster.PathResult;
         # static properites of Java classes can be modified in a singleton kind of way
         try:
-            com.conveyal.r5.analyst.cluster.PathResult.maxDestinations = max(
-                com.conveyal.r5.analyst.cluster.PathResult.maxDestinations,
-                len(self.destinations) + 1,
-            )
+            num_destinations = len(self.destinations)
         except AttributeError:
-            pass
+            num_destinations = 0
+        if (
+            num_destinations
+            > com.conveyal.r5.analyst.cluster.PathResult.MAX_PATH_DESTINATIONS
+        ):
+            com.conveyal.r5.analyst.cluster.PathResult.MAX_PATH_DESTINATIONS = (
+                num_destinations + 1
+            )
 
     @property
     def departure(self):

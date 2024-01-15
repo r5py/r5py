@@ -4,7 +4,6 @@
 
 import copy
 
-import joblib
 import pandas
 
 from .base_travel_time_matrix_computer import BaseTravelTimeMatrixComputer
@@ -40,20 +39,29 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
         self._prepare_origins_destinations()
         self.request.destinations = self.destinations
 
-        # loop over all origins, modify the request, and compute the times
-        # to all destinations.
-        with joblib.Parallel(
-            prefer="threads",
-            verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
-            n_jobs=self.NUM_THREADS,
-        ) as parallel:
-            od_matrix = pandas.concat(
-                parallel(
-                    joblib.delayed(self._travel_times_per_origin)(from_id)
-                    for from_id in self.origins.id
-                ),
-                ignore_index=True,
-            )
+        # # loop over all origins, modify the request, and compute the times
+        # # to all destinations.
+        # with joblib.Parallel(
+        #     prefer="threads",
+        #     verbose=(10 * self.verbose),  # joblib has a funny verbosity scale
+        #     n_jobs=self.NUM_THREADS,
+        # ) as parallel:
+        #     od_matrix = pandas.concat(
+        #         parallel(
+        #             joblib.delayed(self._travel_times_per_origin)(from_id)
+        #             for from_id in self.origins.id
+        #         ),
+        #         ignore_index=True,
+        #     )
+
+        #od_matrix = self.origins["id"].apply(self._travel_times_per_origin)
+
+        od_matrix = pandas.concat(
+            [
+                self._travel_times_per_origin(from_id)
+                for from_id in self.origins.id
+            ]
+        )
 
         try:
             od_matrix = od_matrix.to_crs(self._origins_crs)

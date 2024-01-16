@@ -40,7 +40,8 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
         self.request.destinations = self.destinations
 
         od_matrix = pandas.concat(
-            [self._travel_times_per_origin(from_id) for from_id in self.origins.id]
+            [self._travel_times_per_origin(from_id) for from_id in self.origins.id],
+            ignore_index=True,
         )
 
         try:

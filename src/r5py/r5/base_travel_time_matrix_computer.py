@@ -12,6 +12,7 @@ import shapely
 from ..util import check_od_data_set, Config
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork
+from .custom_cost_transport_network import CustomCostTransportNetwork
 
 
 __all__ = ["BaseTravelTimeMatrixComputer"]

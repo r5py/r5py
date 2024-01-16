@@ -8,6 +8,7 @@ import pandas
 import pytest
 
 import r5py
+from r5py.r5.custom_cost_transport_network import r5_supports_custom_costs
 import r5py.util.exceptions
 
 
@@ -483,6 +484,14 @@ class TestDetailedItinerariesComputer:
             detailed_itineraries["from_id"] == detailed_itineraries["to_id"]
         ].travel_time.max() == datetime.timedelta(seconds=0)
 
+    # choose weither to use mph or kmh in the 'expected' data set
+    # will use kmh if using green paths 2 flavor of r5
+    detailed_itineraries_car = (
+        "detailed_itineraries_car_kmh"
+        if r5_supports_custom_costs()
+        else "detailed_itineraries_car_mph"
+    )
+
     @pytest.mark.parametrize(
         [
             "transport_mode",
@@ -495,7 +504,7 @@ class TestDetailedItinerariesComputer:
             ),
             (
                 r5py.TransportMode.CAR,
-                pytest.lazy_fixture("detailed_itineraries_car"),
+                pytest.lazy_fixture(detailed_itineraries_car),
             ),
             (
                 r5py.TransportMode.TRANSIT,
@@ -542,6 +551,11 @@ class TestDetailedItinerariesComputer:
         )
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
+
+        travel_details = travel_details.drop(columns="osm_ids", errors="ignore")
+        expected_travel_details = expected_travel_details.drop(
+            columns="osm_ids", errors="ignore"
+        )
 
         geopandas.testing.assert_geodataframe_equal(
             travel_details,

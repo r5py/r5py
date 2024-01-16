@@ -66,6 +66,7 @@ class TestTrip:
             datetime.timedelta(minutes=2),
             "48A",
             shapely.LineString([[0, 0], [1, 1], [2, 2]]),
+            ["osm_id1", "osm_id2"],
         )
         trip = r5py.r5.trip.Trip([trip_leg])
 
@@ -79,6 +80,7 @@ class TestTrip:
                 datetime.timedelta(minutes=2),
                 "48A",
                 shapely.LineString([[0, 0], [1, 1], [2, 2]]),
+                ["osm_id1", "osm_id2"],
             ]
         ]
 

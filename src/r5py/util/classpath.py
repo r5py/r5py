@@ -75,9 +75,11 @@ def find_r5_classpath(arguments):
                     "Could not find R5 jar, trying to download it from upstream",
                     R5pyWarning,
                 )
-            with ValidatingRequestsSession() as session, session.get(
-                R5_JAR_URL, R5_JAR_SHA256
-            ) as response, open(r5_classpath, "wb") as jar:
+            with (
+                ValidatingRequestsSession() as session,
+                session.get(R5_JAR_URL, R5_JAR_SHA256) as response,
+                open(r5_classpath, "wb") as jar,
+            ):
                 jar.write(response.content)
             if arguments.verbose:
                 warnings.warn(

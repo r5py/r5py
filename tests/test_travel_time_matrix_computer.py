@@ -437,11 +437,14 @@ class TestTravelTimeMatrixComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        with pytest.raises(
-            ValueError, match="After snapping, no valid origin points remain"
-        ), pytest.warns(
-            RuntimeWarning,
-            match="Some origin points could not be snapped to the street network",
+        with (
+            pytest.raises(
+                ValueError, match="After snapping, no valid origin points remain"
+            ),
+            pytest.warns(
+                RuntimeWarning,
+                match="Some origin points could not be snapped to the street network",
+            ),
         ):
             travel_time_matrix = r5py.TravelTimeMatrixComputer(
                 transport_network,
@@ -483,11 +486,14 @@ class TestTravelTimeMatrixComputer:
         unsnappable_points,
         departure_datetime,
     ):
-        with pytest.raises(
-            ValueError, match="After snapping, no valid destination points remain"
-        ), pytest.warns(
-            RuntimeWarning,
-            match="Some destination points could not be snapped to the street network",
+        with (
+            pytest.raises(
+                ValueError, match="After snapping, no valid destination points remain"
+            ),
+            pytest.warns(
+                RuntimeWarning,
+                match="Some destination points could not be snapped to the street network",
+            ),
         ):
             travel_time_matrix = r5py.TravelTimeMatrixComputer(
                 transport_network,

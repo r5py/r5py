@@ -5,7 +5,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.6
+    jupytext_version: 1.16.1
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -14,18 +14,10 @@ kernelspec:
 
 # Travel-time matrices
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [remove-input, remove-output]
 
-# this cell is hidden from READTHEDOCS output
-# it’s used to set a stricter memory limit in binderhub notebooks
-# as otherwise, the examples would fail
 
-import os
-
-if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
-    max_memory = int(os.environ["MEM_LIMIT"]) / 2
-    sys.argv.extend(["--max-memory", f"{max_memory}"])
 ```
 
 :::{dropdown} What is a travel time matrix?
@@ -77,7 +69,7 @@ OpenStreetMap extract of the São Paulo city centre as well as a public transpor
 schedule in GTFS format covering the same area. Again, we use the [sample data
 sets that can be installed separately](../installation/installation.md#sample-data-sets)
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [remove-output]
 
 import r5py
@@ -103,7 +95,7 @@ We prepared such a hexagonal grid for São Paulo, and added the counts of
 `population`, `jobs`, and `schools` within each cell as separate columns.
 The `id` column refers to the H3 address of the grid cells.
 
-```{code-cell}
+```{code-cell} ipython3
 import geopandas
 
 hexagon_grid = geopandas.read_file(r5py.sampledata.sao_paulo.hexgrid_gpkg)
@@ -113,7 +105,7 @@ hexagon_grid
 We can use {meth}`explore()<geopandas.GeoDataFrame.explore()>` to plot the
 hexagonal grid in a map:
 
-```{code-cell}
+```{code-cell} ipython3
 hexagon_grid.explore()
 ```
 
@@ -123,16 +115,15 @@ the geometric center point (‘centroid’) is a good approximisation. One can u
 geometry from a polygon. We will create one data frame for origins, and one for
 destinations:
 
-```{code-cell}
+```{code-cell} ipython3
 origins = hexagon_grid.copy()
 origins["geometry"] = origins.geometry.centroid
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 destinations = hexagon_grid.copy()
 destinations["geometry"] = destinations.geometry.centroid
 ```
-
 
 ## Compute a travel time matrix
 
@@ -146,7 +137,7 @@ departure must be a {class}`datetime.datetime`. If you search for public
 transport routes, [double-check that the departure date and time is covered by
 the input GTFS data set](check-gtfs-files).
 
-```{code-cell}
+```{code-cell} ipython3
 import datetime
 
 travel_time_matrix = r5py.TravelTimeMatrixComputer(
@@ -163,11 +154,11 @@ The output of
 is a table in which each row describes the travel time (`travel_time`) from an
 origin (`from_id`), to a destination (`to_id`).
 
-```{code-cell}
+```{code-cell} ipython3
 travel_time_matrix
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [remove-output, remove-input]
 
 import myst_nb
@@ -220,7 +211,7 @@ the output travel time matrix is {glue:}`matrix_length` rows long.
 Alternatively, and possibly more intuitively, we can display the travel time
 matrix table as a matrix in wide format, using {meth}`pandas.DataFrame.pivot()`:
 
-```{code-cell}
+```{code-cell} ipython3
 travel_time_matrix.pivot(index="from_id", columns="to_id", values="travel_time")
 ```
 
@@ -246,7 +237,7 @@ which there was no result. Finally, as we did above, we use the
 {meth}`explore()<geopandas.GeoDataFrame.explore()>` to display the values in a
 map.
 
-```{code-cell}
+```{code-cell} ipython3
 PRAÇA_DA_SÉ = "89a8100c02fffff"
 
 travel_times_to_centre = travel_time_matrix[travel_time_matrix["to_id"] == PRAÇA_DA_SÉ].copy()
@@ -259,7 +250,7 @@ hexagons_with_travel_time_to_centre = (
 hexagons_with_travel_time_to_centre
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 hexagons_with_travel_time_to_centre.explore(
     column="travel_time",
     cmap="YlOrBr",
@@ -292,7 +283,7 @@ one of the different aggregation functions available for the resulting
 from any cell to any other cell in our grid, we group the results using
 `from_id` and {meth}`median()<pandas.GroupBy.median()>`:
 
-```{code-cell}
+```{code-cell} ipython3
 median_travel_times = travel_time_matrix.groupby("from_id").median("travel_time")
 median_travel_times
 ```
@@ -300,7 +291,7 @@ median_travel_times
 Again, we can join these median travel times to the hexagonal grid to display a
 nice map:
 
-```{code-cell}
+```{code-cell} ipython3
 hexagons_with_median_travel_times = (
     hexagon_grid.set_index("id").join(median_travel_times)
 )

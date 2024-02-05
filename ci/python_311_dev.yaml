@@ -33,6 +33,7 @@ dependencies:
     - nbsphinx
     - nbstripout
     - openjdk>=21
+    - pyarrow
     - pytest
     - pytest-asyncio
     - pytest-cov

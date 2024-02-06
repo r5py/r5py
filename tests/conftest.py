@@ -404,7 +404,7 @@ def custom_cost_hashmap(custom_cost_test_values):
 @pytest.fixture(scope="session")
 def custom_cost_instance(custom_cost_hashmap):
     yield convert_custom_cost_data_to_custom_cost_instance(
-        "test_name", 1.3, custom_cost_hashmap
+        "test_name", 1.3, custom_cost_hashmap, True
     )
 
 

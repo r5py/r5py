@@ -29,7 +29,7 @@ def convert_python_dict_to_java_hashmap(custom_cost_data):
 
 
 def convert_custom_cost_data_to_custom_cost_instance(
-    name, sensitivity, custom_cost_data
+    name, sensitivity, custom_cost_data, allow_null_costs
 ):
     """
     Convert custom cost data into the Java CustomCostField instance.
@@ -43,15 +43,21 @@ def convert_custom_cost_data_to_custom_cost_instance(
         this is used to get different route suggestions by weighting the custom cost field
     custom_cost_data : jpype.java.util.HashMap[Long, Double]
         custom cost data to be used in routing.
+    allow_null_costs : bool
+        whether to allow null costs in routing. Default is True.
+        If set to False and ANY edges have null costs, routing will fail.
+        Only use False if you are sure that ALL edes have custom costs.
 
     Returns:
     --------
     custom_cost_java_instance : com.conveyal.r5.rastercost.CustomCostField
         custom cost data in Java CustomCostField instance format
     """
-
     return com.conveyal.r5.rastercost.CustomCostField(
-        jpype.JString(name), jpype.JDouble(sensitivity), custom_cost_data
+        jpype.JString(name),
+        jpype.JDouble(sensitivity),
+        custom_cost_data,
+        allow_null_costs,
     )
 
 
@@ -96,7 +102,7 @@ def convert_java_hashmap_to_python_dict(hashmap):
 
 
 def convert_python_custom_costs_to_java_custom_costs(
-    names, sensitivities, custom_cost_data_sets
+    names, sensitivities, custom_cost_data_sets, allow_null_costs
 ):
     """
     Convert custom cost python dict items into the Java HashMap (Long, Double) format.
@@ -115,7 +121,7 @@ def convert_python_custom_costs_to_java_custom_costs(
             java_hashmap_custom_cost = convert_python_dict_to_java_hashmap(custom_cost)
             # convert custom cost params to java customCostField instance
             custom_cost_instance = convert_custom_cost_data_to_custom_cost_instance(
-                name, sensitivity, java_hashmap_custom_cost
+                name, sensitivity, java_hashmap_custom_cost, allow_null_costs
             )
             custom_cost_instances.append(custom_cost_instance)
         # convert all java custom cost instances to java list

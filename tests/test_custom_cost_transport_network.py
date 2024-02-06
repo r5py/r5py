@@ -97,7 +97,7 @@ class Test_CustomCostTransportNetwork:
     ):
         assert isinstance(custom_cost_hashmap, jpype.java.util.HashMap)
         custom_cost_instance = convert_custom_cost_data_to_custom_cost_instance(
-            "test_name", 1.3, custom_cost_hashmap
+            "test_name", 1.3, custom_cost_hashmap, True
         )
         assert isinstance(
             custom_cost_instance, com.conveyal.r5.rastercost.CustomCostField
@@ -133,27 +133,31 @@ class Test_CustomCostTransportNetwork:
     # TEST CUSTOM COST TRANSPORT NETWORK INITIALIZATION AND VALIDATION
 
     @pytest.mark.parametrize(
-        "names, sensitivities, custom_cost_data_sets",
+        "names, sensitivities, custom_cost_data_sets, allow_null_costs",
         [
-            ("test_cost", 1.1, []),
-            ([], 1.1, [{"12345": 1.0, "67890": 1.5}]),
-            ("test_cost", [], [{"12345": 1.0, "67890": 1.5}]),
-            ("test_cost", [1], [{"12345": 1.0, "67890": 1.5}]),
-            (["test_cost"], 1, [{"12345": 1.0, "67890": 1.5}]),
-            (["test_cost"], [2.1], {"12345": 1.0, "67890": 1.5}),
-            ([1], ["2.1"], {"12345": 1.0, "67890": 1.5}),
-            (["name"], [1], ["12345", 67890]),
+            ("test_cost", 1.1, [], True),
+            ([], 1.1, [{"12345": 1.0, "67890": 1.5}], True),
+            ("test_cost", [], [{"12345": 1.0, "67890": 1.5}], True),
+            ("test_cost", [1], [{"12345": 1.0, "67890": 1.5}], True),
+            (["test_cost"], 1, [{"12345": 1.0, "67890": 1.5}], True),
+            (["test_cost"], [2.1], {"12345": 1.0, "67890": 1.5}, True),
+            ([1], ["2.1"], {"12345": 1.0, "67890": 1.5}, True),
+            (["name"], [1], ["12345", 67890], True),
             (
                 ["name_1"],
                 [1.1],
                 [{"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}],
+                True,
             ),
             (
                 ["name_1"],
                 [1.1, 1.2],
                 [{"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}],
+                True,
             ),
-            (["name_1", "name_2"], [1.1, 1.2], [{"12345": 1.0, "67890": 1.5}]),
+            (["name_1", "name_2"], [1.1, 1.2], [{"12345": 1.0, "67890": 1.5}], True),
+            # test allow_null_costs flag to fail if allow_null_costs is False
+            (["name_1", "name_2"], [1.1, 1.2], [{"12345": 1.0, "67890": 1.5}], False),
         ],
     )
     @pytest.mark.skipif(
@@ -161,7 +165,7 @@ class Test_CustomCostTransportNetwork:
         reason="R5 version does not support custom costs",
     )
     def test_custom_cost_params_invalid_params(
-        self, names, sensitivities, custom_cost_data_sets
+        self, names, sensitivities, custom_cost_data_sets, allow_null_costs
     ):
         from r5py.util.exceptions import CustomCostDataError
 
@@ -172,6 +176,7 @@ class Test_CustomCostTransportNetwork:
                     names,
                     sensitivities,
                     custom_cost_data_sets,
+                    allow_null_costs,
                 )
 
     @pytest.mark.skipif(

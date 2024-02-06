@@ -36,7 +36,14 @@ def r5_supports_custom_costs():
 class CustomCostTransportNetwork(TransportNetwork):
     """Inherit from TransportNetwork, adds custom cost data routing functionality."""
 
-    def __init__(self, osm_pbf, names, sensitivities, custom_cost_data_sets):
+    def __init__(
+        self,
+        osm_pbf,
+        names,
+        sensitivities,
+        custom_cost_data_sets,
+        allow_null_costs=True,
+    ):
         """
         Initialise a transport network with custom costs.
         Supports multiple custom costs. Must always have the same number of:
@@ -56,6 +63,13 @@ class CustomCostTransportNetwork(TransportNetwork):
             multiple custom cost data can be provided as a list of python dicts,
             when multiple custom cost datas are provided, all of those custom cost datas will be combined
             for each edge (way) during r5 custom cost routing.
+        allow_null_costs : bool, default True
+            whether to allow null costs in routing. Default is True.
+            If set to False and ANY edges have null costs, routing will fail.
+            Only use False if you are sure that ALL edes have custom costs.
+
+            NOTE: might be affected by public transit edges if they are added and used in routing.
+            e.g. if running with allow_null_costs=False and routing uses public transit edges
         """
         # crash if custom costs are NOT supported in the used version of R5
         # either use TransportNetwork (without custom costs) or change to correct version of R5
@@ -70,6 +84,7 @@ class CustomCostTransportNetwork(TransportNetwork):
         self.names = names
         self.sensitivities = sensitivities
         self.custom_cost_data_sets = custom_cost_data_sets
+        self.allow_null_costs = allow_null_costs
         # GTFS is currently not supported for custom cost transport network
         super().__init__(osm_pbf, gtfs=[])
 
@@ -113,12 +128,15 @@ class CustomCostTransportNetwork(TransportNetwork):
         """Custom hook for adding custom cost data to the transport network edges."""
         vertex_store = com.conveyal.r5.streets.VertexStore(100_000)
         edge_store = com.conveyal.r5.streets.EdgeStore(
-            vertex_store, transport_network.streetLayer, 200_000
+            vertex_store, transport_network.streetLayer, 2_000_000
         )
         transport_network.streetLayer.vertexStore = vertex_store
         transport_network.streetLayer.edgeStore = edge_store
         converted_custom_cost_data = convert_python_custom_costs_to_java_custom_costs(
-            self.names, self.sensitivities, self.custom_cost_data_sets
+            self.names,
+            self.sensitivities,
+            self.custom_cost_data_sets,
+            self.allow_null_costs,
         )
         transport_network.streetLayer.edgeStore.costFields = converted_custom_cost_data
         self._transport_network = transport_network
@@ -179,7 +197,7 @@ class CustomCostTransportNetwork(TransportNetwork):
                             str(osmid): osmid_dict[str(osmid)]
                             for osmid in osmids
                             if str(osmid) in osmid_dict.keys()
-                        }
+                        },
                     )
                     for display_key, osmid_dict in travel_times_per_custom_cost
                 ]
@@ -190,7 +208,7 @@ class CustomCostTransportNetwork(TransportNetwork):
                 merged_travel_times = {}
                 for name, base_travel_times in travel_times_per_custom_cost:
                     merged_travel_times.update(base_travel_times)
-                    merged_name+= f"_{name}"
+                    merged_name += f"_{name}"
                 # return all base travel times merged in a single dict in a list
                 return [(merged_name, merged_travel_times)]
             # return times per custom cost routing

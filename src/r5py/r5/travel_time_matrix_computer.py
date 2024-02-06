@@ -103,7 +103,7 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
 
         # add OSM IDs if found in results
         # osmIdsResults are generated when routing with custom_cost_transport_network
-        if hasattr(results, "osmIdResults") and results.osmIdResults is not None:
+        if hasattr(results, "osmIdResults") and results.osmIdResults:
             od_matrix[f"osm_ids"] = results.osmIdResults
 
         # R5’s NULL value is MAX_INT32

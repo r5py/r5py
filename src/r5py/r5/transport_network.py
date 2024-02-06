@@ -76,6 +76,7 @@ class TransportNetwork:
         transport_network.streetLayer.indexStreets()
 
         transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
+        # only load GTFS if it is provided
         if gtfs:
             for gtfs_file in gtfs:
                 gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(
@@ -83,13 +84,18 @@ class TransportNetwork:
                 )
                 transport_network.transitLayer.loadFromGtfs(gtfs_feed)
                 gtfs_feed.close()
-            transport_network.transitLayer.parentNetwork = transport_network
 
-            transport_network.streetLayer.associateStops(transport_network.transitLayer)
-            transport_network.streetLayer.buildEdgeLists()
+        # need to build indexes even if no GTFS is provided
+        # will cause index errors for custom cost routing if not done
+        transport_network.transitLayer.parentNetwork = transport_network
 
-            transport_network.transitLayer.rebuildTransientIndexes()
+        transport_network.streetLayer.associateStops(transport_network.transitLayer)
+        transport_network.streetLayer.buildEdgeLists()
 
+        transport_network.transitLayer.rebuildTransientIndexes()
+
+        # only build distance tables if GTFS is provided
+        if gtfs:
             transfer_finder = com.conveyal.r5.transit.TransferFinder(transport_network)
             transfer_finder.findTransfers()
             transfer_finder.findParkRideTransfer()

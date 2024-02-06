@@ -131,7 +131,7 @@ class TransportNetwork:
         except AttributeError:
             pass
 
-        time.sleep(0.5)
+        time.sleep(1.0)
         try:
             jpype.java.lang.System.gc()
         except jpype.JVMNotRunning:

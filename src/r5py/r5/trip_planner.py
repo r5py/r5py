@@ -148,11 +148,16 @@ class TripPlanner:
                             ]
                         )
                     )
-                except java.lang.NullPointerException:
+                except (
+                    java.lang.NullPointerException,
+                    java.util.NoSuchElementException,
+                ):
                     warnings.warn(
                         f"Could not find route between origin "
-                        f"({self.request.fromLon}, {self.request.fromLat}) "
-                        f"and destination ({self.request.toLon}, {self.request.toLat})",
+                        f"({self.request._regional_task.fromLon}, "
+                        f"{self.request._regional_task.fromLat}) "
+                        f"and destination ({self.request._regional_task.toLon}, "
+                        f"{self.request._regional_task.toLat})",
                         RuntimeWarning,
                     )
         return direct_paths

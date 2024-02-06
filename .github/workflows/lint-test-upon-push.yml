@@ -91,6 +91,6 @@ jobs:
         run: python -m pytest
 
       - name: Update codecov.io
-        uses: codecov/codecov-action@v3.1.1
+        uses: codecov/codecov-action@v3.1.4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

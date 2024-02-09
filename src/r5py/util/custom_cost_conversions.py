@@ -29,7 +29,7 @@ def convert_python_dict_to_java_hashmap(custom_cost_data):
 
 
 def convert_custom_cost_data_to_custom_cost_instance(
-    name, sensitivity, custom_cost_data, allow_null_costs
+    name, sensitivity, custom_cost_data, allow_missing_costs
 ):
     """
     Convert custom cost data into the Java CustomCostField instance.
@@ -43,7 +43,7 @@ def convert_custom_cost_data_to_custom_cost_instance(
         this is used to get different route suggestions by weighting the custom cost field
     custom_cost_data : jpype.java.util.HashMap[Long, Double]
         custom cost data to be used in routing.
-    allow_null_costs : bool
+    allow_missing_costs : bool
         whether to allow null costs in routing. Default is True.
         If set to False and ANY edges have null costs, routing will fail.
         Only use False if you are sure that ALL edes have custom costs.
@@ -57,7 +57,7 @@ def convert_custom_cost_data_to_custom_cost_instance(
         jpype.JString(name),
         jpype.JDouble(sensitivity),
         custom_cost_data,
-        allow_null_costs,
+        allow_missing_costs,
     )
 
 
@@ -102,10 +102,25 @@ def convert_java_hashmap_to_python_dict(hashmap):
 
 
 def convert_python_custom_costs_to_java_custom_costs(
-    names, sensitivities, custom_cost_data_sets, allow_null_costs
+    names, sensitivities, custom_cost_data_sets, allow_missing_costs
 ):
     """
     Convert custom cost python dict items into the Java HashMap (Long, Double) format.
+
+    Arguments:
+    ----------
+    names : List[str]
+        names of the custom cost instance(s)
+    sensitivities : List[float]
+        sensitivities of the custom cost field(s)
+        this is used to get different route suggestions by weighting the custom cost field
+    custom_cost_data_sets : List[Dict[str, float]]
+        custom cost data to be used in routing.
+        str key is osmid, float value is custom costs per edge (way)
+    allow_missing_costs : List[bool]
+        whether to allow null costs in routing. Default is True.
+        If set to False and ANY edges have null costs, routing will fail.
+        Only use False if you are sure that ALL edes have custom costs.
 
     Returns:
     --------
@@ -114,14 +129,14 @@ def convert_python_custom_costs_to_java_custom_costs(
     """
     try:
         custom_cost_instances = []
-        for name, sensitivity, custom_cost in zip(
-            names, sensitivities, custom_cost_data_sets
+        for name, sensitivity, custom_cost, allow_null_cost in zip(
+            names, sensitivities, custom_cost_data_sets, allow_missing_costs
         ):
             # convert custom cost item from python dict to java hashmap
             java_hashmap_custom_cost = convert_python_dict_to_java_hashmap(custom_cost)
             # convert custom cost params to java customCostField instance
             custom_cost_instance = convert_custom_cost_data_to_custom_cost_instance(
-                name, sensitivity, java_hashmap_custom_cost, allow_null_costs
+                name, sensitivity, java_hashmap_custom_cost, allow_null_cost
             )
             custom_cost_instances.append(custom_cost_instance)
         # convert all java custom cost instances to java list

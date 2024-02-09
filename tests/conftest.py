@@ -504,6 +504,7 @@ def multi_cost_custom_cost_transport_network(osmid_value_dict):
         ["random_cost_1", "random_cost_2"],
         [1.1, 1.2],
         [osmid_value_dict, osmid_value_dict],
+        [True, True],
     )
     yield custom_cost_transport_network
 

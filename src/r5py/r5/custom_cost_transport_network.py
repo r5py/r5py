@@ -45,42 +45,55 @@ class CustomCostTransportNetwork(TransportNetwork):
         allow_null_costs=True,
     ):
         """
-        Initialise a transport network with custom costs.
-        Supports multiple custom costs. Must always have the same number of:
-        names, sensitivities, and custom_cost_data_sets.
+        Initialise a transport network with custom weighting cost factors.
+        Supports single or multiple cost factor sets.
+        Must always have the same number of:
+        names, sensitivities, and custom_cost_data_sets, and also allow_null_costs if multiple provided.
+        Multiple datasets so lists of parameters are paired together by "index" order using zip.
+        So the first parameters of each list are used together, then the second ones, and so on.
 
         Arguments
         ---------
         osm_pbf : str
             file path of an OpenStreetMap extract in PBF format
-        names : List[str]
-            name(s) of the custom cost(s)
-        sensitivities : List[float] | List[int]
-            sensitivities of the custom cost(s)
-        custom_cost_data_sets : List[Dict[str, float]]
-            custom cost data(s) to be used in routing.
-            str key is osmid, float value is custom costs per edge (way).
-            multiple custom cost data can be provided as a list of python dicts,
-            when multiple custom cost datas are provided, all of those custom cost datas will be combined
-            for each edge (way) during r5 custom cost routing.
-        allow_null_costs : bool, default True
-            whether to allow null costs in routing. Default is True.
-            If set to False and ANY edges have null costs, routing will fail.
-            Only use False if you are sure that ALL edes have custom costs.
-
-            NOTE: might be affected by public transit edges if they are added and used in routing.
-            e.g. if running with allow_null_costs=False and routing uses public transit edges
+        names : str | List[str]
+            single name or multiple names of the custom costs
+        sensitivities : float | int | List[float | int]
+            single or multiple sensitivities of the custom costs
+        custom_cost_data_sets : Dict[str, float] | List[Dict[str, float]]
+            single or multiple custom cost data to be used in routing.
+            str key is osmid, float value is custom cost factor per road segment (edge/way).
+            When multiple custom cost datas are provided, all of those custom cost datas will be combined
+            for each road segment during r5 custom cost routing.
+        allow_null_costs : bool | List[bool], default True
+            Define whether to allow null costs in routing. Default is True.
+            If multiple sets of other data are provided but allow_null_costs is not provided,
+            will populate default for all custom costs.
+            If multiple allow_null_costs or are provided, they must be of the same amount as other parameters.
+            Using False might be affected by public transit edges if they are added and used in routing.
+            If set to False and ANY edges aren't found during routing, routing will throw exception,
+            so in most cases the default True should be used.
         """
         # crash if custom costs are NOT supported in the used version of R5
         # either use TransportNetwork (without custom costs) or change to correct version of R5
         if not r5_supports_custom_costs():
             raise RuntimeError(
                 """Custom costs are not supported in this version of R5.
-                Correct (Green Paths 2 / r5_gp2) R5 version can be found here:
-                https://github.com/DigitalGeographyLab/r5_gp2.
+                Correct (Green Paths 2 patched) R5 version can be found from branch gp2 in
+                https://github.com/DigitalGeographyLab/r5. Or by using a release jar from address e.g. 
+                https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar
                 """
             )
-        self.validate_custom_cost_params(names, sensitivities, custom_cost_data_sets)
+        # convert single items into lists if they are not already
+        # this enables use of only 1 set of parameters
+        names, sensitivities, custom_cost_data_sets, allow_null_costs = (
+            self.convert_params_to_lists(
+                names, sensitivities, custom_cost_data_sets, allow_null_costs
+            )
+        )
+        self.validate_custom_cost_params(
+            names, sensitivities, custom_cost_data_sets, allow_null_costs
+        )
         self.names = names
         self.sensitivities = sensitivities
         self.custom_cost_data_sets = custom_cost_data_sets
@@ -88,13 +101,54 @@ class CustomCostTransportNetwork(TransportNetwork):
         # GTFS is currently not supported for custom cost transport network
         super().__init__(osm_pbf, gtfs=[])
 
-    def validate_custom_cost_params(self, names, sensitivities, custom_cost_data_sets):
+    def convert_params_to_lists(
+        self, names, sensitivities, custom_cost_data_sets, allow_null_costs
+    ):
+        """
+        Convert single items into lists if they are not already.
+
+        Arguments:
+        ----------
+        names : str | List[str]
+            single name or names of the custom costs
+        sensitivities : float | int | List[float | int]
+            single or multiple sensitivities of the custom costs
+        custom_cost_data_sets : Dict[str, float] | List[Dict[str, float]]
+            single or multiple custom cost datas to be used in routing.
+        allow_null_costs : bool | List[bool], default True (optional)
+            define whether to allow null costs in routing.
+
+        Returns:
+        --------
+        names : List[str]
+        sensitivities : List[float | int]
+        custom_cost_data_sets : List[Dict[str, float]]
+        allow_null_costs : List[bool]
+        """
+        if not isinstance(names, list):
+            names = [names]
+        if not isinstance(sensitivities, list):
+            sensitivities = [sensitivities]
+        if not isinstance(custom_cost_data_sets, list):
+            custom_cost_data_sets = [custom_cost_data_sets]
+        if not isinstance(allow_null_costs, list):
+            allow_null_costs = [allow_null_costs]
+            # if using multiple sets and if optional allow_null_costs is not provided,
+            # populate the default for all custom costs if many cost dicts provided and only one allow_null_costs
+            if len(custom_cost_data_sets) > 1 and len(allow_null_costs) == 1:
+                allow_null_costs = [allow_null_costs[0]] * len(custom_cost_data_sets)
+        return names, sensitivities, custom_cost_data_sets, allow_null_costs
+
+    def validate_custom_cost_params(
+        self, names, sensitivities, custom_cost_data_sets, allow_null_costs
+    ):
         """Validate custom cost parameters."""
         # parameters are lists and non-empty
         params = {
             "names": names,
             "sensitivities": sensitivities,
             "custom_cost_data_sets": custom_cost_data_sets,
+            "allow_null_costs": allow_null_costs,
         }
         for param_name, param_value in params.items():
             if not isinstance(param_value, list):
@@ -105,7 +159,7 @@ class CustomCostTransportNetwork(TransportNetwork):
         # lists are of the same length
         if len(set(map(len, params.values()))) != 1:
             raise CustomCostDataError(
-                "names, sensitivities, and custom_cost_data_sets must be of the same length"
+                "CustomCostTransportNetwork names, sensitivities, and custom_cost_data_sets must be of the same length, and allow_null_costs if multiple provided"
             )
 
         # check individual item types
@@ -113,16 +167,31 @@ class CustomCostTransportNetwork(TransportNetwork):
             names, sensitivities, custom_cost_data_sets
         ):
             if not isinstance(name, str):
-                raise CustomCostDataError("Names must be strings")
+                raise CustomCostDataError(
+                    "CustomCostTransportNetwork names must be strings"
+                )
             if not isinstance(sensitivity, (float, int)):
-                raise CustomCostDataError("Sensitivities must be floats or integers")
-            if not isinstance(custom_cost_data, dict) or not all(
-                isinstance(key, str) and isinstance(value, float)
-                for key, value in custom_cost_data.items()
+                raise CustomCostDataError(
+                    "CustomCostTransportNetwork sensitivities must be floats or integers"
+                )
+            if (
+                len(custom_cost_data) == 0
+                or not isinstance(custom_cost_data, dict)
+                or not all(
+                    isinstance(key, str) and isinstance(value, float)
+                    for key, value in custom_cost_data.items()
+                )
             ):
                 raise CustomCostDataError(
                     "custom_cost_data_sets must be dicts with string keys and float values"
                 )
+        # check that all allow_null_costs are list and bools
+        if not all(
+            isinstance(allow_null_cost, bool) for allow_null_cost in allow_null_costs
+        ):
+            raise CustomCostDataError(
+                "CustomCostTransportNetwork allow_null_costs must be bools"
+            )
 
     def add_custom_cost_data_to_network(self, transport_network):
         """Custom hook for adding custom cost data to the transport network edges."""
@@ -246,15 +315,15 @@ class CustomCostTransportNetwork(TransportNetwork):
         Arguments:
         ----------
         osmids : List[str] (optional)
-            list of osmids to get additional custom costs for. If not provided, return all base travel times.
+            List of osmids to get additional custom costs for. If not provided, return all base travel times.
         merged : bool, default False
-            define if the base travel times should be merged into a single dict or not
+            Define if the base travel times should be merged into a single dict or not.
 
         Returns:
         --------
         List[Tuple[str, Dict[str, int]]]
-            list of tuples of custom cost name and additional travel timecosts
-            each tuple represents one custom cost, if merged is True, only one tuple is returned
+            List of tuples of custom cost name and additional travel timecosts.
+            Each tuple represents one custom cost, if merged is True, only one tuple is returned
         """
         return self._fetch_network_custom_cost_travel_time_product(
             "getcustomCostAdditionalTraveltimes", osmids, merged

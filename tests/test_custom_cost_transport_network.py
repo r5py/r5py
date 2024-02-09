@@ -133,15 +133,18 @@ class Test_CustomCostTransportNetwork:
     # TEST CUSTOM COST TRANSPORT NETWORK INITIALIZATION AND VALIDATION
 
     @pytest.mark.parametrize(
-        "names, sensitivities, custom_cost_data_sets, allow_null_costs",
+        "names, sensitivities, custom_cost_data_sets, allow_missing_osmids",
         [
             ("test_cost", 1.1, [], True),
-            ([], 1.1, [{"12345": 1.0, "67890": 1.5}], True),
+            ([], 1.1, [{}], True),
             ("test_cost", [], [{"12345": 1.0, "67890": 1.5}], True),
-            ("test_cost", [1], [{"12345": 1.0, "67890": 1.5}], True),
-            (["test_cost"], 1, [{"12345": 1.0, "67890": 1.5}], True),
-            (["test_cost"], [2.1], {"12345": 1.0, "67890": 1.5}, True),
-            ([1], ["2.1"], {"12345": 1.0, "67890": 1.5}, True),
+            ("test_cost", [1], {}, True),
+            (
+                ["test_cost"],
+                1,
+                [{"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}],
+                True,
+            ),
             (["name"], [1], ["12345", 67890], True),
             (
                 ["name_1"],
@@ -152,12 +155,17 @@ class Test_CustomCostTransportNetwork:
             (
                 ["name_1"],
                 [1.1, 1.2],
-                [{"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}],
+                [{}, {}],
                 True,
             ),
             (["name_1", "name_2"], [1.1, 1.2], [{"12345": 1.0, "67890": 1.5}], True),
-            # test allow_null_costs flag to fail if allow_null_costs is False
-            (["name_1", "name_2"], [1.1, 1.2], [{"12345": 1.0, "67890": 1.5}], False),
+            # test allow_missing_osmids flag to fail if allow_missing_osmids is False
+            (
+                ["name_1", "name_2"],
+                [1.1, 1.2],
+                [{"12345": 1.0, "67890": 1.5}],
+                [False, False],
+            ),
         ],
     )
     @pytest.mark.skipif(
@@ -165,7 +173,7 @@ class Test_CustomCostTransportNetwork:
         reason="R5 version does not support custom costs",
     )
     def test_custom_cost_params_invalid_params(
-        self, names, sensitivities, custom_cost_data_sets, allow_null_costs
+        self, names, sensitivities, custom_cost_data_sets, allow_missing_osmids
     ):
         from r5py.util.exceptions import CustomCostDataError
 
@@ -176,26 +184,45 @@ class Test_CustomCostTransportNetwork:
                     names,
                     sensitivities,
                     custom_cost_data_sets,
-                    allow_null_costs,
+                    allow_missing_osmids,
                 )
 
+    @pytest.mark.parametrize(
+        "names, sensitivities, custom_cost_data_sets, allow_missing_osmids",
+        [
+            (["test_cost_1"], 1.1, {"1": 1.1, "2": 1.2}, True),
+            (
+                ["test_cost_1", "test_cost_2"],
+                [1.1, 1.2],
+                [{"1": 1.1, "2": 1.2}, {"3": 1.3, "4": 1.4}],
+                [True, False],
+            ),
+        ],
+    )
     @pytest.mark.skipif(
         r5_supports_custom_costs() is False,
         reason="R5 version does not support custom costs",
     )
-    def test_multiple_custom_cost_data_sets(self):
+    def test_single_and_multiple_custom_cost_data_sets(
+        self, names, sensitivities, custom_cost_data_sets, allow_missing_osmids
+    ):
         custom_cost_transport_network = r5py.CustomCostTransportNetwork(
             r5py.sampledata.helsinki.osm_pbf,
-            ["test_cost_1", "test_cost_2"],
-            [1.1, 1.2],
-            [{"1": 1.1, "2": 1.2}, {"3": 1.3, "4": 1.4}],
+            names,
+            sensitivities,
+            custom_cost_data_sets,
+            allow_missing_osmids,
         )
-        assert custom_cost_transport_network.names == ["test_cost_1", "test_cost_2"]
-        assert custom_cost_transport_network.sensitivities == [1.1, 1.2]
-        assert custom_cost_transport_network.custom_cost_data_sets == [
-            {"1": 1.1, "2": 1.2},
-            {"3": 1.3, "4": 1.4},
-        ]
+        assert custom_cost_transport_network.names == names
+        # CustomCostTransportNetwork should convert params to list so do it here too manually
+        if not isinstance(sensitivities, list):
+            sensitivities = [sensitivities]
+        assert custom_cost_transport_network.sensitivities == sensitivities
+        if not isinstance(custom_cost_data_sets, list):
+            custom_cost_data_sets = [custom_cost_data_sets]
+        assert (
+            custom_cost_transport_network.custom_cost_data_sets == custom_cost_data_sets
+        )
 
     @pytest.mark.skipif(
         r5_supports_custom_costs() is False,

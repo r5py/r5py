@@ -17,27 +17,33 @@ class TestValidatingRequestSession:
         assert validating_request_session._algorithm == hashlib.sha256
 
     def test_get(self, r5_jar_url, r5_jar_sha256):
-        with ValidatingRequestsSession() as session, session.get(
-            r5_jar_url, r5_jar_sha256
-        ) as response:
+        with (
+            ValidatingRequestsSession() as session,
+            session.get(r5_jar_url, r5_jar_sha256) as response,
+        ):
             assert response.content
 
     def test_get_invalid_checksum(self, r5_jar_url, r5_jar_sha256_invalid):
         with pytest.raises(ChecksumFailed):
-            with ValidatingRequestsSession() as session, session.get(
-                r5_jar_url, r5_jar_sha256_invalid
-            ) as response:
+            with (
+                ValidatingRequestsSession() as session,
+                session.get(r5_jar_url, r5_jar_sha256_invalid) as response,
+            ):
                 assert response.content
 
     def test_post(self, r5_jar_url, r5_jar_sha256_github_error_message_when_posting):
-        with ValidatingRequestsSession() as session, session.post(
-            r5_jar_url, r5_jar_sha256_github_error_message_when_posting
-        ) as response:
+        with (
+            ValidatingRequestsSession() as session,
+            session.post(
+                r5_jar_url, r5_jar_sha256_github_error_message_when_posting
+            ) as response,
+        ):
             assert response.content
 
     def test_post_invalid_checksum(self, r5_jar_url, r5_jar_sha256_invalid):
         with pytest.raises(ChecksumFailed):
-            with ValidatingRequestsSession() as session, session.post(
-                r5_jar_url, r5_jar_sha256_invalid
-            ) as response:
+            with (
+                ValidatingRequestsSession() as session,
+                session.post(r5_jar_url, r5_jar_sha256_invalid) as response,
+            ):
                 assert response.content

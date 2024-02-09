@@ -534,8 +534,8 @@ class TripPlanner:
                     TransportMode.WALK,
                 )
 
-                transfer_path = self._transfer_paths[
-                    (from_stop, to_stop)
-                ] = TransferLeg(TransportMode.WALK, street_segment)
+                transfer_path = self._transfer_paths[(from_stop, to_stop)] = (
+                    TransferLeg(TransportMode.WALK, street_segment)
+                )
 
                 return transfer_path

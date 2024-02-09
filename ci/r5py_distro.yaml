@@ -13,5 +13,6 @@ dependencies:
     - mapclassify
     - numpy
     - pandas
+    - pyarrow
     - r5py
     - shapely

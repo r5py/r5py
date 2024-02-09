@@ -60,7 +60,8 @@ class SampleDataSet(pathlib.Path):
                     RuntimeWarning,
                 )
             self.cached_path.parent.mkdir(exist_ok=True)
-            with ValidatingRequestsSession() as session, session.get(
-                self.remote_url, self.checksum
-            ) as response:
+            with (
+                ValidatingRequestsSession() as session,
+                session.get(self.remote_url, self.checksum) as response,
+            ):
                 self.cached_path.write_bytes(response.content)

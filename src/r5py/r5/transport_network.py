@@ -66,10 +66,12 @@ class TransportNetwork:
         transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
 
         # add custom cost datas for custom cost routing
-        if hasattr(self, "custom_cost_data_sets") and hasattr(
-            self, "add_custom_cost_data_to_network"
+        if hasattr(self, "custom_cost_segment_weight_factors") and hasattr(
+            self, "add_custom_cost_segment_weight_factors_to_network"
         ):
-            transport_network = self.add_custom_cost_data_to_network(transport_network)
+            transport_network = self.add_custom_cost_segment_weight_factors_to_network(
+                transport_network
+            )
 
         transport_network.streetLayer.loadFromOsm(osm_file)
         transport_network.streetLayer.parentNetwork = transport_network

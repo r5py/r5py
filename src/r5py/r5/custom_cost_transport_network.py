@@ -34,42 +34,44 @@ def r5_supports_custom_costs():
 
 
 class CustomCostTransportNetwork(TransportNetwork):
-    """Inherit from TransportNetwork, adds custom cost data routing functionality."""
+    """Inherit from TransportNetwork, adds custom cost routing functionality."""
 
     def __init__(
         self,
         osm_pbf,
         names,
         sensitivities,
-        custom_cost_data_sets,
-        allow_null_costs=True,
+        custom_cost_segment_weight_factors,
+        allow_missing_osmids=True,
     ):
         """
         Initialise a transport network with custom weighting cost factors.
         Supports single or multiple cost factor sets.
         Must always have the same number of:
-        names, sensitivities, and custom_cost_data_sets, and also allow_null_costs if multiple provided.
+        names, sensitivities, and custom_cost_segment_weight_factors, and also allow_missing_osmids if multiple provided.
         Multiple datasets so lists of parameters are paired together by "index" order using zip.
-        So the first parameters of each list are used together, then the second ones, and so on.
+        So the first parameters of each parameter list are used together, then the second ones, and so on.
 
         Arguments
         ---------
         osm_pbf : str
-            file path of an OpenStreetMap extract in PBF format
+            File path of an OpenStreetMap extract in PBF format.
         names : str | List[str]
-            single name or multiple names of the custom costs
+            Single name or multiple names of the custom costs.
         sensitivities : float | int | List[float | int]
-            single or multiple sensitivities of the custom costs
-        custom_cost_data_sets : Dict[str, float] | List[Dict[str, float]]
-            single or multiple custom cost data to be used in routing.
-            str key is osmid, float value is custom cost factor per road segment (edge/way).
-            When multiple custom cost datas are provided, all of those custom cost datas will be combined
+            Single or multiple sensitivities of the custom costs.
+        custom_cost_segment_weight_factors : Dict[str, float] | List[Dict[str, float]]
+            Single or multiple custom cost factors to be used in routing.
+            Str key is osmid, float value is custom cost factor per road segment (edge/way).
+            Factors will be used to calculate additional seconds per road segment with formula:
+            baseTravelTimeSeconds * customCostFactor * sensitivity.
+            When multiple custom cost datas are provided, all of those custom cost factors will be combined
             for each road segment during r5 custom cost routing.
-        allow_null_costs : bool | List[bool], default True
-            Define whether to allow null costs in routing. Default is True.
-            If multiple sets of other data are provided but allow_null_costs is not provided,
+        allow_missing_osmids : bool | List[bool], default True
+            Define whether to allow missing osmids in routing. Default is True.
+            If multiple sets of other data are provided but allow_missing_osmids is not provided,
             will populate default for all custom costs.
-            If multiple allow_null_costs or are provided, they must be of the same amount as other parameters.
+            If multiple allow_missing_osmids or are provided, they must be of the same amount as other parameters.
             Using False might be affected by public transit edges if they are added and used in routing.
             If set to False and ANY edges aren't found during routing, routing will throw exception,
             so in most cases the default True should be used.
@@ -86,23 +88,36 @@ class CustomCostTransportNetwork(TransportNetwork):
             )
         # convert single items into lists if they are not already
         # this enables use of only 1 set of parameters
-        names, sensitivities, custom_cost_data_sets, allow_null_costs = (
-            self.convert_params_to_lists(
-                names, sensitivities, custom_cost_data_sets, allow_null_costs
-            )
+        (
+            names,
+            sensitivities,
+            custom_cost_segment_weight_factors,
+            allow_missing_osmids,
+        ) = self.convert_params_to_lists(
+            names,
+            sensitivities,
+            custom_cost_segment_weight_factors,
+            allow_missing_osmids,
         )
         self.validate_custom_cost_params(
-            names, sensitivities, custom_cost_data_sets, allow_null_costs
+            names,
+            sensitivities,
+            custom_cost_segment_weight_factors,
+            allow_missing_osmids,
         )
         self.names = names
         self.sensitivities = sensitivities
-        self.custom_cost_data_sets = custom_cost_data_sets
-        self.allow_null_costs = allow_null_costs
+        self.custom_cost_segment_weight_factors = custom_cost_segment_weight_factors
+        self.allow_missing_osmids = allow_missing_osmids
         # GTFS is currently not supported for custom cost transport network
         super().__init__(osm_pbf, gtfs=[])
 
     def convert_params_to_lists(
-        self, names, sensitivities, custom_cost_data_sets, allow_null_costs
+        self,
+        names,
+        sensitivities,
+        custom_cost_segment_weight_factors,
+        allow_missing_osmids,
     ):
         """
         Convert single items into lists if they are not already.
@@ -110,45 +125,74 @@ class CustomCostTransportNetwork(TransportNetwork):
         Arguments:
         ----------
         names : str | List[str]
-            single name or names of the custom costs
+            Single name or names of the custom costs.
         sensitivities : float | int | List[float | int]
-            single or multiple sensitivities of the custom costs
-        custom_cost_data_sets : Dict[str, float] | List[Dict[str, float]]
-            single or multiple custom cost datas to be used in routing.
-        allow_null_costs : bool | List[bool], default True (optional)
-            define whether to allow null costs in routing.
+            Single or multiple sensitivities of the custom costs.
+        custom_cost_segment_weight_factors : Dict[str, float] | List[Dict[str, float]]
+            Single or multiple custom cost factors to be used in routing.
+        allow_missing_osmids : bool | List[bool], default True (optional)
+            Define whether to allow missing osmids.
 
         Returns:
         --------
         names : List[str]
         sensitivities : List[float | int]
-        custom_cost_data_sets : List[Dict[str, float]]
-        allow_null_costs : List[bool]
+        custom_cost_segment_weight_factors : List[Dict[str, float]]
+        allow_missing_osmids : List[bool]
         """
         if not isinstance(names, list):
             names = [names]
         if not isinstance(sensitivities, list):
             sensitivities = [sensitivities]
-        if not isinstance(custom_cost_data_sets, list):
-            custom_cost_data_sets = [custom_cost_data_sets]
-        if not isinstance(allow_null_costs, list):
-            allow_null_costs = [allow_null_costs]
-            # if using multiple sets and if optional allow_null_costs is not provided,
-            # populate the default for all custom costs if many cost dicts provided and only one allow_null_costs
-            if len(custom_cost_data_sets) > 1 and len(allow_null_costs) == 1:
-                allow_null_costs = [allow_null_costs[0]] * len(custom_cost_data_sets)
-        return names, sensitivities, custom_cost_data_sets, allow_null_costs
+        if not isinstance(custom_cost_segment_weight_factors, list):
+            custom_cost_segment_weight_factors = [custom_cost_segment_weight_factors]
+        if not isinstance(allow_missing_osmids, list):
+            allow_missing_osmids = [allow_missing_osmids]
+            # if using multiple sets and if optional allow_missing_osmids is not provided,
+            # populate the default for all custom costs if many cost dicts provided and only one allow_missing_osmids
+            if (
+                len(custom_cost_segment_weight_factors) > 1
+                and len(allow_missing_osmids) == 1
+            ):
+                allow_missing_osmids = [allow_missing_osmids[0]] * len(
+                    custom_cost_segment_weight_factors
+                )
+        return (
+            names,
+            sensitivities,
+            custom_cost_segment_weight_factors,
+            allow_missing_osmids,
+        )
 
     def validate_custom_cost_params(
-        self, names, sensitivities, custom_cost_data_sets, allow_null_costs
+        self,
+        names,
+        sensitivities,
+        custom_cost_segment_weight_factors,
+        allow_missing_osmids,
     ):
-        """Validate custom cost parameters."""
+        """
+        Validate CustomCostTransportNetwork parameters.
+        All parameters are transformed into lists already in convert_params_to_lists method.
+
+        Arguments:
+        ----------
+        names : List[str]
+        sensitivities : List[float | int]
+        custom_cost_segment_weight_factors : List[Dict[str, float]]
+        allow_missing_osmids : List[bool]
+
+        Raises:
+        -------
+        CustomCostDataError
+            If any of the parameters are not valid.
+        """
         # parameters are lists and non-empty
         params = {
             "names": names,
             "sensitivities": sensitivities,
-            "custom_cost_data_sets": custom_cost_data_sets,
-            "allow_null_costs": allow_null_costs,
+            "custom_cost_segment_weight_factors": custom_cost_segment_weight_factors,
+            "allow_missing_osmids": allow_missing_osmids,
         }
         for param_name, param_value in params.items():
             if not isinstance(param_value, list):
@@ -159,12 +203,12 @@ class CustomCostTransportNetwork(TransportNetwork):
         # lists are of the same length
         if len(set(map(len, params.values()))) != 1:
             raise CustomCostDataError(
-                "CustomCostTransportNetwork names, sensitivities, and custom_cost_data_sets must be of the same length, and allow_null_costs if multiple provided"
+                "CustomCostTransportNetwork names, sensitivities, and custom_cost_segment_weight_factors must be of the same length, and allow_missing_osmids if multiple provided"
             )
 
         # check individual item types
-        for name, sensitivity, custom_cost_data in zip(
-            names, sensitivities, custom_cost_data_sets
+        for name, sensitivity, custom_cost_segment_weight_factors in zip(
+            names, sensitivities, custom_cost_segment_weight_factors
         ):
             if not isinstance(name, str):
                 raise CustomCostDataError(
@@ -175,39 +219,56 @@ class CustomCostTransportNetwork(TransportNetwork):
                     "CustomCostTransportNetwork sensitivities must be floats or integers"
                 )
             if (
-                len(custom_cost_data) == 0
-                or not isinstance(custom_cost_data, dict)
+                len(custom_cost_segment_weight_factors) == 0
+                or not isinstance(custom_cost_segment_weight_factors, dict)
                 or not all(
                     isinstance(key, str) and isinstance(value, float)
-                    for key, value in custom_cost_data.items()
+                    for key, value in custom_cost_segment_weight_factors.items()
                 )
             ):
                 raise CustomCostDataError(
-                    "custom_cost_data_sets must be dicts with string keys and float values"
+                    "custom_cost_segment_weight_factors must be dicts with string keys and float values"
                 )
-        # check that all allow_null_costs are list and bools
+        # check that all allow_missing_osmids are list and bools
         if not all(
-            isinstance(allow_null_cost, bool) for allow_null_cost in allow_null_costs
+            isinstance(allow_null_cost, bool)
+            for allow_null_cost in allow_missing_osmids
         ):
             raise CustomCostDataError(
-                "CustomCostTransportNetwork allow_null_costs must be bools"
+                "CustomCostTransportNetwork allow_missing_osmids must be bools"
             )
 
-    def add_custom_cost_data_to_network(self, transport_network):
-        """Custom hook for adding custom cost data to the transport network edges."""
+    def add_custom_cost_segment_weight_factors_to_network(self, transport_network):
+        """
+        Custom hook for adding custom cost data to the transport network road segments.
+
+        Arguments:
+        ----------
+        transport_network : com.conveyal.r5.transit.TransportNetwork
+            R5 transport network object.
+
+        Returns:
+        --------
+        com.conveyal.r5.transit.TransportNetwork
+            R5 transport network object with custom cost factors added to streetLayer.edgeStore.costFields.
+        """
         vertex_store = com.conveyal.r5.streets.VertexStore(100_000)
         edge_store = com.conveyal.r5.streets.EdgeStore(
             vertex_store, transport_network.streetLayer, 2_000_000
         )
         transport_network.streetLayer.vertexStore = vertex_store
         transport_network.streetLayer.edgeStore = edge_store
-        converted_custom_cost_data = convert_python_custom_costs_to_java_custom_costs(
-            self.names,
-            self.sensitivities,
-            self.custom_cost_data_sets,
-            self.allow_null_costs,
+        converted_custom_cost_segment_weight_factors = (
+            convert_python_custom_costs_to_java_custom_costs(
+                self.names,
+                self.sensitivities,
+                self.custom_cost_segment_weight_factors,
+                self.allow_missing_osmids,
+            )
         )
-        transport_network.streetLayer.edgeStore.costFields = converted_custom_cost_data
+        transport_network.streetLayer.edgeStore.costFields = (
+            converted_custom_cost_segment_weight_factors
+        )
         self._transport_network = transport_network
         return transport_network
 
@@ -222,14 +283,11 @@ class CustomCostTransportNetwork(TransportNetwork):
         Arguments:
         ----------
         method_name : str
-            name of the method to be called from the custom cost transport network
-            this can be either: getAdditionalTravelTimes or getTravelTimes
-            getAdditionalTravelTimes returns the additional travel times from the custom cost instances
-            getTravelTimes returns the base travel times from the custom cost instances
-            both methods return a Java HashMap with Osmid as key and travel time as value
-
-            note: in getTravelTimes the value is actual seconds but in getAdditionalTravelTimes
-            the value more of a cost than actual seconds
+            Name of the method to be called from the custom cost transport network.
+            This can be either: getAdditionalTravelTimes or getTravelTimes.
+            getAdditionalTravelTimes returns the additional travel times from the custom cost instances,
+            getTravelTimes returns the base travel times from the custom cost instances.
+            Both methods return a Java HashMap with Osmid as key and travel time as value.
 
         osmids : List[str | int] (optional)
             list of osmids to get travel times for. If not provided, return all travel times.
@@ -242,6 +300,15 @@ class CustomCostTransportNetwork(TransportNetwork):
         travel_times_per_custom_cost: List[Tuple[str, Dict[str, int]]]
             list of tuples of custom cost name and travel times per custom cost routing
 
+        Raises:
+        -------
+        CustomCostDataError
+            If failed to get base travel times from custom cost transport network.
+
+        Notes:
+        ------
+        In getTravelTimes the value is actual seconds but in getAdditionalTravelTimes
+        the value more of a cost than actual seconds for it is calculated using baseTravelTimeSeconds * sensitivity * customCostFactor.
         """
         try:
             cost_fields_list = list(
@@ -295,15 +362,16 @@ class CustomCostTransportNetwork(TransportNetwork):
         Arguments:
         ----------
         osmids : List[str | int] (optional)
-            list of osmids to get base travel times for. If not provided, return all base travel times.
+            List of osmids to get base travel times for. If not provided, return all base travel times.
         merged : bool, default False
-            define if the base travel times should be merged into a single dict or not
+            Define if the base travel times should be merged into a single dict or not.
 
         Returns:
         --------
-        List[Tuple[str, Dict[str, int]]]
-            list of tuples of custom cost name and base travel times
-            each tuple represents one custom cost, if merged is True, only one tuple is returned
+        Tuple[str, Dict[str, int]] | List[Tuple[str, Dict[str, int]]]
+            List of tuples of custom cost name and base travel times.
+            Each tuple represents one custom cost.
+            If merged is True, all the used customCosts are merged and only one tuple is returned.
         """
         return self._fetch_network_custom_cost_travel_time_product(
             "getBaseTraveltimes", osmids, merged
@@ -321,9 +389,10 @@ class CustomCostTransportNetwork(TransportNetwork):
 
         Returns:
         --------
-        List[Tuple[str, Dict[str, int]]]
+        Tuple[str, Dict[str, int]] | List[Tuple[str, Dict[str, int]]]
             List of tuples of custom cost name and additional travel timecosts.
-            Each tuple represents one custom cost, if merged is True, only one tuple is returned
+            Each tuple represents one custom cost.
+            If merged is True, all the used customCosts are merged and only one tuple is returned.
         """
         return self._fetch_network_custom_cost_travel_time_product(
             "getcustomCostAdditionalTraveltimes", osmids, merged

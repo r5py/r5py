@@ -7,7 +7,7 @@ from r5py.r5.custom_cost_transport_network import r5_supports_custom_costs
 from r5py.util.custom_cost_conversions import (
     convert_custom_cost_instances_to_java_list,
     convert_python_dict_to_java_hashmap,
-    convert_custom_cost_data_to_custom_cost_instance,
+    convert_custom_cost_segment_weight_factors_to_custom_cost_instance,
 )
 import pytest
 import jpype
@@ -92,12 +92,14 @@ class Test_CustomCostTransportNetwork:
         r5_supports_custom_costs() is False,
         reason="R5 version does not support custom costs",
     )
-    def test_convert_custom_cost_data_to_custom_cost_instance(
+    def test_convert_custom_cost_segment_weight_factors_to_custom_cost_instance(
         self, custom_cost_hashmap
     ):
         assert isinstance(custom_cost_hashmap, jpype.java.util.HashMap)
-        custom_cost_instance = convert_custom_cost_data_to_custom_cost_instance(
-            "test_name", 1.3, custom_cost_hashmap, True
+        custom_cost_instance = (
+            convert_custom_cost_segment_weight_factors_to_custom_cost_instance(
+                "test_name", 1.3, custom_cost_hashmap, True
+            )
         )
         assert isinstance(
             custom_cost_instance, com.conveyal.r5.rastercost.CustomCostField
@@ -133,7 +135,7 @@ class Test_CustomCostTransportNetwork:
     # TEST CUSTOM COST TRANSPORT NETWORK INITIALIZATION AND VALIDATION
 
     @pytest.mark.parametrize(
-        "names, sensitivities, custom_cost_data_sets, allow_missing_osmids",
+        "names, sensitivities, custom_cost_segment_weight_factors, allow_missing_osmids",
         [
             ("test_cost", 1.1, [], True),
             ([], 1.1, [{}], True),
@@ -173,7 +175,11 @@ class Test_CustomCostTransportNetwork:
         reason="R5 version does not support custom costs",
     )
     def test_custom_cost_params_invalid_params(
-        self, names, sensitivities, custom_cost_data_sets, allow_missing_osmids
+        self,
+        names,
+        sensitivities,
+        custom_cost_segment_weight_factors,
+        allow_missing_osmids,
     ):
         from r5py.util.exceptions import CustomCostDataError
 
@@ -183,12 +189,12 @@ class Test_CustomCostTransportNetwork:
                     r5py.sampledata.helsinki.osm_pbf,
                     names,
                     sensitivities,
-                    custom_cost_data_sets,
+                    custom_cost_segment_weight_factors,
                     allow_missing_osmids,
                 )
 
     @pytest.mark.parametrize(
-        "names, sensitivities, custom_cost_data_sets, allow_missing_osmids",
+        "names, sensitivities, custom_cost_segment_weight_factors, allow_missing_osmids",
         [
             (["test_cost_1"], 1.1, {"1": 1.1, "2": 1.2}, True),
             (
@@ -203,14 +209,18 @@ class Test_CustomCostTransportNetwork:
         r5_supports_custom_costs() is False,
         reason="R5 version does not support custom costs",
     )
-    def test_single_and_multiple_custom_cost_data_sets(
-        self, names, sensitivities, custom_cost_data_sets, allow_missing_osmids
+    def test_single_and_multiple_custom_cost_segment_weight_factors_sets(
+        self,
+        names,
+        sensitivities,
+        custom_cost_segment_weight_factors,
+        allow_missing_osmids,
     ):
         custom_cost_transport_network = r5py.CustomCostTransportNetwork(
             r5py.sampledata.helsinki.osm_pbf,
             names,
             sensitivities,
-            custom_cost_data_sets,
+            custom_cost_segment_weight_factors,
             allow_missing_osmids,
         )
         assert custom_cost_transport_network.names == names
@@ -218,10 +228,11 @@ class Test_CustomCostTransportNetwork:
         if not isinstance(sensitivities, list):
             sensitivities = [sensitivities]
         assert custom_cost_transport_network.sensitivities == sensitivities
-        if not isinstance(custom_cost_data_sets, list):
-            custom_cost_data_sets = [custom_cost_data_sets]
+        if not isinstance(custom_cost_segment_weight_factors, list):
+            custom_cost_segment_weight_factors = [custom_cost_segment_weight_factors]
         assert (
-            custom_cost_transport_network.custom_cost_data_sets == custom_cost_data_sets
+            custom_cost_transport_network.custom_cost_segment_weight_factors
+            == custom_cost_segment_weight_factors
         )
 
     @pytest.mark.skipif(

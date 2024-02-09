@@ -20,7 +20,7 @@ import geopandas
 import pandas
 import pytest
 from r5py.util.custom_cost_conversions import (
-    convert_custom_cost_data_to_custom_cost_instance,
+    convert_custom_cost_segment_weight_factors_to_custom_cost_instance,
     convert_custom_cost_instances_to_java_list,
     convert_python_dict_to_java_hashmap,
 )
@@ -403,7 +403,7 @@ def custom_cost_hashmap(custom_cost_test_values):
 
 @pytest.fixture(scope="session")
 def custom_cost_instance(custom_cost_hashmap):
-    yield convert_custom_cost_data_to_custom_cost_instance(
+    yield convert_custom_cost_segment_weight_factors_to_custom_cost_instance(
         "test_name", 1.3, custom_cost_hashmap, True
     )
 

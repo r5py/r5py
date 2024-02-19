@@ -137,7 +137,7 @@ def convert_python_custom_costs_to_java_custom_costs(
             custom_cost_instances
         )
         return custom_cost_list
-    except:
+    except CustomCostConversionError as e:
         raise CustomCostConversionError(
             "Failed to convert from python to java for custom cost factors. custom_cost_segment_weight_factors must be provided for custom cost transport network"
-        )
+        ) from e

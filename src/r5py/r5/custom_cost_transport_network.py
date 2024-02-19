@@ -82,7 +82,7 @@ class CustomCostTransportNetwork(TransportNetwork):
             raise RuntimeError(
                 """Custom costs are not supported in this version of R5.
                 Correct (Green Paths 2 patched) R5 version can be found from branch gp2 in
-                https://github.com/DigitalGeographyLab/r5. Or by using a release jar from address e.g. 
+                https://github.com/DigitalGeographyLab/r5. Or by using a release jar from address e.g.
                 https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar
                 """
             )
@@ -349,10 +349,10 @@ class CustomCostTransportNetwork(TransportNetwork):
                 return [(merged_name, merged_travel_times)]
             # return times per custom cost routing
             return travel_times_per_custom_cost
-        except:
+        except CustomCostDataError as e:
             raise CustomCostDataError(
                 "Failed to get base travel times from custom cost transport network."
-            )
+            ) from e
 
     # kept two similar getters for intuitive abstraction, naming and clarity for user
 

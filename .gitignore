@@ -43,5 +43,3 @@ coverage.xml
 *.log
 *.csv
 .coverage*
-
-src/elias_article

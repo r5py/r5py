@@ -34,7 +34,7 @@ dependencies:
     - nbstripout
     - openjdk>=21
     - pyarrow
-    - pytest
+    - pytest<8
     - pytest-asyncio
     - pytest-cov
     - pytest-lazy-fixture

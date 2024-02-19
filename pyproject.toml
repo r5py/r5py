@@ -49,7 +49,7 @@ docs = ["contextily", "folium", "GitPython", "h3>=4.0.0b2", "jupyterlab_myst",
         "r5py.sampledata.helsinki>=0.1.1", "r5py.sampledata.sao_paulo>=0.1.1",
         "shapely", "sphinx", "sphinx-book-theme", "sphinx-design",
         "sphinxcontrib-bibtex", "sphinxcontrib-images"]
-tests = ["pyarrow", "pytest", "pytest-asyncio", "pytest-cov",
+tests = ["pyarrow", "pytest<8", "pytest-asyncio", "pytest-cov",
          "pytest-lazy-fixture", "r5py.sampledata.helsinki>=0.1.1",
          "r5py.sampledata.sao_paulo>=0.1.1"]
 

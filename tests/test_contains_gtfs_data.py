@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 
-import pytest  # noqa: F401
+import pytest
+import pytest_lazy_fixtures
 
 import r5py
 
@@ -10,8 +11,8 @@ class TestContainsGtfsData:
     @pytest.mark.parametrize(
         ["path", "expected"],
         [
-            (pytest.lazy_fixture("gtfs_file"), True),
-            (pytest.lazy_fixture("not_a_gtfs_file"), False),
+            (pytest_lazy_fixtures.lf("gtfs_file"), True),
+            (pytest_lazy_fixtures.lf("not_a_gtfs_file"), False),
         ],
     )
     def test_contains_gtfs_data(self, path, expected):

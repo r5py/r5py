@@ -3,7 +3,8 @@
 import geopandas
 import pandas
 import datetime
-import pytest  # noqa: F401
+import pytest
+import pytest_lazy_fixtures
 
 import r5py
 import r5py.util.exceptions
@@ -40,11 +41,11 @@ class TestTravelTimeMatrixInputValidation:
         ],
         [
             (
-                pytest.lazy_fixture("origins_invalid_no_id"),
+                pytest_lazy_fixtures.lf("origins_invalid_no_id"),
                 r5py.util.exceptions.NoIDColumnError,
             ),
             (
-                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                pytest_lazy_fixtures.lf("origins_invalid_duplicate_ids"),
                 r5py.util.exceptions.NonUniqueIDError,
             ),
         ],
@@ -83,23 +84,23 @@ class TestTravelTimeMatrixInputValidation:
         ],
         [
             (
-                pytest.lazy_fixture("origins_invalid_no_id"),
-                pytest.lazy_fixture("origins_invalid_no_id"),
+                pytest_lazy_fixtures.lf("origins_invalid_no_id"),
+                pytest_lazy_fixtures.lf("origins_invalid_no_id"),
                 r5py.util.exceptions.NoIDColumnError,
             ),
             (
-                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
-                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                pytest_lazy_fixtures.lf("origins_invalid_duplicate_ids"),
+                pytest_lazy_fixtures.lf("origins_invalid_duplicate_ids"),
                 r5py.util.exceptions.NonUniqueIDError,
             ),
             (
-                pytest.lazy_fixture("origins_invalid_no_id"),
-                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                pytest_lazy_fixtures.lf("origins_invalid_no_id"),
+                pytest_lazy_fixtures.lf("origins_invalid_duplicate_ids"),
                 r5py.util.exceptions.NoIDColumnError,
             ),
             (
-                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
-                pytest.lazy_fixture("origins_invalid_no_id"),
+                pytest_lazy_fixtures.lf("origins_invalid_duplicate_ids"),
+                pytest_lazy_fixtures.lf("origins_invalid_no_id"),
                 r5py.util.exceptions.NonUniqueIDError,
             ),
         ],
@@ -128,8 +129,8 @@ class TestTravelTimeMatrixInputValidation:
         ],
         [
             (
-                pytest.lazy_fixture("origins_valid_ids"),
-                pytest.lazy_fixture("origins_valid_ids"),
+                pytest_lazy_fixtures.lf("origins_valid_ids"),
+                pytest_lazy_fixtures.lf("origins_valid_ids"),
             )
         ],
     )
@@ -376,11 +377,11 @@ class TestTravelTimeMatrixComputer:
         [
             (
                 True,
-                pytest.lazy_fixture("walking_times_snapped"),
+                pytest_lazy_fixtures.lf("walking_times_snapped"),
             ),
             (
                 False,
-                pytest.lazy_fixture("walking_times_not_snapped"),
+                pytest_lazy_fixtures.lf("walking_times_not_snapped"),
             ),
         ],
     )

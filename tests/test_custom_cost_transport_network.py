@@ -86,7 +86,7 @@ class Test_CustomCostTransportNetwork:
         converted_data = convert_python_dict_to_java_hashmap(custom_cost_test_values)
         assert isinstance(converted_data, jpype.java.util.HashMap)
         assert converted_data.get(12345) == 1.0
-        assert converted_data.isEmpty() == False
+        assert converted_data.isEmpty() is False
 
     @pytest.mark.skipif(
         r5_supports_custom_costs() is False,
@@ -107,7 +107,7 @@ class Test_CustomCostTransportNetwork:
         assert custom_cost_instance.getDisplayKey() == "test_name"
         assert custom_cost_instance.getSensitivityCoefficient() == 1.3
         assert custom_cost_instance.getDisplayValue(12345) == 1.0
-        assert custom_cost_instance.getCustomCostFactors().isEmpty() == False
+        assert custom_cost_instance.getCustomCostFactors().isEmpty() is False
 
     @pytest.mark.skipif(
         r5_supports_custom_costs() is False,

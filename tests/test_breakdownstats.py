@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-import pytest  # noqa: F401
+import pytest
 
 import r5py
 import com.conveyal.r5

@@ -349,7 +349,7 @@ following input arguments:
 
 - `osm_pbf`: `string` filepath for osm.pbf road network file. Be mindfull of OSM
   way segmenting for accurate results. See [info on Segmenting OSM
-  ways](advanced-use.html#multi-objective-routing-green-paths-2)).
+  ways](advanced-use.md#multi-objective-routing-green-paths-2)).
 
 - `names`: `string` | `List[string]` name(s) which describes the dataset used
   for the factor calculations.

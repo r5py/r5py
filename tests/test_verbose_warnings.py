@@ -45,6 +45,9 @@ class TestVerboseWarnings:
         with pytest.warns(
             RuntimeWarning,
             match="No destinations specified, computing an all-to-all matrix",
+        ), pytest.warns(
+            RuntimeWarning,
+            match="No routing destinations defined, using origins as destinations, too.",
         ):
             r5py.DetailedItinerariesComputer(
                 transport_network=transport_network,

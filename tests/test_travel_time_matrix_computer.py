@@ -421,7 +421,10 @@ class TestTravelTimeMatrixComputer:
         ).reset_index(drop=False)
         with pytest.warns(
             RuntimeWarning,
-            match="Some destination points could not be snapped to the street network",
+            match=(
+                "Some (origin|destination) points could not "
+                "be snapped to the street network"
+            ),
         ):
             travel_time_matrix = r5py.TravelTimeMatrixComputer(
                 transport_network,

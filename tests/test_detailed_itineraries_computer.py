@@ -6,6 +6,7 @@ import geopandas
 import geopandas.testing
 import pandas
 import pytest
+import pytest_lazy_fixtures
 
 import r5py
 from r5py.r5.custom_cost_transport_network import r5_supports_custom_costs
@@ -20,11 +21,11 @@ class TestDetailedItinerariesComputerInputValidation:
         ],
         [
             (
-                pytest.lazy_fixture("origins_invalid_no_id"),
+                pytest_lazy_fixtures.lf("origins_invalid_no_id"),
                 r5py.util.exceptions.NoIDColumnError,
             ),
             (
-                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                pytest_lazy_fixtures.lf("origins_invalid_duplicate_ids"),
                 r5py.util.exceptions.NonUniqueIDError,
             ),
         ],
@@ -65,23 +66,23 @@ class TestDetailedItinerariesComputerInputValidation:
         ],
         [
             (
-                pytest.lazy_fixture("origins_invalid_no_id"),
-                pytest.lazy_fixture("origins_invalid_no_id"),
+                pytest_lazy_fixtures.lf("origins_invalid_no_id"),
+                pytest_lazy_fixtures.lf("origins_invalid_no_id"),
                 r5py.util.exceptions.NoIDColumnError,
             ),
             (
-                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
-                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                pytest_lazy_fixtures.lf("origins_invalid_duplicate_ids"),
+                pytest_lazy_fixtures.lf("origins_invalid_duplicate_ids"),
                 r5py.util.exceptions.NonUniqueIDError,
             ),
             (
-                pytest.lazy_fixture("origins_invalid_no_id"),
-                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
+                pytest_lazy_fixtures.lf("origins_invalid_no_id"),
+                pytest_lazy_fixtures.lf("origins_invalid_duplicate_ids"),
                 r5py.util.exceptions.NoIDColumnError,
             ),
             (
-                pytest.lazy_fixture("origins_invalid_duplicate_ids"),
-                pytest.lazy_fixture("origins_invalid_no_id"),
+                pytest_lazy_fixtures.lf("origins_invalid_duplicate_ids"),
+                pytest_lazy_fixtures.lf("origins_invalid_no_id"),
                 r5py.util.exceptions.NonUniqueIDError,
             ),
         ],
@@ -110,8 +111,8 @@ class TestDetailedItinerariesComputerInputValidation:
         ],
         [
             (
-                pytest.lazy_fixture("origins_valid_ids"),
-                pytest.lazy_fixture("origins_valid_ids"),
+                pytest_lazy_fixtures.lf("origins_valid_ids"),
+                pytest_lazy_fixtures.lf("origins_valid_ids"),
             )
         ],
     )
@@ -200,29 +201,29 @@ class TestDetailedItinerariesComputer:
         ],
         [
             (
-                pytest.lazy_fixture("population_grid_points_first_three"),
+                pytest_lazy_fixtures.lf("population_grid_points_first_three"),
                 None,
                 False,
                 True,
                 9,
             ),
             (
-                pytest.lazy_fixture("population_grid_points_first_three"),
-                pytest.lazy_fixture("population_grid_points_second_three"),
+                pytest_lazy_fixtures.lf("population_grid_points_first_three"),
+                pytest_lazy_fixtures.lf("population_grid_points_second_three"),
                 False,
                 False,
                 3,
             ),
             (
-                pytest.lazy_fixture("population_grid_points_first_three"),
-                pytest.lazy_fixture("population_grid_points_second_three"),
+                pytest_lazy_fixtures.lf("population_grid_points_first_three"),
+                pytest_lazy_fixtures.lf("population_grid_points_second_three"),
                 True,
                 True,
                 9,
             ),
             (
-                pytest.lazy_fixture("population_grid_points_first_three"),
-                pytest.lazy_fixture("population_grid_points_four"),
+                pytest_lazy_fixtures.lf("population_grid_points_first_three"),
+                pytest_lazy_fixtures.lf("population_grid_points_four"),
                 False,
                 True,
                 12,
@@ -331,11 +332,11 @@ class TestDetailedItinerariesComputer:
         [
             (
                 True,
-                pytest.lazy_fixture("walking_details_snapped"),
+                pytest_lazy_fixtures.lf("walking_details_snapped"),
             ),
             (
                 False,
-                pytest.lazy_fixture("walking_details_not_snapped"),
+                pytest_lazy_fixtures.lf("walking_details_not_snapped"),
             ),
         ],
     )
@@ -383,7 +384,7 @@ class TestDetailedItinerariesComputer:
         ).reset_index(drop=False)
         with pytest.warns(
             RuntimeWarning,
-            match="Some destination points could not be snapped to the street network",
+            match="Some (origin|destination) points could not be snapped to the street network",
         ):
             travel_time_matrix = r5py.TravelTimeMatrixComputer(
                 transport_network,
@@ -405,7 +406,7 @@ class TestDetailedItinerariesComputer:
         ):
             with pytest.warns(
                 RuntimeWarning,
-                match="Some origin points could not be snapped to the street network",
+                match="Some (origin|destination) points could not be snapped to the street network",
             ):
                 travel_time_matrix = r5py.TravelTimeMatrixComputer(
                     transport_network,
@@ -500,19 +501,19 @@ class TestDetailedItinerariesComputer:
         [
             (
                 r5py.TransportMode.BICYCLE,
-                pytest.lazy_fixture("detailed_itineraries_bicycle"),
+                pytest_lazy_fixtures.lf("detailed_itineraries_bicycle"),
             ),
             (
                 r5py.TransportMode.CAR,
-                pytest.lazy_fixture(detailed_itineraries_car),
+                pytest_lazy_fixtures.lf("detailed_itineraries_car"),
             ),
             (
                 r5py.TransportMode.TRANSIT,
-                pytest.lazy_fixture("detailed_itineraries_transit"),
+                pytest_lazy_fixtures.lf("detailed_itineraries_transit"),
             ),
             (
                 r5py.TransportMode.WALK,
-                pytest.lazy_fixture("detailed_itineraries_walk"),
+                pytest_lazy_fixtures.lf("detailed_itineraries_walk"),
             ),
         ],
     )

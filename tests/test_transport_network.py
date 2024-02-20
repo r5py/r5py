@@ -6,6 +6,7 @@ import shutil
 
 import geopandas
 import pytest
+import pytest_lazy_fixtures
 import shapely
 
 from .temporary_directory import TemporaryDirectory
@@ -29,8 +30,8 @@ class Test_TransportNetwork:
     @pytest.mark.parametrize(
         ["transport_network"],
         [
-            (pytest.lazy_fixture("transport_network_from_test_files"),),
-            (pytest.lazy_fixture("transport_network_from_test_directory"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_files"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_directory"),),
         ],
     )
     def test_transport_network_java_object(self, transport_network):
@@ -42,8 +43,8 @@ class Test_TransportNetwork:
     @pytest.mark.parametrize(
         ["transport_network"],
         [
-            (pytest.lazy_fixture("transport_network_from_test_files"),),
-            (pytest.lazy_fixture("transport_network_from_test_directory"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_files"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_directory"),),
         ],
     )
     def test_context(self, transport_network):
@@ -54,8 +55,8 @@ class Test_TransportNetwork:
     @pytest.mark.parametrize(
         ["transport_network"],
         [
-            (pytest.lazy_fixture("transport_network_from_test_files"),),
-            (pytest.lazy_fixture("transport_network_from_test_directory"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_files"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_directory"),),
         ],
     )
     def test_linkage_cache_java_object(self, transport_network):
@@ -66,8 +67,8 @@ class Test_TransportNetwork:
     @pytest.mark.parametrize(
         ["transport_network"],
         [
-            (pytest.lazy_fixture("transport_network_from_test_files"),),
-            (pytest.lazy_fixture("transport_network_from_test_directory"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_files"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_directory"),),
         ],
     )
     def test_street_layer(self, transport_network):
@@ -76,8 +77,8 @@ class Test_TransportNetwork:
     @pytest.mark.parametrize(
         ["transport_network"],
         [
-            (pytest.lazy_fixture("transport_network_from_test_files"),),
-            (pytest.lazy_fixture("transport_network_from_test_directory"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_files"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_directory"),),
         ],
     )
     def test_timezone(self, transport_network, gtfs_timezone_helsinki):
@@ -97,8 +98,8 @@ class Test_TransportNetwork:
     @pytest.mark.parametrize(
         ["transport_network"],
         [
-            (pytest.lazy_fixture("transport_network_from_test_files"),),
-            (pytest.lazy_fixture("transport_network_from_test_directory"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_files"),),
+            (pytest_lazy_fixtures.lf("transport_network_from_test_directory"),),
         ],
     )
     def test_working_copy(self, transport_network):

@@ -28,6 +28,7 @@ class TripLeg:
         "wait_time",
         "route",
         "geometry",
+        "osm_ids",
     ]
 
     def __init__(
@@ -39,6 +40,7 @@ class TripLeg:
         wait_time=datetime.timedelta(seconds=0),
         route=None,
         geometry=shapely.LineString(),
+        osm_ids=None,
     ):
         """
         Represent one leg of a trip.
@@ -69,6 +71,7 @@ class TripLeg:
         self.wait_time = wait_time
         self.route = route
         self.geometry = geometry
+        self.osm_ids = osm_ids
 
     def __add__(self, other):
         from .trip import Trip
@@ -144,6 +147,6 @@ class TripLeg:
         =======
         list : detailed information about this trip leg: ``transport_mode``,
         ``departure_time``, ``distance``, ``travel_time``, ``wait_time``,
-        ``route``, ``geometry``
+        ``route``, ``geometry``, ``osm_ids``
         """
         return [getattr(self, column) for column in self.COLUMNS]

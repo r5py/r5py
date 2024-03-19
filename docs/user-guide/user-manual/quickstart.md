@@ -11,9 +11,7 @@ kernelspec:
   name: python3
 ---
 
-
 # Quickstart
-
 
 +++ {"jupyter": {"source_hidden": true}}
 
@@ -26,10 +24,10 @@ self
 data-requirements
 travel-time-matrices
 Detailed itineraries <detailed-itineraries>
+multi-objective-routing
 advanced-use
 configuration
 :::
-
 
 ```{code-cell}
 :tags: [remove-input, remove-output]
@@ -45,15 +43,13 @@ if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
     sys.argv.extend(["--max-memory", f"{max_memory}"])
 ```
 
-
-One of the core functionalities of *r5py* is to compute travel time matrices
+One of the core functionalities of _r5py_ is to compute travel time matrices
 efficiently, and for large extents such as entire cities or countries. This
 page walks you through the - pleasantly few - steps required to do so.
 
 In our example below, we work with sample data from Helsinki, the capital of
-Finland.  We calculate the travel times on public transport or on foot from all
+Finland. We calculate the travel times on public transport or on foot from all
 cells in a population grid data set to the city’s main railway station.
-
 
 ## Origins and destination
 
@@ -105,15 +101,14 @@ overview_map = railway_station.explore(m=overview_map, marker_type="marker")
 overview_map
 ```
 
-
 ## Transport network
 
-Virtually all operations of *r5py* require a transport network. *R5py*
+Virtually all operations of _r5py_ require a transport network. _R5py_
 understands and reads the following types of transport networks:
 
 - a street network, including infrastructure for cycling and walking, is
   loaded from an [OpenStreetMap
-  extract](https://wiki.openstreetmap.org/wiki/Extracts) in *Protocol Buffer*
+  extract](https://wiki.openstreetmap.org/wiki/Extracts) in _Protocol Buffer_
   (`.pbf`) format (mandatory)
 - a public transport schedule from one or more
   [GTFS](https://en.wikipedia.org/wiki/GTFS) files (optional).
@@ -138,17 +133,16 @@ transport_network = r5py.TransportNetwork(
 )
 ```
 
-At this stage, *r5py* has created a routable transport network, that is stored
+At this stage, _r5py_ has created a routable transport network, that is stored
 in the `transport_network` variable. We can now use this network for travel time
 calculations. Depending on the extent of the network, this step can take up to
 several minutes. Once loaded, you can reuse the same `TransportNetwork` instance
 in subsequent analyses.
 
-
 ## Compute a travel time matrix
 
 A travel time matrix is a dataset of the travel costs (typically, time) between
-given locations (origins and destinations) in a study area.  In *r5py*,
+given locations (origins and destinations) in a study area. In _r5py_,
 {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`s calculate
 these matrices. A
 {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`, once
@@ -157,6 +151,7 @@ such as a different departure time.
 
 A {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` needs (at least)
 the following input arguments:
+
 - a `transport_network` ({class}`r5py.TransportNetwork`), such as the one we
   just created,
 - `origins`, a {class}`geopandas.GeoDataFrame` with one or more points
@@ -207,7 +202,6 @@ travel times in minutes between the points identified by `from_id` and `to_id`
 `id` value in the `to_id` column is the same for all rows because our example
 used only one destination point (the railway station).
 
-
 ## Save results
 
 If you want to continue analysis later, in a different environment, or simply
@@ -219,10 +213,9 @@ frames:
 travel_times.to_csv("travel_times_to_helsinki_railway_station.csv")
 ```
 
-
 ## Plot a result map
 
-To quickly plot the results in a map, *join* the `travel_times` with the input
+To quickly plot the results in a map, _join_ the `travel_times` with the input
 data set `population_grid` and
 {meth}`explore()<geopandas.GeoDataFrame.explore()>` the joint data frame’s
 data.

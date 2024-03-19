@@ -64,15 +64,31 @@ class TransportNetwork:
         self.osm_file = osm_file  # keep the mapdb open, close in destructor
 
         transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
+
+        # add custom cost datas for custom cost routing
+        if hasattr(self, "custom_cost_segment_weight_factors") and hasattr(
+            self, "add_custom_cost_segment_weight_factors_to_network"
+        ):
+            transport_network = self.add_custom_cost_segment_weight_factors_to_network(
+                transport_network
+            )
+
         transport_network.streetLayer.loadFromOsm(osm_file)
         transport_network.streetLayer.parentNetwork = transport_network
         transport_network.streetLayer.indexStreets()
 
         transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
-        for gtfs_file in gtfs:
-            gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(gtfs_file)
-            transport_network.transitLayer.loadFromGtfs(gtfs_feed)
-            gtfs_feed.close()
+        # only load GTFS if it is provided
+        if gtfs:
+            for gtfs_file in gtfs:
+                gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(
+                    gtfs_file
+                )
+                transport_network.transitLayer.loadFromGtfs(gtfs_feed)
+                gtfs_feed.close()
+
+        # need to build indexes even if no GTFS is provided
+        # will cause index errors for custom cost routing if not done
         transport_network.transitLayer.parentNetwork = transport_network
 
         transport_network.streetLayer.associateStops(transport_network.transitLayer)
@@ -80,11 +96,13 @@ class TransportNetwork:
 
         transport_network.transitLayer.rebuildTransientIndexes()
 
-        transfer_finder = com.conveyal.r5.transit.TransferFinder(transport_network)
-        transfer_finder.findTransfers()
-        transfer_finder.findParkRideTransfer()
+        # only build distance tables if GTFS is provided
+        if gtfs:
+            transfer_finder = com.conveyal.r5.transit.TransferFinder(transport_network)
+            transfer_finder.findTransfers()
+            transfer_finder.findParkRideTransfer()
 
-        transport_network.transitLayer.buildDistanceTables(None)
+            transport_network.transitLayer.buildDistanceTables(None)
 
         self._transport_network = transport_network
 

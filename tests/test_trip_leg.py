@@ -103,6 +103,7 @@ class TestTripLeg:
             datetime.timedelta(minutes=2),
             "48A",
             shapely.LineString([[0, 0], [1, 1], [2, 2]]),
+            ["osm_id1", "osm_id2"],
         )
         assert trip_leg.as_table_row() == [
             r5py.TransportMode.TRANSIT,
@@ -112,6 +113,7 @@ class TestTripLeg:
             datetime.timedelta(minutes=2),
             "48A",
             shapely.LineString([[0, 0], [1, 1], [2, 2]]),
+            ["osm_id1", "osm_id2"],
         ]
 
     def test_compare(self):

@@ -9,6 +9,7 @@ import pytest
 import pytest_lazy_fixtures
 
 import r5py
+from r5py.util.classpath import r5_supports_custom_costs
 import r5py.util.exceptions
 
 
@@ -496,7 +497,11 @@ class TestDetailedItinerariesComputer:
             ),
             (
                 r5py.TransportMode.CAR,
-                pytest_lazy_fixtures.lf("detailed_itineraries_car"),
+                (
+                    pytest_lazy_fixtures.lf("detailed_itineraries_car_kmh")
+                    if r5_supports_custom_costs()
+                    else pytest_lazy_fixtures.lf("detailed_itineraries_car_mph")
+                ),
             ),
             (
                 r5py.TransportMode.TRANSIT,
@@ -543,6 +548,11 @@ class TestDetailedItinerariesComputer:
         )
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
+
+        travel_details = travel_details.drop(columns="osm_ids", errors="ignore")
+        expected_travel_details = expected_travel_details.drop(
+            columns="osm_ids", errors="ignore"
+        )
 
         geopandas.testing.assert_geodataframe_equal(
             travel_details,

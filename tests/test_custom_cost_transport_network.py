@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
+import collections
 from unittest.mock import patch
 from r5py.r5.detailed_itineraries_computer import DetailedItinerariesComputer
 from r5py.r5.travel_time_matrix_computer import TravelTimeMatrixComputer
-from r5py.r5.custom_cost_transport_network import r5_supports_custom_costs
+from r5py.util.classpath import r5_supports_custom_costs
 from r5py.util.custom_cost_conversions import (
     convert_custom_cost_instances_to_java_list,
     convert_python_dict_to_java_hashmap,
@@ -139,15 +140,15 @@ class Test_CustomCostTransportNetwork:
         [
             ("test_cost", 1.1, [], True),
             ([], 1.1, [{}], True),
-            ("test_cost", [], [{"12345": 1.0, "67890": 1.5}], True),
+            ("test_cost", [], ({"12345": 1.0, "67890": 1.5}), True),
             ("test_cost", [1], {}, True),
             (
                 ["test_cost"],
                 1,
-                [{"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}],
+                ({"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}),
                 True,
             ),
-            (["name"], [1], ["12345", 67890], True),
+            (("name"), (1), ("12345", 67890), True),
             (
                 ["name_1"],
                 [1.1],
@@ -196,11 +197,11 @@ class Test_CustomCostTransportNetwork:
     @pytest.mark.parametrize(
         "names, sensitivities, custom_cost_segment_weight_factors, allow_missing_osmids",
         [
-            (["test_cost_1"], 1.1, {"1": 1.1, "2": 1.2}, True),
+            (("test_cost_1"), 1.1, ({"1": 1.1, "2": 1.2}), True),
             (
-                ["test_cost_1", "test_cost_2"],
-                [1.1, 1.2],
-                [{"1": 1.1, "2": 1.2}, {"3": 1.3, "4": 1.4}],
+                ("test_cost_1", "test_cost_2"),
+                (1.1, 1.2),
+                ({"1": 1.1, "2": 1.2}, {"3": 1.3, "4": 1.4}),
                 [True, False],
             ),
         ],
@@ -223,12 +224,14 @@ class Test_CustomCostTransportNetwork:
             custom_cost_segment_weight_factors,
             allow_missing_osmids,
         )
+        if not isinstance(names, collections.abc.Iterable) or isinstance(names, str):
+            names = [names]
         assert custom_cost_transport_network.names == names
         # CustomCostTransportNetwork should convert params to list so do it here too manually
-        if not isinstance(sensitivities, list):
+        if not isinstance(sensitivities, collections.abc.Iterable):
             sensitivities = [sensitivities]
         assert custom_cost_transport_network.sensitivities == sensitivities
-        if not isinstance(custom_cost_segment_weight_factors, list):
+        if isinstance(custom_cost_segment_weight_factors, dict):
             custom_cost_segment_weight_factors = [custom_cost_segment_weight_factors]
         assert (
             custom_cost_transport_network.custom_cost_segment_weight_factors

@@ -27,7 +27,7 @@ def convert_python_dict_to_java_hashmap(custom_cost_segment_weight_factors):
 
 
 def convert_custom_cost_segment_weight_factors_to_custom_cost_instance(
-    name, sensitivity, custom_cost_segment_weight_factors, allow_missing_osmids
+    name, sensitivity, custom_cost_segment_weight_factors, allow_missing_osmid
 ):
     """
     Convert custom cost factors into the Java CustomCostField instance.
@@ -37,7 +37,7 @@ def convert_custom_cost_segment_weight_factors_to_custom_cost_instance(
     name : str
     sensitivity : float
     custom_cost_segment_weight_factors : jpype.java.util.HashMap[Long, Double]
-    allow_missing_osmids : bool
+    allow_missing_osmid : bool
 
     Returns:
     --------
@@ -48,7 +48,7 @@ def convert_custom_cost_segment_weight_factors_to_custom_cost_instance(
         jpype.JString(name),
         jpype.JDouble(sensitivity),
         custom_cost_segment_weight_factors,
-        allow_missing_osmids,
+        jpype.JBoolean(allow_missing_osmid),
     )
 
 
@@ -120,7 +120,7 @@ def convert_python_custom_costs_to_java_custom_costs(
     """
     try:
         custom_cost_instances = []
-        for name, sensitivity, custom_cost, allow_missing_osmids in zip(
+        for name, sensitivity, custom_cost, allow_missing_osmid in zip(
             names,
             sensitivities,
             custom_cost_segment_weight_factors,
@@ -129,7 +129,7 @@ def convert_python_custom_costs_to_java_custom_costs(
             java_hashmap_custom_cost = convert_python_dict_to_java_hashmap(custom_cost)
             custom_cost_instance = (
                 convert_custom_cost_segment_weight_factors_to_custom_cost_instance(
-                    name, sensitivity, java_hashmap_custom_cost, allow_missing_osmids
+                    name, sensitivity, java_hashmap_custom_cost, allow_missing_osmid
                 )
             )
             custom_cost_instances.append(custom_cost_instance)

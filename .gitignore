@@ -39,7 +39,3 @@ coverage.xml
 .vscode/*
 
 .config/r5py.yml
-*.ipynb
-*.log
-*.csv
-.coverage*

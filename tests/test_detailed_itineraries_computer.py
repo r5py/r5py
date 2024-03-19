@@ -9,7 +9,7 @@ import pytest
 import pytest_lazy_fixtures
 
 import r5py
-from r5py.r5.custom_cost_transport_network import r5_supports_custom_costs
+from r5py.util.classpath import r5_supports_custom_costs
 import r5py.util.exceptions
 
 

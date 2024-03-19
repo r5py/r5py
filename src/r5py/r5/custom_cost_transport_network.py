@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 """Subclass for TransportNetwork, enables custom cost routing."""
+import collections
 import com.conveyal.r5
 from r5py.r5.transport_network import TransportNetwork
+from r5py.util.classpath import r5_supports_custom_costs
 from r5py.util.custom_cost_conversions import (
     convert_java_hashmap_to_python_dict,
     convert_python_custom_costs_to_java_custom_costs,
@@ -13,24 +15,6 @@ from r5py.util.jvm import start_jvm
 __all__ = ["CustomCostTransportNetwork"]
 
 start_jvm()
-
-
-def r5_supports_custom_costs():
-    """
-    Check if the R5 java has the GP2 (Green Paths 2) patch i.e. supports custom costs routing.
-
-    Returns:
-    --------
-    bool: True if using GP2 R5, False otherwise.
-    """
-    try:
-        import com.conveyal.r5.rastercost.CustomCostField  # noqa: F401
-
-        # the import was successful thus using GP2 R5
-        return True
-    except ImportError:
-        # the import was unsuccessful
-        return False
 
 
 class CustomCostTransportNetwork(TransportNetwork):
@@ -86,20 +70,13 @@ class CustomCostTransportNetwork(TransportNetwork):
                 https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar
                 """
             )
-        # convert single items into lists if they are not already
-        # this enables use of only 1 set of parameters
+
         (
             names,
             sensitivities,
             custom_cost_segment_weight_factors,
             allow_missing_osmids,
-        ) = self.convert_params_to_lists(
-            names,
-            sensitivities,
-            custom_cost_segment_weight_factors,
-            allow_missing_osmids,
-        )
-        self.validate_custom_cost_params(
+        ) = self._validate_custom_cost_params(
             names,
             sensitivities,
             custom_cost_segment_weight_factors,
@@ -124,13 +101,13 @@ class CustomCostTransportNetwork(TransportNetwork):
 
         Arguments:
         ----------
-        names : str | List[str]
+        names : str | collections.abc.Iterable[str]
             Single name or names of the custom costs.
-        sensitivities : float | int | List[float | int]
+        sensitivities : float | int | collections.abc.Iterable[float | int]
             Single or multiple sensitivities of the custom costs.
-        custom_cost_segment_weight_factors : Dict[str, float] | List[Dict[str, float]]
+        custom_cost_segment_weight_factors : Dict[str, float] | collections.abc.Iterable[Dict[str, float]]
             Single or multiple custom cost factors to be used in routing.
-        allow_missing_osmids : bool | List[bool], default True (optional)
+        allow_missing_osmids : bool | collections.abc.Iterable[bool], default True (optional)
             Define whether to allow missing osmids.
 
         Returns:
@@ -140,23 +117,26 @@ class CustomCostTransportNetwork(TransportNetwork):
         custom_cost_segment_weight_factors : List[Dict[str, float]]
         allow_missing_osmids : List[bool]
         """
-        if not isinstance(names, list):
+        if not isinstance(names, collections.abc.Iterable) or isinstance(names, str):
             names = [names]
-        if not isinstance(sensitivities, list):
+        if not isinstance(sensitivities, collections.abc.Iterable):
             sensitivities = [sensitivities]
-        if not isinstance(custom_cost_segment_weight_factors, list):
+        # needs to be list for dict is iterable
+        if not isinstance(
+            custom_cost_segment_weight_factors, collections.abc.Iterable
+        ) or isinstance(custom_cost_segment_weight_factors, dict):
             custom_cost_segment_weight_factors = [custom_cost_segment_weight_factors]
-        if not isinstance(allow_missing_osmids, list):
+        if not isinstance(allow_missing_osmids, collections.abc.Iterable):
             allow_missing_osmids = [allow_missing_osmids]
             # if using multiple sets and if optional allow_missing_osmids is not provided,
             # populate the default for all custom costs if many cost dicts provided and only one allow_missing_osmids
-            if (
-                len(custom_cost_segment_weight_factors) > 1
-                and len(allow_missing_osmids) == 1
-            ):
-                allow_missing_osmids = [allow_missing_osmids[0]] * len(
-                    custom_cost_segment_weight_factors
-                )
+            max_len_params = max(
+                len(names),
+                len(sensitivities),
+                len(custom_cost_segment_weight_factors),
+            )
+            if max_len_params > 1 and len(allow_missing_osmids) == 1:
+                allow_missing_osmids = [allow_missing_osmids[0]] * max_len_params
         return (
             names,
             sensitivities,
@@ -164,7 +144,7 @@ class CustomCostTransportNetwork(TransportNetwork):
             allow_missing_osmids,
         )
 
-    def validate_custom_cost_params(
+    def _validate_custom_cost_params(
         self,
         names,
         sensitivities,
@@ -187,6 +167,18 @@ class CustomCostTransportNetwork(TransportNetwork):
         CustomCostDataError
             If any of the parameters are not valid.
         """
+        (
+            names,
+            sensitivities,
+            custom_cost_segment_weight_factors,
+            allow_missing_osmids,
+        ) = self.convert_params_to_lists(
+            names,
+            sensitivities,
+            custom_cost_segment_weight_factors,
+            allow_missing_osmids,
+        )
+
         # parameters are lists and non-empty
         params = {
             "names": names,
@@ -195,20 +187,33 @@ class CustomCostTransportNetwork(TransportNetwork):
             "allow_missing_osmids": allow_missing_osmids,
         }
         for param_name, param_value in params.items():
-            if not isinstance(param_value, list):
-                raise CustomCostDataError(f"{param_name} must be a list")
+            if not isinstance(param_value, collections.abc.Iterable):
+                raise CustomCostDataError(f"{param_name} must be a iterables")
             if not param_value:
                 raise CustomCostDataError(f"{param_name} must not be empty")
 
         # lists are of the same length
-        if len(set(map(len, params.values()))) != 1:
+        if not (
+            len(names)
+            == len(sensitivities)
+            == len(custom_cost_segment_weight_factors)
+            == len(allow_missing_osmids)
+        ):
             raise CustomCostDataError(
                 "CustomCostTransportNetwork names, sensitivities, and custom_cost_segment_weight_factors must be of the same length, and allow_missing_osmids if multiple provided"
             )
 
         # check individual item types
-        for name, sensitivity, custom_cost_segment_weight_factors in zip(
-            names, sensitivities, custom_cost_segment_weight_factors
+        for (
+            name,
+            sensitivity,
+            custom_cost_segment_weight_factor,
+            allow_missing_osmid,
+        ) in zip(
+            names,
+            sensitivities,
+            custom_cost_segment_weight_factors,
+            allow_missing_osmids,
         ):
             if not isinstance(name, str):
                 raise CustomCostDataError(
@@ -219,24 +224,28 @@ class CustomCostTransportNetwork(TransportNetwork):
                     "CustomCostTransportNetwork sensitivities must be floats or integers"
                 )
             if (
-                len(custom_cost_segment_weight_factors) == 0
-                or not isinstance(custom_cost_segment_weight_factors, dict)
+                len(custom_cost_segment_weight_factor) == 0
+                or not isinstance(custom_cost_segment_weight_factor, dict)
                 or not all(
                     isinstance(key, str) and isinstance(value, float)
-                    for key, value in custom_cost_segment_weight_factors.items()
+                    for key, value in custom_cost_segment_weight_factor.items()
                 )
             ):
                 raise CustomCostDataError(
-                    "custom_cost_segment_weight_factors must be dicts with string keys and float values"
+                    "custom_cost_segment_weight_factor must be dicts with string keys and float values"
                 )
-        # check that all allow_missing_osmids are list and bools
-        if not all(
-            isinstance(allow_null_cost, bool)
-            for allow_null_cost in allow_missing_osmids
-        ):
-            raise CustomCostDataError(
-                "CustomCostTransportNetwork allow_missing_osmids must be bools"
-            )
+
+            if not isinstance(allow_missing_osmid, bool):
+                raise CustomCostDataError(
+                    "CustomCostTransportNetwork allow_missing_osmids must be bools"
+                )
+
+        return (
+            names,
+            sensitivities,
+            custom_cost_segment_weight_factors,
+            allow_missing_osmids,
+        )
 
     def add_custom_cost_segment_weight_factors_to_network(self, transport_network):
         """

@@ -87,9 +87,8 @@ class CustomCostTransportNetwork(TransportNetwork):
         self.custom_cost_segment_weight_factors = custom_cost_segment_weight_factors
         self.allow_missing_osmids = allow_missing_osmids
         # GTFS is currently not supported for custom cost transport network
-        super().__init__(osm_pbf, gtfs=[])
 
-    def convert_params_to_lists(
+    def _convert_params_to_lists(
         self,
         names,
         sensitivities,
@@ -172,7 +171,7 @@ class CustomCostTransportNetwork(TransportNetwork):
             sensitivities,
             custom_cost_segment_weight_factors,
             allow_missing_osmids,
-        ) = self.convert_params_to_lists(
+        ) = self._convert_params_to_lists(
             names,
             sensitivities,
             custom_cost_segment_weight_factors,

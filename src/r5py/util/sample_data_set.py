@@ -41,7 +41,11 @@ class SampleDataSet(pathlib.Path):
             checksum for this data set, using an SHA256 algorithm
         """
         cached_path = self._CACHE_DIR / pathlib.Path(remote_url).name
-        super().__init__(cached_path)
+
+        try:  # Python>=3.12
+            super().__init__(cached_path)
+        except TypeError:
+            super().__init__()
 
         self.remote_url = remote_url
         self.checksum = sha256_checksum

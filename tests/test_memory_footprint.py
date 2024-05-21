@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-import pytest  # noqa: F401
+import pytest
 
 from r5py.util.memory_footprint import (
     _get_max_memory,

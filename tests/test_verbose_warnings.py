@@ -3,7 +3,7 @@
 
 import sys
 
-import pytest  # noqa: F401
+import pytest
 
 import r5py
 
@@ -42,9 +42,15 @@ class TestVerboseWarnings:
         departure_datetime,
         setup_verbose_mode,
     ):
-        with pytest.warns(
-            RuntimeWarning,
-            match="No destinations specified, computing an all-to-all matrix",
+        with (
+            pytest.warns(
+                RuntimeWarning,
+                match="No destinations specified, computing an all-to-all matrix",
+            ),
+            pytest.warns(
+                RuntimeWarning,
+                match="No routing destinations defined, using origins as destinations, too.",
+            ),
         ):
             r5py.DetailedItinerariesComputer(
                 transport_network=transport_network,

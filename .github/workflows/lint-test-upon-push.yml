@@ -78,7 +78,7 @@ jobs:
 
       - name: Install test dependencies
         run: |
-          mamba install -c conda-forge pytest pytest-asyncio pytest-cov pytest-lazy-fixture pip
+          mamba install -c conda-forge pytest pytest-asyncio pytest-cov pip
           pip install .[tests]
 
       - name: Check environment

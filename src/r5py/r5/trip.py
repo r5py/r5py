@@ -34,6 +34,10 @@ class Trip:
         """
         self.legs = legs
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.legs == other.legs
+
     def __repr__(self):
         legs = ", ".join([str(leg) for leg in self.legs])
         return (

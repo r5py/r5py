@@ -239,63 +239,88 @@ class TripPlanner:
                     for state in list(states)  # some departure times yield no results
                 }
 
+                # keep a cache of access, egress, and transfer legs
+                access_legs_by_stop = {}
+                egress_legs_by_stop = {}
+                transfer_legs_by_stops = {}
+
                 for departure_time, state in final_states.items():
                     trip = Trip()
                     while state:
                         if state.stop == -1:  # EgressLeg
-                            leg = min(
-                                [
-                                    self.transit_egress_paths[transport_mode][
-                                        state.back.stop
+                            try:
+                                leg = egress_legs_by_stop[state.back.stop]
+                            except KeyError:
+                                leg = min(
+                                    [
+                                        self.transit_egress_paths[transport_mode][
+                                            state.back.stop
+                                        ]
+                                        for transport_mode in self.transit_egress_paths.keys()
                                     ]
-                                    for transport_mode in self.transit_egress_paths.keys()
-                                ]
-                            )
-                            leg.wait_time = ZERO_SECONDS
-                            leg.departure_time = (
-                                midnight
-                                + datetime.timedelta(seconds=state.back.time)
-                                + ONE_MINUTE
-                            )
-                            leg.arrival_time = leg.departure_time + leg.travel_time
-
-                        elif state.back is None:  # AccessLeg
-                            leg = min(
-                                [
-                                    self.transit_access_paths[transport_mode][
-                                        state.stop
-                                    ]
-                                    for transport_mode in self.transit_access_paths.keys()
-                                ]
-                            )
-                            leg.wait_time = ZERO_SECONDS
-                            leg.arrival_time = midnight + datetime.timedelta(
-                                seconds=state.time
-                            )
-                            leg.departure_time = leg.arrival_time - leg.travel_time
-
-                        else:
-                            if state.pattern == -1:  # TransferLeg
-                                departure_stop = state.back.stop
-                                arrival_stop = state.stop
-
-                                leg = self.transit_transfer_path(
-                                    departure_stop, arrival_stop
                                 )
-
+                                leg.wait_time = ZERO_SECONDS
                                 leg.departure_time = (
                                     midnight
                                     + datetime.timedelta(seconds=state.back.time)
                                     + ONE_MINUTE
                                 )
                                 leg.arrival_time = leg.departure_time + leg.travel_time
-                                leg.wait_time = (
-                                    datetime.timedelta(
-                                        seconds=(state.time - state.back.time)
-                                    )
-                                    - leg.travel_time
-                                    + ONE_MINUTE  # the slack added above
+
+                                egress_legs_by_stop[state.back.stop] = leg
+
+                        elif state.back is None:  # AccessLeg
+                            try:
+                                leg = access_legs_by_stop[state.stop]
+                            except KeyError:
+                                leg = min(
+                                    [
+                                        self.transit_access_paths[transport_mode][
+                                            state.stop
+                                        ]
+                                        for transport_mode in self.transit_access_paths.keys()
+                                    ]
                                 )
+                                leg.wait_time = ZERO_SECONDS
+                                leg.arrival_time = midnight + datetime.timedelta(
+                                    seconds=state.time
+                                )
+                                leg.departure_time = leg.arrival_time - leg.travel_time
+
+                                access_legs_by_stop[state.stop] = leg
+
+                        else:
+                            if state.pattern == -1:  # TransferLeg
+                                departure_stop = state.back.stop
+                                arrival_stop = state.stop
+
+                                try:
+                                    leg = transfer_legs_by_stops[
+                                        (departure_stop, arrival_stop)
+                                    ]
+                                except KeyError:
+                                    leg = self.transit_transfer_path(
+                                        departure_stop, arrival_stop
+                                    )
+
+                                    leg.departure_time = (
+                                        midnight
+                                        + datetime.timedelta(seconds=state.back.time)
+                                        + ONE_MINUTE
+                                    )
+                                    leg.arrival_time = (
+                                        leg.departure_time + leg.travel_time
+                                    )
+                                    leg.wait_time = (
+                                        datetime.timedelta(
+                                            seconds=(state.time - state.back.time)
+                                        )
+                                        - leg.travel_time
+                                        + ONE_MINUTE  # the slack added above
+                                    )
+                                    transfer_legs_by_stops[
+                                        (departure_stop, arrival_stop)
+                                    ] = leg
 
                             else:  # TransitLeg
                                 pattern = transit_layer.trip_patterns[state.pattern]
@@ -366,7 +391,8 @@ class TripPlanner:
                         trip = leg + trip
                         state = state.back
 
-                    transit_paths.append(trip)
+                    if trip not in transit_paths:
+                        transit_paths.append(trip)
 
         return transit_paths
 

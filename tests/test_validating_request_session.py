@@ -3,7 +3,7 @@
 
 import hashlib
 
-import pytest  # noqa: F401
+import pytest
 
 from r5py.util.validating_requests_session import (
     ChecksumFailed,

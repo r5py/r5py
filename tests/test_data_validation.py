@@ -4,6 +4,7 @@
 import geopandas
 import pandas
 import pytest
+import pytest_lazy_fixtures
 import shapely
 
 import r5py
@@ -49,17 +50,17 @@ class TestDataValidation:
     @pytest.mark.parametrize(
         ["geodataframe", "expected_exception"],
         [
-            (pytest.lazy_fixture("geodataframe_with_all_required_columns"), False),
+            (pytest_lazy_fixtures.lf("geodataframe_with_all_required_columns"), False),
             (
-                pytest.lazy_fixture("geodataframe_without_id_column"),
+                pytest_lazy_fixtures.lf("geodataframe_without_id_column"),
                 r5py.util.exceptions.NoIDColumnError,
             ),
             (
-                pytest.lazy_fixture("geodataframe_with_nonunique_id_column"),
+                pytest_lazy_fixtures.lf("geodataframe_with_nonunique_id_column"),
                 r5py.util.exceptions.NonUniqueIDError,
             ),
             (
-                pytest.lazy_fixture("geodataframe_without_crs"),
+                pytest_lazy_fixtures.lf("geodataframe_without_crs"),
                 r5py.util.exceptions.NoCrsError,
             ),
         ],

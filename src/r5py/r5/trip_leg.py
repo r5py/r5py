@@ -151,18 +151,15 @@ class TripLeg:
         self_column = getattr(self, column)
         other_column = getattr(other, column)
 
-        if self_column == other_column:
-            return True
-        if self_column is None and other_column is None:
-            return True
-        if self_column == numpy.nan and other_column == numpy.nan:
-            return True
-        if self_column == numpy.datetime64("NaT") and other_column == numpy.datetime64(
-            "NaT"
-        ):
-            return True
-
-        return False
+        return (
+            self_column == other_column
+            or (self_column is None and other_column is None)
+            or (self_column == numpy.nan and other_column == numpy.nan)
+            or (
+                self_column == numpy.datetime64("NaT")
+                and other_column == numpy.datetime64("NaT")
+            )
+        )
 
     def as_table_row(self):
         """

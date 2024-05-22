@@ -26,6 +26,7 @@ def start_jvm():
     line and configuration options.
     """
     if not jpype.isJVMStarted():
+
         # preload signal handling; this, among other things, prevents some of
         # the warning messages we have been seeing
         # (cf. https://stackoverflow.com/q/15790403 and
@@ -63,7 +64,10 @@ def start_jvm():
         class ShutdownHookToCleanUpTempDir:
             @jpype.JOverride
             def run(self):
-                shutil.rmtree(TEMP_DIR)
+                try:
+                    shutil.rmtree(TEMP_DIR)
+                except OSError:
+                    pass
 
         import java.lang
 

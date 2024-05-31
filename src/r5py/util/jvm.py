@@ -38,12 +38,12 @@ def start_jvm():
                 os.environ["LD_PRELOAD"] = str(LIBJSIG)
             except StopIteration:
                 pass  # don’t fail completely if libjsig not found
-        elif sys.platform == "darwin":
-            try:
-                LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.dylib"))
-                os.environ["DYLD_INSERT_LIBRARIES"] = str(LIBJSIG)
-            except StopIteration:
-                pass  # don’t fail completely if libjsig not found
+        # elif sys.platform == "darwin":
+        #     try:
+        #         LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.dylib"))
+        #         os.environ["DYLD_INSERT_LIBRARIES"] = str(LIBJSIG)
+        #     except StopIteration:
+        #         pass  # don’t fail completely if libjsig not found
 
         TEMP_DIR = Config().TEMP_DIR
 

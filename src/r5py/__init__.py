@@ -5,6 +5,7 @@
 __version__ = "0.1.1"
 
 from .util import start_jvm
+
 start_jvm()
 
 from .r5 import (  # noqa: E402

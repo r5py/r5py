@@ -64,10 +64,11 @@ jobs:
 
       - name: Install JVM (system-wide; MacOS)
         if: ${{ matrix.jdk_from == 'system' && matrix.os == 'macos-latest' }}
-        run: |
-          brew install temurin
-          /usr/libexec/java_home
-          export JAVA_HOME="$(/usr/libexec/java_home)"
+        run: brew install temurin
+
+      - run: /usr/libexec/java_home
+
+      - run: export JAVA_HOME="$(/usr/libexec/java_home)"
 
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2.2.0

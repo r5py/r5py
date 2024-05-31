@@ -59,10 +59,10 @@ jobs:
         if: ${{ matrix.jdk_from == 'system' && matrix.os != 'macos-latest' }}
         uses: actions/setup-java@v4
         with: 
-          distribution: zulu
+          distribution: temurin
           java-version: 21
 
-      - name: Install JVM (system-wide; MacOs)
+      - name: Install JVM (system-wide; MacOS)
         if: ${{ matrix.jdk_from == 'system' && matrix.os == 'macos-latest' }}
         run: brew install temurin
 
@@ -92,7 +92,7 @@ jobs:
           conda list
           pip list --verbose
 
-      - run: python -c 'import sys; sys.argv.append("--verbose"); import r5py; print(r5py.__version__);'
+      - run: JAVA_HOME="" python -c 'import sys; sys.argv.append("--verbose"); import r5py; print(r5py.__version__);'
 
       - name: Test r5py
         run: python -m pytest

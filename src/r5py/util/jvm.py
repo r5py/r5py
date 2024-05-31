@@ -11,6 +11,7 @@ import jpype
 import jpype.imports  # noqa: F401
 
 from .classpath import R5_CLASSPATH
+
 # from .config import Config
 # from .memory_footprint import MAX_JVM_MEMORY
 

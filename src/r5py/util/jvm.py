@@ -2,18 +2,17 @@
 
 """Set up a JVM and import basic java classes."""
 
-import os
-
+# import os
 # import pathlib
-import shutil
-import sys
+# import shutil
+# import sys
 
 import jpype
 import jpype.imports
 
 from .classpath import R5_CLASSPATH
-from .config import Config
 
+# from .config import Config
 # from .memory_footprint import MAX_JVM_MEMORY
 
 
@@ -27,7 +26,8 @@ def start_jvm():
     Takes into account the `--max-memory` and `--verbose` command
     line and configuration options.
     """
-    if not jpype.isJVMStarted():
+    # if not jpype.isJVMStarted():
+    if True:
 
         # # preload signal handling; this, among other things, prevents some of
         # # the warning messages we have been seeing
@@ -47,9 +47,9 @@ def start_jvm():
         #     except StopIteration:
         #         pass  # don’t fail completely if libjsig not found
 
-        TEMP_DIR = Config().TEMP_DIR
+        # TEMP_DIR = Config().TEMP_DIR
 
-        print(os.environ)
+        # print(os.environ)
 
         jpype.startJVM(
             # f"-Xmx{MAX_JVM_MEMORY:d}",
@@ -60,52 +60,52 @@ def start_jvm():
             # "-Duser.variant=",  # … values as a localised string
             # f"-Djava.io.tmpdir={TEMP_DIR}",
             classpath=[R5_CLASSPATH],
-            interrupt=True,
+            # interrupt=True,
         )
 
-        # Add shutdown hook that cleans up the temporary directory
-        @jpype.JImplements("java.lang.Runnable")
-        class ShutdownHookToCleanUpTempDir:
-            @jpype.JOverride
-            def run(self):
-                try:
-                    shutil.rmtree(TEMP_DIR)
-                except OSError:
-                    pass
+        # # Add shutdown hook that cleans up the temporary directory
+        # @jpype.JImplements("java.lang.Runnable")
+        # class ShutdownHookToCleanUpTempDir:
+        #     @jpype.JOverride
+        #     def run(self):
+        #         try:
+        #             shutil.rmtree(TEMP_DIR)
+        #         except OSError:
+        #             pass
 
-        import java.lang
+        # import java.lang
 
-        java.lang.Runtime.getRuntime().addShutdownHook(
-            java.lang.Thread(ShutdownHookToCleanUpTempDir())
-        )
+        # java.lang.Runtime.getRuntime().addShutdownHook(
+        #     java.lang.Thread(ShutdownHookToCleanUpTempDir())
+        # )
 
-        if not Config().arguments.verbose:
-            import ch.qos.logback.classic
-            import java.io
-            import java.lang
-            import org.slf4j.LoggerFactory
+        # if not Config().arguments.verbose:
+        #     import ch.qos.logback.classic
+        #     import java.io
+        #     import java.lang
+        #     import org.slf4j.LoggerFactory
 
-            logger_context = org.slf4j.LoggerFactory.getILoggerFactory()
-            for log_target in (
-                "com.conveyal.gtfs",
-                "com.conveyal.osmlib",
-                "com.conveyal.r5",
-                "com.conveyal.r5.profile.ExecutionTimer",
-                "com.conveyal.r5.profile.FastRaptorWorker",
-                "graphql.GraphQL",
-                "org.eclipse.jetty",
-                "org.hsqldb.persist.Logger" "org.mongodb.driver.connection",
-            ):
-                logger_context.getLogger(log_target).setLevel(
-                    ch.qos.logback.classic.Level.valueOf("OFF")
-                )
+        #     logger_context = org.slf4j.LoggerFactory.getILoggerFactory()
+        #     for log_target in (
+        #         "com.conveyal.gtfs",
+        #         "com.conveyal.osmlib",
+        #         "com.conveyal.r5",
+        #         "com.conveyal.r5.profile.ExecutionTimer",
+        #         "com.conveyal.r5.profile.FastRaptorWorker",
+        #         "graphql.GraphQL",
+        #         "org.eclipse.jetty",
+        #         "org.hsqldb.persist.Logger" "org.mongodb.driver.connection",
+        #     ):
+        #         logger_context.getLogger(log_target).setLevel(
+        #             ch.qos.logback.classic.Level.valueOf("OFF")
+        #         )
 
-            if sys.platform == "win32":  # Windows
-                null_stream = java.io.PrintStream("NUL")
-            else:
-                null_stream = java.io.PrintStream("/dev/null")
-            java.lang.System.setErr(null_stream)
-            java.lang.System.setOut(null_stream)
+        #     if sys.platform == "win32":  # Windows
+        #         null_stream = java.io.PrintStream("NUL")
+        #     else:
+        #         null_stream = java.io.PrintStream("/dev/null")
+        #     java.lang.System.setErr(null_stream)
+        #     java.lang.System.setOut(null_stream)
 
 
 # # The JVM should be started before we attempt to import any Java package.

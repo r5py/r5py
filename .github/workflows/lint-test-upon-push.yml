@@ -59,7 +59,7 @@ jobs:
         if: ${{ matrix.jdk_from == 'system' }}
         uses: actions/setup-java@v4
         with: 
-          distribution: temurin
+          distribution: zulu
           java-version: 21
 
       - name: Setup Conda
@@ -88,7 +88,7 @@ jobs:
           conda list
           pip list --verbose
 
-      - run: ls -alhtr /Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.3-9.0/arm64/Contents/Home/lib/
+      #- run: ls -alh /Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.3-9.0/arm64/Contents/Home/lib/
 
       - run: python -c 'import sys; sys.argv.append("--verbose"); import r5py; print(r5py.__version__);'
 

@@ -28,17 +28,17 @@ def start_jvm():
     """
     if not jpype.isJVMStarted():
 
-        # preload signal handling; this, among other things, prevents some of
-        # the warning messages we have been seeing
-        # (cf. https://stackoverflow.com/q/15790403 and
-        #  https://docs.oracle.com/en/java/javase/19/vm/signal-chaining.html )
-        JVM_PATH = pathlib.Path(jpype.getDefaultJVMPath()).resolve()
-        if sys.platform == "linux":
-            try:
-                LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.so"))
-                os.environ["LD_PRELOAD"] = str(LIBJSIG)
-            except StopIteration:
-                pass  # don’t fail completely if libjsig not found
+        # # preload signal handling; this, among other things, prevents some of
+        # # the warning messages we have been seeing
+        # # (cf. https://stackoverflow.com/q/15790403 and
+        # #  https://docs.oracle.com/en/java/javase/19/vm/signal-chaining.html )
+        # JVM_PATH = pathlib.Path(jpype.getDefaultJVMPath()).resolve()
+        # if sys.platform == "linux":
+        #     try:
+        #         LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.so"))
+        #         os.environ["LD_PRELOAD"] = str(LIBJSIG)
+        #     except StopIteration:
+        #         pass  # don’t fail completely if libjsig not found
         # elif sys.platform == "darwin":
         #     try:
         #         LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.dylib"))

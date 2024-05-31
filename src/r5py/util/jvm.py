@@ -12,7 +12,7 @@ import jpype.imports
 
 from .classpath import R5_CLASSPATH
 from .config import Config
-from .memory_footprint import MAX_JVM_MEMORY
+# from .memory_footprint import MAX_JVM_MEMORY
 
 
 __all__ = ["start_jvm"]

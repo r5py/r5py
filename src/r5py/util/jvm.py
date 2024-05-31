@@ -106,38 +106,40 @@ def start_jvm():
             java.lang.System.setOut(null_stream)
 
 
-# The JVM should be started before we attempt to import any Java package.
-# If we run `start_jvm()` before another `import` statement, linting our
-# code would result in many E402 (‘Module level import not at top of file’)
-# warnings, if the JVM would start implicitely when `__file__` is imported,
-# we would end up with F401 (‘Module imported but unused’) warnings.
+# # The JVM should be started before we attempt to import any Java package.
+# # If we run `start_jvm()` before another `import` statement, linting our
+# # code would result in many E402 (‘Module level import not at top of file’)
+# # warnings, if the JVM would start implicitely when `__file__` is imported,
+# # we would end up with F401 (‘Module imported but unused’) warnings.
+#
+# # This below is a middle way: We don’t start the JVM right away, only
+# # when `start_jvm()` is called. However, if we attempt to import a
+# # Java package (or, more precisely, a package that’s likely to be a
+# # Java package), the `import` statement would trigger `start_jvm()`
+#
+# # see:
+# # https://github.com/jpype-project/jpype/blob/master/jpype/imports.py#L146
+#
+#
+# class _JImportLoaderThatStartsTheJvm(jpype.imports._JImportLoader):
+#     """Find Java packages for import statements, start JVM before that."""
+#
+#     def find_spec(self, name, path, target=None):
+#         # we got this far in `sys.meta_path` (no other finder/loader
+#         # knew about the package we try to load), and naturally, we’re
+#         # towards the end of that list.
+#
+#         # Let’s assume the requested packages is a Java package,
+#         # and start the JVM
+#         start_jvm()
+#
+#         # then go the standard jpype way:
+#         return super().find_spec(name, path, target)
+#
+#
+# # replace jpype’s _JImportLoader with our own:
+# for i, finder in enumerate(sys.meta_path):
+#     if isinstance(finder, jpype.imports._JImportLoader):
+#         sys.meta_path[i] = _JImportLoaderThatStartsTheJvm()
 
-# This below is a middle way: We don’t start the JVM right away, only
-# when `start_jvm()` is called. However, if we attempt to import a
-# Java package (or, more precisely, a package that’s likely to be a
-# Java package), the `import` statement would trigger `start_jvm()`
-
-# see:
-# https://github.com/jpype-project/jpype/blob/master/jpype/imports.py#L146
-
-
-class _JImportLoaderThatStartsTheJvm(jpype.imports._JImportLoader):
-    """Find Java packages for import statements, start JVM before that."""
-
-    def find_spec(self, name, path, target=None):
-        # we got this far in `sys.meta_path` (no other finder/loader
-        # knew about the package we try to load), and naturally, we’re
-        # towards the end of that list.
-
-        # Let’s assume the requested packages is a Java package,
-        # and start the JVM
-        start_jvm()
-
-        # then go the standard jpype way:
-        return super().find_spec(name, path, target)
-
-
-# replace jpype’s _JImportLoader with our own:
-for i, finder in enumerate(sys.meta_path):
-    if isinstance(finder, jpype.imports._JImportLoader):
-        sys.meta_path[i] = _JImportLoaderThatStartsTheJvm()
+start_jvm()

@@ -78,7 +78,7 @@ jobs:
 
       - uses: actions/setup-python@5
         with:
-          python-version: ${{matrix.python_version}
+          python-version: ${{matrix.python_version}}
           cache: pip
 
       - name: Install JVM (from conda-forge)

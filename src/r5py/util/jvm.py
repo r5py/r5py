@@ -50,13 +50,13 @@ def start_jvm():
         print(os.environ)
 
         jpype.startJVM(
-            f"-Xmx{MAX_JVM_MEMORY:d}",
-            "-Xcheck:jni",
-            "-Xrs",  # https://stackoverflow.com/q/34951812
-            "-Duser.language=en",  # Set a default locale, …
-            "-Duser.country=US",  # … as R5 formats numeric return …
-            "-Duser.variant=",  # … values as a localised string
-            f"-Djava.io.tmpdir={TEMP_DIR}",
+            # f"-Xmx{MAX_JVM_MEMORY:d}",
+            # "-Xcheck:jni",
+            # "-Xrs",  # https://stackoverflow.com/q/34951812
+            # "-Duser.language=en",  # Set a default locale, …
+            # "-Duser.country=US",  # … as R5 formats numeric return …
+            # "-Duser.variant=",  # … values as a localised string
+            # f"-Djava.io.tmpdir={TEMP_DIR}",
             classpath=[R5_CLASSPATH],
             interrupt=True,
         )

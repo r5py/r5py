@@ -18,7 +18,7 @@ jobs:
     name: Linting code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-python@5
+      - uses: actions/setup-python@v5
         with:
           cache: pip
       - uses: actions/checkout@v4.1.1
@@ -76,7 +76,7 @@ jobs:
       #     miniforge-version: latest
       #     use-mamba: true
 
-      - uses: actions/setup-python@5
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{matrix.python_version}}
           cache: pip

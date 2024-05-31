@@ -4,7 +4,10 @@
 
 __version__ = "0.1.1"
 
-from .r5 import (
+from .util import start_jvm
+start_jvm()
+
+from .r5 import (  # noqa: E402
     DetailedItinerariesComputer,
     RegionalTask,
     TransportMode,

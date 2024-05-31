@@ -55,12 +55,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
 
-      - name: Install JVM (system-wide)
-        if: ${{ matrix.jdk_from == 'system' }}
+      - name: Install JVM (system-wide; Linux, Windows)
+        if: ${{ matrix.jdk_from == 'system' }} && ${{ matrix.os != "macos-latest" }}
         uses: actions/setup-java@v4
         with: 
           distribution: zulu
           java-version: 21
+
+      - name: Install JVM (system-wide; MacOs)
+        if: ${{ matrix.jdk_from == 'system' }} && ${{ matrix.os == "macos-latest" }}
+        run: brew install temurin
 
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2.2.0
@@ -87,8 +91,6 @@ jobs:
           conda info
           conda list
           pip list --verbose
-
-      #- run: ls -alh /Users/runner/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.3-9.0/arm64/Contents/Home/lib/
 
       - run: python -c 'import sys; sys.argv.append("--verbose"); import r5py; print(r5py.__version__);'
 

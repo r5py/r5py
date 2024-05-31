@@ -47,6 +47,8 @@ def start_jvm():
 
         TEMP_DIR = Config().TEMP_DIR
 
+        print(os.environ)
+
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",
             "-Xcheck:jni",

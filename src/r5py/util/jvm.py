@@ -3,7 +3,8 @@
 """Set up a JVM and import basic java classes."""
 
 import os
-import pathlib
+
+# import pathlib
 import shutil
 import sys
 

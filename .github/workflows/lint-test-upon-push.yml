@@ -88,7 +88,7 @@ jobs:
           conda list
           pip list --verbose
 
-      - run: python -c 'import sys; sys.argv.append("--verbose"); import rpy5; print(r5py.__version__);'
+      - run: python -c 'import sys; sys.argv.append("--verbose"); import r5py; print(r5py.__version__);'
 
       - name: Test r5py
         run: python -m pytest

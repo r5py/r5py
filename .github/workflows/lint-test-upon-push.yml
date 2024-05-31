@@ -92,7 +92,9 @@ jobs:
           conda list
           pip list --verbose
 
-      - run: JAVA_HOME="" python -c 'import sys; sys.argv.append("--verbose"); import r5py; print(r5py.__version__);'
+      - run: env
+  
+      - run: python -c 'import sys; sys.argv.append("--verbose"); import r5py; print(r5py.__version__);'
 
       - name: Test r5py
         run: python -m pytest

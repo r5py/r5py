@@ -131,7 +131,7 @@ class Config:
     @functools.cached_property
     def TEMP_DIR(self):
         parent_dir = self.arguments.temporary_directory
-        temp_dir = pathlib.Path(tempfile.mkdtemp(prefix=self.PACKAGE), dir=parent_dir)
+        temp_dir = pathlib.Path(tempfile.mkdtemp(prefix=self.PACKAGE, dir=parent_dir))
         return temp_dir
 
     PACKAGE = PACKAGE

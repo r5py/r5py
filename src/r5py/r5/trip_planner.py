@@ -300,9 +300,7 @@ class TripPlanner:
                                     + datetime.timedelta(seconds=state.back.time)
                                     + ONE_MINUTE
                                 )
-                                leg.arrival_time = (
-                                    leg.departure_time + leg.travel_time
-                                )
+                                leg.arrival_time = leg.departure_time + leg.travel_time
                                 leg.wait_time = (
                                     datetime.timedelta(
                                         seconds=(state.time - state.back.time)

@@ -239,7 +239,7 @@ class TripPlanner:
                     for state in list(states)  # some departure times yield no results
                 }
 
-                # keep a cache of access, egress, and transfer legs
+                # keep another cache layer of shortest access, egress, and transfer legs
                 access_legs_by_stop = {}
                 egress_legs_by_stop = {}
                 transfer_legs_by_stops = {}
@@ -391,6 +391,7 @@ class TripPlanner:
                         trip = leg + trip
                         state = state.back
 
+                    # R5 sometimes reports the same path more than once, skip duplicates
                     if trip not in transit_paths:
                         transit_paths.append(trip)
 

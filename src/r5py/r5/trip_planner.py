@@ -239,7 +239,7 @@ class TripPlanner:
                     for state in list(states)  # some departure times yield no results
                 }
 
-                # keep another cache layer of shortest access, egress, and transfer legs
+                # keep another cache layer of shortest access and egress legs
                 access_legs_by_stop = {}
                 egress_legs_by_stop = {}
 

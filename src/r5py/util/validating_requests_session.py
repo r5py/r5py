@@ -30,12 +30,12 @@ class ValidatingRequestsSession(requests.Session):
         self._algorithm = checksum_algorithm
 
     def get(self, url, checksum, **kwargs):
-        """Sends a GET request, tests checksum."""
+        """Send a GET request, tests checksum."""
         kwargs.setdefault("allow_redirects", True)
         return self.request("GET", url, checksum, **kwargs)
 
     def post(self, url, checksum, **kwargs):
-        """Sends a POST request, tests checksum."""
+        """Send a POST request, tests checksum."""
         return self.request("POST", url, checksum, **kwargs)
 
     # delete, put, head don’t return data,

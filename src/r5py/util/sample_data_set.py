@@ -25,6 +25,7 @@ class SampleDataSet(pathlib.Path):
     _CACHE_DIR = pathlib.Path(config.CACHE_DIR) / "sampledata"
 
     def __new__(cls, remote_url, sha256_checksum):
+        """Define a data set that is downloaded and cached on demand."""
         # pathlib.Path does everything in __new__, rather than __init__
         cached_path = cls._CACHE_DIR / pathlib.Path(remote_url).name
         return super().__new__(cls, cached_path)

@@ -15,9 +15,7 @@ __all__ = ["Trip"]
 
 
 class Trip:
-    """
-    Represent one trip, consisting of one or more `TripLeg`s.
-    """
+    """Represent one trip, consisting of one or more `r5py.r5.TripLeg`."""
 
     COLUMNS = [
         "segment",
@@ -25,7 +23,7 @@ class Trip:
 
     def __init__(self, legs=[]):
         """
-        Represent one trip, consisting of one of more `TripLeg`s.
+        Represent one trip, consisting of one of more `r5py.r5.TripLeg`.
 
         Arguments
         =========
@@ -35,10 +33,12 @@ class Trip:
         self.legs = legs
 
     def __eq__(self, other):
+        """Check whether `self` and `other` are equal."""
         if isinstance(other, self.__class__):
             return self.legs == other.legs
 
     def __repr__(self):
+        """Return a string representation of `self`."""
         legs = ", ".join([str(leg) for leg in self.legs])
         return (
             f"<{self.__class__.__name__}: "

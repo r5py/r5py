@@ -90,10 +90,12 @@ class TransitLayer:
 
     @functools.cached_property
     def routes(self):
+        """Return a list of GTFS routes."""
         return list(self._transit_layer.routes)
 
     @functools.cached_property
     def trip_patterns(self):
+        """Return a list of GTFS trip patterns."""
         return list(self._transit_layer.tripPatterns)
 
 

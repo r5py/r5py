@@ -68,6 +68,7 @@ class TransportMode(enum.Enum):
         return None
 
     def __add__(self, other):
+        """Combine two transport modes."""
         if isinstance(other, self.__class__):
             return [self, other]
         elif isinstance(other, list):
@@ -78,6 +79,7 @@ class TransportMode(enum.Enum):
             )
 
     def __radd__(self, other):
+        """Combine two transport modes."""
         if other == 0:  # first iteration of sum()
             return self
         elif isinstance(other, list):
@@ -87,17 +89,17 @@ class TransportMode(enum.Enum):
 
     @property
     def is_leg_mode(self):
-        """Can this TransportMode function as a LegMode?"""
+        """Can this TransportMode function as a LegMode?."""
         return self.name in LEG_MODES
 
     @property
     def is_street_mode(self):
-        """Can this TransportMode function as a StreetMode?"""
+        """Can this TransportMode function as a StreetMode?."""
         return self.name in STREET_MODES
 
     @property
     def is_transit_mode(self):
-        """Can this TransportMode function as a TransitMode?"""
+        """Can this TransportMode function as a TransitMode?."""
         return self.name in TRANSIT_MODES
 
     AIR = "AIR"

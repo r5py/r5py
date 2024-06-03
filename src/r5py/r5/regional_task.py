@@ -250,8 +250,7 @@ class RegionalTask:
 
     @property
     def departure_time_window(self):
-        """Find public transport connections leaving within
-        ``departure_time_window`` after ``departure`` (datetime.timedelta).
+        """Find public transport connections leaving within ``departure_time_window`` after ``departure`` (datetime.timedelta).
 
         **Note:** The value of ``departure_time_window`` should be set with some
         caution. Specifically, setting values near or below the typical headways

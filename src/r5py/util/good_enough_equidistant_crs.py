@@ -31,7 +31,6 @@ class GoodEnoughEquidistantCrs(pyproj.CRS):
             The geographical extent for which to find an equidistant reference
             system, in `EPSG:4326`
         """
-
         if GoodEnoughEquidistantCrs._is_plausible_in_epsg4326(extent):
             # default CRS in case we do not find any better match
             crs = pyproj.CRS.from_epsg(3857)

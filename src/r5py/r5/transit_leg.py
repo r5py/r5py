@@ -11,8 +11,4 @@ __all__ = ["TransitLeg"]
 
 
 class TransitLeg(TripLeg):
-    """
-    Represent one leg of a public transport trip.
-    """
-
-    pass
+    """Represent one leg of a public transport trip."""

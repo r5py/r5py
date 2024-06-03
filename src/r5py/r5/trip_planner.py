@@ -43,9 +43,7 @@ ZERO_SECONDS = datetime.timedelta(seconds=0)
 
 
 class TripPlanner:
-    """
-    Find detailed routes between two points.
-    """
+    """Find detailed routes between two points."""
 
     MAX_ACCESS_TIME = datetime.timedelta(hours=1)
     MAX_EGRESS_TIME = MAX_ACCESS_TIME
@@ -72,7 +70,7 @@ class TripPlanner:
     @property
     def trips(self):
         """
-        Find detailed routes between two points.
+        Detailed routes between two points.
 
         Returns
         =======
@@ -84,6 +82,15 @@ class TripPlanner:
 
     @property
     def direct_paths(self):
+        """
+        Detailed routes between two points using direct modes.
+
+        Returns
+        =======
+        list[r5py.r5.Trip]
+            Detailed routes that meet the requested parameters, using direct
+            modes (walking, cycling, driving).
+        """
         direct_paths = []
         request = copy.copy(self.request)
 
@@ -173,6 +180,15 @@ class TripPlanner:
 
     @functools.cached_property
     def transit_paths(self):
+        """
+        Detailed routes between two points on public transport.
+
+        Returns
+        =======
+        list[r5py.r5.Trip]
+            Detailed routes that meet the requested parameters, on public
+            transport.
+        """
         transit_paths = []
 
         # if any transit mode requested:
@@ -219,8 +235,8 @@ class TripPlanner:
                     com.conveyal.r5.profile.McRaptorSuboptimalPathProfileRouter(
                         self.transport_network,
                         request,
-                        self.transit_access_times,
-                        self.transit_egress_times,
+                        self._transit_access_times,
+                        self._transit_egress_times,
                         list_supplier_callback,
                         None,
                         True,
@@ -252,10 +268,10 @@ class TripPlanner:
                             except KeyError:
                                 leg = min(
                                     [
-                                        self.transit_egress_paths[transport_mode][
+                                        self._transit_egress_paths[transport_mode][
                                             state.back.stop
                                         ]
-                                        for transport_mode in self.transit_egress_paths.keys()
+                                        for transport_mode in self._transit_egress_paths.keys()
                                     ]
                                 )
                                 egress_legs_by_stop[state.back.stop] = leg
@@ -273,10 +289,10 @@ class TripPlanner:
                             except KeyError:
                                 leg = min(
                                     [
-                                        self.transit_access_paths[transport_mode][
+                                        self._transit_access_paths[transport_mode][
                                             state.stop
                                         ]
-                                        for transport_mode in self.transit_access_paths.keys()
+                                        for transport_mode in self._transit_access_paths.keys()
                                     ]
                                 )
                                 access_legs_by_stop[state.stop] = leg
@@ -291,7 +307,7 @@ class TripPlanner:
                                 departure_stop = state.back.stop
                                 arrival_stop = state.stop
 
-                                leg = self.transit_transfer_path(
+                                leg = self._transit_transfer_path(
                                     departure_stop, arrival_stop
                                 )
 
@@ -385,7 +401,7 @@ class TripPlanner:
         return transit_paths
 
     @functools.cached_property
-    def transit_access_paths(self):
+    def _transit_access_paths(self):
         access_paths = {}
 
         request = copy.copy(self.request)
@@ -425,9 +441,12 @@ class TripPlanner:
         return access_paths
 
     @functools.cached_property
-    def transit_access_times(self):
-        """Times to reached stops in the format required by
-        McRaptorSuboptimalPathProfileRouter."""
+    def _transit_access_times(self):
+        """
+        Times to reached stops.
+
+        In the format required by McRaptorSuboptimalPathProfileRouter.
+        """
         access_times = jpype.JObject(
             {
                 com.conveyal.r5.api.util.LegMode
@@ -438,14 +457,14 @@ class TripPlanner:
                         for transfer_leg in reached_stops.values()
                     ],
                 )
-                for mode, reached_stops in self.transit_access_paths.items()
+                for mode, reached_stops in self._transit_access_paths.items()
             },
             "java.util.Map<com.conveyal.r5.LegMode, gnu.trove.map.TIntIntMap>",
         )
         return access_times
 
     @functools.cached_property
-    def transit_egress_paths(self):
+    def _transit_egress_paths(self):
         egress_paths = {}
 
         request = copy.copy(self.request)
@@ -486,9 +505,12 @@ class TripPlanner:
         return egress_paths
 
     @functools.cached_property
-    def transit_egress_times(self):
-        """Times to reached stops in the format required by
-        McRaptorSuboptimalPathProfileRouter."""
+    def _transit_egress_times(self):
+        """
+        Times to reached stops.
+
+        In the format required by McRaptorSuboptimalPathProfileRouter.
+        """
         egress_times = jpype.JObject(
             {
                 com.conveyal.r5.api.util.LegMode
@@ -499,13 +521,14 @@ class TripPlanner:
                         for transfer_leg in reached_stops.values()
                     ],
                 )
-                for mode, reached_stops in self.transit_egress_paths.items()
+                for mode, reached_stops in self._transit_egress_paths.items()
             },
             "java.util.Map<com.conveyal.r5.LegMode, gnu.trove.map.TIntIntMap>",
         )
         return egress_times
 
-    def transit_transfer_path(self, from_stop, to_stop):
+    def _transit_transfer_path(self, from_stop, to_stop):
+        """Find a transfer path between two transit stops."""
         self._transfer_paths = {}
         while True:
             try:

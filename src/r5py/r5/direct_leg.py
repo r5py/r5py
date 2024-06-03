@@ -15,9 +15,7 @@ __all__ = ["DirectLeg"]
 
 
 class DirectLeg(TripLeg):
-    """
-    Represent one leg of a public transport trip.
-    """
+    """Represent one leg of a public transport trip."""
 
     def __init__(self, transport_mode, street_segment):
         """

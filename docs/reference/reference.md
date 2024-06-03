@@ -33,7 +33,7 @@
 ```
 
 ```{eval-rst}
-.. autoclass:: r5py.BreakdownStat
+.. autoclass:: r5py.r5.BreakdownStat
     :members:
     :inherited-members:
 ```

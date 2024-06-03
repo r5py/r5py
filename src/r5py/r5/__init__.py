@@ -9,6 +9,7 @@ from .direct_leg import DirectLeg
 from .egress_leg import EgressLeg
 from .regional_task import RegionalTask
 from .scenario import Scenario
+from .street_layer import StreetLayer
 from .transfer_leg import TransferLeg
 from .transit_leg import TransitLeg
 from .transport_mode import TransportMode
@@ -26,6 +27,7 @@ __all__ = [
     "RegionalTask",
     "Scenario",
     "SpeedConfig",
+    "StreetLayer",
     "TransferLeg",
     "TransitLeg",
     "TransportMode",

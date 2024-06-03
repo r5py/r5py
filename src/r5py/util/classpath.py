@@ -37,6 +37,24 @@ config.argparser.add(
 )
 
 
+def r5_supports_custom_costs():
+    """
+    Check if the R5 java has the GP2 (Green Paths 2) patch i.e. supports custom costs routing.
+
+    Returns:
+    --------
+    bool: True if using GP2 R5, False otherwise.
+    """
+    try:
+        import com.conveyal.r5.rastercost.CustomCostField  # noqa: F401
+
+        # the import was successful thus using GP2 R5
+        return True
+    except ImportError:
+        # the import was unsuccessful
+        return False
+
+
 def find_r5_classpath(arguments):
     r5_classpath = None
 

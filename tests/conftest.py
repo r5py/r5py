@@ -8,6 +8,7 @@
 
 
 # explicitly importing fiona before geopandas fixes issue #156
+import csv
 import fiona  # noqa: F401
 
 import datetime
@@ -18,6 +19,11 @@ import jpype
 import geopandas
 import pandas
 import pytest
+from r5py.util.custom_cost_conversions import (
+    convert_custom_cost_segment_weight_factors_to_custom_cost_instance,
+    convert_custom_cost_instances_to_java_list,
+    convert_python_dict_to_java_hashmap,
+)
 import shapely
 
 
@@ -51,7 +57,14 @@ WALKING_DETAILS_NOT_SNAPPED = DATA_DIRECTORY / "test_walking_details_not_snapped
 DETAILED_ITINERARIES_BICYCLE = (
     DATA_DIRECTORY / "test_detailed_itineraries_bicycle.gpkg.zip"
 )
-DETAILED_ITINERARIES_CAR = DATA_DIRECTORY / "test_detailed_itineraries_car.gpkg.zip"
+# vanilla r5 uses mph for car speeds and has turn costs
+# DGL r5 and r5_gp2 (Green Paths 2) use km/h and no turn costs
+DETAILED_ITINERARIES_CAR_MPH = (
+    DATA_DIRECTORY / "test_detailed_itineraries_car_mph.gpkg.zip"
+)
+DETAILED_ITINERARIES_CAR_KMH = (
+    DATA_DIRECTORY / "test_detailed_itineraries_car_kmh.gpkg.zip"
+)
 DETAILED_ITINERARIES_TRANSIT = (
     DATA_DIRECTORY / "test_detailed_itineraries_transit.gpkg.zip"
 )
@@ -93,8 +106,13 @@ def detailed_itineraries_bicycle():
 
 
 @pytest.fixture
-def detailed_itineraries_car():
-    yield geopandas.read_file(DETAILED_ITINERARIES_CAR)
+def detailed_itineraries_car_mph():
+    yield geopandas.read_file(DETAILED_ITINERARIES_CAR_MPH)
+
+
+@pytest.fixture
+def detailed_itineraries_car_kmh():
+    yield geopandas.read_file(DETAILED_ITINERARIES_CAR_KMH)
 
 
 @pytest.fixture
@@ -368,3 +386,201 @@ def walking_times_snapped():
 @pytest.fixture
 def walking_times_not_snapped():
     yield pandas.read_csv(WALKING_TIMES_NOT_SNAPPED)
+
+
+# custom cost routing tests related fixtures
+
+
+@pytest.fixture(scope="session")
+def custom_cost_test_values():
+    yield {12345: 1.0, 67890: 1.5, 54321: 1.25, 98765: 1.1}
+
+
+@pytest.fixture(scope="session")
+def custom_cost_hashmap(custom_cost_test_values):
+    yield convert_python_dict_to_java_hashmap(custom_cost_test_values)
+
+
+@pytest.fixture(scope="session")
+def custom_cost_instance(custom_cost_hashmap):
+    yield convert_custom_cost_segment_weight_factors_to_custom_cost_instance(
+        "test_name", 1.3, custom_cost_hashmap, True
+    )
+
+
+@pytest.fixture(scope="session")
+def custom_cost_list(custom_cost_instance):
+    yield convert_custom_cost_instances_to_java_list(custom_cost_instance)
+
+
+@pytest.fixture(scope="session")
+def custom_cost_transport_network(custom_cost_transport_network_from_test_files):
+    yield custom_cost_transport_network_from_test_files
+
+
+@pytest.fixture(scope="session")
+def custom_cost_transport_network_from_test_files(osmid_value_dict):
+    import r5py
+
+    custom_cost_transport_network = r5py.CustomCostTransportNetwork(
+        r5py.sampledata.helsinki.osm_pbf, ["test_cost"], [1.1], [osmid_value_dict]
+    )
+    yield custom_cost_transport_network
+
+    del custom_cost_transport_network
+
+    time.sleep(0.5)
+    jpype.java.lang.System.gc()
+
+
+# csv reader helper function
+def read_osmid_values(csv_file_path, value_generator):
+    osmid_values = {}
+    with open(csv_file_path, mode="r", newline="") as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)  # skip header
+        for row in reader:
+            osmid, value = row
+            osmid_values[osmid] = value_generator(value)
+    return osmid_values
+
+
+# use Helsinki osmid's so that the custom cost values (osmids) are found in the transport network
+@pytest.fixture(scope="session")
+def osmid_value_dict():
+    yield read_osmid_values(
+        "tests/data/test_osm_data_custom_cost_kantakaupunki.csv", lambda v: float(v)
+    )
+
+
+@pytest.fixture(scope="session")
+def osmid_negative_value_dict():
+    yield read_osmid_values(
+        "tests/data/test_osm_data_negative_custom_cost_kantakaupunki.csv",
+        lambda v: -abs(float(v)),
+    )
+
+
+# run the generator function with a lambda that returns 0.0 to all
+@pytest.fixture(scope="session")
+def osmid_zero_dict():
+    yield read_osmid_values(
+        "tests/data/test_osm_data_custom_cost_kantakaupunki.csv", lambda v: 0.0
+    )
+
+
+@pytest.fixture(scope="session")
+def single_cost_custom_cost_transport_network(osmid_value_dict):
+    import r5py
+
+    # create a network with random values as custom costs
+    custom_cost_transport_network = r5py.CustomCostTransportNetwork(
+        r5py.sampledata.helsinki.osm_pbf, ["random_cost_1"], [1.2], [osmid_value_dict]
+    )
+    yield custom_cost_transport_network
+
+
+@pytest.fixture(scope="session")
+def single_cost_negative_custom_cost_transport_network(osmid_negative_value_dict):
+    import r5py
+
+    # create a network with random values as custom costs
+    custom_cost_transport_network = r5py.CustomCostTransportNetwork(
+        r5py.sampledata.helsinki.osm_pbf,
+        ["random_cost_1"],
+        [1.2],
+        [osmid_negative_value_dict],
+    )
+    yield custom_cost_transport_network
+
+
+@pytest.fixture(scope="session")
+def multi_cost_custom_cost_transport_network(osmid_value_dict):
+    import r5py
+
+    # create a network with random values as custom costs
+    custom_cost_transport_network = r5py.CustomCostTransportNetwork(
+        r5py.sampledata.helsinki.osm_pbf,
+        ["random_cost_1", "random_cost_2"],
+        [1.1, 1.2],
+        [osmid_value_dict, osmid_value_dict],
+        [True, True],
+    )
+    yield custom_cost_transport_network
+
+
+@pytest.fixture(scope="session")
+def custom_cost_transport_network_zero_values(osmid_zero_dict):
+    import r5py
+
+    # create a network with random values as custom costs
+    zero_custom_cost_transport_network = r5py.CustomCostTransportNetwork(
+        r5py.sampledata.helsinki.osm_pbf, ["test_name"], [1.3], [osmid_zero_dict]
+    )
+    yield zero_custom_cost_transport_network
+
+
+@pytest.fixture(scope="session")
+def origin_point_custom_cost():
+    yield geopandas.GeoDataFrame(
+        {"id": [1], "geometry": [shapely.Point(24.94222, 60.17166)]},
+        crs="EPSG:4326",
+    )
+
+
+@pytest.fixture(scope="session")
+def multiple_origin_points():
+    yield geopandas.GeoDataFrame(
+        {
+            "id": [1, 2, 3, 4],
+            "geometry": [
+                shapely.Point(24.95252, 60.17316),
+                shapely.Point(24.94742, 60.17466),
+                shapely.Point(24.94722, 60.17766),
+                shapely.Point(24.94922, 60.17966),
+            ],
+        },
+        crs="EPSG:4326",
+    )
+
+
+@pytest.fixture(scope="session")
+def multiple_destination_points():
+    yield geopandas.GeoDataFrame(
+        {
+            "id": [1, 2, 3],
+            "geometry": [
+                shapely.Point(24.95222, 60.18166),
+                shapely.Point(24.94022, 60.17106),
+                shapely.Point(24.94258, 60.17400),
+            ],
+        },
+        crs="EPSG:4326",
+    )
+
+
+# fixture factory for shifting between different OD-pairs
+# used to test one-to-many and many-to-many routing
+@pytest.fixture
+def origin_point_factory(request, origin_point_custom_cost, multiple_origin_points):
+    if request.param == "single_point":
+        yield origin_point_custom_cost
+    elif request.param == "multiple_points":
+        yield multiple_origin_points
+
+
+# fixture factory for shifting between different OD-pairs
+# used to test one-to-many and many-to-many routing
+@pytest.fixture
+def custom_cost_transport_network_selector(
+    request,
+    single_cost_custom_cost_transport_network,
+    single_cost_negative_custom_cost_transport_network,
+    multi_cost_custom_cost_transport_network,
+):
+    if request.param == "single_cost":
+        yield single_cost_custom_cost_transport_network
+    elif request.param == "negative_cost":
+        yield single_cost_negative_custom_cost_transport_network
+    elif request.param == "multiple_cost":
+        yield multi_cost_custom_cost_transport_network

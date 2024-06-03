@@ -10,6 +10,7 @@ from .street_layer import StreetLayer
 from .transport_mode import TransportMode
 from .transport_network import TransportNetwork
 from .travel_time_matrix_computer import TravelTimeMatrixComputer
+from .custom_cost_transport_network import CustomCostTransportNetwork
 
 __all__ = [
     "BreakdownStat",
@@ -20,5 +21,6 @@ __all__ = [
     "StreetLayer",
     "TransportMode",
     "TransportNetwork",
+    "CustomCostTransportNetwork",
     "TravelTimeMatrixComputer",
 ]

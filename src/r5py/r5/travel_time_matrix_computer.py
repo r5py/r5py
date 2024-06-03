@@ -101,6 +101,11 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
         if self.request.percentiles == [50]:
             od_matrix = od_matrix.rename(columns={"travel_time_p50": "travel_time"})
 
+        # add OSM IDs if found in results
+        # osmIdsResults are generated when routing with custom_cost_transport_network
+        if hasattr(results, "osmIdResults") and results.osmIdResults:
+            od_matrix["osm_ids"] = results.osmIdResults
+
         # R5’s NULL value is MAX_INT32
         od_matrix = self._fill_nulls(od_matrix)
 

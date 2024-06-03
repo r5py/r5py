@@ -1,3 +1,9 @@
+#!/usr/bin/env python3
+
+
+"""Configure how documentation is generated for rp5y."""
+
+
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:

@@ -3,18 +3,83 @@
 # Reference
 
 ```{eval-rst}
-.. automodule:: r5py
+.. autoclass:: r5py.TravelTimeMatrixComputer
     :members:
     :inherited-members:
 ```
 
 ```{eval-rst}
-.. automodule:: r5py.r5
+.. autoclass:: r5py.DetailedItinerariesComputer
     :members:
-    :no-index: r5py.r5.detailed_itineraries_computer.DetailedItinerariesComputer, r5py.r5.regional_task.RegionalTask r5py.r5.transport_mode.TransportMode, r5py.r5.transport_network.TransportNetwork, r5py.r5.travel_time_matrix_computer.TravelTimeMatrixComputer
+    :inherited-members:
 ```
 
 ```{eval-rst}
-.. automodule:: r5py.util
+.. autoclass:: r5py.TransportNetwork
     :members:
+    :inherited-members:
+```
+
+```{eval-rst}
+.. autoclass:: r5py.RegionalTask
+    :members:
+    :inherited-members:
+```
+
+```{eval-rst}
+.. autoclass:: r5py.TransportMode
+    :members:
+    :inherited-members:
+```
+
+```{eval-rst}
+.. autoclass:: r5py.r5.TripPlanner
+    :members:
+    :inherited-members:
+```
+
+```{eval-rst}
+.. autoclass:: r5py.r5.Trip
+    :members:
+    :inherited-members:
+```
+
+```{eval-rst}
+.. autoclass:: r5py.r5.DirectLeg
+    :members:
+    :inherited-members:
+```
+
+```{eval-rst}
+.. autoclass:: r5py.r5.TransitLeg
+    :members:
+    :inherited-members:
+```
+
+```{eval-rst}
+.. autoclass:: r5py.r5.AccessLeg
+    :members:
+    :inherited-members:
+```
+
+```{eval-rst}
+.. autoclass:: r5py.r5.TransferLeg
+    :members:
+    :inherited-members:
+```
+
+```{eval-rst}
+.. autoclass:: r5py.r5.EgressLeg
+    :members:
+    :inherited-members:
+```
+
+```{eval-rst}
+.. autoclass:: r5py.util.Config
+    :members:
+    :inherited-members:
+```
+
+```{eval-rst}
+.. automethod:: r5py.util.start_jvm()
 ```

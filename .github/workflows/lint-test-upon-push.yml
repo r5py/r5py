@@ -43,7 +43,6 @@ jobs:
           - windows-latest
           - macos-latest
         python_version:
-          - '3.13'
           - '3.12'
           - '3.11'
           - '3.10'

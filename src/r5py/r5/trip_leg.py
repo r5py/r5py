@@ -98,6 +98,12 @@ class TripLeg:
         else:
             return self.__add__(other)
 
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return False not in [
+                self._are_columns_equal(other, column) for column in self.COLUMNS
+            ]
+
     def __gt__(self, other):
         if isinstance(other, TripLeg):
             return (self.travel_time + self.wait_time) > (
@@ -138,6 +144,25 @@ class TripLeg:
         except (AttributeError, IndexError):
             _repr = f"<{self.__class__.__name__}>"
         return _repr
+
+    def _are_columns_equal(self, other, column):
+        """
+        Compare if attribute `column` of self equals attribute `column` of
+        other. Also True if both values are None or NaN or NaT.
+        """
+
+        self_column = getattr(self, column)
+        other_column = getattr(other, column)
+
+        return (
+            self_column == other_column
+            or (self_column is None and other_column is None)
+            or (self_column == numpy.nan and other_column == numpy.nan)
+            or (
+                self_column == numpy.datetime64("NaT")
+                and other_column == numpy.datetime64("NaT")
+            )
+        )
 
     def as_table_row(self):
         """

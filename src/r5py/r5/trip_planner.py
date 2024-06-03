@@ -244,18 +244,26 @@ class TripPlanner:
                     for state in list(states)  # some departure times yield no results
                 }
 
+                # keep another cache layer of shortest access and egress legs
+                access_legs_by_stop = {}
+                egress_legs_by_stop = {}
+
                 for departure_time, state in final_states.items():
                     trip = Trip()
                     while state:
                         if state.stop == -1:  # EgressLeg
-                            leg = min(
-                                [
-                                    self.transit_egress_paths[transport_mode][
-                                        state.back.stop
+                            try:
+                                leg = egress_legs_by_stop[state.back.stop]
+                            except KeyError:
+                                leg = min(
+                                    [
+                                        self.transit_egress_paths[transport_mode][
+                                            state.back.stop
+                                        ]
+                                        for transport_mode in self.transit_egress_paths.keys()
                                     ]
-                                    for transport_mode in self.transit_egress_paths.keys()
-                                ]
-                            )
+                                )
+                                egress_legs_by_stop[state.back.stop] = leg
                             leg.wait_time = ZERO_SECONDS
                             leg.departure_time = (
                                 midnight
@@ -265,14 +273,18 @@ class TripPlanner:
                             leg.arrival_time = leg.departure_time + leg.travel_time
 
                         elif state.back is None:  # AccessLeg
-                            leg = min(
-                                [
-                                    self.transit_access_paths[transport_mode][
-                                        state.stop
+                            try:
+                                leg = access_legs_by_stop[state.stop]
+                            except KeyError:
+                                leg = min(
+                                    [
+                                        self.transit_access_paths[transport_mode][
+                                            state.stop
+                                        ]
+                                        for transport_mode in self.transit_access_paths.keys()
                                     ]
-                                    for transport_mode in self.transit_access_paths.keys()
-                                ]
-                            )
+                                )
+                                access_legs_by_stop[state.stop] = leg
                             leg.wait_time = ZERO_SECONDS
                             leg.arrival_time = midnight + datetime.timedelta(
                                 seconds=state.time
@@ -371,7 +383,9 @@ class TripPlanner:
                         trip = leg + trip
                         state = state.back
 
-                    transit_paths.append(trip)
+                    # R5 sometimes reports the same path more than once, skip duplicates
+                    if trip not in transit_paths:
+                        transit_paths.append(trip)
 
         return transit_paths
 

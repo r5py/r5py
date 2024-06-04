@@ -91,6 +91,7 @@ class BaseTravelTimeMatrixComputer:
 
     @property
     def destinations(self):
+        """The destinations of this travel time matrix (`geopandas.GeoDataFrame`)."""
         return self._destinations
 
     @destinations.setter
@@ -120,10 +121,7 @@ class BaseTravelTimeMatrixComputer:
         return data_set.map(lambda x: numpy.nan if x == MAX_INT32 else x)
 
     def _prepare_origins_destinations(self):
-        """
-        Make sure we received enough information to route from origins to
-        destinations.
-        """
+        """Make sure we received enough information to route from origins to destinations."""
         try:
             self.origins
         except AttributeError as exception:
@@ -165,6 +163,7 @@ class BaseTravelTimeMatrixComputer:
 
     @property
     def origins(self):
+        """The origins of this travel time matrix (`geopandas.GeoDataFrame`)."""
         return self._origins
 
     @origins.setter

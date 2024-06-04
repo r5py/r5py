@@ -89,9 +89,7 @@ class TransportNetwork:
         self._transport_network = transport_network
 
     def __del__(self):
-        """
-        Delete all temporary files upon destruction.
-        """
+        """Delete all temporary files upon destruction."""
         MAX_TRIES = 10
 
         # first, close the open osm_file,
@@ -212,6 +210,7 @@ class TransportNetwork:
 
     @property
     def extent(self):
+        """The geographic area covered, as a `shapely.box`."""
         # TODO: figure out how to get the extent of the GTFS schedule,
         # then find the smaller extent of the two (or the larger one?)
         return self.street_layer.extent

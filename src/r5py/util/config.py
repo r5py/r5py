@@ -31,7 +31,6 @@ class Config:
 
     def __init__(self):
         """Load configuration from config files or command line arguments."""
-
         self.argparser.add(
             "-v",
             "--verbose",
@@ -40,6 +39,7 @@ class Config:
         )
 
     def __new__(cls):
+        """Load configuration from config files or command line arguments."""
         if cls._instance is None:
             cls._instance = super(Config, cls).__new__(cls)
         return cls._instance
@@ -55,6 +55,7 @@ class Config:
 
     @property
     def argparser(self):
+        """Return a singleton instance of a `configargparse.ArgumentParser`."""
         try:
             argparser = configargparse.get_argument_parser(
                 prog=PACKAGE,
@@ -67,6 +68,7 @@ class Config:
 
     @functools.cached_property
     def CACHE_DIR(self):
+        """Save persistent cache files into this directory."""
         cache_dir = (
             pathlib.Path(
                 os.environ.get("LOCALAPPDATA")
@@ -80,6 +82,7 @@ class Config:
 
     @functools.cached_property
     def CONFIG_FILES(self):
+        """List locations of potential configuration files."""
         config_files = [
             pathlib.Path(f"/etc/{PACKAGE}.yml"),
             pathlib.Path(
@@ -130,6 +133,12 @@ class Config:
 
     @functools.cached_property
     def TEMP_DIR(self):
+        """
+        Save temporary files to this directory.
+
+        read-only property,
+        use command-line option `--temporary-directory` to change.
+        """
         parent_dir = self.arguments.temporary_directory
         temp_dir = pathlib.Path(tempfile.mkdtemp(prefix=self.PACKAGE, dir=parent_dir))
         return temp_dir

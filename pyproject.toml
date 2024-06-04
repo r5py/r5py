@@ -23,7 +23,7 @@ dependencies = [
     "importlib_resources",
     "joblib",
     "jpype1",
-    "numpy>=2.0.0r2",
+    "numpy>=2.0.0rc2",
     "pandas>=2.1.0",
     "psutil",
     "pyproj",

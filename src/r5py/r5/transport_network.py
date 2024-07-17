@@ -37,7 +37,7 @@ start_jvm()
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
 
-    def __init__(self, osm_pbf, gtfs=[]):
+    def __init__(self, osm_pbf, gtfs=[], **kwargs):
         """
         Load a transport network.
 
@@ -72,6 +72,18 @@ class TransportNetwork:
             transport_network = self.add_custom_cost_segment_weight_factors_to_network(
                 transport_network
             )
+            # if has precalculate and is true, add static speed to street layer to precalculate costs
+            if hasattr(self, "precalculate") and self.precalculate:
+                # IN GP2 we only support single mode routing and single speed
+                # single speed is used for all modes
+                if "speed_walking" in kwargs:
+                    transport_network.streetLayer.staticSpeedKmh = kwargs[
+                        "speed_walking"
+                    ]
+                elif "speed_cycling" in kwargs:
+                    transport_network.streetLayer.staticSpeedKmh = kwargs[
+                        "speed_cycling"
+                    ]
 
         transport_network.streetLayer.loadFromOsm(osm_file)
         transport_network.streetLayer.parentNetwork = transport_network

@@ -4,7 +4,7 @@
 import collections
 import com.conveyal.r5
 from r5py.r5.transport_network import TransportNetwork
-from r5py.util.classpath import r5_supports_custom_costs
+from r5py.util.classpath import r5_supports_custom_costs, r5_supports_precalculation
 from r5py.util.custom_cost_conversions import (
     convert_java_hashmap_to_python_dict,
     convert_python_custom_costs_to_java_custom_costs,
@@ -27,6 +27,8 @@ class CustomCostTransportNetwork(TransportNetwork):
         sensitivities,
         custom_cost_segment_weight_factors,
         allow_missing_osmids=True,
+        precalculate=True,
+        **kwargs,
     ):
         """
         Initialise a transport network with custom weighting cost factors.
@@ -59,13 +61,25 @@ class CustomCostTransportNetwork(TransportNetwork):
             Using False might be affected by public transit edges if they are added and used in routing.
             If set to False and ANY edges aren't found during routing, routing will throw exception,
             so in most cases the default True should be used.
+        precalculate : bool, default False
+            If True, precalculate the transport network before routing.
+            For larger routings it will speed up the routing process.
         """
         # crash if custom costs are NOT supported in the used version of R5
         # either use TransportNetwork (without custom costs) or change to correct version of R5
         if not r5_supports_custom_costs():
             raise RuntimeError(
                 """Custom costs are not supported in this version of R5.
-                Correct (Green Paths 2 patched) R5 version can be found from branch gp2 in
+                Correct (Green Paths 2 patched) R5 version should be found from branch gp2 in
+                https://github.com/DigitalGeographyLab/r5. Or by using a release jar from address e.g.
+                https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar
+                """
+            )
+
+        if precalculate and not r5_supports_precalculation():
+            raise RuntimeError(
+                """Precalculating custom costs are not supported in this version of  R5.
+                Correct (Green Paths 2, and precalculations patched) R5 version should be found from precalculate branch in
                 https://github.com/DigitalGeographyLab/r5. Or by using a release jar from address e.g.
                 https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar
                 """
@@ -86,8 +100,9 @@ class CustomCostTransportNetwork(TransportNetwork):
         self.sensitivities = sensitivities
         self.custom_cost_segment_weight_factors = custom_cost_segment_weight_factors
         self.allow_missing_osmids = allow_missing_osmids
+        self.precalculate = precalculate
         # GTFS is currently not supported for custom cost transport network
-        super().__init__(osm_pbf, gtfs=[])
+        super().__init__(osm_pbf, gtfs=[], **kwargs)
 
     def convert_params_to_lists(
         self,

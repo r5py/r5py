@@ -55,6 +55,26 @@ def r5_supports_custom_costs():
         return False
 
 
+def r5_supports_precalculation():
+    """
+    Check if the R5 java has the precalculation patch i.e. supports precalculation.
+
+    Returns:
+    --------
+    bool: True if using precalculation R5, False otherwise.
+    """
+    try:
+        import com.conveyal.r5.rastercost.EdgeCustomCostPreCalculator
+
+        # noqa: F401
+
+        # the import was successful thus using precalculation R5
+        return True
+    except ImportError:
+        # the import was unsuccessful
+        return False
+
+
 def find_r5_classpath(arguments):
     r5_classpath = None
 

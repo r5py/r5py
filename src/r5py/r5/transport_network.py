@@ -84,6 +84,11 @@ class TransportNetwork:
                     transport_network.streetLayer.staticSpeedKmh = kwargs[
                         "speed_cycling"
                     ]
+                else:
+                    # throw error
+                    raise ValueError(
+                        "No speed specified for custom cost precalculate, please specify speed_walking or speed_cycling"
+                    )
 
         transport_network.streetLayer.loadFromOsm(osm_file)
         transport_network.streetLayer.parentNetwork = transport_network

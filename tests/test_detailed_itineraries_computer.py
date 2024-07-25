@@ -9,7 +9,6 @@ import pytest
 import pytest_lazy_fixtures
 
 import r5py
-from r5py.util.classpath import r5_supports_custom_costs
 import r5py.util.exceptions
 
 
@@ -499,8 +498,9 @@ class TestDetailedItinerariesComputer:
                 r5py.TransportMode.CAR,
                 (
                     pytest_lazy_fixtures.lf("detailed_itineraries_car_kmh")
-                    if r5_supports_custom_costs()
-                    else pytest_lazy_fixtures.lf("detailed_itineraries_car_mph")
+                    # TODO: needs better handling here
+                    # if r5_supports_custom_costs()
+                    # else pytest_lazy_fixtures.lf("detailed_itineraries_car_mph")
                 ),
             ),
             (

@@ -10,7 +10,6 @@
 
 
 # explicitly importing fiona before geopandas fixes issue #156
-import csv
 import fiona  # noqa: F401
 
 import datetime
@@ -21,11 +20,6 @@ import jpype
 import geopandas
 import pandas
 import pytest
-from r5py.util.custom_cost_conversions import (
-    convert_custom_cost_segment_weight_factors_to_custom_cost_instance,
-    convert_custom_cost_instances_to_java_list,
-    convert_python_dict_to_java_hashmap,
-)
 import shapely
 
 
@@ -39,9 +33,10 @@ ORIGINS_VALID_IDS = DATA_DIRECTORY / "test_valid_points_data.geojson"
 SINGLE_VALID_ORIGIN = DATA_DIRECTORY / "test_valid_single_point_data.geojson"
 
 R5_JAR_URL = (
-    "https://github.com/r5py/r5/releases/download/v7.1-r5py/r5-v7.1-r5py-all.jar"
+    "https://github.com/DigitalGeographyLab/r5"
+    "/releases/download/v7.1-gp2-3/r5-v7.1-gp2-3-1-gbcaa62a-all.jar"
 )
-R5_JAR_SHA256 = "cd697b50323fd99977c98039ea317698bcf5fbbdb12b59e3e094ae9443648db2"
+R5_JAR_SHA256 = "f2f4d1a799a91d407c81b80e6faaa3b8330a1e40ae6daa5d35149d8be460edf0"
 R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
 R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
     "14aa2347be79c280e4d0fd3a137fb8f5bf2863261a1e48e1a122df1a52a0f453"
@@ -59,14 +54,7 @@ WALKING_DETAILS_NOT_SNAPPED = DATA_DIRECTORY / "test_walking_details_not_snapped
 DETAILED_ITINERARIES_BICYCLE = (
     DATA_DIRECTORY / "test_detailed_itineraries_bicycle.gpkg.zip"
 )
-# vanilla r5 uses mph for car speeds and has turn costs
-# DGL r5 and r5_gp2 (Green Paths 2) use km/h and no turn costs
-DETAILED_ITINERARIES_CAR_MPH = (
-    DATA_DIRECTORY / "test_detailed_itineraries_car_mph.gpkg.zip"
-)
-DETAILED_ITINERARIES_CAR_KMH = (
-    DATA_DIRECTORY / "test_detailed_itineraries_car_kmh.gpkg.zip"
-)
+DETAILED_ITINERARIES_CAR = DATA_DIRECTORY / "test_detailed_itineraries_car.gpkg.zip"
 DETAILED_ITINERARIES_TRANSIT = (
     DATA_DIRECTORY / "test_detailed_itineraries_transit.gpkg.zip"
 )
@@ -91,13 +79,8 @@ def detailed_itineraries_bicycle():
 
 
 @pytest.fixture
-def detailed_itineraries_car_mph():
-    yield geopandas.read_file(DETAILED_ITINERARIES_CAR_MPH)
-
-
-@pytest.fixture
-def detailed_itineraries_car_kmh():
-    yield geopandas.read_file(DETAILED_ITINERARIES_CAR_KMH)
+def detailed_itineraries_car():
+    yield geopandas.read_file(DETAILED_ITINERARIES_CAR)
 
 
 @pytest.fixture

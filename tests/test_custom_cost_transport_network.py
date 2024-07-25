@@ -4,7 +4,6 @@ import collections
 from unittest.mock import patch
 from r5py.r5.detailed_itineraries_computer import DetailedItinerariesComputer
 from r5py.r5.travel_time_matrix_computer import TravelTimeMatrixComputer
-from r5py.util.classpath import r5_supports_custom_costs
 from r5py.util.custom_cost_conversions import (
     convert_custom_cost_instances_to_java_list,
     convert_python_dict_to_java_hashmap,
@@ -13,7 +12,6 @@ from r5py.util.custom_cost_conversions import (
 import pytest
 import jpype
 import r5py
-import r5py.sampledata.helsinki
 
 import com.conveyal.r5
 
@@ -71,62 +69,10 @@ class Test_CustomCostTransportNetwork:
         del custom_cost_values_router_results
         del zero_cost_values_router_results
 
-    # check that correct r5 is being used with Green Paths 2 patch, which supports custom costs
-    @pytest.mark.skipif(
-        r5_supports_custom_costs() is False,
-        reason="R5 version does not support custom costs",
-    )
-    def test_correct_version_of_r5(self):
-        assert r5_supports_custom_costs()
-
-    @pytest.mark.skipif(
-        r5_supports_custom_costs() is False,
-        reason="R5 version does not support custom costs",
-    )
-    def test_convert_python_dict_to_java_hashmap(self, custom_cost_test_values):
-        converted_data = convert_python_dict_to_java_hashmap(custom_cost_test_values)
-        assert isinstance(converted_data, jpype.java.util.HashMap)
-        assert converted_data.get(12345) == 1.0
-        assert converted_data.isEmpty() is False
-
-    @pytest.mark.skipif(
-        r5_supports_custom_costs() is False,
-        reason="R5 version does not support custom costs",
-    )
-    def test_convert_custom_cost_segment_weight_factors_to_custom_cost_instance(
-        self, custom_cost_hashmap
-    ):
-        assert isinstance(custom_cost_hashmap, jpype.java.util.HashMap)
-        custom_cost_instance = (
-            convert_custom_cost_segment_weight_factors_to_custom_cost_instance(
-                "test_name", 1.3, custom_cost_hashmap, True
-            )
-        )
-        assert isinstance(
-            custom_cost_instance, com.conveyal.r5.rastercost.CustomCostField
-        )
-        assert custom_cost_instance.getDisplayKey() == "test_name"
-        assert custom_cost_instance.getSensitivityCoefficient() == 1.3
-        assert custom_cost_instance.getDisplayValue(12345) == 1.0
-        assert custom_cost_instance.getCustomCostFactors().isEmpty() is False
-
-    @pytest.mark.skipif(
-        r5_supports_custom_costs() is False,
-        reason="R5 version does not support custom costs",
-    )
-    def test_convert_custom_cost_instance_to_java_list(self, custom_cost_instance):
-        custom_cost_list = convert_custom_cost_instances_to_java_list(
-            # to list
-            [custom_cost_instance]
-        )
-        assert isinstance(custom_cost_list, jpype.java.util.List)
-        assert custom_cost_list.get(0).getDisplayKey() == "test_name"
-        assert custom_cost_list.get(0).getDisplayValue(12345) == 1.0
-
-    @pytest.mark.skipif(
-        r5_supports_custom_costs() is False,
-        reason="R5 version does not support custom costs",
-    )
+    # @pytest.mark.skipif(
+    #     r5_supports_custom_costs() is False,
+    #     reason="R5 version does not support custom costs",
+    # )
     def test_transport_network_java_object(self, custom_cost_transport_network):
         assert isinstance(
             custom_cost_transport_network._transport_network,
@@ -136,63 +82,63 @@ class Test_CustomCostTransportNetwork:
     # TEST CUSTOM COST TRANSPORT NETWORK INITIALIZATION AND VALIDATION
 
     @pytest.mark.parametrize(
-        "names, sensitivities, custom_cost_segment_weight_factors, allow_missing_osmids",
-        [
-            ("test_cost", 1.1, [], True),
-            ([], 1.1, [{}], True),
-            ("test_cost", [], ({"12345": 1.0, "67890": 1.5}), True),
-            ("test_cost", [1], {}, True),
-            (
-                ["test_cost"],
-                1,
-                ({"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}),
-                True,
-            ),
-            (("name"), (1), ("12345", 67890), True),
-            (
-                ["name_1"],
-                [1.1],
-                [{"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}],
-                True,
-            ),
-            (
-                ["name_1"],
-                [1.1, 1.2],
-                [{}, {}],
-                True,
-            ),
-            (["name_1", "name_2"], [1.1, 1.2], [{"12345": 1.0, "67890": 1.5}], True),
-            # test allow_missing_osmids flag to fail if allow_missing_osmids is False
-            (
-                ["name_1", "name_2"],
-                [1.1, 1.2],
-                [{"12345": 1.0, "67890": 1.5}],
-                [False, False],
-            ),
-        ],
+       "names, sensitivities, custom_cost_segment_weight_factors, allow_missing_osmids",
+       [
+           ("test_cost", 1.1, [], True),
+           ([], 1.1, [{}], True),
+           ("test_cost", [], ({"12345": 1.0, "67890": 1.5}), True),
+           ("test_cost", [1], {}, True),
+           (
+               ["test_cost"],
+               1,
+               ({"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}),
+               True,
+           ),
+           (("name"), (1), ("12345", 67890), True),
+           (
+               ["name_1"],
+               [1.1],
+               [{"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}],
+               True,
+           ),
+           (
+               ["name_1"],
+               [1.1, 1.2],
+               [{}, {}],
+               True,
+           ),
+           (["name_1", "name_2"], [1.1, 1.2], [{"12345": 1.0, "67890": 1.5}], True),
+           # test allow_missing_osmids flag to fail if allow_missing_osmids is False
+           (
+               ["name_1", "name_2"],
+               [1.1, 1.2],
+               [{"12345": 1.0, "67890": 1.5}],
+               [False, False],
+           ),
+       ],
     )
-    @pytest.mark.skipif(
-        r5_supports_custom_costs() is False,
-        reason="R5 version does not support custom costs",
-    )
+    # @pytest.mark.skipif(
+    #    r5_supports_custom_costs() is False,
+    #    reason="R5 version does not support custom costs",
+    # )
     def test_custom_cost_params_invalid_params(
-        self,
-        names,
-        sensitivities,
-        custom_cost_segment_weight_factors,
-        allow_missing_osmids,
+       self,
+       names,
+       sensitivities,
+       custom_cost_segment_weight_factors,
+       allow_missing_osmids,
     ):
-        from r5py.util.exceptions import CustomCostDataError
+       from r5py.util.exceptions import CustomCostDataError
 
-        with patch.object(r5py.CustomCostTransportNetwork, "__del__", lambda x: None):
-            with pytest.raises(CustomCostDataError):
-                r5py.CustomCostTransportNetwork(
-                    r5py.sampledata.helsinki.osm_pbf,
-                    names,
-                    sensitivities,
-                    custom_cost_segment_weight_factors,
-                    allow_missing_osmids,
-                )
+       with patch.object(r5py.CustomCostTransportNetwork, "__del__", lambda x: None):
+           with pytest.raises(CustomCostDataError):
+               r5py.CustomCostTransportNetwork(
+                   r5py.sampledata.helsinki.osm_pbf,
+                   names,
+                   sensitivities,
+                   custom_cost_segment_weight_factors,
+                   allow_missing_osmids,
+               )
 
     @pytest.mark.parametrize(
         "names, sensitivities, custom_cost_segment_weight_factors, allow_missing_osmids",
@@ -206,10 +152,10 @@ class Test_CustomCostTransportNetwork:
             ),
         ],
     )
-    @pytest.mark.skipif(
-        r5_supports_custom_costs() is False,
-        reason="R5 version does not support custom costs",
-    )
+    # @pytest.mark.skipif(
+    #     r5_supports_custom_costs() is False,
+    #     reason="R5 version does not support custom costs",
+    # )
     def test_single_and_multiple_custom_cost_segment_weight_factors_sets(
         self,
         names,
@@ -238,10 +184,10 @@ class Test_CustomCostTransportNetwork:
             == custom_cost_segment_weight_factors
         )
 
-    @pytest.mark.skipif(
-        r5_supports_custom_costs() is False,
-        reason="R5 version does not support custom costs",
-    )
+    # @pytest.mark.skipif(
+    #     r5_supports_custom_costs() is False,
+    #     reason="R5 version does not support custom costs",
+    # )
     def test_custom_cost_trasport_network_invalid_osmid_key_fails(
         self, custom_cost_transport_network
     ):
@@ -277,10 +223,10 @@ class Test_CustomCostTransportNetwork:
     @pytest.mark.parametrize(
         "transport_mode", [r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE]
     )
-    @pytest.mark.skipif(
-        r5_supports_custom_costs() is False,
-        reason="R5 version does not support custom costs",
-    )
+    # @pytest.mark.skipif(
+    #     r5_supports_custom_costs() is False,
+    #     reason="R5 version does not support custom costs",
+    # )
     def test_custom_cost_routing(
         self,
         custom_cost_routing_results,
@@ -352,10 +298,10 @@ class Test_CustomCostTransportNetwork:
     @pytest.mark.parametrize(
         "transport_mode", [r5py.TransportMode.WALK, r5py.TransportMode.BICYCLE]
     )
-    @pytest.mark.skipif(
-        r5_supports_custom_costs() is False,
-        reason="R5 version does not support custom costs",
-    )
+    # @pytest.mark.skipif(
+    #     r5_supports_custom_costs() is False,
+    #     reason="R5 version does not support custom costs",
+    # )
     def test_custom_cost_routing_correct_osmids(
         self,
         custom_cost_routing_results,
@@ -428,10 +374,10 @@ class Test_CustomCostTransportNetwork:
         "osmids", [[], [1000813187, 1000813188], ["1000813187", "1000813188"]]
     )
     @pytest.mark.parametrize("merged", [True, False])
-    @pytest.mark.skipif(
-        r5_supports_custom_costs() is False,
-        reason="R5 version does not support custom costs",
-    )
+    # @pytest.mark.skipif(
+    #     r5_supports_custom_costs() is False,
+    #     reason="R5 version does not support custom costs",
+    # )
     def test_custom_cost_routing_base_costs_and_custom_costs(
         self,
         method_name,

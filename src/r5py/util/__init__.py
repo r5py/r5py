@@ -3,6 +3,7 @@
 """Utility functions, e.g., starting a JVM, and accessing configuration."""
 
 from . import environment  # noqa: F401
+from .jhashmap import JHashMap
 from .jvm import start_jvm
 from .camel_to_snake_case import camel_to_snake_case
 from .config import Config
@@ -19,6 +20,7 @@ __all__ = [
     "Config",
     "contains_gtfs_data",
     "GoodEnoughEquidistantCrs",
+    "JHashMap",
     "parse_int_date",
     "snake_to_camel_case",
 ]

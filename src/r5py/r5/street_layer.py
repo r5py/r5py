@@ -38,6 +38,17 @@ class StreetLayer:
         instance._street_layer = street_layer
         return instance
 
+    @property
+    def cost_fields(self):
+        """Return the R5 cost fields object of this street layer."""
+        return self._street_layer.edgeStore.costFields
+
+    @cost_fields.setter
+    def cost_fields(self, cost_fields):
+        CustomCostField = jpype.JClass("com.conveyal.r5.rastercost.CustomCostField")
+        cost_fields = jpype.JArray(CustomCostField)(cost_fields)
+        self._street_layer.edgeStore.costFields = CustomCostField.wrapToEdgeStoreCostFieldsList(cost_fields)
+
     @functools.cached_property
     def extent(self):
         envelope = self._street_layer.envelope

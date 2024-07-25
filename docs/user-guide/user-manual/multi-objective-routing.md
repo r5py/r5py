@@ -4,28 +4,12 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.16.1
+    jupytext_version: 1.16.2
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
-
-```{code-cell}
-:tags: [remove-input, remove-output]
-
-# this cell is hidden from READTHEDOCS output
-# it’s used to
-#    - use a different upstream R5 jar, so we can display the
-#      geometries of public transport routes, and to
-
-import sys
-
-sys.argv.extend([
-    "--r5-classpath",
-    "https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar",
-])
-```
 
 # Multi-objective routing (Green Paths 2)
 
@@ -164,27 +148,29 @@ allow_missing_osmids`.
 
 First initialize OD (origins and destinations) and set to use correct patch (GP2) of R5.
 
-```{code-cell}
+```{code-cell} ipython3
 # use GP2 patched version of r5
 
 import sys
-sys.argv.append([
+sys.argv += [
     "--r5-classpath",
-    "https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar"
-])
-
-import r5py
-import r5py.sampledata.helsinki
+    "https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar",
+]
 ```
 
-```{code-cell}
+```{code-cell} ipython3
+import r5py
+```
+
+```{code-cell} ipython3
 :tags: [remove-output]
 
 # init example OD's (origins and destinations)
 
 import geopandas
 import shapely
-import datetime
+
+import r5py.sampledata.helsinki
 
 population_grid = geopandas.read_file(r5py.sampledata.helsinki.population_grid)
 
@@ -204,23 +190,35 @@ destinations = railway_station.copy()
 
 Use `single` custom cost dataset. Defining the paremeters:
 
-```{code-cell}
+```{code-cell} ipython3
 # populate example segment cost weight factors with some meaningful values
 # real dictionary should have .pbf's valid osmids and some meaningfull weight factors
-example_data_custom_cost_segment_weights_1 = {
-    '122946790': 0.0,
-    '28639750': 1.0,
-    '57016533': 0.4,
-    '122946791': 0.5,
-    '57016531': 0.6,
-    '255757448': 0.8,
-    '122946787': 0.2,
-    '255757446': 0.3
-}
+
+import pandas
+
+custom_costs = pandas.DataFrame({
+    "osm_id": ['122946790', '28639750', '57016533', '122946791', '57016531', '255757448', '122946787', '255757446'],
+    "cost 1": [0.0, 1.0, 0.4, 0.5, 0.6, 0.8, 0.2, 0.3],
+    "cost 2": [1.1, 1.2, 0.55, 0.88, 0.79, 0.3, 0.4, 0.7],
+})
+custom_costs = custom_costs.set_index("osm_id")
+custom_costs
+
 # you can use your own filepath as the osm.pbf e.g. "/path/to/your/network.osm.pbf"
-custom_cost_transport_network_example_1 = r5py.CustomCostTransportNetwork(
+```
+
+```{code-cell} ipython3
+dict(custom_costs["cost 1"])
+```
+
+```{code-cell} ipython3
+import r5py
+import r5py.sampledata.helsinki
+
+transport_network = r5py.CustomCostTransportNetwork(
     r5py.sampledata.helsinki.osm_pbf,
-    "example_1_data_name", 1.2, example_data_custom_cost_segment_weights_1,
+    [r5py.sampledata.helsinki.gtfs],
+    custom_costs,
 )
 ```
 
@@ -230,7 +228,7 @@ the parameters to the lists. Notice the importance of element order in lists.
 Names with "\_1" and sensitivity 1.1 will create 1 instance of custom costs and
 names with "\_2" and sensitivity 1.2 another instance and so forth.
 
-```{code-cell}
+```{code-cell} ipython3
 # populate example segment cost weight factors with some meaningful values
 example_data_custom_cost_segment_weights_2 = {
     '123406154': 1.1,
@@ -275,11 +273,11 @@ Green Paths 2.0 patch currently only supports active travel modes. Available
 
 Routing with {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`
 
-```{code-cell}
+```{code-cell} ipython3
 # create the travel_time_matrix computer
 # using multiple datas
-travel_time_matrix_computer_custom_cost_example = r5py.TravelTimeMatrixComputer(
-    custom_cost_transport_network_example_2,
+travel_time_matrix_computer_custom_cost_example = r5py.r5.CustomCostTravelTimeMatrixComputer(
+    custom_costs,
     origins=origins,
     destinations=destinations,
     transport_modes=[r5py.TransportMode.WALK],
@@ -294,7 +292,7 @@ travel_time_matrix_results.head(5)
 
 Routing with {class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>`
 
-```{code-cell}
+```{code-cell} ipython3
 # create the detailed itineraries computer
 detailed_computer_custom_cost_example = r5py.DetailedItinerariesComputer(
     custom_cost_transport_network_example_1,
@@ -333,7 +331,7 @@ merged.
 Both of these methods support parameters:
 `osmids : List[str | int]` and `merged : bool (default=False)`
 
-```{code-cell}
+```{code-cell} ipython3
 # get the actual (base) travel times
 # get all
 base_travel_times = custom_cost_transport_network_example_1.get_base_travel_times()
@@ -341,14 +339,14 @@ base_travel_times = custom_cost_transport_network_example_1.get_base_travel_time
 print(base_travel_times)
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 # get the merged travel times and use a osm_id to filter out unwanted osm_ids
 # use some "real" osmids used
 base_travel_times_merged_filtered = custom_cost_transport_network_example_1.get_base_travel_times(osmids=[124126960, "124126961"], merged=True)
 base_travel_times_merged_filtered
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 # use some "real" osmids used
 added_cost_seconds = custom_cost_transport_network_example_1.get_custom_cost_additional_travel_times(osmids=[35062275, 1024048413, 123406154])
 added_cost_seconds

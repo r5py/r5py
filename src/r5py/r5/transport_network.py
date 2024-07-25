@@ -65,30 +65,15 @@ class TransportNetwork:
 
         transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
 
-        # add custom cost datas for custom cost routing
-        if hasattr(self, "custom_cost_segment_weight_factors") and hasattr(
-            self, "add_custom_cost_segment_weight_factors_to_network"
-        ):
-            transport_network = self.add_custom_cost_segment_weight_factors_to_network(
-                transport_network
-            )
-
         transport_network.streetLayer.loadFromOsm(osm_file)
         transport_network.streetLayer.parentNetwork = transport_network
         transport_network.streetLayer.indexStreets()
 
         transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
-        # only load GTFS if it is provided
-        if gtfs:
-            for gtfs_file in gtfs:
-                gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(
-                    gtfs_file
-                )
-                transport_network.transitLayer.loadFromGtfs(gtfs_feed)
-                gtfs_feed.close()
-
-        # need to build indexes even if no GTFS is provided
-        # will cause index errors for custom cost routing if not done
+        for gtfs_file in gtfs:
+            gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(gtfs_file)
+            transport_network.transitLayer.loadFromGtfs(gtfs_feed)
+            gtfs_feed.close()
         transport_network.transitLayer.parentNetwork = transport_network
 
         transport_network.streetLayer.associateStops(transport_network.transitLayer)
@@ -96,20 +81,16 @@ class TransportNetwork:
 
         transport_network.transitLayer.rebuildTransientIndexes()
 
-        # only build distance tables if GTFS is provided
-        if gtfs:
-            transfer_finder = com.conveyal.r5.transit.TransferFinder(transport_network)
-            transfer_finder.findTransfers()
-            transfer_finder.findParkRideTransfer()
+        transfer_finder = com.conveyal.r5.transit.TransferFinder(transport_network)
+        transfer_finder.findTransfers()
+        transfer_finder.findParkRideTransfer()
 
-            transport_network.transitLayer.buildDistanceTables(None)
+        transport_network.transitLayer.buildDistanceTables(None)
 
         self._transport_network = transport_network
 
     def __del__(self):
-        """
-        Delete all temporary files upon destruction.
-        """
+        """Delete all temporary files upon destruction."""
         MAX_TRIES = 10
 
         # first, close the open osm_file,
@@ -230,6 +211,7 @@ class TransportNetwork:
 
     @property
     def extent(self):
+        """The geographic area covered, as a `shapely.box`."""
         # TODO: figure out how to get the extent of the GTFS schedule,
         # then find the smaller extent of the two (or the larger one?)
         return self.street_layer.extent

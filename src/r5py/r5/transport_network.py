@@ -37,7 +37,7 @@ start_jvm()
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
 
-    def __init__(self, osm_pbf, gtfs=[]):
+    def __init__(self, osm_pbf, gtfs=[], **kwargs):
         """
         Load a transport network.
 

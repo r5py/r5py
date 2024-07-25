@@ -24,6 +24,7 @@ class CustomCostTransportNetwork(TransportNetwork):
         custom_costs=pandas.DataFrame(),
         sensitivities={},
         allow_missing_values=True,
+        precalculate=True,
     ):
         """
         Initialise a TransportNetwork with custom impedances.
@@ -49,6 +50,10 @@ class CustomCostTransportNetwork(TransportNetwork):
             are column/cost names, the values sensitivity coefficients
         allow_missing_values : bool | List[bool], default True
             Define whether to allow missing values in custom costs.
+        precalculate : False or float, default False
+            If a positive numeric value, precalculate the transport network
+            before routing with this walking or cycling speed (in km/h).
+            This potentially speeds up repeated routing for large networks.
         """
         super().__init__(osm_pbf, gtfs)
 
@@ -57,11 +62,24 @@ class CustomCostTransportNetwork(TransportNetwork):
         except ImportError:
             raise CustomR5JarRequiredError(
                 """Custom costs are not supported in this version of R5.
-                Correct (Green Paths 2 patched) R5 version can be found from branch gp2 in
+                Correct (Green Paths 2 patched) R5 version should be found from branch gp2 in
                 https://github.com/DigitalGeographyLab/r5. Or by using a release jar from address e.g.
                 https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar
                 """
             )
+
+        if isinstance(precalculate, (int, float)) and precalculate > 0:
+            try:
+                import com.conveyal.r5.rastercost.EdgeCustomCostPreCalculator
+            except ImportError:
+                raise CustomR5JarRequiredError(
+                    """Precalculating custom costs are not supported in this version of  R5.
+                    Correct (Green Paths 2, and precalculations patched) R5 version should be found from precalculate branch in
+                    https://github.com/DigitalGeographyLab/r5. Or by using a release jar from address e.g.
+                    https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar
+                    """
+                )
+                self._transport_network.streetLayer.staticSpeedKmh = precalculate
 
         for column in custom_costs.columns:
             if column not in sensitivities:

@@ -37,7 +37,7 @@ start_jvm()
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
 
-    def __init__(self, osm_pbf, gtfs=[], **kwargs):
+    def __init__(self, osm_pbf, gtfs=[]):
         """
         Load a transport network.
 
@@ -64,7 +64,6 @@ class TransportNetwork:
         self.osm_file = osm_file  # keep the mapdb open, close in destructor
 
         transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
-
         transport_network.streetLayer.loadFromOsm(osm_file)
         transport_network.streetLayer.parentNetwork = transport_network
         transport_network.streetLayer.indexStreets()

@@ -51,6 +51,7 @@ class StreetLayer:
 
     @functools.cached_property
     def extent(self):
+        """The geographic area covered, as a `shapely.box`."""
         envelope = self._street_layer.envelope
         return shapely.box(
             envelope.getMinX(),

@@ -11,7 +11,7 @@ class TestContainsGtfsData:
     @pytest.mark.parametrize(
         ["path", "expected"],
         [
-            (pytest_lazy_fixtures.lf("gtfs_file"), True),
+            (pytest_lazy_fixtures.lf("gtfs_file_path"), True),
             (pytest_lazy_fixtures.lf("not_a_gtfs_file"), False),
         ],
     )

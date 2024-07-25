@@ -62,9 +62,9 @@ def _share_of_ram(share=0.8, leave_at_least=(2 * 1024**3)):
 
 def _parse_value_and_unit(value_and_unit, max_unit_length=1):
     """
-    Extract value and unit from a string containing a possible
-    (non-numeric) unit suffix.
+    Extract value and unit from a string.
 
+    The string is allowed to contain a (non-numeric) unit suffix.
     For instance, input values of `'1M'` or `3.732G` would yield return
     values `(1, 'M')` or `(3.732, 'G')`, respectively.
 
@@ -112,11 +112,10 @@ def _interpret_power_of_two_units(value, unit):
     int:
         interpreted value in bytes
     """
-
-    SUFFIXES = " KMGTPEZY"
     # the position of each suffix in this string is the unit’s exponent
     # over 1024.
     # Compare https://en.wikipedia.org/wiki/ISO%2FIEC_80000#Part_13:_Information_science_and_technology
+    SUFFIXES = " KMGTPEZY"
 
     if unit is None:
         unit = " "
@@ -152,7 +151,6 @@ def _get_max_memory(max_memory):
     int
         Maximum amount of memory allocated for R5 in bytes.
     """
-
     try:
         value, unit = _parse_value_and_unit(max_memory)
     except TypeError:

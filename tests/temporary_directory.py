@@ -14,7 +14,10 @@ import tempfile
 
 
 class TemporaryDirectory:
+    """A `TemporaryDirectory` that cleans up gracefully (https://bugs.python.org/issue26660)."""
+
     def __init__(self):
+        """Create a `TemporaryDirectory` that cleans up gracefully (https://bugs.python.org/issue26660)."""
         self.temp_directory = tempfile.TemporaryDirectory()
 
     def __enter__(self):

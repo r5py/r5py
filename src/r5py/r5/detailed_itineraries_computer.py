@@ -124,7 +124,6 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
             route number or name), `geometry` (`shapely.LineString`)
             TODO: Add description of output data frame columns and format
         """
-
         self._prepare_origins_destinations()
 
         # warn if public transport routes are requested, but R5 has been
@@ -163,11 +162,7 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
         return od_matrix
 
     def _prepare_origins_destinations(self):
-        """
-        Make sure we received enough information to route from origins to
-        destinations.
-        """
-
+        """Make sure we received enough information to route from origins to destinations."""
         super()._prepare_origins_destinations()
 
         if self.all_to_all:

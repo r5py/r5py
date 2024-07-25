@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+"""Configuration and fixtures for testing r5py."""
+
 # This is a init file common to all tests. It is automatically sourced
 # by pytest et al.
 
@@ -76,32 +78,15 @@ SAMPLE_DATA_SET_SHA256 = (
 )
 
 
-@pytest.fixture
-def data_columns_with_breakdown():
-    yield [
-        "from_id",
-        "to_id",
-        "travel_time",
-        "routes",
-        "board_stops",
-        "alight_stops",
-        "ride_times",
-        "access_time",
-        "egress_time",
-        "transfer_time",
-        "wait_times",
-        "total_time",
-        "n_iterations",
-    ]
-
-
 @pytest.fixture(scope="session")
 def departure_datetime():
+    """Return the departure time to run tests for."""
     yield datetime.datetime(2022, 2, 22, 8, 30)
 
 
 @pytest.fixture
 def detailed_itineraries_bicycle():
+    """Retrieve expected detailed itineraries for cycling."""
     yield geopandas.read_file(DETAILED_ITINERARIES_BICYCLE)
 
 
@@ -117,23 +102,19 @@ def detailed_itineraries_car_kmh():
 
 @pytest.fixture
 def detailed_itineraries_transit():
+    """Retrieve expected detailed itineraries for public transport."""
     yield geopandas.read_file(DETAILED_ITINERARIES_TRANSIT)
 
 
 @pytest.fixture
 def detailed_itineraries_walk():
+    """Retrieve expected detailed itineraries for walking."""
     yield geopandas.read_file(DETAILED_ITINERARIES_WALK)
 
 
 @pytest.fixture
-def gtfs_file():
-    import r5py.sampledata.helsinki
-
-    yield r5py.sampledata.helsinki.gtfs
-
-
-@pytest.fixture
 def not_a_gtfs_file():
+    """Return a file path of something that is not a GTFS file."""
     import r5py.sampledata.helsinki
 
     yield r5py.sampledata.helsinki.osm_pbf
@@ -141,6 +122,7 @@ def not_a_gtfs_file():
 
 @pytest.fixture
 def gtfs_file_path():
+    """Return the file path of a GTFS sample data set."""
     import r5py.sampledata.helsinki
 
     yield r5py.sampledata.helsinki.gtfs
@@ -148,34 +130,40 @@ def gtfs_file_path():
 
 @pytest.fixture
 def gtfs_timezone_helsinki():
+    """Return the timezone for Helsinki."""
     yield "Europe/Helsinki"
 
 
 @pytest.fixture()
 def origins_invalid_no_id():
+    """Return a set of origins that has missing ID values."""
     origins = geopandas.read_file(ORIGINS_INVALID_NO_ID)
     yield origins
 
 
 @pytest.fixture()
 def origins_invalid_duplicate_ids():
+    """Return a set of origins that has duplicate ID values."""
     origins = geopandas.read_file(ORIGINS_INVALID_DUPLICATE_IDS)
     yield origins
 
 
 @pytest.fixture
 def origin_point():
+    """Return one origin point."""
     yield geopandas.read_file(SINGLE_VALID_ORIGIN)
 
 
 @pytest.fixture()
 def origins_valid_ids():
+    """Return a set of origins that has valid ID values."""
     origins = geopandas.read_file(ORIGINS_VALID_IDS)
     yield origins
 
 
 @pytest.fixture
 def osm_pbf_file_path():
+    """Return the path of the OSM sample data set."""
     import r5py.sampledata.helsinki
 
     yield r5py.sampledata.helsinki.osm_pbf
@@ -183,6 +171,7 @@ def osm_pbf_file_path():
 
 @pytest.fixture(scope="session")
 def population_grid():
+    """Load the grid point data set."""
     import r5py.sampledata.helsinki
 
     yield geopandas.read_file(r5py.sampledata.helsinki.population_grid)
@@ -190,6 +179,7 @@ def population_grid():
 
 @pytest.fixture(scope="session")
 def population_grid_points(population_grid):
+    """Return the grid point data set in EPSG:4326."""
     population_grid_points = population_grid.copy()
     population_grid_points.geometry = population_grid_points.geometry.to_crs(
         "EPSG:3067"
@@ -199,21 +189,25 @@ def population_grid_points(population_grid):
 
 @pytest.fixture(scope="session")
 def population_grid_points_first_three(population_grid_points):
+    """Return the first set of three grid points."""
     yield population_grid_points[0:3]
 
 
 @pytest.fixture(scope="session")
 def population_grid_points_second_three(population_grid_points):
+    """Return the second set of three grid points."""
     yield population_grid_points[4:7]
 
 
 @pytest.fixture(scope="session")
 def population_grid_points_four(population_grid_points):
+    """Return four grid points."""
     yield population_grid_points[10:14]
 
 
 @pytest.fixture(scope="session")
 def r5_jar_cached():
+    """Return a cache path for the R5 jar."""
     from r5py.util.config import Config
 
     yield str(Config().CACHE_DIR / pathlib.Path(R5_JAR_URL).name)
@@ -221,26 +215,31 @@ def r5_jar_cached():
 
 @pytest.fixture
 def r5_jar_cached_invalid():
+    """Return an invalid cache path for the R5 jar."""
     yield "/definitely/invalid/path/to/r5.jar"
 
 
 @pytest.fixture
 def r5_jar_sha256():
+    """Return the SHA256 hash for the R5 jar."""
     yield R5_JAR_SHA256
 
 
 @pytest.fixture
 def r5_jar_sha256_invalid():
+    """Return an invalid SHA256 hash for the R5 jar."""
     yield R5_JAR_SHA256_INVALID
 
 
 @pytest.fixture
 def r5_jar_sha256_github_error_message_when_posting():
+    """Return the SHA256 hash of the GitHub error message when accidently POSTing."""
     yield R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING
 
 
 @pytest.fixture()
 def r5_jar_url():
+    """Return the URL of the R5 jar."""
     yield R5_JAR_URL
 
 
@@ -250,6 +249,7 @@ def regional_task(
     transport_network,
     departure_datetime,
 ):
+    """Return an initialised `r5py.RegionalTask`."""
     import r5py
 
     regional_task = r5py.RegionalTask(
@@ -260,6 +260,7 @@ def regional_task(
     )
     yield regional_task
 
+    # clean up once this fixture has been used
     del regional_task
     time.sleep(0.5)
     jpype.java.lang.System.gc()
@@ -267,21 +268,25 @@ def regional_task(
 
 @pytest.fixture
 def sample_data_set_sha256():
+    """Return the SHA256 hash of the sample data at `sample_data_set_url()`."""
     yield SAMPLE_DATA_SET_SHA256
 
 
 @pytest.fixture
 def sample_data_set_url():
+    """Return the web address from which a sample data set can be downloaded."""
     yield SAMPLE_DATA_SET_URL
 
 
 @pytest.fixture(scope="session")
 def snapped_population_grid_points():
+    """Return a `geopandas.GeoDataFrame` that contains grid points snapped to the street network."""
     yield geopandas.read_file(SNAPPED_POPULATION_GRID_POINTS)
 
 
 @pytest.fixture
 def transport_network_files_tuple():
+    """Return a tuple of transport network input test data file paths."""
     import r5py.sampledata.helsinki
 
     yield r5py.sampledata.helsinki.osm_pbf, [r5py.sampledata.helsinki.gtfs]
@@ -289,11 +294,13 @@ def transport_network_files_tuple():
 
 @pytest.fixture
 def transport_network(transport_network_from_test_files):
+    """Return an `r5py.TransportNetwork`."""
     yield transport_network_from_test_files
 
 
 @pytest.fixture(scope="session")
 def transport_network_from_test_directory():
+    """Return an `r5py.TransportNetwork` initiated from a directory path."""
     import r5py
     import r5py.sampledata.helsinki
     from .temporary_directory import TemporaryDirectory
@@ -317,6 +324,7 @@ def transport_network_from_test_directory():
 
 @pytest.fixture(scope="session")
 def transport_network_from_test_files():
+    """Return an `r5py.TransportNetwork` initiated from test file paths."""
     import r5py
     import r5py.sampledata.helsinki
 
@@ -333,6 +341,7 @@ def transport_network_from_test_files():
 
 @pytest.fixture(scope="session")
 def transport_network_from_test_files_without_gtfs():
+    """Return an `r5py.TransportNetwork` initiated without GTFS data."""
     import r5py
     import r5py.sampledata.helsinki
 
@@ -347,6 +356,7 @@ def transport_network_from_test_files_without_gtfs():
 
 @pytest.fixture
 def unreachable_stops():
+    """Return a list of public transport stops that cannot be reached."""
     yield [
         1294132,
         1174101,
@@ -356,6 +366,7 @@ def unreachable_stops():
 
 @pytest.fixture
 def unsnappable_points():
+    """Retrieve a set of points that cannot be snapped to the sample data network."""
     yield geopandas.GeoDataFrame(
         {
             "id": [1, 2],
@@ -370,21 +381,25 @@ def unsnappable_points():
 
 @pytest.fixture
 def walking_details_snapped():
+    """Load expected walking details if snapping is enabled."""
     yield pandas.read_csv(WALKING_DETAILS_SNAPPED)
 
 
 @pytest.fixture
 def walking_details_not_snapped():
+    """Load expected walking details if snapping is enabled."""
     yield pandas.read_csv(WALKING_DETAILS_NOT_SNAPPED)
 
 
 @pytest.fixture
 def walking_times_snapped():
+    """Load expected walking times if snapping is enabled."""
     yield pandas.read_csv(WALKING_TIMES_SNAPPED)
 
 
 @pytest.fixture
 def walking_times_not_snapped():
+    """Load expected walking times if snapping is disabled."""
     yield pandas.read_csv(WALKING_TIMES_NOT_SNAPPED)
 
 

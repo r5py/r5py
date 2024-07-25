@@ -74,6 +74,7 @@ class TripLeg:
         self.osm_ids = osm_ids
 
     def __add__(self, other):
+        """Trip-chain `other` to `self`."""
         from .trip import Trip
 
         if isinstance(other, self.__class__):
@@ -88,6 +89,7 @@ class TripLeg:
             )
 
     def __radd__(self, other):
+        """Trip-chain `self` to `other`."""
         from .trip import Trip
 
         if other == 0:  # first iteration of sum()
@@ -99,36 +101,42 @@ class TripLeg:
             return self.__add__(other)
 
     def __eq__(self, other):
+        """Check if `other` is an equal `TripLeg`."""
         if isinstance(other, self.__class__):
             return False not in [
                 self._are_columns_equal(other, column) for column in self.COLUMNS
             ]
 
     def __gt__(self, other):
+        """Check if `other` has a longer travel time."""
         if isinstance(other, TripLeg):
             return (self.travel_time + self.wait_time) > (
                 other.travel_time + other.wait_time
             )
 
     def __ge__(self, other):
+        """Check if `other` has a longer or equal travel time."""
         if isinstance(other, TripLeg):
             return (self.travel_time + self.wait_time) >= (
                 other.travel_time + other.wait_time
             )
 
     def __lt__(self, other):
+        """Check if `other` has a shorter travel time."""
         if isinstance(other, TripLeg):
             return (self.travel_time + self.wait_time) < (
                 other.travel_time + other.wait_time
             )
 
     def __le__(self, other):
+        """Check if `other` has a shorter or equal travel time."""
         if isinstance(other, TripLeg):
             return (self.travel_time + self.wait_time) <= (
                 other.travel_time + other.wait_time
             )
 
     def __repr__(self):
+        """Return a string representation."""
         try:
             first_point = self.geometry.coords[0]
             last_point = self.geometry.coords[-1]
@@ -147,10 +155,11 @@ class TripLeg:
 
     def _are_columns_equal(self, other, column):
         """
+        Check if a column equals the same column of a different `Trip`.
+
         Compare if attribute `column` of self equals attribute `column` of
         other. Also True if both values are None or NaN or NaT.
         """
-
         self_column = getattr(self, column)
         other_column = getattr(other, column)
 

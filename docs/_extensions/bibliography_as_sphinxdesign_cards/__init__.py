@@ -59,15 +59,19 @@ __version__ = "0.0.1"
 class CitationsToSphinxDesignCardsTransformer(
     sphinx.transforms.post_transforms.SphinxPostTransform
 ):
+    """Modify the bibliography entries created by sphinxcontrib.bibtex to be sphinx-design cards."""
+
     default_priority = (
         198  # before anything from sphinx_design, but after sphinxcontrib.bibtex
     )
 
     def apply(self, **kwargs):
+        """Apply the transformation to all relevant nodes."""
         for node in self.document.findall(docutils.nodes.citation):
             self.handle(node)
 
     def handle(self, node):
+        """Modify a single node."""
         new_node = self._create_empty_sdcard_container()
         for attribute in ["backrefs", "docname", "ids"]:
             new_node[attribute] = node[attribute]

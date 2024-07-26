@@ -4,6 +4,8 @@
 """Fixtures related to routing origins."""
 
 
+import warnings
+
 import geopandas
 import pytest
 

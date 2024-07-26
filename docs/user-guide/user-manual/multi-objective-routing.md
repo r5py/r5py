@@ -4,7 +4,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.16.2
+    jupytext_version: 1.16.3
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -154,7 +154,8 @@ First initialize OD (origins and destinations) and set to use correct patch (GP2
 import sys
 sys.argv += [
     "--r5-classpath",
-    "https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar",
+    "https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-3/r5-v7.1-gp2-3-1-gbcaa62a-all.jar"
+#    "https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar",
 ]
 ```
 
@@ -228,27 +229,7 @@ the parameters to the lists. Notice the importance of element order in lists.
 Names with "\_1" and sensitivity 1.1 will create 1 instance of custom costs and
 names with "\_2" and sensitivity 1.2 another instance and so forth.
 
-```{code-cell} ipython3
-# populate example segment cost weight factors with some meaningful values
-example_data_custom_cost_segment_weights_2 = {
-    '123406154': 1.1,
-    '1024048411': 1.2,
-    '693578052': 0.55,
-    '1024048413': 0.88,
-    '35062275': 0.79,
-    '693578051': 0.3,
-    '1024048412': 0.4,
-    '1024048415': 0.7,
-    '28639650': 0.2,
-    '1024048414': 0.1
-}
-custom_cost_transport_network_example_2 = r5py.CustomCostTransportNetwork(
-    r5py.sampledata.helsinki.osm_pbf,
-    ["example_1_data_name", "example_2_data_name"],
-    [1.1, 1.2],
-    [example_data_custom_cost_segment_weights_1, example_data_custom_cost_segment_weights_2]
-)
-```
++++
 
 ## Routing with CustomCostTransportNetwork
 
@@ -277,7 +258,7 @@ Routing with {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`
 # create the travel_time_matrix computer
 # using multiple datas
 travel_time_matrix_computer_custom_cost_example = r5py.r5.CustomCostTravelTimeMatrixComputer(
-    custom_costs,
+    transport_network,
     origins=origins,
     destinations=destinations,
     transport_modes=[r5py.TransportMode.WALK],
@@ -287,7 +268,7 @@ travel_time_matrix_computer_custom_cost_example = r5py.r5.CustomCostTravelTimeMa
 travel_time_matrix_results = travel_time_matrix_computer_custom_cost_example.compute_travel_times()
 
 # see the result `GeoDataFrame`
-travel_time_matrix_results.head(5)
+travel_time_matrix_results #.head(5)
 ```
 
 Routing with {class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>`

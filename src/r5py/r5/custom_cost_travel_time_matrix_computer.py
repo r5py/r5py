@@ -55,6 +55,6 @@ class CustomCostTravelTimeMatrixComputer(TravelTimeMatrixComputer):
 
         for cost_field in self.transport_network.street_layer.cost_fields:
             costs_per_osm_id = cost_field.getcustomCostAdditionalTraveltimes()
-            print(costs_per_osm_id)
+            # print(costs_per_osm_id)
 
         return od_matrix

@@ -18,10 +18,9 @@ from .warnings import R5pyWarning
 
 # update these to use a newer R5 version if no R5 available locally
 R5_JAR_URL = (
-    "https://github.com/DigitalGeographyLab/r5"
-    "/releases/download/v7.1-gp2-3/r5-v7.1-gp2-3-1-gbcaa62a-all.jar"
+    "https://github.com/r5py/r5/releases/download/v7.1-r5py/r5-v7.1-r5py-all.jar"
 )
-R5_JAR_SHA256 = "f2f4d1a799a91d407c81b80e6faaa3b8330a1e40ae6daa5d35149d8be460edf0"
+R5_JAR_SHA256 = "cd697b50323fd99977c98039ea317698bcf5fbbdb12b59e3e094ae9443648db2"
 # ---
 
 

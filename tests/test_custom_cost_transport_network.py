@@ -82,63 +82,63 @@ class Test_CustomCostTransportNetwork:
     # TEST CUSTOM COST TRANSPORT NETWORK INITIALIZATION AND VALIDATION
 
     @pytest.mark.parametrize(
-       "names, sensitivities, custom_cost_segment_weight_factors, allow_missing_osmids",
-       [
-           ("test_cost", 1.1, [], True),
-           ([], 1.1, [{}], True),
-           ("test_cost", [], ({"12345": 1.0, "67890": 1.5}), True),
-           ("test_cost", [1], {}, True),
-           (
-               ["test_cost"],
-               1,
-               ({"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}),
-               True,
-           ),
-           (("name"), (1), ("12345", 67890), True),
-           (
-               ["name_1"],
-               [1.1],
-               [{"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}],
-               True,
-           ),
-           (
-               ["name_1"],
-               [1.1, 1.2],
-               [{}, {}],
-               True,
-           ),
-           (["name_1", "name_2"], [1.1, 1.2], [{"12345": 1.0, "67890": 1.5}], True),
-           # test allow_missing_osmids flag to fail if allow_missing_osmids is False
-           (
-               ["name_1", "name_2"],
-               [1.1, 1.2],
-               [{"12345": 1.0, "67890": 1.5}],
-               [False, False],
-           ),
-       ],
+        "names, sensitivities, custom_cost_segment_weight_factors, allow_missing_osmids",
+        [
+            ("test_cost", 1.1, [], True),
+            ([], 1.1, [{}], True),
+            ("test_cost", [], ({"12345": 1.0, "67890": 1.5}), True),
+            ("test_cost", [1], {}, True),
+            (
+                ["test_cost"],
+                1,
+                ({"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}),
+                True,
+            ),
+            (("name"), (1), ("12345", 67890), True),
+            (
+                ["name_1"],
+                [1.1],
+                [{"12345": 1.0, "67890": 1.5}, {"12345": 1.0, "67890": 1.5}],
+                True,
+            ),
+            (
+                ["name_1"],
+                [1.1, 1.2],
+                [{}, {}],
+                True,
+            ),
+            (["name_1", "name_2"], [1.1, 1.2], [{"12345": 1.0, "67890": 1.5}], True),
+            # test allow_missing_osmids flag to fail if allow_missing_osmids is False
+            (
+                ["name_1", "name_2"],
+                [1.1, 1.2],
+                [{"12345": 1.0, "67890": 1.5}],
+                [False, False],
+            ),
+        ],
     )
     # @pytest.mark.skipif(
     #    r5_supports_custom_costs() is False,
     #    reason="R5 version does not support custom costs",
     # )
     def test_custom_cost_params_invalid_params(
-       self,
-       names,
-       sensitivities,
-       custom_cost_segment_weight_factors,
-       allow_missing_osmids,
+        self,
+        names,
+        sensitivities,
+        custom_cost_segment_weight_factors,
+        allow_missing_osmids,
     ):
-       from r5py.util.exceptions import CustomCostDataError
+        from r5py.util.exceptions import CustomCostDataError
 
-       with patch.object(r5py.CustomCostTransportNetwork, "__del__", lambda x: None):
-           with pytest.raises(CustomCostDataError):
-               r5py.CustomCostTransportNetwork(
-                   r5py.sampledata.helsinki.osm_pbf,
-                   names,
-                   sensitivities,
-                   custom_cost_segment_weight_factors,
-                   allow_missing_osmids,
-               )
+        with patch.object(r5py.CustomCostTransportNetwork, "__del__", lambda x: None):
+            with pytest.raises(CustomCostDataError):
+                r5py.CustomCostTransportNetwork(
+                    r5py.sampledata.helsinki.osm_pbf,
+                    names,
+                    sensitivities,
+                    custom_cost_segment_weight_factors,
+                    allow_missing_osmids,
+                )
 
     @pytest.mark.parametrize(
         "names, sensitivities, custom_cost_segment_weight_factors, allow_missing_osmids",

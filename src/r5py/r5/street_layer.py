@@ -47,7 +47,9 @@ class StreetLayer:
     def cost_fields(self, cost_fields):
         CustomCostField = jpype.JClass("com.conveyal.r5.rastercost.CustomCostField")
         cost_fields = jpype.JArray(CustomCostField)(cost_fields)
-        self._street_layer.edgeStore.costFields = CustomCostField.wrapToEdgeStoreCostFieldsList(cost_fields)
+        self._street_layer.edgeStore.costFields = (
+            CustomCostField.wrapToEdgeStoreCostFieldsList(cost_fields)
+        )
 
     @functools.cached_property
     def extent(self):

@@ -46,7 +46,3 @@ class CustomR5JarRequiredError(RuntimeError, R5pyError):
 
 class CustomCostDataError(ValueError, R5pyError):
     """Custom cost data is invalid."""
-
-
-class CustomCostConversionError(ValueError, R5pyError):
-    """Custom cost data conversion to r5 java failed."""

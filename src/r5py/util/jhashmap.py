@@ -40,7 +40,7 @@ class JHashMap:
             numpy.float16,
             numpy.float32,
             numpy.float64,
-            numpy.float128,
+            # numpy.float128,
         ]:
             key_type = jpype.JDouble
         elif key_type == str:
@@ -70,7 +70,7 @@ class JHashMap:
             numpy.float16,
             numpy.float32,
             numpy.float64,
-            numpy.float128,
+            # numpy.float128,
         ]:
             value_type = jpype.JDouble
         elif value_type == str:

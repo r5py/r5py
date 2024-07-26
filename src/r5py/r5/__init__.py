@@ -5,6 +5,7 @@
 from .access_leg import AccessLeg
 from .breakdown_stat import BreakdownStat
 from .custom_cost_transport_network import CustomCostTransportNetwork
+from .custom_cost_travel_time_matrix_computer import CustomCostTravelTimeMatrixComputer
 from .detailed_itineraries_computer import DetailedItinerariesComputer
 from .direct_leg import DirectLeg
 from .egress_leg import EgressLeg
@@ -23,6 +24,7 @@ __all__ = [
     "AccessLeg",
     "BreakdownStat",
     "CustomCostTransportNetwork",
+    "CustomCostTravelTimeMatrixComputer",
     "DetailedItinerariesComputer",
     "DirectLeg",
     "EgressLeg",

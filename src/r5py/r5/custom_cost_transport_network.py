@@ -100,6 +100,7 @@ class CustomCostTransportNetwork(TransportNetwork):
     ):
         """
         Retrieve custom cost travel time related product hashmap per osmid from the network edges.
+
         Ensure that this method is executed post-routing.
         Should not be called directly, use get_base_travel_times or get_additional_travel_times instead.
 

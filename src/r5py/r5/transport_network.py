@@ -122,8 +122,9 @@ class TransportNetwork:
         # then, try to delete all files in cache directory
         try:
             temporary_files = [child for child in self._cache_directory.iterdir()]
-        except FileNotFoundError:
+        except FileNotFoundError:  # deleted in the meantime/race condition
             temporary_files = []
+
         for _ in range(MAX_TRIES):
             for temporary_file in temporary_files:
                 try:

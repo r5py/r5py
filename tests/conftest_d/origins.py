@@ -28,7 +28,24 @@ def origins_invalid_no_id():
 @pytest.fixture()
 def origins_invalid_duplicate_ids():
     """Return a set of origins that has duplicate ID values."""
-    origins = geopandas.read_file(ORIGINS_INVALID_DUPLICATE_IDS)
+        # Since geopandas 1.0, it uses pyogrio in the background. pyogrio seems to
+    # filter less of the underlying OGR warning messages than what fiona did.
+    # Because of that, a warning message bubbles up that states non-unique IDs
+    # were corrected (when they, factually, were not corrected)
+
+    # for this fixture, we want to have non-unique values in the "id" column, so
+    # let's ignore that warning
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            category=RuntimeWarning,
+            message=(
+                "Several features with id = 1 have been found. Altering it to be "
+                "unique. This warning will not be emitted anymore for this layer"
+            ),
+        )
+        origins = geopandas.read_file(ORIGINS_INVALID_DUPLICATE_IDS)
     yield origins
 
 

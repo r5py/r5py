@@ -28,7 +28,7 @@ def origins_invalid_no_id():
 @pytest.fixture()
 def origins_invalid_duplicate_ids():
     """Return a set of origins that has duplicate ID values."""
-        # Since geopandas 1.0, it uses pyogrio in the background. pyogrio seems to
+    # Since geopandas 1.0, it uses pyogrio in the background. pyogrio seems to
     # filter less of the underlying OGR warning messages than what fiona did.
     # Because of that, a warning message bubbles up that states non-unique IDs
     # were corrected (when they, factually, were not corrected)

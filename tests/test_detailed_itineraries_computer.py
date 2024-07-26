@@ -539,7 +539,7 @@ class TestDetailedItinerariesComputer:
             lambda t: t.value
         )
         travel_details["departure_time"] = travel_details["departure_time"].astype(
-            "datetime64[ns]"
+            "datetime64[ms]"
         )
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")

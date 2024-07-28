@@ -1,3 +1,10 @@
+- **0.1.2** (2024-07-28):
+    - numerous smaller improvements and bug fixes
+    - remodelled build environment
+    - support for Python 3.12
+    - fully compliant with pydocstyle
+    - based on R⁵-v7.1, with our own patches
+
 - **0.1.1** (2023-10-25):
     - BREAKING: retired support for Python 3.8
     - implemented support for pandas>=2.1 and geopandas>=0.14

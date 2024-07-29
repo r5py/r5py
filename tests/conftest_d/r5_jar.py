@@ -4,15 +4,21 @@
 """Fixtures related to the R5 classpath."""
 
 
+import os
 import pathlib
 
 import pytest
 
 
-R5_JAR_URL = (
-    "https://github.com/r5py/r5/releases/download/v7.1-r5py/r5-v7.1-r5py-all.jar"
-)
-R5_JAR_SHA256 = "cd697b50323fd99977c98039ea317698bcf5fbbdb12b59e3e094ae9443648db2"
+try:
+    R5_JAR_URL = os.environ["R5_JAR_URL"]
+    R5_JAR_SHA256 = os.environ["R5_JAR_SHA256"]
+except KeyError:
+    R5_JAR_URL = (
+        "https://github.com/r5py/r5/releases/download/v7.1-r5py/r5-v7.1-r5py-all.jar"
+    )
+    R5_JAR_SHA256 = "cd697b50323fd99977c98039ea317698bcf5fbbdb12b59e3e094ae9443648db2"
+
 R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
 R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
     "14aa2347be79c280e4d0fd3a137fb8f5bf2863261a1e48e1a122df1a52a0f453"

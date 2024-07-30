@@ -4,8 +4,6 @@
 """Calculate travel times between many origins and destinations, with custom impedances."""
 
 
-import pandas
-
 from .travel_time_matrix_computer import TravelTimeMatrixComputer
 
 
@@ -53,8 +51,8 @@ class CustomCostTravelTimeMatrixComputer(TravelTimeMatrixComputer):
         except AttributeError:
             pass
 
-        for cost_field in self.transport_network.street_layer.cost_fields:
-            costs_per_osm_id = cost_field.getcustomCostAdditionalTraveltimes()
-            # print(costs_per_osm_id)
+        # for cost_field in self.transport_network.street_layer.cost_fields:
+        #     costs_per_osm_id = cost_field.getcustomCostAdditionalTraveltimes()
+        #     print(costs_per_osm_id)
 
         return od_matrix

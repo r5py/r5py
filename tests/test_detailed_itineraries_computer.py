@@ -496,9 +496,7 @@ class TestDetailedItinerariesComputer:
             ),
             (
                 r5py.TransportMode.CAR,
-                (
-                    pytest_lazy_fixtures.lf("detailed_itineraries_car")
-                ),
+                (pytest_lazy_fixtures.lf("detailed_itineraries_car")),
             ),
             (
                 r5py.TransportMode.TRANSIT,

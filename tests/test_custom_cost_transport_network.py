@@ -9,12 +9,14 @@ import r5py
 
 try:
     import com.conveyal.r5.rastercost.CustomCostField  # noqa: F401
+
     R5_SUPPORTS_CUSTOM_COSTS = True
 except ImportError:
     R5_SUPPORTS_CUSTOM_COSTS = False
 
 try:
     import com.conveyal.r5.rastercost.EdgeCustomCostPreCalculator  # noqa: F401
+
     R5_SUPPORTS_PRECALCULATE_COSTS = True
 except ImportError:
     R5_SUPPORTS_PRECALCULATE_COSTS = False
@@ -33,7 +35,7 @@ class Test_CustomCostTransportNetwork:
             (pytest_lazy_fixtures.lf("custom_costs_1"),),
             (pytest_lazy_fixtures.lf("custom_costs_2"),),
             (pytest_lazy_fixtures.lf("custom_costs_multiple"),),
-        )
+        ),
     )
     def test_init(
         self,

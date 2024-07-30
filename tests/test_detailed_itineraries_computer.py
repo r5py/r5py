@@ -497,10 +497,7 @@ class TestDetailedItinerariesComputer:
             (
                 r5py.TransportMode.CAR,
                 (
-                    pytest_lazy_fixtures.lf("detailed_itineraries_car_kmh")
-                    # TODO: needs better handling here
-                    # if r5_supports_custom_costs()
-                    # else pytest_lazy_fixtures.lf("detailed_itineraries_car_mph")
+                    pytest_lazy_fixtures.lf("detailed_itineraries_car")
                 ),
             ),
             (

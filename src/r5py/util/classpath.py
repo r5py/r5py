@@ -3,6 +3,7 @@
 """Make sure R5 is in the class path, download it if not."""
 
 import hashlib
+import os
 import pathlib
 import string
 import urllib.parse
@@ -16,12 +17,16 @@ from .validating_requests_session import ValidatingRequestsSession
 from .warnings import R5pyWarning
 
 
-# update these to use a newer R5 version if no R5 available locally
-R5_JAR_URL = (
-    "https://github.com/r5py/r5/releases/download/v7.1-r5py/r5-v7.1-r5py-all.jar"
-)
-R5_JAR_SHA256 = "cd697b50323fd99977c98039ea317698bcf5fbbdb12b59e3e094ae9443648db2"
-# ---
+try:
+    R5_JAR_URL = os.environ["R5_JAR_URL"]
+    R5_JAR_SHA256 = os.environ["R5_JAR_SHA256"]
+except KeyError:
+    # update these to use a newer R5 version if no R5 available locally
+    R5_JAR_URL = (
+        "https://github.com/r5py/r5/releases/download/v7.1-r5py/r5-v7.1-r5py-all.jar"
+    )
+    R5_JAR_SHA256 = "cd697b50323fd99977c98039ea317698bcf5fbbdb12b59e3e094ae9443648db2"
+    # ---
 
 
 __all__ = ["R5_CLASSPATH"]

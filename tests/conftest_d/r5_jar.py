@@ -6,6 +6,7 @@
 
 import os
 import pathlib
+import sys
 
 import pytest
 
@@ -13,6 +14,7 @@ import pytest
 try:
     R5_JAR_URL = os.environ["R5_JAR_URL"]
     R5_JAR_SHA256 = os.environ["R5_JAR_SHA256"]
+    sys.argv += ["--r5-classpath", R5_JAR_URL]
 except KeyError:
     R5_JAR_URL = (
         "https://github.com/r5py/r5/releases/download/v7.1-r5py/r5-v7.1-r5py-all.jar"

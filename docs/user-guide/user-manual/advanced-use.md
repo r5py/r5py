@@ -11,22 +11,6 @@ kernelspec:
   name: python3
 ---
 
-```{code-cell}
-:tags: [remove-input, remove-output]
-
-# this cell is hidden from READTHEDOCS output
-# it’s used to
-#    - use a different upstream R5 jar, so we can display the
-#      geometries of public transport routes, and to
-
-import sys
-
-sys.argv.extend([
-    "--r5-classpath",
-    "https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-1/r5-v7.1-gp2-2-gd8134d8-all.jar",
-])
-
-```
 
 ```{code-cell}
 :tags: [remove-input, remove-output]

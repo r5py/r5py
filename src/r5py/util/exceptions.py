@@ -38,3 +38,11 @@ class UnexpectedClasspathSchema(ValueError, R5pyError):
 
 class UnexpectedCrsError(ValueError, R5pyError):
     """A geometry is in an unexpected reference system."""
+
+
+class CustomR5JarRequiredError(RuntimeError, R5pyError):
+    """A custom R5 version is required for a requested function."""
+
+
+class CustomCostDataError(ValueError, R5pyError):
+    """Custom cost data is invalid."""

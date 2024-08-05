@@ -28,6 +28,7 @@ class TripLeg:
         "wait_time",
         "route",
         "geometry",
+        "osm_ids",
     ]
 
     def __init__(
@@ -38,6 +39,7 @@ class TripLeg:
         travel_time=datetime.timedelta(seconds=0),
         wait_time=datetime.timedelta(seconds=0),
         route=None,
+        osm_ids=[],
         geometry=shapely.LineString(),
     ):
         """
@@ -59,6 +61,8 @@ class TripLeg:
             time spent waiting for a connection on this trip leg
         route : str
             public transport route used for this trip leg
+        osm_ids : list[int]
+            the IDs of OSM segments passed through
         geometry : shapely.LineString
             spatial representation of this trip leg
         """
@@ -69,6 +73,7 @@ class TripLeg:
         self.wait_time = wait_time
         self.route = route
         self.geometry = geometry
+        self.osm_ids = osm_ids
 
     def __add__(self, other):
         """Trip-chain `other` to `self`."""
@@ -178,6 +183,6 @@ class TripLeg:
         =======
         list : detailed information about this trip leg: ``transport_mode``,
         ``departure_time``, ``distance``, ``travel_time``, ``wait_time``,
-        ``route``, ``geometry``
+        ``route``, ``geometry``, ``osm_ids``
         """
         return [getattr(self, column) for column in self.COLUMNS]

@@ -4,6 +4,13 @@
 """Fixtures to be used in r5py tests."""
 
 
+from .custom_costs import (
+    custom_costs_1,
+    custom_costs_2,
+    custom_costs_multiple,
+    custom_costs_transport_network,
+)
+
 from .destinations import (
     population_grid,
     population_grid_points,
@@ -65,6 +72,10 @@ from .transport_network import (
 )
 
 __all__ = [
+    "custom_costs_1",
+    "custom_costs_2",
+    "custom_costs_multiple",
+    "custom_costs_transport_network",
     "departure_datetime",
     "detailed_itineraries_bicycle",
     "detailed_itineraries_car",

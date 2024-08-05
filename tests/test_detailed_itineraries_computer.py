@@ -496,7 +496,7 @@ class TestDetailedItinerariesComputer:
             ),
             (
                 r5py.TransportMode.CAR,
-                pytest_lazy_fixtures.lf("detailed_itineraries_car"),
+                (pytest_lazy_fixtures.lf("detailed_itineraries_car")),
             ),
             (
                 r5py.TransportMode.TRANSIT,
@@ -543,6 +543,11 @@ class TestDetailedItinerariesComputer:
         )
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
+
+        travel_details = travel_details.drop(columns="osm_ids", errors="ignore")
+        expected_travel_details = expected_travel_details.drop(
+            columns="osm_ids", errors="ignore"
+        )
 
         geopandas.testing.assert_geodataframe_equal(
             travel_details,

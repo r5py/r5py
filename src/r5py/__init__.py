@@ -6,6 +6,8 @@ __version__ = "0.1.2"
 
 
 from .r5 import (
+    CustomCostTransportNetwork,
+    CustomCostTravelTimeMatrixComputer,
     DetailedItinerariesComputer,
     RegionalTask,
     TransportMode,
@@ -14,6 +16,8 @@ from .r5 import (
 )
 
 __all__ = [
+    "CustomCostTransportNetwork",
+    "CustomCostTravelTimeMatrixComputer",
     "DetailedItinerariesComputer",
     "RegionalTask",
     "TransportMode",

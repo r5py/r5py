@@ -27,8 +27,8 @@ class TripLeg:
         "travel_time",
         "wait_time",
         "route",
-        "geometry",
         "osm_ids",
+        "geometry",
     ]
 
     def __init__(
@@ -72,8 +72,8 @@ class TripLeg:
         self.travel_time = travel_time
         self.wait_time = wait_time
         self.route = route
-        self.geometry = geometry
         self.osm_ids = osm_ids
+        self.geometry = geometry
 
     def __add__(self, other):
         """Trip-chain `other` to `self`."""
@@ -183,6 +183,6 @@ class TripLeg:
         =======
         list : detailed information about this trip leg: ``transport_mode``,
         ``departure_time``, ``distance``, ``travel_time``, ``wait_time``,
-        ``route``, ``geometry``, ``osm_ids``
+        ``route``, ``osm_ids``, ``geometry``
         """
         return [getattr(self, column) for column in self.COLUMNS]

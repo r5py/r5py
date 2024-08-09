@@ -111,12 +111,12 @@ class TripPlanner:
                                 transport_mode,
                                 collections.namedtuple(
                                     "StreetSegment",
-                                    ["distance", "duration", "geometry", "osm_ids"],
+                                    ["distance", "duration", "osm_ids", "geometry"],
                                 )(
                                     0.0,
                                     0.0,
-                                    f"LINESTRING({lon} {lat}, {lon} {lat})",
                                     [],
+                                    f"LINESTRING({lon} {lat}, {lon} {lat})",
                                 ),
                             )
                         ]
@@ -384,13 +384,13 @@ class TripPlanner:
                                     distance = None
 
                                 leg = TransitLeg(
-                                    transport_mode,
-                                    departure_time,
-                                    distance,
-                                    travel_time,
-                                    wait_time,
-                                    str(route.route_short_name),
-                                    geometry,
+                                    transport_mode=transport_mode,
+                                    departure_time=departure_time,
+                                    distance=distance,
+                                    travel_time=travel_time,
+                                    wait_time=wait_time,
+                                    route=str(route.route_short_name),
+                                    geometry=geometry,
                                 )
 
                         # we traverse in reverse order:

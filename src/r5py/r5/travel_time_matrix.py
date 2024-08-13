@@ -64,7 +64,9 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
             ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
             ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
         """
-        super().__init__(self, transport_network, origins, destinations, snap_to_network, **kwargs)
+        super().__init__(
+            self, transport_network, origins, destinations, snap_to_network, **kwargs
+        )
         data = self._compute()
         for column in data.columns:
             self[column] = data[column]

@@ -194,12 +194,13 @@ travel_times = r5py.TravelTimeMatrix(
 travel_times.head()
 ```
 
-A {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` is a child class of
-{class}`pandas.DataFrame`. The values in its `travel_time` column are travel
-times in minutes between the points identified by `from_id` and `to_id` (the IDs
-of the origins and destinations, respectively). As you can see, the `id` value
-in the `to_id` column is the same for all rows because our example used only one
-destination point (the railway station).
+An instance of {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` is also a
+{class}`pandas.DataFrame`, all methods of the latter can be used.  The values in
+its `travel_time` column are travel times in minutes between the points
+identified by `from_id` and `to_id` (the IDs of the origins and destinations,
+respectively). As you can see, the `id` value in the `to_id` column is the same
+for all rows because our example used only one destination point (the railway
+station).
 
 
 ## Save results

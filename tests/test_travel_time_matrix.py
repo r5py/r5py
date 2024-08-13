@@ -22,7 +22,7 @@ class TestTravelTimeMatrixInputValidation:
             RuntimeWarning,
             match="The provided departure time window is below 5 minutes",
         ):
-            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+            travel_time_matrix_computer = r5py.TravelTimeMatrix(
                 transport_network,
                 origins=origin_point,
                 destinations=population_grid_points,
@@ -58,7 +58,7 @@ class TestTravelTimeMatrixInputValidation:
         expected_error,
     ):
         with pytest.raises(expected_error):
-            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+            travel_time_matrix_computer = r5py.TravelTimeMatrix(
                 transport_network, origins=origins, departure=departure_datetime
             )
             del travel_time_matrix_computer
@@ -69,7 +69,7 @@ class TestTravelTimeMatrixInputValidation:
         origins_valid_ids,
         departure_datetime,
     ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix_computer = r5py.TravelTimeMatrix(
             transport_network,
             origins=origins_valid_ids,
             departure=departure_datetime,
@@ -114,7 +114,7 @@ class TestTravelTimeMatrixInputValidation:
         expected_error,
     ):
         with pytest.raises(expected_error):
-            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+            travel_time_matrix_computer = r5py.TravelTimeMatrix(
                 transport_network,
                 origins=origins,
                 destinations=destinations,
@@ -141,7 +141,7 @@ class TestTravelTimeMatrixInputValidation:
         destinations,
         departure_datetime,
     ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix_computer = r5py.TravelTimeMatrix(
             transport_network,
             origins=origins,
             destinations=destinations,
@@ -154,7 +154,7 @@ class TestTravelTimeMatrixInputValidation:
         transport_network,
         departure_datetime,
     ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix_computer = r5py.TravelTimeMatrix(
             transport_network,
             departure=departure_datetime,
         )
@@ -167,7 +167,7 @@ class TestTravelTimeMatrixInputValidation:
         population_grid_points,
         departure_datetime,
     ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix_computer = r5py.TravelTimeMatrix(
             transport_network,
             origins=population_grid_points[0:3],
             departure=departure_datetime,
@@ -179,7 +179,7 @@ class TestTravelTimeMatrixInputValidation:
         )
 
 
-class TestTravelTimeMatrixComputer:
+class TestTravelTimeMatrix:
     def test_travel_time_matrix_initialization(
         self,
         transport_network,
@@ -187,7 +187,7 @@ class TestTravelTimeMatrixComputer:
         origin_point,
         departure_datetime,
     ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix_computer = r5py.TravelTimeMatrix(
             transport_network,
             origins=origin_point,
             destinations=population_grid_points,
@@ -215,7 +215,7 @@ class TestTravelTimeMatrixComputer:
         origin_point,
         departure_datetime,
     ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix_computer = r5py.TravelTimeMatrix(
             transport_network_files_tuple,
             origins=origin_point,
             destinations=population_grid_points,
@@ -232,7 +232,7 @@ class TestTravelTimeMatrixComputer:
         population_grid_points,
         departure_datetime,
     ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix_computer = r5py.TravelTimeMatrix(
             transport_network,
             origins=population_grid_points,
             departure=departure_datetime,
@@ -260,7 +260,7 @@ class TestTravelTimeMatrixComputer:
         origin_point,
         departure_datetime,
     ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix_computer = r5py.TravelTimeMatrix(
             transport_network,
             origins=origin_point,
             destinations=population_grid_points,
@@ -282,7 +282,7 @@ class TestTravelTimeMatrixComputer:
         origin_point,
         departure_datetime,
     ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix_computer = r5py.TravelTimeMatrix(
             transport_network,
             origins=origin_point,
             destinations=population_grid_points,
@@ -311,7 +311,7 @@ class TestTravelTimeMatrixComputer:
         departure_datetime,
     ):
         with pytest.warns(RuntimeWarning, match="Departure time"):
-            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+            travel_time_matrix_computer = r5py.TravelTimeMatrix(
                 transport_network,
                 origins=origin_point,
                 destinations=population_grid_points,
@@ -328,7 +328,7 @@ class TestTravelTimeMatrixComputer:
         departure_datetime,
     ):
         with pytest.warns(RuntimeWarning, match="Departure"):
-            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+            travel_time_matrix_computer = r5py.TravelTimeMatrix(
                 transport_network_from_test_files_without_gtfs,
                 origins=origin_point,
                 destinations=population_grid_points,
@@ -361,7 +361,7 @@ class TestTravelTimeMatrixComputer:
         snap_to_network,
         expected_snap_to_network,
     ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix_computer = r5py.TravelTimeMatrix(
             transport_network,
             population_grid_points,
             departure=departure_datetime,
@@ -393,7 +393,7 @@ class TestTravelTimeMatrixComputer:
         snap_to_network,
         expected_travel_times,
     ):
-        travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix_computer = r5py.TravelTimeMatrix(
             transport_network,
             origins=population_grid_points,
             departure=departure_datetime,
@@ -426,7 +426,7 @@ class TestTravelTimeMatrixComputer:
                 "be snapped to the street network"
             ),
         ):
-            travel_time_matrix = r5py.TravelTimeMatrixComputer(
+            travel_time_matrix = r5py.TravelTimeMatrix(
                 transport_network,
                 origins,
                 departure=departure_datetime,
@@ -450,7 +450,7 @@ class TestTravelTimeMatrixComputer:
                 match="Some origin points could not be snapped to the street network",
             ),
         ):
-            travel_time_matrix = r5py.TravelTimeMatrixComputer(
+            travel_time_matrix = r5py.TravelTimeMatrix(
                 transport_network,
                 unsnappable_points,
                 departure=departure_datetime,
@@ -473,7 +473,7 @@ class TestTravelTimeMatrixComputer:
             RuntimeWarning,
             match="Some destination points could not be snapped to the street network",
         ):
-            travel_time_matrix = r5py.TravelTimeMatrixComputer(
+            travel_time_matrix = r5py.TravelTimeMatrix(
                 transport_network,
                 origins=population_grid_points,
                 destinations=destinations,
@@ -499,7 +499,7 @@ class TestTravelTimeMatrixComputer:
                 match="Some destination points could not be snapped to the street network",
             ),
         ):
-            travel_time_matrix = r5py.TravelTimeMatrixComputer(
+            travel_time_matrix = r5py.TravelTimeMatrix(
                 transport_network,
                 origins=population_grid_points,
                 destinations=unsnappable_points,
@@ -517,7 +517,7 @@ class TestTravelTimeMatrixComputer:
         departure_datetime,
         snap_to_network,
     ):
-        travel_time_matrix = r5py.TravelTimeMatrixComputer(
+        travel_time_matrix = r5py.TravelTimeMatrix(
             transport_network,
             origins=population_grid_points,
             transport_modes=[r5py.TransportMode.WALK],
@@ -531,3 +531,34 @@ class TestTravelTimeMatrixComputer:
             ].travel_time.max()
             == 0
         )
+
+
+class TestTravelTimeMatrixComputer:
+    def test_travel_time_matrix_warning_and_legacy_interface(
+        self,
+        transport_network,
+        population_grid_points,
+        origin_point,
+        departure_datetime,
+    ):
+        ttm_new = r5py.TravelTimeMatrix(
+            transport_network,
+            origins=origin_point,
+            destinations=population_grid_points,
+            departure=departure_datetime,
+            transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+        )
+
+        with pytest.warns(
+            DeprecationWarning,
+            match="Use `TravelTimeMatrix` instead, `TravelTimeMatrixComputer will be deprecated in a future release."
+        ):
+            ttm_old = r5py.TravelTimeMatrix(
+                transport_network,
+                origins=origin_point,
+                destinations=population_grid_points,
+                departure=departure_datetime,
+                transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+            )
+
+        geopandas.testing.assert_geodataframes_equal(ttm_new, ttm_old)

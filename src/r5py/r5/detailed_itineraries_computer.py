@@ -11,7 +11,7 @@ import geopandas
 import joblib
 import pandas
 
-from .base_travel_time_matrix_computer import BaseTravelTimeMatrixComputer
+from .base_travel_time_matrix import BaseTravelTimeMatrix
 from .trip import Trip
 from .trip_planner import ACCURATE_GEOMETRIES, TripPlanner
 
@@ -19,7 +19,7 @@ from .trip_planner import ACCURATE_GEOMETRIES, TripPlanner
 __all__ = ["DetailedItinerariesComputer"]
 
 
-class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
+class DetailedItinerariesComputer(BaseTravelTimeMatrix):
     """Compute detailed itineraries between many origins and destinations."""
 
     COLUMNS = ["from_id", "to_id", "option"] + Trip.COLUMNS

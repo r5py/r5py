@@ -3,25 +3,29 @@
 """Calculate travel times between many origins and destinations."""
 
 import copy
+try:
+    from warnings import deprecated
+except ImportError:  # Python<=3.12
+    from typing_extensions import deprecated
 
 import pandas
 
-from .base_travel_time_matrix_computer import BaseTravelTimeMatrixComputer
+from .base_travel_time_matrix import BaseTravelTimeMatrix
 from ..util import start_jvm
 
 import com.conveyal.r5
 
 
-__all__ = ["TravelTimeMatrixComputer"]
+__all__ = ["TravelTimeMatrix", "TravelTimeMatrixComputer"]
 
 
 start_jvm()
 
 
-class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
+class TravelTimeMatrix(BaseTravelTimeMatrix):
     """Compute travel times between many origins and destinations."""
 
-    def compute_travel_times(self):
+    def _compute(self):
         """
         Compute travel times from all origins to all destinations.
 
@@ -121,3 +125,28 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
         od_matrix = self._parse_results(from_id, results)
 
         return od_matrix
+
+
+@deprecated("Use `TravelTimeMatrix` instead, `TravelTimeMatrixComputer will be deprecated in a future release.")
+class TravelTimeMatrixComputer:
+    """Compute travel times between many origins and destinations."""
+
+    def __new__(self, *args, **kwargs):
+        return TravelTimeMatrix(*args, **kwargs)
+
+    def compute_travel_times(self):
+        """
+        Compute travel times from all origins to all destinations.
+
+        Returns
+        -------
+        pandas.DataFrame
+            A data frame containing the columns ``from_id``, ``to_id``, and
+            ``travel_time``, where ``travel_time`` is the median calculated
+            travel time between ``from_id`` and ``to_id`` or ``numpy.nan``
+            if no connection with the given parameters was found.
+            If non-default ``percentiles`` were requested: one or more columns
+            ``travel_time_p{:02d}`` representing the particular percentile of
+            travel time.
+        """
+        return self

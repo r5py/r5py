@@ -5,7 +5,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.16.1
+    jupytext_version: 1.16.2
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -140,13 +140,13 @@ the input GTFS data set](check-gtfs-files).
 ```{code-cell} ipython3
 import datetime
 
-travel_time_matrix = r5py.TravelTimeMatrixComputer(
+travel_time_matrix = r5py.TravelTimeMatrix(
     transport_network,
     origins=origins,
     destinations=destinations,
     transport_modes=[r5py.TransportMode.TRANSIT],
     departure=datetime.datetime(2019, 5, 13, 14, 0, 0),
-).compute_travel_times()
+)
 ```
 
 The output of

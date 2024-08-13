@@ -372,9 +372,9 @@ class TestTravelTimeMatrix:
         population_grid_points,
         departure_datetime,
         snap_to_network,
-        expected_travel_time_matrix,
+        expected_travel_times,
     ):
-        travel_time_matrix = r5py.TravelTimeMatrix(
+        travel_times = r5py.TravelTimeMatrix(
             transport_network,
             origins=population_grid_points,
             departure=departure_datetime,
@@ -382,16 +382,12 @@ class TestTravelTimeMatrix:
             transport_modes=[r5py.TransportMode.WALK],
         )
 
-        travel_time_matrix = travel_time_matrix.set_index(
-            ["from_id", "to_id"]
-        ).sort_index()
-        expected_travel_time_matrix = expected_travel_time_matrix.set_index(
+        travel_times = travel_times.set_index(["from_id", "to_id"]).sort_index()
+        expected_travel_times = expected_travel_times.set_index(
             ["from_id", "to_id"]
         ).sort_index()
 
-        pandas.testing.assert_frame_equal(
-            travel_time_matrix, expected_travel_time_matrix
-        )
+        pandas.testing.assert_frame_equal(travel_times, expected_travel_times)
 
     def test_snap_to_network_with_unsnappable_origins(
         self,

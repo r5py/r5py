@@ -313,7 +313,7 @@ class TestDetailedItineraries:
     @pytest.mark.parametrize(
         [
             "snap_to_network",
-            "expected_travel_details",
+            "expected_detailed_itineraries",
         ],
         [
             (

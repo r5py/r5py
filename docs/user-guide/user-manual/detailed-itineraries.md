@@ -153,7 +153,7 @@ route (e.g., bus number, metro line), and finally a line geometry representing
 the travelled path.
 
 See the following table for a complete list of columns contained in
-{meth}`DetailedItineraries<r5py.DetailedItineraries()>`:
+{class}`DetailedItineraries<r5py.DetailedItineraries()>`:
 
 
 `from_id` (same type as `origins["id"]`)

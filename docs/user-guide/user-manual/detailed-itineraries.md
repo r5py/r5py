@@ -11,7 +11,7 @@ kernelspec:
   name: python3
 ---
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-input, remove-output]
 
 # this cell is hidden from READTHEDOCS output
@@ -23,7 +23,7 @@ import pandas
 pandas.set_option("display.max_columns", None)
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-input, remove-output]
 
 # also this cell is hidden from READTHEDOCS output
@@ -69,7 +69,7 @@ data of Helsinki.
 
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-output]
 
 import geopandas
@@ -88,7 +88,7 @@ transport_network = r5py.TransportNetwork(
 )
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-output]
 
 import datetime
@@ -131,7 +131,7 @@ use](advanced-use.md#snap-origins-and-destination-to-the-street-network) page.
 
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 detailed_itineraries
 ```
 
@@ -231,7 +231,7 @@ steps are needed than with simple travel times.
 the column types {class}`r5py.TransportMode` and {class}`datetime.timedelta` -
 the conversion is quick and easy, though:
 
-```{code-cell} ipython3
+```{code-cell}
 detailed_itineraries["mode"] = detailed_itineraries.transport_mode.astype(str)
 detailed_itineraries["travel time (min)"] = detailed_itineraries.travel_time.apply(
     lambda t: round(t.total_seconds() / 60.0, 2)
@@ -265,7 +265,7 @@ detailed_routes_map = (
 
 Let’s also add the origins and the destination to the map:
 
-```{code-cell} ipython3
+```{code-cell}
 import folium
 import folium.plugins
 import pandas
@@ -320,7 +320,7 @@ Note that many geospatial file formats do not support
 {class}`r5py.TransportMode` data. Similar to the above example, with a few
 simple steps we can convert the values accordingly:
 
-```{code-cell} ipython3
+```{code-cell}
 detailed_itineraries["transport_mode"] = detailed_itineraries.transport_mode.astype(str)
 detailed_itineraries["travel time (min)"] = detailed_itineraries.travel_time.apply(
     lambda t: round(t.total_seconds() / 60.0, 2)

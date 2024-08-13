@@ -149,9 +149,8 @@ travel_time_matrix = r5py.TravelTimeMatrix(
 )
 ```
 
-The output of
-{meth}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`
-is a table in which each row describes the travel time (`travel_time`) from an
+{class}`TravelTimeMatrix<r5py.TravelTimeMatrix>`
+is a data frame in which each row describes the travel time (`travel_time`) from an
 origin (`from_id`), to a destination (`to_id`).
 
 ```{code-cell} ipython3

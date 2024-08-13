@@ -4,7 +4,7 @@
 
 from .access_leg import AccessLeg
 from .breakdown_stat import BreakdownStat
-from .detailed_itineraries_computer import DetailedItinerariesComputer
+from .detailed_itineraries import DetailedItineraries, DetailedItinerariesComputer
 from .direct_leg import DirectLeg
 from .egress_leg import EgressLeg
 from .regional_task import RegionalTask
@@ -21,6 +21,7 @@ from .trip_planner import TripPlanner
 __all__ = [
     "AccessLeg",
     "BreakdownStat",
+    "DetailedItineraries",
     "DetailedItinerariesComputer",
     "DirectLeg",
     "EgressLeg",

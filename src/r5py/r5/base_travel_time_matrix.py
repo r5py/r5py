@@ -105,10 +105,6 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
 
         self.verbose = Config().arguments.verbose
 
-        data = self._compute()
-        for column in data.columns:
-            self[column] = data[column]
-
     def __setattr__(self, attr, val):
         """Catch our own attributes here so we don’t mess with (geo)pandas columns."""
         if attr in self._r5py_attributes:

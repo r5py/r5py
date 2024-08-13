@@ -168,10 +168,6 @@ the following input arguments:
 - `transport_modes`, a list of {class}`r5py.TransportMode`s: the travel modes
   that will be used in the calculations
 
-Once instantiated, call
-{meth}`TravelTimeMatrixComputer.compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`
-to carry out the actual analysis.
-
 ```{code-cell}
 :tags: ["remove-output"]
 
@@ -182,7 +178,7 @@ origins.geometry = origins.geometry.centroid
 
 destinations = railway_station.copy()
 
-travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+travel_times = r5py.TravelTimeMatrix(
     transport_network,
     origins=origins,
     destinations=destinations,
@@ -195,17 +191,15 @@ travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
 ```
 
 ```{code-cell}
-travel_times = travel_time_matrix_computer.compute_travel_times()
 travel_times.head()
 ```
 
-The result of
-{meth}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`
-is a {class}`pandas.DataFrame`. The values in its `travel_time` column are
-travel times in minutes between the points identified by `from_id` and `to_id`
-(the IDs of the origins and destinations, respectively). As you can see, the
-`id` value in the `to_id` column is the same for all rows because our example
-used only one destination point (the railway station).
+A {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` is a child class of
+{class}`pandas.DataFrame`. The values in its `travel_time` column are travel
+times in minutes between the points identified by `from_id` and `to_id` (the IDs
+of the origins and destinations, respectively). As you can see, the `id` value
+in the `to_id` column is the same for all rows because our example used only one
+destination point (the railway station).
 
 
 ## Save results

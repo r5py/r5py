@@ -3,6 +3,7 @@
 """Calculate travel times between many origins and destinations."""
 
 import copy
+
 try:
     from warnings import deprecated
 except ImportError:  # Python<=3.12
@@ -24,6 +25,49 @@ start_jvm()
 
 class TravelTimeMatrix(BaseTravelTimeMatrix):
     """Compute travel times between many origins and destinations."""
+
+    def __init__(
+        self,
+        transport_network,
+        origins=None,
+        destinations=None,
+        snap_to_network=False,
+        **kwargs,
+    ):
+        """
+        Compute travel times between many origins and destinations.
+
+        Arguments
+        ---------
+        transport_network : r5py.TransportNetwork | tuple(str, list(str), dict)
+            The transport network to route on. This can either be a readily
+            initialised r5py.TransportNetwork or a tuple of the parameters
+            passed to ``TransportNetwork.__init__()``: the path to an OpenStreetMap
+            extract in PBF format, a list of zero of more paths to GTFS transport
+            schedule files, and a dict with ``build_config`` options.
+        origins : geopandas.GeoDataFrame
+            Places to find a route _from_
+            Has to have a point geometry, and at least an `id` column
+        destinations : geopandas.GeoDataFrame (optional)
+            Places to find a route _to_
+            Has to have a point geometry, and at least an `id` column
+            If omitted, use same data set as for origins
+        snap_to_network : bool or int, default False
+            Should origin an destination points be snapped to the street network
+            before routing? If `True`, the default search radius (defined in
+            `com.conveyal.r5.streets.StreetLayer.LINK_RADIUS_METERS`) is used,
+            if `int`, use `snap_to_network` meters as the search radius.
+        **kwargs : mixed
+            Any arguments than can be passed to r5py.RegionalTask:
+            ``departure``, ``departure_time_window``, ``percentiles``, ``transport_modes``,
+            ``access_modes``, ``egress_modes``, ``max_time``, ``max_time_walking``,
+            ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
+            ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
+        """
+        super().__init__(self, transport_network, origins, destinations, snap_to_network, **kwargs)
+        data = self._compute()
+        for column in data.columns:
+            self[column] = data[column]
 
     def _compute(self):
         """
@@ -127,11 +171,14 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
         return od_matrix
 
 
-@deprecated("Use `TravelTimeMatrix` instead, `TravelTimeMatrixComputer will be deprecated in a future release.")
+@deprecated(
+    "Use `TravelTimeMatrix` instead, `TravelTimeMatrixComputer will be deprecated in a future release."
+)
 class TravelTimeMatrixComputer:
     """Compute travel times between many origins and destinations."""
 
     def __new__(self, *args, **kwargs):
+        """Compute travel times between many origins and destinations."""
         return TravelTimeMatrix(*args, **kwargs)
 
     def compute_travel_times(self):

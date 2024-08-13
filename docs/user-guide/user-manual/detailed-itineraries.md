@@ -1,17 +1,17 @@
 ---
-kernelspec:
-  name: python3
-  display_name: python3
 jupytext:
   text_representation:
     extension: .md
     format_name: myst
-    format_version: '0.13'
-    jupytext_version: 1.14.1
+    format_version: 0.13
+    jupytext_version: 1.16.2
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
 ---
 
-
-```{code-cell}
+```{code-cell} ipython3
 :tags: [remove-input, remove-output]
 
 # this cell is hidden from READTHEDOCS output
@@ -23,7 +23,7 @@ import pandas
 pandas.set_option("display.max_columns", None)
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [remove-input, remove-output]
 
 # also this cell is hidden from READTHEDOCS output
@@ -36,7 +36,6 @@ if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
     max_memory = int(os.environ["MEM_LIMIT"]) / 2
     sys.argv.extend(["--max-memory", f"{max_memory}"])
 ```
-
 
 # Compute travel times with a detailed breakdown of the routing results
 
@@ -70,8 +69,7 @@ data of Helsinki.
 
 :::
 
-
-```{code-cell}
+```{code-cell} ipython3
 :tags: [remove-output]
 
 import geopandas
@@ -90,9 +88,8 @@ transport_network = r5py.TransportNetwork(
 )
 ```
 
-
-```{code-cell}
-:tags: ["remove-output"]
+```{code-cell} ipython3
+:tags: [remove-output]
 
 import datetime
 import r5py
@@ -108,11 +105,11 @@ destinations = geopandas.GeoDataFrame(
         crs="EPSG:4326",
 )
 
-detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+detailed_itineraries = r5py.DetailedItineraries(
     transport_network,
     origins=origins,
     destinations=destinations,
-    departure=datetime.datetime(2022,2,22,8,30),
+    departure=datetime.datetime(2022, 2, 22, 8, 30),
     transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
     snap_to_network=True,
 )
@@ -134,12 +131,9 @@ use](advanced-use.md#snap-origins-and-destination-to-the-street-network) page.
 
 :::
 
-
-```{code-cell}
-travel_details = detailed_itineraries_computer.compute_travel_details()
-travel_details
+```{code-cell} ipython3
+detailed_itineraries
 ```
-
 
 As you can see, the result contains much more information than earlier.
 Depending on your screen size, you might even have to scroll further right to
@@ -158,8 +152,8 @@ possible wait time (before the departure of a public transport vehicle), the
 route (e.g., bus number, metro line), and finally a line geometry representing
 the travelled path.
 
-See the following table for a complete list of columns returned by
-{meth}`DetailedItinerariesComputer.compute_travel_details()<r5py.DetailedItinerariesComputer.compute_travel_details()>`:
+See the following table for a complete list of columns contained in
+{meth}`DetailedItineraries<r5py.DetailedItineraries()>`:
 
 
 `from_id` (same type as `origins["id"]`)
@@ -237,18 +231,18 @@ steps are needed than with simple travel times.
 the column types {class}`r5py.TransportMode` and {class}`datetime.timedelta` -
 the conversion is quick and easy, though:
 
-```{code-cell}
-travel_details["mode"] = travel_details.transport_mode.astype(str)
-travel_details["travel time (min)"] = travel_details.travel_time.apply(
+```{code-cell} ipython3
+detailed_itineraries["mode"] = detailed_itineraries.transport_mode.astype(str)
+detailed_itineraries["travel time (min)"] = detailed_itineraries.travel_time.apply(
     lambda t: round(t.total_seconds() / 60.0, 2)
 )
-travel_details["trip"] = travel_details.apply(
+detailed_itineraries["trip"] = detailed_itineraries.apply(
     lambda row: f"{row.from_id} → railway station",
     axis=1
 )
 
 detailed_routes_map = (
-    travel_details[
+    detailed_itineraries[
         [
             "geometry",
             "distance",
@@ -271,7 +265,7 @@ detailed_routes_map = (
 
 Let’s also add the origins and the destination to the map:
 
-```{code-cell}
+```{code-cell} ipython3
 import folium
 import folium.plugins
 import pandas
@@ -313,7 +307,6 @@ points.apply(
 detailed_routes_map
 ```
 
-
 ## Export the detailed routes
 
 If you want to further analyse the resulting routes, for instance, in a desktop
@@ -327,18 +320,18 @@ Note that many geospatial file formats do not support
 {class}`r5py.TransportMode` data. Similar to the above example, with a few
 simple steps we can convert the values accordingly:
 
-```{code-cell}
-travel_details["transport_mode"] = travel_details.transport_mode.astype(str)
-travel_details["travel time (min)"] = travel_details.travel_time.apply(
+```{code-cell} ipython3
+detailed_itineraries["transport_mode"] = detailed_itineraries.transport_mode.astype(str)
+detailed_itineraries["travel time (min)"] = detailed_itineraries.travel_time.apply(
     lambda t: round(t.total_seconds() / 60.0, 2)
 )
-travel_details["wait time (min)"] = travel_details.wait_time.apply(
+detailed_itineraries["wait time (min)"] = detailed_itineraries.wait_time.apply(
     lambda t: round(t.total_seconds() / 60.0, 2)
 )
 
 # keep all columns except travel time and wait time (which we renamed to
 # reflect the unit of measurement)
-travel_details = travel_details[
+detailed_itineraries = detailed_itineraries[
     [
         "from_id",
         "to_id",
@@ -354,6 +347,5 @@ travel_details = travel_details[
     ]
 ]
 
-travel_details.to_file("detailed_itineraries.gpkg")
-
+detailed_itineraries.to_file("detailed_itineraries.gpkg")
 ```

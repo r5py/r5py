@@ -5,13 +5,11 @@
 ```{eval-rst}
 .. autoclass:: r5py.TravelTimeMatrix
     :members:
-    :inherited-members:
 ```
 
 ```{eval-rst}
 .. autoclass:: r5py.DetailedItineraries
     :members:
-    :inherited-members:
 ```
 
 ```{eval-rst}

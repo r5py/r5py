@@ -281,7 +281,7 @@ folium.Marker(
 
 points = geopandas.GeoDataFrame(
     pandas.DataFrame(
-        {"id": detailed_itineraries_computer.od_pairs["id_origin"].unique()}
+        {"id": detailed_itineraries.od_pairs["id_origin"].unique()}
     )
     .set_index("id")
     .join(population_grid.set_index("id"))

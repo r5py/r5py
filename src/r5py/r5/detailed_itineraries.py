@@ -233,9 +233,9 @@ class DetailedItineraries(BaseTravelTimeMatrix):
 class DetailedItinerariesComputer:
     """Compute detailed itineraries between many origins and destinations."""
 
-    def __new__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Compute detailed itineraries between many origins and destinations."""
-        return DetailedItineraries(*args, **kwargs)
+        self._detailed_itineraries = DetailedItineraries(*args, **kwargs)
 
     def compute_travel_details(self):
         """
@@ -255,4 +255,4 @@ class DetailedItinerariesComputer:
             route number or name), `geometry` (`shapely.LineString`)
             TODO: Add description of output data frame columns and format
         """
-        return self
+        return self._detailed_itineraries

@@ -182,8 +182,6 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
 
                 setattr(self, f"_{which_end}", points.copy())
 
-            self.snap_to_network = False  # prevent repeated snapping on same point sets
-
     @property
     def origins(self):
         """The origins of this travel time matrix (`geopandas.GeoDataFrame`)."""

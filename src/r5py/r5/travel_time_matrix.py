@@ -187,9 +187,9 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
 class TravelTimeMatrixComputer:
     """Compute travel times between many origins and destinations."""
 
-    def __new__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Compute travel times between many origins and destinations."""
-        return TravelTimeMatrix(*args, **kwargs)
+        self._ttm = TravelTimeMatrix(*args, **kwargs)
 
     def compute_travel_times(self):
         """
@@ -206,4 +206,4 @@ class TravelTimeMatrixComputer:
             ``travel_time_p{:02d}`` representing the particular percentile of
             travel time.
         """
-        return self
+        return self._ttm

@@ -529,12 +529,12 @@ class TestTravelTimeMatrixComputer:
             DeprecationWarning,
             match="Use `TravelTimeMatrix` instead, `TravelTimeMatrixComputer will be deprecated in a future release.",
         ):
-            ttm_old = r5py.TravelTimeMatrix(
+            ttm_old = r5py.TravelTimeMatrixComputer(
                 transport_network,
                 origins=origin_point,
                 destinations=population_grid_points,
                 departure=departure_datetime,
                 transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
-            )
+            ).compute_travel_times()
 
-        geopandas.testing.assert_geodataframes_equal(ttm_new, ttm_old)
+        geopandas.testing.assert_geodataframe_equal(ttm_new, ttm_old)

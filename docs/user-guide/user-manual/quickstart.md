@@ -4,16 +4,14 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.6
+    jupytext_version: 1.16.4
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
 
-
 # Quickstart
-
 
 +++ {"jupyter": {"source_hidden": true}}
 
@@ -30,8 +28,7 @@ advanced-use
 configuration
 :::
 
-
-```{code-cell}
+```{code-cell} ipython3
 :tags: [remove-input, remove-output]
 
 # this cell is hidden from READTHEDOCS output
@@ -44,7 +41,6 @@ if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
     max_memory = int(os.environ["MEM_LIMIT"]) / 2
     sys.argv.extend(["--max-memory", f"{max_memory}"])
 ```
-
 
 One of the core functionalities of *r5py* is to compute travel time matrices
 efficiently, and for large extents such as entire cities or countries. This
@@ -83,7 +79,7 @@ geometry, a {class}`shapely.Point`, the coordinates of which refer to Helsinkiâ€
 main railway station in the
 [`EPSG:4326`](https://spatialreference.org/ref/epsg/4326/) reference system.
 
-```{code-cell}
+```{code-cell} ipython3
 import geopandas
 import r5py.sampledata.helsinki
 import shapely
@@ -99,12 +95,11 @@ railway_station = geopandas.GeoDataFrame(
 )
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 overview_map = population_grid.explore("population", cmap="Reds")
 overview_map = railway_station.explore(m=overview_map, marker_type="marker")
 overview_map
 ```
-
 
 ## Transport network
 
@@ -126,8 +121,8 @@ To import the street and public transport networks, instantiate an
 zero or more GTFS files. With the sample data set, the file paths are in the
 `r5py.sampledata.helsinki` namespace:
 
-```{code-cell}
-:tags: ["remove-output"]
+```{code-cell} ipython3
+:tags: [remove-output]
 
 import r5py
 import r5py.sampledata.helsinki
@@ -168,8 +163,8 @@ the following input arguments:
 - `transport_modes`, a list of {class}`r5py.TransportMode`s: the travel modes
   that will be used in the calculations
 
-```{code-cell}
-:tags: ["remove-output"]
+```{code-cell} ipython3
+:tags: [remove-output]
 
 import datetime
 
@@ -187,10 +182,19 @@ travel_times = r5py.TravelTimeMatrix(
         r5py.TransportMode.TRANSIT,
         r5py.TransportMode.WALK,
     ],
+    snap_to_network=True,
 )
 ```
 
-```{code-cell}
+```{code-cell} ipython3
+dir(travel_times)
+```
+
+```{code-cell} ipython3
+travel_times.snap_to_network
+```
+
+```{code-cell} ipython3
 travel_times.head()
 ```
 
@@ -210,10 +214,9 @@ retain a clean copy of the results, save the travel time matrix to a CSV file.
 Simply use the {meth}`to_csv()<pandas.DataFrame.to_csv()>` method of pandas data
 frames:
 
-```{code-cell}
+```{code-cell} ipython3
 travel_times.to_csv("travel_times_to_helsinki_railway_station.csv")
 ```
-
 
 ## Plot a result map
 
@@ -222,11 +225,11 @@ data set `population_grid` and
 {meth}`explore()<geopandas.GeoDataFrame.explore()>` the joint data frameâ€™s
 data.
 
-```{code-cell}
+```{code-cell} ipython3
 travel_times = population_grid.merge(travel_times, left_on="id", right_on="from_id")
 travel_times.head()
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 travel_times.explore("travel_time", cmap="Greens")
 ```

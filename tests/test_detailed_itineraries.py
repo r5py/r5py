@@ -159,10 +159,12 @@ class TestDetailedItineraries:
     def test_detailed_itineraries_initialization(
         self,
         transport_network,
+        population_grid_points_first_three,
         departure_datetime,
     ):
         detailed_itineraries = r5py.DetailedItineraries(
             transport_network,
+            origins=population_grid_points_first_three,
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
@@ -171,10 +173,12 @@ class TestDetailedItineraries:
     def test_detailed_itineraries_initialization_with_files(
         self,
         transport_network_files_tuple,
+        population_grid_points_first_three,
         departure_datetime,
     ):
         detailed_itineraries = r5py.DetailedItineraries(
             transport_network_files_tuple,
+            origins=population_grid_points_first_three,
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
@@ -375,13 +379,13 @@ class TestDetailedItineraries:
             RuntimeWarning,
             match="Some (origin|destination) points could not be snapped to the street network",
         ):
-            _ = r5py.DetailedItineraries(
+            _ = r5py.DetailedItinerariesComputer(
                 transport_network,
                 origins,
                 departure=departure_datetime,
                 snap_to_network=True,
                 transport_modes=[r5py.TransportMode.WALK],
-            )
+            ).compute_travel_details()
 
     def test_snap_to_network_with_only_unsnappable_origins(
         self,

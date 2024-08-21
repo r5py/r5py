@@ -202,12 +202,12 @@ provided GTFS feed. Most feeds have just one agency, but multiple are possible.
 in the [`routes.txt`](https://gtfs.org/schedule/reference/#routestxt) file in
 the provided GTFS feed.
 
-`start_stop_id` ({class}`str`) 
+`start_stop_id` ({class}`str`)
 : if the current segment is a public transport vehicle: the GTFS stop id found
 in the [`stops.txt`](https://gtfs.org/schedule/reference/#stopstxt) which was
 used as the boarding stop for that vehicle.
 
-`end_stop_id` ({class}`str`) 
+`end_stop_id` ({class}`str`)
 : if the current segment is a public transport vehicle: the GTFS stop id found
 in the [`stops.txt`](https://gtfs.org/schedule/reference/#stopstxt) which was
 used as the alighting stop for that vehicle.

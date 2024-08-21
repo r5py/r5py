@@ -49,13 +49,14 @@ class Trip:
 
     def as_table(self):
         """
-        Return a table (list of lists) of this trip's legs.
+        Return a table (list of lists) of this trip’s legs.
 
         Returns
         =======
         list : detailed information about this trip and its legs (segments):
-        ``segment``, ``transport_mode``, ``departure_time``, ``distance``,
-        ``travel_time``, ``wait_time``, ``feed``, ``agency_id``, ``route_id``, ``start_stop_id``, ``end_stop_id``, ``geometry``
+            ``segment``, ``transport_mode``, ``departure_time``, ``distance``,
+            ``travel_time``, ``wait_time``, ``feed``, ``agency_id``, ``route_id``,
+            ``start_stop_id``, ``end_stop_id``, ``geometry``
         """
         return [[segment] + leg.as_table_row() for segment, leg in enumerate(self.legs)]
 

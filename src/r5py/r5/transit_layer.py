@@ -73,7 +73,7 @@ class TransitLayer:
 
     def get_street_vertex_for_stop(self, stop):
         """
-        Get the street layer's vertex corresponding to `stop`.
+        Get the street layer’s vertex corresponding to `stop`.
 
         Arguments
         ---------
@@ -99,6 +99,7 @@ class TransitLayer:
         return list(self._transit_layer.tripPatterns)
 
     def get_stop_id_from_index(self, stop_index):
+        """Get the GTFS stop id for the `stop_index`-th stop of this transit layer."""
         return self._transit_layer.stopIdForIndex[stop_index]
 
 

@@ -34,14 +34,6 @@ class TripLeg:
         "geometry",
     ]
 
-    COLUMN_DTYPES = {
-        "feed": str,
-        "agency_id": str,
-        "route_id": str,
-        "start_stop_id": str,
-        "end_stop_id": str,
-    }
-
     def __init__(
         self,
         transport_mode=None,
@@ -59,14 +51,16 @@ class TripLeg:
         """
         Represent one leg of a trip.
 
-        This is a base class, use one the specific classes, e.g., TransitLeg, or
-        DirectLeg
+        This is a base class, use one of the more specific classes, e.g.,
+        TransitLeg, or DirectLeg
 
         Arguments
         =========
         transport_mode : r5py.TransportMode
             mode of transport this trip leg was travelled
-        departure_time : datetime.datetime, distance : float
+        departure_time : datetime.datetime
+            departure time of this trip leg
+        distance : float
             distance covered by this trip leg, in metres
         travel_time : datetime.timedelta
             time spent travelling on this trip leg
@@ -204,7 +198,8 @@ class TripLeg:
         Returns
         =======
         list : detailed information about this trip leg: ``transport_mode``,
-        ``departure_time``, ``distance``, ``travel_time``, ``wait_time``, ``feed``, ``agency_id``
-        ``route_id``, ``start_stop_id``, ``end_stop_id``, ``geometry``
+            ``departure_time``, ``distance``, ``travel_time``, ``wait_time``,
+            ``feed``, ``agency_id`` ``route_id``, ``start_stop_id``,
+            ``end_stop_id``, ``geometry``
         """
         return [getattr(self, column) for column in self.COLUMNS]

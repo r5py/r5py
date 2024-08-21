@@ -53,11 +53,11 @@ class RegionalTask:
         A RegionalTask wraps a `com.conveyal.r5.analyst.cluster.RegionalTask`,
         which is used to specify the details of a requested computation.
         RegionalTasks underlie virtually all major computations carried out,
-        such as, e.g., `TravelTimeMatrixComputer` or `AccessibilityEstimator`.
+        such as, e.g., `TravelTimeMatrix` or `AccessibilityEstimator`.
 
         In **r5py**, there is usually no need to explicitely create a
         `RegionalTask`. Rather, the constructors to the computation classes
-        (`TravelTimeMatrixComputer`, `AccessibilityEstimator`, ...) accept the
+        (`TravelTimeMatrix`, `AccessibilityEstimator`, ...) accept the
         arguments, and pass them through to an internally handled
         `RegionalTask`.
 

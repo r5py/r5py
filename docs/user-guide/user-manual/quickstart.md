@@ -4,16 +4,14 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.6
+    jupytext_version: 1.16.4
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
 
-
 # Quickstart
-
 
 +++ {"jupyter": {"source_hidden": true}}
 
@@ -30,7 +28,6 @@ advanced-use
 configuration
 :::
 
-
 ```{code-cell}
 :tags: [remove-input, remove-output]
 
@@ -44,7 +41,6 @@ if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
     max_memory = int(os.environ["MEM_LIMIT"]) / 2
     sys.argv.extend(["--max-memory", f"{max_memory}"])
 ```
-
 
 One of the core functionalities of *r5py* is to compute travel time matrices
 efficiently, and for large extents such as entire cities or countries. This
@@ -105,7 +101,6 @@ overview_map = railway_station.explore(m=overview_map, marker_type="marker")
 overview_map
 ```
 
-
 ## Transport network
 
 Virtually all operations of *r5py* require a transport network. *R5py*
@@ -127,7 +122,7 @@ zero or more GTFS files. With the sample data set, the file paths are in the
 `r5py.sampledata.helsinki` namespace:
 
 ```{code-cell}
-:tags: ["remove-output"]
+:tags: [remove-output]
 
 import r5py
 import r5py.sampledata.helsinki
@@ -149,13 +144,12 @@ in subsequent analyses.
 
 A travel time matrix is a dataset of the travel costs (typically, time) between
 given locations (origins and destinations) in a study area.  In *r5py*,
-{class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`s calculate
-these matrices. A
-{class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`, once
-initialised, can be used multiple times, for instance, with adjusted parameters,
-such as a different departure time.
+{class}`TravelTimeMatrix<r5py.TravelTimeMatrix>`s calculate these matrices. A
+{class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` is a child instance of
+{class}`pandas.DataFrame`: once values have been computed, it can be used just
+like the data frames you are used to work with.
 
-A {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` needs (at least)
+A {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` needs (at least)
 the following input arguments:
 - a `transport_network` ({class}`r5py.TransportNetwork`), such as the one we
   just created,
@@ -168,12 +162,8 @@ the following input arguments:
 - `transport_modes`, a list of {class}`r5py.TransportMode`s: the travel modes
   that will be used in the calculations
 
-Once instantiated, call
-{meth}`TravelTimeMatrixComputer.compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`
-to carry out the actual analysis.
-
 ```{code-cell}
-:tags: ["remove-output"]
+:tags: [remove-output]
 
 import datetime
 
@@ -182,7 +172,7 @@ origins.geometry = origins.geometry.centroid
 
 destinations = railway_station.copy()
 
-travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+travel_times = r5py.TravelTimeMatrix(
     transport_network,
     origins=origins,
     destinations=destinations,
@@ -191,21 +181,22 @@ travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
         r5py.TransportMode.TRANSIT,
         r5py.TransportMode.WALK,
     ],
+    snap_to_network=True,
 )
 ```
 
 ```{code-cell}
-travel_times = travel_time_matrix_computer.compute_travel_times()
-travel_times.head()
+travel_times
 ```
 
-The result of
-{meth}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`
-is a {class}`pandas.DataFrame`. The values in its `travel_time` column are
-travel times in minutes between the points identified by `from_id` and `to_id`
-(the IDs of the origins and destinations, respectively). As you can see, the
-`id` value in the `to_id` column is the same for all rows because our example
-used only one destination point (the railway station).
+As mentioned above, a {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` is also a
+{class}`pandas.DataFrame`, (all methods of the latter can be
+used)[https://pandas.pydata.org/docs/user_guide/dsintro.html#dataframe].  The
+values in its `travel_time` column are travel times in minutes between the
+points identified by `from_id` and `to_id` (the IDs of the origins and
+destinations, respectively). As you can see, the `id` value in the `to_id`
+column is the same for all rows because our example used only one destination
+point (the railway station).
 
 
 ## Save results
@@ -218,7 +209,6 @@ frames:
 ```{code-cell}
 travel_times.to_csv("travel_times_to_helsinki_railway_station.csv")
 ```
-
 
 ## Plot a result map
 

@@ -52,12 +52,12 @@ class TestVerboseWarnings:
                 match="No routing destinations defined, using origins as destinations, too.",
             ),
         ):
-            r5py.DetailedItinerariesComputer(
+            r5py.DetailedItineraries(
                 transport_network=transport_network,
                 origins=population_grid_points_first_three,
                 departure=departure_datetime,
                 transport_modes=[r5py.TransportMode.WALK],
-            ).compute_travel_details()
+            )
 
     def test_detailed_itineraries_warn_diff_length_all_to_all(
         self,
@@ -71,13 +71,13 @@ class TestVerboseWarnings:
             RuntimeWarning,
             match="Origins and destinations are of different length, computing an all-to-all matrix",
         ):
-            r5py.DetailedItinerariesComputer(
+            r5py.DetailedItineraries(
                 transport_network=transport_network,
                 origins=population_grid_points_first_three,
                 destinations=population_grid_points_four,
                 departure=departure_datetime,
                 transport_modes=[r5py.TransportMode.WALK],
-            ).compute_travel_details()
+            )
 
     def test_travel_time_matrix_warn_no_destinations(
         self,
@@ -90,11 +90,11 @@ class TestVerboseWarnings:
             RuntimeWarning,
             match="No routing destinations defined, using origins as destinations, too.",
         ):
-            r5py.TravelTimeMatrixComputer(
+            r5py.TravelTimeMatrix(
                 transport_network,
                 origins=population_grid_points_first_three,
                 departure=departure_datetime,
-            ).compute_travel_times()
+            )
 
     def test_detailed_itineraries_warn_origins_equal_to_destinations(
         self,
@@ -107,7 +107,7 @@ class TestVerboseWarnings:
             RuntimeWarning,
             match="Origins and destinations are identical, computing an all-to-all matrix",
         ):
-            detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+            detailed_itineraries_computer = r5py.DetailedItineraries(
                 transport_network=transport_network,
                 origins=population_grid_points_first_three,
                 destinations=population_grid_points_first_three,

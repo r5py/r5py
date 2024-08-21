@@ -28,7 +28,7 @@ advanced-use
 configuration
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-input, remove-output]
 
 # this cell is hidden from READTHEDOCS output
@@ -79,7 +79,7 @@ geometry, a {class}`shapely.Point`, the coordinates of which refer to Helsinkiâ€
 main railway station in the
 [`EPSG:4326`](https://spatialreference.org/ref/epsg/4326/) reference system.
 
-```{code-cell} ipython3
+```{code-cell}
 import geopandas
 import r5py.sampledata.helsinki
 import shapely
@@ -95,7 +95,7 @@ railway_station = geopandas.GeoDataFrame(
 )
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 overview_map = population_grid.explore("population", cmap="Reds")
 overview_map = railway_station.explore(m=overview_map, marker_type="marker")
 overview_map
@@ -121,7 +121,7 @@ To import the street and public transport networks, instantiate an
 zero or more GTFS files. With the sample data set, the file paths are in the
 `r5py.sampledata.helsinki` namespace:
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-output]
 
 import r5py
@@ -144,13 +144,12 @@ in subsequent analyses.
 
 A travel time matrix is a dataset of the travel costs (typically, time) between
 given locations (origins and destinations) in a study area.  In *r5py*,
-{class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`s calculate
-these matrices. A
-{class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`, once
-initialised, can be used multiple times, for instance, with adjusted parameters,
-such as a different departure time.
+{class}`TravelTimeMatrix<r5py.TravelTimeMatrix>`s calculate these matrices. A
+{class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` is a child instance of
+{class}`pandas.DataFrame`: once values have been computed, it can be used just
+like the data frames you are used to work with.
 
-A {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` needs (at least)
+A {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` needs (at least)
 the following input arguments:
 - a `transport_network` ({class}`r5py.TransportNetwork`), such as the one we
   just created,
@@ -163,7 +162,7 @@ the following input arguments:
 - `transport_modes`, a list of {class}`r5py.TransportMode`s: the travel modes
   that will be used in the calculations
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-output]
 
 import datetime
@@ -186,25 +185,18 @@ travel_times = r5py.TravelTimeMatrix(
 )
 ```
 
-```{code-cell} ipython3
-dir(travel_times)
+```{code-cell}
+travel_times
 ```
 
-```{code-cell} ipython3
-travel_times.snap_to_network
-```
-
-```{code-cell} ipython3
-travel_times.head()
-```
-
-An instance of {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` is also a
-{class}`pandas.DataFrame`, all methods of the latter can be used.  The values in
-its `travel_time` column are travel times in minutes between the points
-identified by `from_id` and `to_id` (the IDs of the origins and destinations,
-respectively). As you can see, the `id` value in the `to_id` column is the same
-for all rows because our example used only one destination point (the railway
-station).
+As mentioned above, a {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` is also a
+{class}`pandas.DataFrame`, (all methods of the latter can be
+used)[https://pandas.pydata.org/docs/user_guide/dsintro.html#dataframe].  The
+values in its `travel_time` column are travel times in minutes between the
+points identified by `from_id` and `to_id` (the IDs of the origins and
+destinations, respectively). As you can see, the `id` value in the `to_id`
+column is the same for all rows because our example used only one destination
+point (the railway station).
 
 
 ## Save results
@@ -214,7 +206,7 @@ retain a clean copy of the results, save the travel time matrix to a CSV file.
 Simply use the {meth}`to_csv()<pandas.DataFrame.to_csv()>` method of pandas data
 frames:
 
-```{code-cell} ipython3
+```{code-cell}
 travel_times.to_csv("travel_times_to_helsinki_railway_station.csv")
 ```
 
@@ -225,11 +217,11 @@ data set `population_grid` and
 {meth}`explore()<geopandas.GeoDataFrame.explore()>` the joint data frameâ€™s
 data.
 
-```{code-cell} ipython3
+```{code-cell}
 travel_times = population_grid.merge(travel_times, left_on="id", right_on="from_id")
 travel_times.head()
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 travel_times.explore("travel_time", cmap="Greens")
 ```

@@ -72,7 +72,7 @@ class DetailedItineraries(BaseTravelTimeMatrix):
             if `int`, use `snap_to_network` meters as the search radius.
         force_all_to_all : bool, default False
             If ``origins`` and ``destinations`` have the same length, by
-            default, ``DetailedItinerariesComputer`` finds routes between pairs
+            default, ``DetailedItineraries`` finds routes between pairs
             of origins and destinations, i.e., it routes from origin #1 to
             destination #1, origin #2 to destination #2, ... .
             Set ``force_all_to_all=True`` to route from each origin to all

@@ -201,12 +201,13 @@ you are interested in the discussion on this issue by visiting [this GitHub
 issue](https://github.com/r5py/r5py/issues/292).
 :::
 
-The {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` creates an
-all-to-all matrix in long format. In other words, the results contain one row
-for every combination of origins and destinations. Since we have
-{glue:}`origins_length` origins and {glue:}`destinations_length` destinations,
-the output travel time matrix is {glue:}`matrix_length` rows long.
-
+The {class}`TravelTimeMatrix<r5py.TravelTimeMatrix` creates an all-to-all matrix
+in long format. In other words, the results contain one row for every
+combination of origins and destinations. Since we have {glue:}`origins_length`
+origins and {glue:}`destinations_length` destinations, the output travel time
+matrix is {glue:}`origins_length` × {glue:}`destinations_length` =
+{glue:}`matrix_length` rows long.
+ 
 Alternatively, and possibly more intuitively, we can display the travel time
 matrix table as a matrix in wide format, using {meth}`pandas.DataFrame.pivot()`:
 

@@ -42,18 +42,16 @@ if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
 ## Detailed itineraries
 
 In case you are interested in more detailed routing results, you can use
-{class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>`. In
-contrast to {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>`, it
-reports individual trip segments, and possibly multiple alternative routes for
-each trip.
+{class}`DetailedItineraries<r5py.DetailedItineraries>`. In contrast to
+{class}`TravelTimeMatrix<r5py.TravelTimeMatrix>`, it reports individual trip
+segments, and possibly multiple alternative routes for each trip.
 
-As such,
-{class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>`’s output
-is structured in a different way, too. It provides one row per trip segment,
-multiple trip segments together constitute a trip option, of which there might
-be several per `from_id`/`to_id` pair. The results also include information on
-the public transport routes (e.g., bus line numbers) used on the trip, as well
-as a {class}`shapely.geometry` for each segment.
+As such, {class}`DetailedItineraries<r5py.DetailedItineraries>` are structured
+in a different way, too. It provides one row per trip segment, multiple trip
+segments together constitute a trip option, of which there might be several per
+`from_id`/`to_id` pair. The results also include information on the public
+transport routes (e.g., bus line numbers) used on the trip, as well as a
+{class}`shapely.geometry` for each segment.
 
 :::{admonition} Detailed itineraries are computationally expensive
 :class: attention
@@ -120,7 +118,7 @@ detailed_itineraries = r5py.DetailedItineraries(
 
 If you read the code block above especially carefully, you may have noticed that
 we added an option `snap_to_network=True` to
-{class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>`. This
+{class}`DetailedItineraries<r5py.DetailedItineraries>`. This
 option does exactly what it says on the outside: it attempts to snap all origin
 and destination points to the transport network before routing. This can help
 with points that come to lie in an otherwise inaccessible area, such as a fenced
@@ -207,10 +205,10 @@ The default upstream version of R⁵ is compiled with
 `com.conveyal.r5.transit.TransitLayer.SAVE_SHAPES = false`, which improves
 performance by *not reading the geometries included in GTFS data sets*.
 
-As a consequence, the `geometry` reported by
-{class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>` are
-straight lines in-between the stops of a public transport line, and do not
-reflect the actual path travelled in public transport modes.
+As a consequence, the `geometry` reported in
+{class}`DetailedItineraries<r5py.DetailedItineraries>` are straight lines
+in-between the stops of a public transport line, and do not reflect the actual
+path travelled in public transport modes.
 
 With this in mind, *r5py* does not attempt to compute the distance of public
 transport segments if `SAVE_SHAPES = false`, as distances would be very crude

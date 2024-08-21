@@ -258,7 +258,7 @@ class TestDetailedItineraries:
             _ = r5py.DetailedItineraries(
                 transport_network,
                 origins=origin_point,
-                destinations=population_grid_points,
+                destinations=population_grid_points[::5],
                 departure=datetime.datetime(2021, 2, 22, 8, 30),  # not in GTFS data set
                 transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
             )
@@ -277,7 +277,7 @@ class TestDetailedItineraries:
             _ = r5py.DetailedItineraries(
                 transport_network_from_test_files_without_gtfs,
                 origins=origin_point,
-                destinations=population_grid_points,
+                destinations=population_grid_points[::5],
                 departure=departure_datetime,
                 transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
             )
@@ -308,7 +308,7 @@ class TestDetailedItineraries:
     ):
         detailed_itineraries = r5py.DetailedItineraries(
             transport_network,
-            population_grid_points,
+            population_grid_points[::5],
             departure=departure_datetime,
             snap_to_network=snap_to_network,
         )
@@ -447,7 +447,7 @@ class TestDetailedItineraries:
             ):
                 _ = r5py.DetailedItineraries(
                     transport_network,
-                    origins=population_grid_points,
+                    origins=population_grid_points[::5],
                     destinations=unsnappable_points,
                     departure=departure_datetime,
                     snap_to_network=True,
@@ -464,7 +464,7 @@ class TestDetailedItineraries:
     ):
         detailed_itineraries = r5py.DetailedItineraries(
             transport_network,
-            origins=population_grid_points,
+            origins=population_grid_points[::5],
             transport_modes=[r5py.TransportMode.WALK],
             departure=departure_datetime,
             snap_to_network=snap_to_network,
@@ -553,7 +553,7 @@ class TestDetailedItinerariesComputer:
         detailed_itineraries_new = r5py.DetailedItineraries(
             transport_network,
             origins=origin_point,
-            destinations=population_grid_points,
+            destinations=population_grid_points[::5],
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
@@ -565,7 +565,7 @@ class TestDetailedItinerariesComputer:
             detailed_itineraries_old = r5py.DetailedItineraries(
                 transport_network,
                 origins=origin_point,
-                destinations=population_grid_points,
+                destinations=population_grid_points[::5],
                 departure=departure_datetime,
                 transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
             )

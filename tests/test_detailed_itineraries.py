@@ -379,13 +379,13 @@ class TestDetailedItineraries:
             RuntimeWarning,
             match="Some (origin|destination) points could not be snapped to the street network",
         ):
-            _ = r5py.DetailedItinerariesComputer(
+            _ = r5py.DetailedItineraries(
                 transport_network,
                 origins,
                 departure=departure_datetime,
                 snap_to_network=True,
                 transport_modes=[r5py.TransportMode.WALK],
-            ).compute_travel_details()
+            )
 
     def test_snap_to_network_with_only_unsnappable_origins(
         self,
@@ -562,14 +562,14 @@ class TestDetailedItinerariesComputer:
             DeprecationWarning,
             match="Use `DetailedItineraries` instead, `DetailedItinerariesComputer will be deprecated in a future release.",
         ):
-            detailed_itineraries_old = r5py.DetailedItineraries(
+            detailed_itineraries_old = r5py.DetailedItinerariesComputer(
                 transport_network,
                 origins=origin_point,
                 destinations=population_grid_points[::5],
                 departure=departure_datetime,
                 transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
-            )
+            ).compute_travel_details()
 
-        geopandas.testing.assert_geodataframes_equal(
+        geopandas.testing.assert_geodataframe_equal(
             detailed_itineraries_new, detailed_itineraries_old
         )

@@ -60,9 +60,6 @@ Repository = "https://github.com/r5py/r5py.git"
 "Change log" = "https://github.com/r5py/r5py/blob/main/CHANGELOG.md"
 "Bug tracker" = "https://github.com/r5py/r5py/issues"
 
-[tool.coverage.run]
-omit = ["tests/*", ".virtualenv/**/*"]
-
 [tool.jupytext.formats]
 "docs/notebooks/" = "ipynb"
 "docs/md/" = "md"

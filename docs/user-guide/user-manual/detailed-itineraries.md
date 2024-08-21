@@ -257,6 +257,15 @@ detailed_routes_map = (
         tooltip=["trip", "option", "segment", "mode", "travel time (min)", "distance"],
         column="mode",
         tiles="CartoDB.Positron",
+        style_kwds={
+            "weight": 3,
+            "opacity": 0.8,
+        },
+        highlight_kwds={
+            "weight": 6,
+            "opacity": 1,
+        },
+
     )
 )
 ```

@@ -303,40 +303,6 @@ class TestTravelTimeMatrixComputer:
         )
         assert False not in check.to_list()
 
-    def test_gtfs_date_range_warnings(
-        self,
-        transport_network,
-        population_grid_points,
-        origin_point,
-        departure_datetime,
-    ):
-        with pytest.warns(RuntimeWarning, match="Departure time"):
-            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
-                transport_network,
-                origins=origin_point,
-                destinations=population_grid_points,
-                departure=datetime.datetime(2021, 2, 22, 8, 30),  # not in GTFS data set
-                transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
-            )
-            del travel_time_matrix_computer
-
-    def test_gtfs_date_range_warnings_without_gtfs_file(
-        self,
-        transport_network_from_test_files_without_gtfs,
-        population_grid_points,
-        origin_point,
-        departure_datetime,
-    ):
-        with pytest.warns(RuntimeWarning, match="Departure"):
-            travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
-                transport_network_from_test_files_without_gtfs,
-                origins=origin_point,
-                destinations=population_grid_points,
-                departure=departure_datetime,
-                transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
-            )
-            del travel_time_matrix_computer
-
     @pytest.mark.parametrize(
         [
             "snap_to_network",

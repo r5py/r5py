@@ -47,7 +47,7 @@ class DetailedItineraries(BaseTravelTimeMatrix):
         Compute travel times between many origins and destinations.
 
         ``r5py.DetailedItineraries`` are child classes of
-        ``geopandas.GeoDataFrame``s and support all of their methods and
+        ``geopandas.GeoDataFrame`` and support all of their methods and
         properties, see https://geopandas.org/en/stable/docs.html
 
         Arguments

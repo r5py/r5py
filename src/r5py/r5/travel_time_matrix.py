@@ -37,7 +37,7 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
         """
         Compute travel times between many origins and destinations.
 
-        ``r5py.TravelTimeMatrix`` are child classes of ``pandas.DataFrame``s and
+        ``r5py.TravelTimeMatrix`` are child classes of ``pandas.DataFrame`` and
         support all of their methods and properties,
         see https://pandas.pydata.org/docs/
 

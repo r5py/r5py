@@ -3,6 +3,7 @@
 """Calculate travel times between many origins and destinations."""
 
 import copy
+import numpy as np
 
 import pandas
 
@@ -10,6 +11,9 @@ from .base_travel_time_matrix_computer import BaseTravelTimeMatrixComputer
 from ..util import start_jvm
 
 import com.conveyal.r5
+
+import jpype
+from jpype import JArray, JObject
 
 
 __all__ = ["TravelTimeMatrixComputer"]
@@ -104,7 +108,10 @@ class TravelTimeMatrixComputer(BaseTravelTimeMatrixComputer):
         # add OSM IDs if found in results
         # osmIdsResults are generated when routing with custom_cost_transport_network
         if hasattr(results, "osmIdResults") and results.osmIdResults:
-            od_matrix["osm_ids"] = list(results.osmIdResults)
+            osm_ids_python = [
+                np.array(sublist).tolist() for sublist in results.osmIdResults
+            ]
+            od_matrix["osm_ids"] = osm_ids_python
 
         # R5’s NULL value is MAX_INT32
         od_matrix = self._fill_nulls(od_matrix)

@@ -63,7 +63,10 @@ Repository = "https://github.com/r5py/r5py.git"
 [tool.coverage.paths]
 equivalent_sources = [
     "src/r5py/",
-    ".virtualenv/lib/python*/site-packages/r5py/"
+    ".virtualenv/lib/python*/site-packages/r5py/",
+    "/opt/hostedtoolcache/Python/*/x64/lib/python*/site-packages/r5py/",
+    "/Library/Frameworks/Python.framework/Versions/*/lib/python*/site-packages/r5py/",
+    "C:/hostedtoolcache/windows/Python/*/x64/Lib/site-packages/r5py/"
 ]
 
 [tool.jupytext.formats]

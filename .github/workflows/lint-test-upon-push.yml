@@ -63,6 +63,8 @@ jobs:
 
       - run: pip install .[tests]
 
+      - run: pip list --verbose
+
       - run: python -m pytest
 
       - uses: codecov/codecov-action@v4

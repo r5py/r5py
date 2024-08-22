@@ -1,3 +1,11 @@
+- **1.0.0** (2024-09-01):
+    - introduced TravelTimeMatrix, DetailedItineraries that inherit from
+      pandas.DataFrame
+    - deprecated TravelTimeMatrixComputer, DetailedItinerariesComputer
+    - more detailed output (additional columns on routes, stops, etc.) for
+      detailed itineraries
+    - numerous minor improvements and bug fixes
+
 - **0.1.2** (2024-07-28):
     - numerous smaller improvements and bug fixes
     - remodelled build environment

@@ -60,15 +60,18 @@ Repository = "https://github.com/r5py/r5py.git"
 "Change log" = "https://github.com/r5py/r5py/blob/main/CHANGELOG.md"
 "Bug tracker" = "https://github.com/r5py/r5py/issues"
 
-[tool.coverage.run]
-omit = ["tests/*", ".virtualenv/*"]
+[tool.coverage.paths]
+equivalent_sources = [
+    "src/r5py/",
+    ".virtualenv/lib/python*/site-packages/r5py/"
+]
 
 [tool.jupytext.formats]
 "docs/notebooks/" = "ipynb"
 "docs/md/" = "md"
 
 [tool.pytest.ini_options]
-addopts = "-p no:faulthandler --cov=./src/r5py --cov-report term-missing --cov-report xml"
+addopts = "-p no:faulthandler --cov=r5py --cov-report term-missing --cov-report xml --import-mode=importlib"
 filterwarnings = [
     "error",
     "ignore:Could not find R5 jar, trying to download it from upstream",

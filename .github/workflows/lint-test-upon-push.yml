@@ -61,11 +61,7 @@ jobs:
           python-version: '${{matrix.python_version}}'
           cache: 'pip'
 
-      - run: python --version
-
       - run: python -m pip install .[tests]
-
-      - run: python -m pip list --verbose
 
       - run: python -m pytest
 

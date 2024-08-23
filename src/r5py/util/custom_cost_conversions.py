@@ -1,3 +1,8 @@
+import os
+import math
+import concurrent.futures
+import numpy as np
+
 import jpype
 import jpype.imports
 
@@ -141,3 +146,31 @@ def convert_python_custom_costs_to_java_custom_costs(
         raise CustomCostConversionError(
             "Failed to convert from python to java for custom cost factors. custom_cost_segment_weight_factors must be provided for custom cost transport network"
         ) from e
+
+
+def get_dynamic_batch_size(total_paths, min_batch_size=500, max_batch_size=10_000):
+    if total_paths <= 10_000:
+        # For small datasets, use a higher batch size
+        return min(total_paths // 2, max_batch_size)
+    else:
+        # For larger datasets, scale batch size logarithmically
+        batch_size = min_batch_size * math.log10(total_paths / 10_000)
+        # Ensure the batch size is within the desired range
+        return int(max(min(batch_size, max_batch_size), min_batch_size))
+
+
+def convert_sublist_to_python(sublist):
+    return np.array(sublist).tolist()
+
+
+def convert_java_lists_to_python_in_batches(java_lists):
+    # Get the number of available CPU cores
+    batch_size = get_dynamic_batch_size(len(java_lists))
+    max_workers = os.cpu_count()
+    python_lists = []
+    for i in range(0, len(java_lists), batch_size):
+        batch = java_lists[i : i + batch_size]
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Convert each batch in parallel using threading
+            python_lists.extend(executor.map(convert_sublist_to_python, batch))
+    return python_lists

@@ -7,22 +7,32 @@
 import copy
 import warnings
 
+try:
+    from warnings import deprecated
+except ImportError:  # Python<=3.12
+    from typing_extensions import deprecated
+
 import geopandas
 import joblib
 import pandas
 
-from .base_travel_time_matrix_computer import BaseTravelTimeMatrixComputer
+from .base_travel_time_matrix import BaseTravelTimeMatrix
 from .trip import Trip
 from .trip_planner import ACCURATE_GEOMETRIES, TripPlanner
 
 
-__all__ = ["DetailedItinerariesComputer"]
+__all__ = ["DetailedItineraries", "DetailedItinerariesComputer"]
 
 
-class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
+class DetailedItineraries(BaseTravelTimeMatrix):
     """Compute detailed itineraries between many origins and destinations."""
 
     COLUMNS = ["from_id", "to_id", "option"] + Trip.COLUMNS
+
+    _r5py_attributes = BaseTravelTimeMatrix._r5py_attributes + [
+        "all_to_all",
+        "od_pairs",
+    ]
 
     def __init__(
         self,
@@ -35,6 +45,10 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
     ):
         """
         Compute travel times between many origins and destinations.
+
+        ``r5py.DetailedItineraries`` are child classes of
+        ``geopandas.GeoDataFrame`` and support all of their methods and
+        properties, see https://geopandas.org/en/stable/docs.html
 
         Arguments
         ---------
@@ -58,10 +72,10 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
             if `int`, use `snap_to_network` meters as the search radius.
         force_all_to_all : bool, default False
             If ``origins`` and ``destinations`` have the same length, by
-            default, ``DetailedItinerariesComputer`` finds routes between pairs
+            default, ``DetailedItineraries`` finds routes between pairs
             of origins and destinations, i.e., it routes from origin #1 to
             destination #1, origin #2 to destination #2, ... .
-            Set ``all_to_all=True`` to route from each origin to all
+            Set ``force_all_to_all=True`` to route from each origin to all
             destinations (this is the default, if ``origins`` and ``destinations``
             have different lengths, or if ``destinations`` is omitted)
         **kwargs : mixed
@@ -106,7 +120,14 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
         else:
             self.all_to_all = force_all_to_all
 
-    def compute_travel_details(self):
+        data = self._compute()
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=FutureWarning)
+            for column in data.columns:
+                self[column] = data[column]
+            self.set_geometry("geometry")
+
+    def _compute(self):
         """
         Compute travel times from all origins to all destinations.
 
@@ -204,3 +225,34 @@ class DetailedItinerariesComputer(BaseTravelTimeMatrixComputer):
         # fmt: on
 
         return pandas.DataFrame(trips, columns=self.COLUMNS)
+
+
+@deprecated(
+    "Use `DetailedItineraries` instead, `DetailedItinerariesComputer will be deprecated in a future release."
+)
+class DetailedItinerariesComputer:
+    """Compute detailed itineraries between many origins and destinations."""
+
+    def __init__(self, *args, **kwargs):
+        """Compute detailed itineraries between many origins and destinations."""
+        self._detailed_itineraries = DetailedItineraries(*args, **kwargs)
+
+    def compute_travel_details(self):
+        """
+        Compute travel times from all origins to all destinations.
+
+        Returns
+        -------
+        geopandas.GeoDataFrame
+            The resulting detailed routes. For each origin/destination pair,
+            multiple route alternatives (‘options’) might be reported that each consist of
+            one or more segments. Each segment represents one row.
+            The data frame comprises of the following columns: `from_id`,
+            `to_id`, `option` (`int`), `segment` (`int`), `transport_mode`
+            (`r5py.TransportMode`), `departure_time` (`datetime.datetime`),
+            `distance` (`float`, metres), `travel_time` (`datetime.timedelta`),
+            `wait_time` (`datetime.timedelta`), `route` (`str`, public transport
+            route number or name), `geometry` (`shapely.LineString`)
+            TODO: Add description of output data frame columns and format
+        """
+        return self._detailed_itineraries

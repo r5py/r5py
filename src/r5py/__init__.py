@@ -6,18 +6,22 @@ __version__ = "0.1.2"
 
 
 from .r5 import (
+    DetailedItineraries,
     DetailedItinerariesComputer,
     RegionalTask,
     TransportMode,
     TransportNetwork,
+    TravelTimeMatrix,
     TravelTimeMatrixComputer,
 )
 
 __all__ = [
+    "DetailedItineraries",
     "DetailedItinerariesComputer",
     "RegionalTask",
     "TransportMode",
     "TransportNetwork",
+    "TravelTimeMatrix",
     "TravelTimeMatrixComputer",
     "__version__",
 ]

@@ -6,6 +6,7 @@ import math
 import multiprocessing
 import warnings
 
+import geopandas
 import numpy
 import shapely
 
@@ -14,7 +15,7 @@ from .regional_task import RegionalTask
 from .transport_network import TransportNetwork
 
 
-__all__ = ["BaseTravelTimeMatrixComputer"]
+__all__ = ["BaseTravelTimeMatrix"]
 
 
 # R5 fills cut-off (NULL) values with MAX_INT32
@@ -26,12 +27,25 @@ MAX_INT32 = (2**31) - 1
 NUM_THREADS = math.ceil(multiprocessing.cpu_count() * 0.5)
 
 
-class BaseTravelTimeMatrixComputer:
+class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
     """Base class for travel time computers between many origins and destinations."""
 
     MAX_INT32 = MAX_INT32
 
     NUM_THREADS = NUM_THREADS
+
+    _r5py_attributes = [
+        "_destinations",
+        "_destinations_crs",
+        "_origins",
+        "_origins_crs",
+        "destinations",
+        "origins",
+        "request",
+        "snap_to_network",
+        "transport_network",
+        "verbose",
+    ]
 
     def __init__(
         self,
@@ -71,6 +85,8 @@ class BaseTravelTimeMatrixComputer:
             ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
             ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
         """
+        geopandas.GeoDataFrame.__init__(self)
+
         if not isinstance(transport_network, TransportNetwork):
             transport_network = TransportNetwork(*transport_network)
         self.transport_network = transport_network
@@ -88,6 +104,13 @@ class BaseTravelTimeMatrixComputer:
         )
 
         self.verbose = Config().arguments.verbose
+
+    def __setattr__(self, attr, val):
+        """Catch our own attributes here so we don’t mess with (geo)pandas columns."""
+        if attr in self._r5py_attributes:
+            object.__setattr__(self, attr, val)
+        else:
+            super().__setattr__(attr, val)
 
     @property
     def destinations(self):
@@ -158,8 +181,6 @@ class BaseTravelTimeMatrixComputer:
                         )
 
                 setattr(self, f"_{which_end}", points.copy())
-
-            self.snap_to_network = False  # prevent repeated snapping on same point sets
 
     @property
     def origins(self):

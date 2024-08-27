@@ -14,7 +14,7 @@ import r5py.util.exceptions
 from .test_custom_cost_transport_network import R5_SUPPORTS_CUSTOM_COSTS
 
 
-class TestDetailedItinerariesComputerInputValidation:
+class TestDetailedItinerariesInputValidation:
     @pytest.mark.parametrize(
         [
             "origins",
@@ -39,12 +39,11 @@ class TestDetailedItinerariesComputerInputValidation:
         expected_error,
     ):
         with pytest.raises(expected_error):
-            detailed_itineraries_computer_computer = r5py.DetailedItinerariesComputer(
+            _ = r5py.DetailedItineraries(
                 transport_network,
                 origins=origins,
                 departure=departure_datetime,
             )
-            del detailed_itineraries_computer_computer
 
     def test_origins_valid_data(
         self,
@@ -52,12 +51,11 @@ class TestDetailedItinerariesComputerInputValidation:
         origins_valid_ids,
         departure_datetime,
     ):
-        detailed_itineraries_computer_computer = r5py.DetailedItinerariesComputer(
+        _ = r5py.DetailedItineraries(
             transport_network,
             origins=origins_valid_ids,
             departure=departure_datetime,
         )
-        del detailed_itineraries_computer_computer
 
     @pytest.mark.parametrize(
         [
@@ -97,13 +95,12 @@ class TestDetailedItinerariesComputerInputValidation:
         expected_error,
     ):
         with pytest.raises(expected_error):
-            detailed_itineraries_computer_computer = r5py.DetailedItinerariesComputer(
+            _ = r5py.DetailedItineraries(
                 transport_network,
                 origins=origins,
                 destinations=destinations,
                 departure=departure_datetime,
             )
-            del detailed_itineraries_computer_computer
 
     @pytest.mark.parametrize(
         [
@@ -124,25 +121,23 @@ class TestDetailedItinerariesComputerInputValidation:
         destinations,
         departure_datetime,
     ):
-        detailed_itineraries_computer_computer = r5py.DetailedItinerariesComputer(
+        _ = r5py.DetailedItineraries(
             transport_network,
             origins=origins,
             destinations=destinations,
             departure=departure_datetime,
         )
-        _ = detailed_itineraries_computer_computer.compute_travel_details()
 
     def test_try_to_route_without_origins(
         self,
         transport_network,
         departure_datetime,
     ):
-        detailed_itineraries_computer_computer = r5py.DetailedItinerariesComputer(
-            transport_network,
-            departure=departure_datetime,
-        )
         with pytest.raises(ValueError, match="No routing origins defined"):
-            _ = detailed_itineraries_computer_computer.compute_travel_details()
+            _ = r5py.DetailedItineraries(
+                transport_network,
+                departure=departure_datetime,
+            )
 
     def test_try_to_route_without_destinations(
         self,
@@ -150,47 +145,46 @@ class TestDetailedItinerariesComputerInputValidation:
         population_grid_points,
         departure_datetime,
     ):
-        detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+        detailed_itineraries = r5py.DetailedItineraries(
             transport_network,
             origins=population_grid_points[0:3],
             departure=departure_datetime,
         )
-        _ = detailed_itineraries_computer.compute_travel_details()
 
         pandas.testing.assert_frame_equal(
-            detailed_itineraries_computer.origins,
-            detailed_itineraries_computer.destinations,
+            detailed_itineraries.origins,
+            detailed_itineraries.destinations,
         )
 
 
-class TestDetailedItinerariesComputer:
+class TestDetailedItineraries:
     def test_detailed_itineraries_initialization(
         self,
         transport_network,
+        population_grid_points_first_three,
         departure_datetime,
     ):
-        detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+        detailed_itineraries = r5py.DetailedItineraries(
             transport_network,
+            origins=population_grid_points_first_three,
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
-        assert isinstance(
-            detailed_itineraries_computer.transport_network, r5py.TransportNetwork
-        )
+        assert isinstance(detailed_itineraries.transport_network, r5py.TransportNetwork)
 
     def test_detailed_itineraries_initialization_with_files(
         self,
         transport_network_files_tuple,
+        population_grid_points_first_three,
         departure_datetime,
     ):
-        detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+        detailed_itineraries = r5py.DetailedItineraries(
             transport_network_files_tuple,
+            origins=population_grid_points_first_three,
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
-        assert isinstance(
-            detailed_itineraries_computer.transport_network, r5py.TransportNetwork
-        )
+        assert isinstance(detailed_itineraries.transport_network, r5py.TransportNetwork)
 
     @pytest.mark.parametrize(
         [
@@ -241,7 +235,7 @@ class TestDetailedItinerariesComputer:
         expected_all_to_all,
         expected_od_pairs_len,
     ):
-        detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+        detailed_itineraries = r5py.DetailedItineraries(
             transport_network,
             origins=origins,
             destinations=destinations,
@@ -249,9 +243,8 @@ class TestDetailedItinerariesComputer:
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.WALK],
         )
-        _ = detailed_itineraries_computer.compute_travel_details()
-        assert detailed_itineraries_computer.all_to_all == expected_all_to_all
-        assert len(detailed_itineraries_computer.od_pairs) == expected_od_pairs_len
+        assert detailed_itineraries.all_to_all == expected_all_to_all
+        assert len(detailed_itineraries.od_pairs) == expected_od_pairs_len
 
     @pytest.mark.filterwarnings(
         "ignore:Departure time .* is outside of the time range covered by currently loaded GTFS data sets."
@@ -264,14 +257,13 @@ class TestDetailedItinerariesComputer:
         departure_datetime,
     ):
         with pytest.warns(RuntimeWarning):
-            travel_details_matrix_computer = r5py.DetailedItinerariesComputer(
+            _ = r5py.DetailedItineraries(
                 transport_network,
                 origins=origin_point,
-                destinations=population_grid_points,
+                destinations=population_grid_points[::5],
                 departure=datetime.datetime(2021, 2, 22, 8, 30),  # not in GTFS data set
                 transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
             )
-            del travel_details_matrix_computer
 
     @pytest.mark.filterwarnings(
         "ignore:Departure time .* is outside of the time range covered by currently loaded GTFS data sets."
@@ -284,14 +276,13 @@ class TestDetailedItinerariesComputer:
         departure_datetime,
     ):
         with pytest.warns(RuntimeWarning):
-            detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+            _ = r5py.DetailedItineraries(
                 transport_network_from_test_files_without_gtfs,
                 origins=origin_point,
-                destinations=population_grid_points,
+                destinations=population_grid_points[::5],
                 departure=departure_datetime,
                 transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
             )
-            del detailed_itineraries_computer
 
     @pytest.mark.parametrize(
         [
@@ -317,18 +308,18 @@ class TestDetailedItinerariesComputer:
         snap_to_network,
         expected_snap_to_network,
     ):
-        detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+        detailed_itineraries = r5py.DetailedItineraries(
             transport_network,
-            population_grid_points,
+            population_grid_points[::5],
             departure=departure_datetime,
             snap_to_network=snap_to_network,
         )
-        assert detailed_itineraries_computer.snap_to_network == expected_snap_to_network
+        assert detailed_itineraries.snap_to_network == expected_snap_to_network
 
     @pytest.mark.parametrize(
         [
             "snap_to_network",
-            "expected_travel_details",
+            "expected_detailed_itineraries",
         ],
         [
             (
@@ -347,31 +338,34 @@ class TestDetailedItinerariesComputer:
         population_grid_points,
         departure_datetime,
         snap_to_network,
-        expected_travel_details,
+        expected_detailed_itineraries,
     ):
         # subset to keep test comparison data sets small
         origins = population_grid_points[::5]
-        detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+        detailed_itineraries = r5py.DetailedItineraries(
             transport_network,
             origins=origins,
             departure=departure_datetime,
             snap_to_network=snap_to_network,
             transport_modes=[r5py.TransportMode.WALK],
         )
-        travel_details = detailed_itineraries_computer.compute_travel_details()
 
-        travel_details = (
-            travel_details.groupby(["from_id", "to_id", "option"])
+        detailed_itineraries = (
+            detailed_itineraries.groupby(["from_id", "to_id", "option"])
             .sum(["travel_time", "distance"])
             .reset_index()
         )
 
-        travel_details = travel_details.set_index(["from_id", "to_id"]).sort_index()
-        expected_travel_details = expected_travel_details.set_index(
+        detailed_itineraries = detailed_itineraries.set_index(
+            ["from_id", "to_id"]
+        ).sort_index()
+        expected_detailed_itineraries = expected_detailed_itineraries.set_index(
             ["from_id", "to_id"]
         ).sort_index()
 
-        pandas.testing.assert_frame_equal(travel_details, expected_travel_details)
+        pandas.testing.assert_frame_equal(
+            detailed_itineraries, expected_detailed_itineraries
+        )
 
     def test_snap_to_network_with_unsnappable_origins(
         self,
@@ -387,14 +381,13 @@ class TestDetailedItinerariesComputer:
             RuntimeWarning,
             match="Some (origin|destination) points could not be snapped to the street network",
         ):
-            travel_time_matrix = r5py.TravelTimeMatrixComputer(
+            _ = r5py.DetailedItineraries(
                 transport_network,
                 origins,
                 departure=departure_datetime,
                 snap_to_network=True,
                 transport_modes=[r5py.TransportMode.WALK],
             )
-            _ = travel_time_matrix.compute_travel_times()
 
     def test_snap_to_network_with_only_unsnappable_origins(
         self,
@@ -409,14 +402,13 @@ class TestDetailedItinerariesComputer:
                 RuntimeWarning,
                 match="Some (origin|destination) points could not be snapped to the street network",
             ):
-                travel_time_matrix = r5py.TravelTimeMatrixComputer(
+                _ = r5py.DetailedItineraries(
                     transport_network,
                     unsnappable_points,
                     departure=departure_datetime,
                     snap_to_network=True,
                     transport_modes=[r5py.TransportMode.WALK],
                 )
-                _ = travel_time_matrix.compute_travel_times()
 
     def test_snap_to_network_with_unsnappable_destinations(
         self,
@@ -432,7 +424,7 @@ class TestDetailedItinerariesComputer:
             RuntimeWarning,
             match="Some destination points could not be snapped to the street network",
         ):
-            travel_time_matrix = r5py.TravelTimeMatrixComputer(
+            _ = r5py.DetailedItineraries(
                 transport_network,
                 origins=population_grid_points,
                 destinations=destinations,
@@ -440,7 +432,6 @@ class TestDetailedItinerariesComputer:
                 snap_to_network=True,
                 transport_modes=[r5py.TransportMode.WALK],
             )
-            _ = travel_time_matrix.compute_travel_times()
 
     def test_snap_to_network_with_only_unsnappable_destinations(
         self,
@@ -456,15 +447,14 @@ class TestDetailedItinerariesComputer:
                 RuntimeWarning,
                 match="Some destination points could not be snapped to the street network",
             ):
-                travel_time_matrix = r5py.TravelTimeMatrixComputer(
+                _ = r5py.DetailedItineraries(
                     transport_network,
-                    origins=population_grid_points,
+                    origins=population_grid_points[::5],
                     destinations=unsnappable_points,
                     departure=departure_datetime,
                     snap_to_network=True,
                     transport_modes=[r5py.TransportMode.WALK],
                 )
-                _ = travel_time_matrix.compute_travel_times()
 
     @pytest.mark.parametrize("snap_to_network", [True, False])
     def test_travel_details_between_identical_from_and_to_ids(
@@ -474,13 +464,13 @@ class TestDetailedItinerariesComputer:
         departure_datetime,
         snap_to_network,
     ):
-        detailed_itineraries = r5py.DetailedItinerariesComputer(
+        detailed_itineraries = r5py.DetailedItineraries(
             transport_network,
-            origins=population_grid_points,
+            origins=population_grid_points[::5],
             transport_modes=[r5py.TransportMode.WALK],
             departure=departure_datetime,
             snap_to_network=snap_to_network,
-        ).compute_travel_details()
+        )
 
         assert detailed_itineraries[
             detailed_itineraries["from_id"] == detailed_itineraries["to_id"]
@@ -524,7 +514,7 @@ class TestDetailedItinerariesComputer:
     ):
         # subset to keep test comparison data sets small
         origins = population_grid_points[::5].copy()
-        detailed_itineraries_computer = r5py.DetailedItinerariesComputer(
+        travel_details = r5py.DetailedItineraries(
             transport_network,
             origins=origins,
             departure=departure_datetime,
@@ -533,7 +523,6 @@ class TestDetailedItinerariesComputer:
             ),  # using old default for simplicity
             transport_modes=[transport_mode],
         )
-        travel_details = detailed_itineraries_computer.compute_travel_details()
 
         travel_details.travel_time = travel_details.travel_time.apply(
             lambda t: t.total_seconds()
@@ -559,4 +548,37 @@ class TestDetailedItinerariesComputer:
             check_less_precise=True,  # geometries
             check_dtype=False,
             normalize=True,
+        )
+
+
+class TestDetailedItinerariesComputer:
+    def test_detailed_itineraries_warning_and_legacy_interface(
+        self,
+        transport_network,
+        population_grid_points,
+        origin_point,
+        departure_datetime,
+    ):
+        detailed_itineraries_new = r5py.DetailedItineraries(
+            transport_network,
+            origins=origin_point,
+            destinations=population_grid_points[::5],
+            departure=departure_datetime,
+            transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+        )
+
+        with pytest.warns(
+            DeprecationWarning,
+            match="Use `DetailedItineraries` instead, `DetailedItinerariesComputer will be deprecated in a future release.",
+        ):
+            detailed_itineraries_old = r5py.DetailedItinerariesComputer(
+                transport_network,
+                origins=origin_point,
+                destinations=population_grid_points[::5],
+                departure=departure_datetime,
+                transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+            ).compute_travel_details()
+
+        geopandas.testing.assert_geodataframe_equal(
+            detailed_itineraries_new, detailed_itineraries_old
         )

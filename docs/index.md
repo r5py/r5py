@@ -1,9 +1,11 @@
 # *R⁵py* – rapid realistic routing with Python
 
 
-:::{image} _static/images/HowWellDoesPublicTransportWorkForSlowWalkers_1200x720px.png
+:::{figure} _static/images/HowWellDoesPublicTransportWorkForSlowWalkers_1200x720px.png
 :alt: A map showing the Helsinki metropolitan area, and how walking slowly changes the efficieny of the public transport network.
 :class: align-default
+
+An analysis using travel time matrices made with <em>r5py</em>
 :::
 
 

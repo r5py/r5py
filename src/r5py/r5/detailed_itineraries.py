@@ -135,15 +135,20 @@ class DetailedItineraries(BaseTravelTimeMatrix):
         -------
         geopandas.GeoDataFrame
             The resulting detailed routes. For each origin/destination pair,
+            multiple route alternatives (‘options’) might be reported that each
+            consist of one or more segments. Each segment represents one row.
             multiple route alternatives (‘options’) might be reported that each consist of
             one or more segments. Each segment represents one row.
+
             The data frame comprises of the following columns: `from_id`,
             `to_id`, `option` (`int`), `segment` (`int`), `transport_mode`
             (`r5py.TransportMode`), `departure_time` (`datetime.datetime`),
             `distance` (`float`, metres), `travel_time` (`datetime.timedelta`),
-            `wait_time` (`datetime.timedelta`), `route` (`str`, public transport
-            route number or name), `geometry` (`shapely.LineString`)
-            TODO: Add description of output data frame columns and format
+            `wait_time` (`datetime.timedelta`), `feed` (`str`, the feed name
+            used), `agency_id` (`str` the public transport agency identifier),
+            `route_id` (`str`, public transport route ID), `start_stop_id`
+            (`str`, the GTFS stop_id for boarding), `end_stop_id` (`str`, the
+            GTFS stop_id for alighting), `geometry` (`shapely.LineString`)
         """
         self._prepare_origins_destinations()
 

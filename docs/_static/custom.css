@@ -8,7 +8,8 @@
   --pst-font-size-h6: 16px;
 }
 
-figcaption {
+figcaption,
+span.caption-text {
     font-size: var(--sbt-font-size-small-1);
 }
 

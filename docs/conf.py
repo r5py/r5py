@@ -47,7 +47,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_design",
     "sphinxcontrib.bibtex",
-    "sphinxcontrib.images",
+    # "sphinxcontrib.images",  # https://github.com/sphinx-contrib/images/pull/39#issuecomment-2258779386
 ]
 
 templates_path = ["_templates"]

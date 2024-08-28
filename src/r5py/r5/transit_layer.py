@@ -98,6 +98,10 @@ class TransitLayer:
         """Return a list of GTFS trip patterns."""
         return list(self._transit_layer.tripPatterns)
 
+    def get_stop_id_from_index(self, stop_index):
+        """Get the GTFS stop id for the `stop_index`-th stop of this transit layer."""
+        return self._transit_layer.stopIdForIndex[stop_index]
+
 
 @jpype._jcustomizer.JConversion(
     "com.conveyal.r5.transit.TransitLayer", exact=TransitLayer

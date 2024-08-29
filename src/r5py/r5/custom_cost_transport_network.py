@@ -242,7 +242,7 @@ class CustomCostTransportNetwork(TransportNetwork):
                 len(custom_cost_segment_weight_factor) == 0
                 or not isinstance(custom_cost_segment_weight_factor, dict)
                 or not all(
-                    isinstance(key, str) and isinstance(value, float)
+                    isinstance(key, (str, int)) and isinstance(value, float)
                     for key, value in custom_cost_segment_weight_factor.items()
                 )
             ):

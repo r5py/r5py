@@ -18,11 +18,12 @@ def convert_python_dict_to_java_hashmap(custom_cost_segment_weight_factors):
     custom_cost_java_hashmap : jpype.java.util.HashMap
         Custom cost factors in Java HashMap format.
     """
+    JInteger = jpype.JClass("java.lang.Integer")
     custom_cost_java_hashmap = jpype.JClass("java.util.HashMap")()
     for key, value_cost in custom_cost_segment_weight_factors.items():
-        long_key = jpype.JLong(key)
+        int_key = JInteger(int(key))
         int_value = jpype.JDouble(value_cost)
-        custom_cost_java_hashmap.put(long_key, int_value)
+        custom_cost_java_hashmap.put(int_key, int_value)
     return custom_cost_java_hashmap
 
 

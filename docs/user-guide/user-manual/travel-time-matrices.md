@@ -207,13 +207,14 @@ combination of origins and destinations. Since we have {glue:}`origins_length`
 origins and {glue:}`destinations_length` destinations, the output travel time
 matrix is {glue:}`origins_length` × {glue:}`destinations_length` =
 {glue:}`matrix_length` rows long.
- 
+
 Alternatively, and possibly more intuitively, we can display the travel time
 matrix table as a matrix in wide format, using {meth}`pandas.DataFrame.pivot()`:
 
 ```{code-cell} ipython3
 travel_time_matrix.pivot(index="from_id", columns="to_id", values="travel_time")
 ```
+
 
 ***
 
@@ -297,7 +298,7 @@ hexagons_with_median_travel_times = (
 )
 
 hexagons_with_median_travel_times.explore(
-    column="travel_time", 
+    column="travel_time",
     cmap="YlOrBr",
     tiles="CartoDB.Positron",
 )
@@ -307,4 +308,18 @@ hexagons_with_median_travel_times.explore(
 
 :::{bibliography}
 :filter: docname in docnames
+:::
+
+
+:::{admonition} Deprecated interface
+:class: caution
+
+Prior to r5py version 1.0.0, travel time matrices had to be computed by first
+initialising a
+{class}`TravelTimeMatrixComputer()<r5py.TravelTimeMatrixComputer>`, then calling
+its
+{func}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`.
+
+This interface has now been **deprecated** and will be removed in a future
+version.
 :::

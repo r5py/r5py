@@ -26,8 +26,11 @@ class TripLeg:
         "distance",
         "travel_time",
         "wait_time",
-        "route",
-        "osm_ids",
+        "feed",
+        "agency_id",
+        "route_id",
+        "start_stop_id",
+        "end_stop_id",
         "geometry",
     ]
 
@@ -38,31 +41,41 @@ class TripLeg:
         distance=None,
         travel_time=datetime.timedelta(seconds=0),
         wait_time=datetime.timedelta(seconds=0),
-        route=None,
-        osm_ids=[],
+        feed=None,
+        agency_id=None,
+        route_id=None,
+        start_stop_id=None,
+        end_stop_id=None,
         geometry=shapely.LineString(),
     ):
         """
         Represent one leg of a trip.
 
-        This is a base class, use one the specific classes,
-        e.g., TransitLeg, or DirectLeg
+        This is a base class, use one of the more specific classes, e.g.,
+        TransitLeg, or DirectLeg
 
         Arguments
         =========
         transport_mode : r5py.TransportMode
             mode of transport this trip leg was travelled
-        departure_time : datetime.datetime,
+        departure_time : datetime.datetime
+            departure time of this trip leg
         distance : float
             distance covered by this trip leg, in metres
         travel_time : datetime.timedelta
             time spent travelling on this trip leg
         wait_time : datetime.timedelta
             time spent waiting for a connection on this trip leg
-        route : str
-            public transport route used for this trip leg
-        osm_ids : list[int]
-            the IDs of OSM segments passed through
+        feed : str
+            the GTFS feed identifier used for this trip leg
+        agency_id : str
+            the GTFS id the agency used for this trip leg
+        route_id : str
+            the GTFS id of the public transport route used for this trip leg
+        start_stop_id : str
+            the GTFS stop_id of the boarding stop used for this trip leg
+        end_stop_id : str
+            the GTFS stop_id of the aligning stop used for this trip leg
         geometry : shapely.LineString
             spatial representation of this trip leg
         """
@@ -71,8 +84,11 @@ class TripLeg:
         self.distance = distance
         self.travel_time = travel_time
         self.wait_time = wait_time
-        self.route = route
-        self.osm_ids = osm_ids
+        self.feed = feed
+        self.agency_id = agency_id
+        self.route_id = route_id
+        self.start_stop_id = start_stop_id
+        self.end_stop_id = end_stop_id
         self.geometry = geometry
 
     def __add__(self, other):
@@ -182,7 +198,8 @@ class TripLeg:
         Returns
         =======
         list : detailed information about this trip leg: ``transport_mode``,
-        ``departure_time``, ``distance``, ``travel_time``, ``wait_time``,
-        ``route``, ``osm_ids``, ``geometry``
+            ``departure_time``, ``distance``, ``travel_time``, ``wait_time``,
+            ``feed``, ``agency_id`` ``route_id``, ``start_stop_id``,
+            ``end_stop_id``, ``geometry``
         """
         return [getattr(self, column) for column in self.COLUMNS]

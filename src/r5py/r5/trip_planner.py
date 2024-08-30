@@ -221,7 +221,6 @@ class TripPlanner:
                                 distance=0.0,
                                 travel_time=ZERO_SECONDS,
                                 wait_time=ZERO_SECONDS,
-                                route=None,
                                 geometry=shapely.LineString(((lon, lat), (lon, lat))),
                             )
                         ]
@@ -332,6 +331,17 @@ class TripPlanner:
 
                             else:  # TransitLeg
                                 pattern = transit_layer.trip_patterns[state.pattern]
+
+                                # Use the indices to look up the stop ids, which are scoped by the GTFS feed supplied
+                                start_stop_id = transit_layer.get_stop_id_from_index(
+                                    state.back.stop
+                                ).split(":")[1]
+                                end_stop = transit_layer.get_stop_id_from_index(
+                                    state.stop
+                                )
+                                end_stop_id = end_stop.split(":")[1]
+                                feed = end_stop.split(":")[0]
+
                                 route = transit_layer.routes[pattern.routeIndex]
                                 transport_mode = TransportMode(
                                     com.conveyal.r5.transit.TransitLayer.getTransitModes(
@@ -389,7 +399,11 @@ class TripPlanner:
                                     distance=distance,
                                     travel_time=travel_time,
                                     wait_time=wait_time,
-                                    route=str(route.route_short_name),
+                                    feed=str(feed),
+                                    agency_id=str(route.agency_id),
+                                    route_id=str(route.route_id),
+                                    start_stop_id=str(start_stop_id),
+                                    end_stop_id=str(end_stop_id),
                                     geometry=geometry,
                                 )
 

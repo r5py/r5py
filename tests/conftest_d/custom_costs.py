@@ -12,7 +12,10 @@ from .data_directory import DATA_DIRECTORY
 # from .transport_network import osm_pbf_file_path, gtfs_file_path
 
 
-ORIGINS_INVALID_NO_ID = DATA_DIRECTORY / "test_invalid_points_no_id_column.geojson"
+CUSTOM_COSTS_TRAVEL_TIMES_BICYCLE = DATA_DIRECTORY / "test_custom_costs_travel_times_bicycle.csv"
+CUSTOM_COSTS_TRAVEL_TIMES_CAR = DATA_DIRECTORY / "test_custom_costs_travel_times_car.csv"
+CUSTOM_COSTS_TRAVEL_TIMES_TRANSIT = DATA_DIRECTORY / "test_custom_costs_travel_times_transit.csv"
+CUSTOM_COSTS_TRAVEL_TIMES_WALK = DATA_DIRECTORY / "test_custom_costs_travel_times_walk.csv"
 
 
 @pytest.fixture(scope="session")
@@ -50,3 +53,23 @@ def custom_costs_transport_network(
         [gtfs_file_path],
         custom_costs_1,
     )
+
+
+@pytest.fixture(scope="session")
+def custom_costs_travel_times_bicycle():
+    yield pandas.read_csv(CUSTOM_COSTS_TRAVEL_TIMES_BICYCLE)
+
+
+@pytest.fixture(scope="session")
+def custom_costs_travel_times_car():
+    yield pandas.read_csv(CUSTOM_COSTS_TRAVEL_TIMES_CAR)
+
+
+@pytest.fixture(scope="session")
+def custom_costs_travel_times_transit():
+    yield pandas.read_csv(CUSTOM_COSTS_TRAVEL_TIMES_TRANSIT)
+
+
+@pytest.fixture(scope="session")
+def custom_costs_travel_times_walk():
+    yield pandas.read_csv(CUSTOM_COSTS_TRAVEL_TIMES_WALK)

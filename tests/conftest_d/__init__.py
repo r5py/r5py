@@ -9,6 +9,10 @@ from .custom_costs import (
     custom_costs_2,
     custom_costs_multiple,
     custom_costs_transport_network,
+    custom_costs_travel_times_bicycle,
+    custom_costs_travel_times_car,
+    custom_costs_travel_times_transit,
+    custom_costs_travel_times_walk,
 )
 
 from .destinations import (
@@ -76,6 +80,10 @@ __all__ = [
     "custom_costs_2",
     "custom_costs_multiple",
     "custom_costs_transport_network",
+    "custom_costs_travel_times_bicycle",
+    "custom_costs_travel_times_car",
+    "custom_costs_travel_times_transit",
+    "custom_costs_travel_times_walk",
     "departure_datetime",
     "detailed_itineraries_bicycle",
     "detailed_itineraries_car",

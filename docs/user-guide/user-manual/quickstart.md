@@ -198,6 +198,24 @@ destinations, respectively). As you can see, the `id` value in the `to_id`
 column is the same for all rows because our example used only one destination
 point (the railway station).
 
+<<<<<<< HEAD
+=======
+
+:::{admonition} Deprecated interface
+:class: caution
+
+Prior to r5py version 1.0.0, travel time matrices had to be computed by first
+initialising a
+{class}`TravelTimeMatrixComputer()<r5py.TravelTimeMatrixComputer>`, then calling
+its
+{func}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`.
+
+This interface has now been **deprecated** and will be removed in a future
+version.
+:::
+
+
+>>>>>>> upstream/main
 ## Save results
 
 If you want to continue analysis later, in a different environment, or simply

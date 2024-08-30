@@ -379,3 +379,17 @@ detailed_itineraries = detailed_itineraries[
 
 detailed_itineraries.to_file("detailed_itineraries.gpkg")
 ```
+
+
+:::{admonition} Deprecated interface
+:class: caution
+
+Prior to r5py version 1.0.0, detailed itineraries had to be computed by first
+initialising a
+{class}`DetailedItinerariesComputer()<r5py.DetailedItinerariesComputer>`, then
+calling its
+{func}`compute_travel_details()<r5py.DetailedItinerariesComputer.compute_travel_details()>`.
+
+This interface has now been **deprecated** and will be removed in a future
+version.
+:::

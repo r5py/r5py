@@ -32,9 +32,6 @@ jobs:
     name: Run tests (${{ matrix.os }}, Python ${{ matrix.python_version }})
     needs: lint
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash -l {0}
     strategy:
       fail-fast: false
       matrix:

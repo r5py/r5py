@@ -199,6 +199,20 @@ column is the same for all rows because our example used only one destination
 point (the railway station).
 
 
+:::{admonition} Deprecated interface
+:class: caution
+
+Prior to r5py version 1.0.0, travel time matrices had to be computed by first
+initialising a
+{class}`TravelTimeMatrixComputer()<r5py.TravelTimeMatrixComputer>`, then calling
+its
+{func}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`.
+
+This interface has now been **deprecated** and will be removed in a future
+version.
+:::
+
+
 ## Save results
 
 If you want to continue analysis later, in a different environment, or simply

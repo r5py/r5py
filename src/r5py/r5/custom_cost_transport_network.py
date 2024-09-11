@@ -6,6 +6,7 @@ import com.conveyal.r5
 from r5py.r5.transport_network import TransportNetwork
 from r5py.util.classpath import r5_supports_custom_costs, r5_supports_precalculation
 from r5py.util.custom_cost_conversions import (
+    convert_custom_cost_instances_to_java_list,
     convert_java_hashmap_to_python_dict,
     convert_python_custom_costs_to_java_custom_costs,
 )
@@ -247,7 +248,7 @@ class CustomCostTransportNetwork(TransportNetwork):
                 )
             ):
                 raise CustomCostDataError(
-                    "custom_cost_segment_weight_factor must be dicts with string keys and float values"
+                    "custom_cost_segment_weight_factor must be dicts with string or int keys and float values"
                 )
 
             if not isinstance(allow_missing_osmid, bool):
@@ -399,6 +400,22 @@ class CustomCostTransportNetwork(TransportNetwork):
         """
         return self._fetch_network_custom_cost_travel_time_product(
             "getBaseTraveltimes", osmids, merged
+        )
+
+    def reset_base_travel_times(self):
+        """Reset base travel times from custom costs instances."""
+        cleaned_custom_costs = []
+        for cost_field in list(
+            self._transport_network.streetLayer.edgeStore.costFields
+        ):
+            cost_field.resetBaseTraveltimes()
+            cleaned_custom_costs.append(cost_field)
+
+        java_cleaned_cost_fields_list = convert_custom_cost_instances_to_java_list(
+            cleaned_custom_costs
+        )
+        self._transport_network.streetLayer.edgeStore.costFields = (
+            java_cleaned_cost_fields_list
         )
 
     def get_custom_cost_additional_travel_times(self, osmids=[], merged=False):

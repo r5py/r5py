@@ -18,7 +18,7 @@ def not_a_gtfs_file():
     yield r5py.sampledata.helsinki.osm_pbf
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def gtfs_file_path():
     """Return the file path of a GTFS sample data set."""
     import r5py.sampledata.helsinki
@@ -32,7 +32,7 @@ def gtfs_timezone_helsinki():
     yield "Europe/Helsinki"
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def osm_pbf_file_path():
     """Return the path of the OSM sample data set."""
     import r5py.sampledata.helsinki

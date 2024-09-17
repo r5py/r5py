@@ -87,6 +87,7 @@ class TestTrip:
                 "90210",
                 "10802",
                 shapely.LineString([[0, 0], [1, 1], [2, 2]]),
+                ["osm_id1", "osm_id2"],
             ]
         ]
 

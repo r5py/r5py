@@ -11,6 +11,8 @@ import pytest_lazy_fixtures
 import r5py
 import r5py.util.exceptions
 
+from .test_custom_cost_transport_network import R5_SUPPORTS_CUSTOM_COSTS
+
 
 class TestDetailedItinerariesInputValidation:
     @pytest.mark.parametrize(
@@ -474,6 +476,10 @@ class TestDetailedItineraries:
             detailed_itineraries["from_id"] == detailed_itineraries["to_id"]
         ].travel_time.max() == datetime.timedelta(seconds=0)
 
+    @pytest.mark.skipif(
+        R5_SUPPORTS_CUSTOM_COSTS,
+        reason="Custom R5 jar produces different detailed itineraries"
+    )
     @pytest.mark.parametrize(
         [
             "transport_mode",
@@ -486,7 +492,7 @@ class TestDetailedItineraries:
             ),
             (
                 r5py.TransportMode.CAR,
-                pytest_lazy_fixtures.lf("detailed_itineraries_car"),
+                (pytest_lazy_fixtures.lf("detailed_itineraries_car")),
             ),
             (
                 r5py.TransportMode.TRANSIT,
@@ -532,6 +538,9 @@ class TestDetailedItineraries:
         )
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
+        travel_details["osm_ids"] = travel_details["osm_ids"].apply(
+            lambda osm_ids: ",".join(osm_ids)
+        )
 
         geopandas.testing.assert_geodataframe_equal(
             travel_details,

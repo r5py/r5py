@@ -6,6 +6,8 @@ __version__ = "1.0.0dev0"
 
 
 from .r5 import (
+    CustomCostTransportNetwork,
+    CustomCostTravelTimeMatrixComputer,
     DetailedItineraries,
     DetailedItinerariesComputer,
     RegionalTask,
@@ -16,6 +18,8 @@ from .r5 import (
 )
 
 __all__ = [
+    "CustomCostTransportNetwork",
+    "CustomCostTravelTimeMatrixComputer",
     "DetailedItineraries",
     "DetailedItinerariesComputer",
     "RegionalTask",

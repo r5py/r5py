@@ -44,6 +44,9 @@ jobs:
           - '3.11'
           - '3.10'
           - '3.9'
+        custom_r5:
+          - true
+          - false
 
     steps:
       -  uses: actions/checkout@v4
@@ -61,6 +64,13 @@ jobs:
       - run: python -m pip install .[tests]
 
       - run: python -m pytest
+        if: ${{matrix.custom_r5}}
+        env:
+          R5_JAR_URL: https://github.com/DigitalGeographyLab/r5/releases/download/v7.1-gp2-3/r5-v7.1-gp2-3-1-gbcaa62a-all.jar
+          R5_JAR_SHA256: f2f4d1a799a91d407c81b80e6faaa3b8330a1e40ae6daa5d35149d8be460edf0
+
+      - run: python -m pytest
+        if: ${{ ! matrix.custom_r5}}
 
       - uses: codecov/codecov-action@v4
         with:

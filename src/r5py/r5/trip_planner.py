@@ -111,8 +111,13 @@ class TripPlanner:
                                 transport_mode,
                                 collections.namedtuple(
                                     "StreetSegment",
-                                    ["distance", "duration", "geometry"],
-                                )(0.0, 0.0, f"LINESTRING({lon} {lat}, {lon} {lat})"),
+                                    ["distance", "duration", "osm_ids", "geometry"],
+                                )(
+                                    0.0,
+                                    0.0,
+                                    [],
+                                    f"LINESTRING({lon} {lat}, {lon} {lat})",
+                                ),
                             )
                         ]
                     )

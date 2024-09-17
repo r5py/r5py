@@ -21,7 +21,7 @@ jobs:
     permissions: write-all
     steps:
       - name: Clone repository, check-out stable
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: stable
@@ -37,12 +37,12 @@ jobs:
     needs: [build]
     steps:
       - name: Download built artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: package
           path: dist/
       - name: Upload package to PyPi
-        uses: pypa/gh-action-pypi-publish@release/v1.5
+        uses: pypa/gh-action-pypi-publish@release/v1.10
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
@@ -57,12 +57,12 @@ jobs:
       contents: write
     steps:
       - name: Download built artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: package
           path: dist/
       - name: Create release and upload package
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: dist/*
 
@@ -75,12 +75,12 @@ jobs:
       contents: write
     steps:
       - name: Download built artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: package
           path: dist/
       - name: Create release and upload package
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: dist/*
           prerelease: true

@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python_version: '3.13'
+          python-version: '3.13'
           cache: pip
       - run: python -m pip install black flake8 pydocstyle
       - run: python -m black --check .

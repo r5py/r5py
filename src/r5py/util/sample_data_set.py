@@ -20,7 +20,10 @@ class SampleDataSet(pathlib.Path):
 
     # decide which kind of pathlib.Path we are (Windows, Unix, ...)
     # cf. https://stackoverflow.com/a/66613346/463864
-    _flavour = type(pathlib.Path())._flavour
+    try:
+        _flavour = type(pathlib.Path())._flavour
+    except AttributeError:  # Python>=3.13
+        pass
 
     _CACHE_DIR = pathlib.Path(config.CACHE_DIR) / "sampledata"
 

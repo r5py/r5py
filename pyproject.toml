@@ -48,9 +48,9 @@ docs = ["contextily", "folium", "GitPython", "h3>=4.0.0b2", "jupyterlab_myst",
         "r5py.sampledata.helsinki>=0.1.1", "r5py.sampledata.sao_paulo>=0.1.1",
         "shapely", "sphinx", "sphinx-book-theme", "sphinx-design",
         "sphinxcontrib-bibtex", "sphinxcontrib-images"]
-tests = ["pyarrow", "pytest", "pytest-asyncio", "pytest-cov",
-         "pytest-lazy-fixtures", "r5py.sampledata.helsinki>=0.1.1",
-         "r5py.sampledata.sao_paulo>=0.1.1", "typing-extensions"]
+tests = ["pyarrow", "pytest", "pytest-cov", "pytest-lazy-fixtures",
+         "r5py.sampledata.helsinki>=0.1.1", "r5py.sampledata.sao_paulo>=0.1.1",
+         "typing-extensions"]
 
 
 [project.urls]
@@ -80,7 +80,6 @@ filterwarnings = [
     "ignore:Successfully downloaded r5-"
 ]
 testpaths = ["tests"]
-asyncio_mode = "auto"
 
 [tool.setuptools.dynamic]
 version = {attr = "r5py.__version__"}

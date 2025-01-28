@@ -116,7 +116,7 @@ class Config:
             try:
                 destination_path.parent.mkdir(parents=True, exist_ok=True)
 
-                with importlib_resources.as_file(CONFIG_FILE_TEMPLATE) as template:
+                with importlib.resources.as_file(CONFIG_FILE_TEMPLATE) as template:
                     destination_path.write_text(template.read_text())
 
             except (

@@ -20,13 +20,9 @@ DETAILED_ITINERARIES_TRANSIT = (
 )
 DETAILED_ITINERARIES_WALK = DATA_DIRECTORY / "test_detailed_itineraries_walk.gpkg.zip"
 
-TRAVEL_TIMES_BICYCLE = (
-    DATA_DIRECTORY / "test_travel_times_bicycle.csv"
-)
+TRAVEL_TIMES_BICYCLE = DATA_DIRECTORY / "test_travel_times_bicycle.csv"
 TRAVEL_TIMES_CAR = DATA_DIRECTORY / "test_travel_times_car.csv"
-TRAVEL_TIMES_TRANSIT = (
-    DATA_DIRECTORY / "test_travel_times_transit.csv"
-)
+TRAVEL_TIMES_TRANSIT = DATA_DIRECTORY / "test_travel_times_transit.csv"
 TRAVEL_TIMES_WALK = DATA_DIRECTORY / "test_travel_times_walk.csv"
 
 WALKING_DETAILS_NOT_SNAPPED = DATA_DIRECTORY / "test_walking_details_not_snapped.csv"

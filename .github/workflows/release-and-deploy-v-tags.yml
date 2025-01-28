@@ -35,6 +35,11 @@ jobs:
     name: Upload built package to PyPi
     runs-on: ubuntu-latest
     needs: [build]
+    environment:
+      name: pypi
+      url: https://pypi.org/p/r5py
+    permissions:
+      id-token: write
     steps:
       - name: Download built artifacts
         uses: actions/download-artifact@v4
@@ -42,11 +47,9 @@ jobs:
           name: package
           path: dist/
       - name: Upload package to PyPi
-        uses: pypa/gh-action-pypi-publish@release/v1.10
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          skip_existing: true
+          skip-existing: true
 
   release:
     name: Create a new release

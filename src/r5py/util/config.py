@@ -3,20 +3,20 @@
 """Handle configuration options and command line options."""
 
 import functools
+import importlib.resources
 import os
 import pathlib
 import sys
 import tempfile
 
 import configargparse
-import importlib_resources
 
 
 __all__ = ["Config"]
 
 
 PACKAGE = __package__.split(".")[0]
-CONFIG_FILE_TEMPLATE = importlib_resources.files(f"{PACKAGE}.util").joinpath(
+CONFIG_FILE_TEMPLATE = importlib.resources.files(f"{PACKAGE}.util").joinpath(
     f"{PACKAGE}.yml.template"
 )
 
@@ -116,7 +116,7 @@ class Config:
             try:
                 destination_path.parent.mkdir(parents=True, exist_ok=True)
 
-                with importlib_resources.as_file(CONFIG_FILE_TEMPLATE) as template:
+                with importlib.resources.as_file(CONFIG_FILE_TEMPLATE) as template:
                     destination_path.write_text(template.read_text())
 
             except (

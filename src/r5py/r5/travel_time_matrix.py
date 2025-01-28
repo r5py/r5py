@@ -138,11 +138,11 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
             {
                 "from_id": pandas.Series(dtype=str),
                 "to_id": pandas.Series(dtype=str),
-            } | {
+            }
+            | {
                 f"travel_time_p{percentile:d}": pandas.Series(dtype=float)
                 for percentile in self.request.percentiles
             }
-
         )
 
         # first assign columns with correct length (`to_id`),

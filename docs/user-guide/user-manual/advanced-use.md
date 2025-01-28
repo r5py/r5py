@@ -153,13 +153,13 @@ requirements: it was returned as an ‘empty’ point.
 :::{admonition} Convenient short-hands
 :class: tip
 
-Both {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` and {class}`DetailedItinerariesComputer<r5py.DetailedItinerariesComputer>` support a
+Both {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` and {class}`DetailedItineraries<r5py.DetailedItineraries>` support a
 convenient parameter, `snap_to_network`, that controls whether the origins and
 destinations should automatically be snapped to the transport network. 
 
 ```{code}
 
-travel_time_matrix_computer = r5py.TravelTimeMatrixComputer(
+travel_time_matrix = r5py.TravelTimeMatrix(
     ...
     snap_to_network=True,
 )

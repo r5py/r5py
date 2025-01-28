@@ -18,10 +18,10 @@ jobs:
     name: Linting code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: '3.13'
           cache: pip
       - run: python -m pip install black flake8 pydocstyle
       - run: python -m black --check .
@@ -32,9 +32,6 @@ jobs:
     name: Run tests (${{ matrix.os }}, Python ${{ matrix.python_version }})
     needs: lint
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash -l {0}
     strategy:
       fail-fast: false
       matrix:
@@ -43,13 +40,14 @@ jobs:
           - windows-latest
           - macos-latest
         python_version:
+          - '3.13'
           - '3.12'
           - '3.11'
           - '3.10'
           - '3.9'
 
     steps:
-      -  uses: actions/checkout@v4.1.1
+      -  uses: actions/checkout@v4
 
       - uses: actions/setup-java@v4
         with: 
@@ -58,13 +56,14 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{matrix.python_version}}
-          cache: pip
+          python-version: '${{matrix.python_version}}'
+          cache: 'pip'
 
-      - run: pip install .[tests]
+      - run: python -m pip install .[tests]
 
       - run: python -m pytest
 
-      - uses: codecov/codecov-action@v3.1.4
+      - uses: codecov/codecov-action@v4
         with:
+          fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}

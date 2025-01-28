@@ -5,7 +5,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.16.1
+    jupytext_version: 1.16.2
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -140,18 +140,17 @@ the input GTFS data set](check-gtfs-files).
 ```{code-cell} ipython3
 import datetime
 
-travel_time_matrix = r5py.TravelTimeMatrixComputer(
+travel_time_matrix = r5py.TravelTimeMatrix(
     transport_network,
     origins=origins,
     destinations=destinations,
     transport_modes=[r5py.TransportMode.TRANSIT],
     departure=datetime.datetime(2019, 5, 13, 14, 0, 0),
-).compute_travel_times()
+)
 ```
 
-The output of
-{meth}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`
-is a table in which each row describes the travel time (`travel_time`) from an
+{class}`TravelTimeMatrix<r5py.TravelTimeMatrix>`
+is a data frame in which each row describes the travel time (`travel_time`) from an
 origin (`from_id`), to a destination (`to_id`).
 
 ```{code-cell} ipython3
@@ -202,11 +201,12 @@ you are interested in the discussion on this issue by visiting [this GitHub
 issue](https://github.com/r5py/r5py/issues/292).
 :::
 
-The {class}`TravelTimeMatrixComputer<r5py.TravelTimeMatrixComputer>` creates an
-all-to-all matrix in long format. In other words, the results contain one row
-for every combination of origins and destinations. Since we have
-{glue:}`origins_length` origins and {glue:}`destinations_length` destinations,
-the output travel time matrix is {glue:}`matrix_length` rows long.
+The {class}`TravelTimeMatrix<r5py.TravelTimeMatrix` creates an all-to-all matrix
+in long format. In other words, the results contain one row for every
+combination of origins and destinations. Since we have {glue:}`origins_length`
+origins and {glue:}`destinations_length` destinations, the output travel time
+matrix is {glue:}`origins_length` × {glue:}`destinations_length` =
+{glue:}`matrix_length` rows long.
 
 Alternatively, and possibly more intuitively, we can display the travel time
 matrix table as a matrix in wide format, using {meth}`pandas.DataFrame.pivot()`:
@@ -214,6 +214,7 @@ matrix table as a matrix in wide format, using {meth}`pandas.DataFrame.pivot()`:
 ```{code-cell} ipython3
 travel_time_matrix.pivot(index="from_id", columns="to_id", values="travel_time")
 ```
+
 
 ***
 
@@ -297,7 +298,7 @@ hexagons_with_median_travel_times = (
 )
 
 hexagons_with_median_travel_times.explore(
-    column="travel_time", 
+    column="travel_time",
     cmap="YlOrBr",
     tiles="CartoDB.Positron",
 )
@@ -307,4 +308,18 @@ hexagons_with_median_travel_times.explore(
 
 :::{bibliography}
 :filter: docname in docnames
+:::
+
+
+:::{admonition} Deprecated interface
+:class: caution
+
+Prior to r5py version 1.0.0, travel time matrices had to be computed by first
+initialising a
+{class}`TravelTimeMatrixComputer()<r5py.TravelTimeMatrixComputer>`, then calling
+its
+{func}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`.
+
+This interface has now been **deprecated** and will be removed in a future
+version.
 :::

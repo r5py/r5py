@@ -82,6 +82,7 @@ filterwarnings = [
 ]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.setuptools.dynamic]
 version = {attr = "r5py.__version__"}

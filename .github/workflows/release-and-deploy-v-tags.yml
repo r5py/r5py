@@ -10,7 +10,6 @@ on:
 jobs:
   build:
     name: Build wheel(s) and packages
-    needs: test
     strategy:
       matrix:
         os:

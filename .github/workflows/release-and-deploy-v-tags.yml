@@ -44,7 +44,7 @@ jobs:
       - name: Download built artifacts
         uses: actions/download-artifact@v4
         with:
-          name: package
+          name: package-${TAG}
           path: dist/
       - name: Upload package to PyPi
         uses: pypa/gh-action-pypi-publish@release/v1

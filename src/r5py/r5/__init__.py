@@ -7,6 +7,7 @@ from .breakdown_stat import BreakdownStat
 from .detailed_itineraries import DetailedItineraries, DetailedItinerariesComputer
 from .direct_leg import DirectLeg
 from .egress_leg import EgressLeg
+from .isochrones import Isochrones
 from .regional_task import RegionalTask
 from .scenario import Scenario
 from .street_layer import StreetLayer

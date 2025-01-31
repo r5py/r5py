@@ -8,7 +8,7 @@ description = "Python wrapper for the R5 routing analysis engine"
 readme = "README.md"
 
 authors = [
-    { name = "Christoph Fink", email = "christoph.fink@helsinki.fi" },
+    { name = "Christoph Fink" },
     { name = "Willem Klumpenhouwer" },
     { name = "Marcus Sairava" },
     { name = "Rafael Pereira" },

@@ -7,10 +7,6 @@ on:
     tags:
       - v*.*.*
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   test:
     uses: ./.github/workflows/test.yml

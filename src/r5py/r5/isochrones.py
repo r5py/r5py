@@ -4,21 +4,12 @@
 """Compute polygons of equal travel time from a destination."""
 
 
-import copy
 import warnings
 
-try:
-    from warnings import deprecated
-except ImportError:  # Python<=3.12
-    from typing_extensions import deprecated
 
 import geopandas
-import joblib
-import pandas
 
 from .base_travel_time_matrix import BaseTravelTimeMatrix
-from .trip import Trip
-from .trip_planner import ACCURATE_GEOMETRIES, TripPlanner
 
 
 __all__ = ["Isochrones"]
@@ -26,13 +17,6 @@ __all__ = ["Isochrones"]
 
 class Isochrones(BaseTravelTimeMatrix):
     """Compute polygons of equal travel time from a destination."""
-
-    COLUMNS = ["from_id", "to_id", "option"] + Trip.COLUMNS
-
-    _r5py_attributes = BaseTravelTimeMatrix._r5py_attributes + [
-        "all_to_all",
-        "od_pairs",
-    ]
 
     def __init__(
         self,
@@ -89,7 +73,7 @@ class Isochrones(BaseTravelTimeMatrix):
 
     def _compute(self):
         """
-        Compute TODO
+        Compute TODO.
 
         Returns
         -------

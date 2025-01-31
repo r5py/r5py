@@ -26,6 +26,7 @@ __all__ = [
     "DetailedItinerariesComputer",
     "DirectLeg",
     "EgressLeg",
+    "Isochrones",
     "RegionalTask",
     "Scenario",
     "SpeedConfig",

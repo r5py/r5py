@@ -78,6 +78,9 @@ jobs:
           pattern: package-*-*
           merge-multiple: true
           path: dist/
+      - run: |
+          file dist/*
+          ls -alhtr dist/*
       - name: Upload package to PyPi
         uses: pypa/gh-action-pypi-publish@release/v1
         with:

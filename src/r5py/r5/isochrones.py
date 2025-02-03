@@ -4,24 +4,36 @@
 """Compute polygons of equal travel time from a destination."""
 
 
+import datetime
 import warnings
 
-
 import geopandas
+import pandas
+import shapely
 
-from .base_travel_time_matrix import BaseTravelTimeMatrix
+from .travel_time_matrix import TravelTimeMatrix
 
 
 __all__ = ["Isochrones"]
 
 
-class Isochrones(BaseTravelTimeMatrix):
+class Isochrones(TravelTimeMatrix):
     """Compute polygons of equal travel time from a destination."""
+
+    _r5py_attributes = TravelTimeMatrix._r5py_attributes + [
+        "_isochrones",
+        "isochrones",
+    ]
 
     def __init__(
         self,
         transport_network,
         origin=None,
+        isochrones=pandas.timedelta_range(
+            start=datetime.timedelta(minutes=0),
+            end=datetime.timedelta(hours=1),
+            freq=datetime.timedelta(minutes=15),
+        ),
         snap_to_network=False,
         **kwargs,
     ):
@@ -43,6 +55,9 @@ class Isochrones(BaseTravelTimeMatrix):
         origin : geopandas.GeoDataFrame | shapely.geometry.Point
             Place to find a route _from_
             Has to be/have a point geometry
+        isochrones : pandas.TimedeltaIndex | collections.abc.Iterable[int]
+            For which interval to compute isochrone polygons. An iterable of
+            integers is interpreted as minutes.
         snap_to_network : bool or int, default False
             Should origin an destination points be snapped to the street network
             before routing? If `True`, the default search radius (defined in
@@ -54,17 +69,35 @@ class Isochrones(BaseTravelTimeMatrix):
             ``access_modes``, ``egress_modes``, ``max_time``, ``max_time_walking``,
             ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
             ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
-            Not that not all arguments might make sense in this context, and the
+            Note that not all arguments might make sense in this context, and the
             underlying R5 engine might ignore some of them.
+            If percentiles are specified, the lowest one will be used for
+            isochrone computation.
         """
-        super().__init__(
+
+        geopandas.GeoDataFrame.__init__(self)
+
+        if isinstance(origin, shapely.Geometry):
+            origin = geopandas.GeoDataFrame({"id": ["origin"], "geometry": [origin]})
+
+        self.isochrones = isochrones
+
+        print(transport_network.nodes)
+        raise RuntimeError
+
+        TravelTimeMatrix.__init__(
+            self,
             transport_network,
-            origin,
-            snap_to_network,
+            origins=origin,
+            destinations=transport_network.nodes,
+            snap_to_network=snap_to_network,
+            max_time=self.isochrones.max(),
             **kwargs,
         )
 
         data = self._compute()
+        # data = geopandas.GeoDataFrame({"id":[], "geometry": []})
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=FutureWarning)
             for column in data.columns:
@@ -97,4 +130,47 @@ class Isochrones(BaseTravelTimeMatrix):
             (`str`, the GTFS stop_id for boarding), `end_stop_id` (`str`, the
             GTFS stop_id for alighting), `geometry` (`shapely.LineString`)
         """
-        return geopandas.GeoDataFrame({})
+        travel_times = super()._compute().dropna()
+
+        if self.request.percentiles == [50]:
+            travel_time_column = "travel_time"
+        else:
+            travel_time_column = f"travel_time_p{self.request_percentile[0]:d}"
+
+        isochrones = {
+            "travel_time": [],
+            "geometry": [],
+        }
+
+        # print(travel_times, travel_time_column, travel_times[travel_time_column])
+        travel_times.describe()
+
+        for isochrone in self.isochrones:
+            reached_nodes = travel_times[
+                travel_times[
+                    travel_times[travel_time_column] <= (isochrone.total_seconds() / 60)
+                ]
+            ]
+            self.destinations.describe()
+            reached_nodes.describe()
+            print(reached_nodes)
+            reached_nodes.set_index("to_id").join(self.destinations.set_index("to_id"))
+            isochrones |= {
+                "travel_time": isochrone,
+                "geometry": reached_nodes.geometry.concave_hull(),
+            }
+
+        return geopandas.GeoDataFrame({isochrones})
+
+    @property
+    def isochrones(self):
+        try:
+            return self._isochrones
+        except AttributeError:
+            raise
+
+    @isochrones.setter
+    def isochrones(self, isochrones):
+        if not isinstance(isochrones, pandas.TimedeltaIndex):
+            isochrones = pandas.TimedeltaIndex(isochrones, unit="m")
+        self._isochrones = isochrones

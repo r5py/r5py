@@ -12,8 +12,10 @@ import time
 import warnings
 
 import filelock
+import geopandas
 import jpype
 import jpype.types
+import shapely
 
 from .street_layer import StreetLayer
 from .transit_layer import TransitLayer
@@ -28,6 +30,7 @@ import com.conveyal.r5
 __all__ = ["TransportNetwork"]
 
 
+FIXED_FACTOR = com.conveyal.r5.streets.VertexStore.FIXED_FACTOR
 PACKAGE = __package__.split(".")[0]
 
 
@@ -268,6 +271,27 @@ class TransportNetwork:
     def linkage_cache(self):
         """Expose the `TransportNetwork`’s `linkageCache` to Python."""
         return self._transport_network.linkageCache
+
+    @functools.cached_property
+    def nodes(self):
+        """Extract all nodes that make up the linestrings of the network."""
+        coordinate_pairs = zip(
+            list(self.street_layer.vertex_store.fixedLats.toArray()),
+            list(self.street_layer.vertex_store.fixedLons.toArray()),
+        )
+
+        nodes = geopandas.GeoDataFrame(
+            {
+                "geometry": [
+                    shapely.Point(lat / FIXED_FACTOR, lon / FIXED_FACTOR)
+                    for lat, lon in coordinate_pairs
+                ]
+            },
+            crs="EPSG:4326",
+        )
+        nodes["id"] = nodes.index
+
+        return nodes
 
     def snap_to_network(
         self,

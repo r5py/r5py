@@ -80,6 +80,11 @@ class StreetLayer:
         else:
             return shapely.Point()
 
+    @property
+    def vertex_store(self):
+        """Retrieve the R5 VertexStore of this StreetLayer."""
+        return self._street_layer.vertexStore
+
 
 @jpype._jcustomizer.JConversion(
     "com.conveyal.r5.streets.StreetLayer", exact=StreetLayer

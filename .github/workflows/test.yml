@@ -1,6 +1,6 @@
 # vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
 
-name: Lint and test every pull request
+name: Run unit tests
 on:
   pull_request:
   workflow_call:

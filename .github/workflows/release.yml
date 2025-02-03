@@ -28,6 +28,7 @@ jobs:
       - run: python -m build .
       - uses: actions/upload-artifact@v4
         with:
+          name: package
           path: dist/*.*
 
   merge-into-stable:
@@ -59,6 +60,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
+          name: package
           path: dist/
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
@@ -74,6 +76,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
+          name: package
           path: dist/
       - uses: softprops/action-gh-release@v2
         with:
@@ -89,6 +92,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
+          name: package
           path: dist/
       - uses: softprops/action-gh-release@v2
         with:

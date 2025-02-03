@@ -29,7 +29,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           path: dist/*.*
-          overwrite: true
 
   merge-into-stable:
     name: Update stable branch to point to this release

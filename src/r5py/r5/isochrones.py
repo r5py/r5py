@@ -11,18 +11,20 @@ import geopandas
 import pandas
 import shapely
 
+from .base_travel_time_matrix import BaseTravelTimeMatrix
 from .travel_time_matrix import TravelTimeMatrix
 
 
 __all__ = ["Isochrones"]
 
 
-class Isochrones(TravelTimeMatrix):
+class Isochrones(BaseTravelTimeMatrix):
     """Compute polygons of equal travel time from a destination."""
 
-    _r5py_attributes = TravelTimeMatrix._r5py_attributes + [
+    _r5py_attributes = BaseTravelTimeMatrix._r5py_attributes + [
         "_isochrones",
         "isochrones",
+        "_travel_times",
     ]
 
     def __init__(
@@ -74,29 +76,38 @@ class Isochrones(TravelTimeMatrix):
             If percentiles are specified, the lowest one will be used for
             isochrone computation.
         """
-
         geopandas.GeoDataFrame.__init__(self)
+
+        BaseTravelTimeMatrix.__init__(
+            self,
+            transport_network,
+            origins=None,
+            destinations=None,
+            snap_to_network=snap_to_network,
+            **kwargs,
+        )
 
         if isinstance(origin, shapely.Geometry):
             origin = geopandas.GeoDataFrame({"id": ["origin"], "geometry": [origin]})
+        self.origins = origin
+
+        self.destinations = self.request.transport_network.nodes
 
         self.isochrones = isochrones
 
-        print(transport_network.nodes)
-        raise RuntimeError
+        # print(transport_network.nodes)
+        # raise RuntimeError
 
-        TravelTimeMatrix.__init__(
-            self,
+        self._travel_times = TravelTimeMatrix(
             transport_network,
-            origins=origin,
-            destinations=transport_network.nodes,
+            origins=self.origins,
+            destinations=self.destinations,
             snap_to_network=snap_to_network,
             max_time=self.isochrones.max(),
             **kwargs,
         )
 
         data = self._compute()
-        # data = geopandas.GeoDataFrame({"id":[], "geometry": []})
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=FutureWarning)
@@ -130,7 +141,7 @@ class Isochrones(TravelTimeMatrix):
             (`str`, the GTFS stop_id for boarding), `end_stop_id` (`str`, the
             GTFS stop_id for alighting), `geometry` (`shapely.LineString`)
         """
-        travel_times = super()._compute().dropna()
+        travel_times = self._travel_times.dropna()
 
         if self.request.percentiles == [50]:
             travel_time_column = "travel_time"
@@ -142,25 +153,23 @@ class Isochrones(TravelTimeMatrix):
             "geometry": [],
         }
 
-        # print(travel_times, travel_time_column, travel_times[travel_time_column])
-        travel_times.describe()
+        #print(travel_times, travel_time_column, travel_times[travel_time_column])
+        # self.describe()
+        self.destinations.describe()
 
         for isochrone in self.isochrones:
-            reached_nodes = travel_times[
+            reached_nodes = self.destinations.set_index("id").join(travel_times[
                 travel_times[
                     travel_times[travel_time_column] <= (isochrone.total_seconds() / 60)
                 ]
-            ]
-            self.destinations.describe()
+            ].set_index("to_id"), how="inner")
             reached_nodes.describe()
-            print(reached_nodes)
-            reached_nodes.set_index("to_id").join(self.destinations.set_index("to_id"))
-            isochrones |= {
-                "travel_time": isochrone,
-                "geometry": reached_nodes.geometry.concave_hull(),
-            }
 
-        return geopandas.GeoDataFrame({isochrones})
+            isochrones["travel_time"].append(isochrone)
+            isochrones["geometry"].append(reached_nodes.geometry.concave_hull())
+
+        print(isochrones)
+        return geopandas.GeoDataFrame(isochrones)
 
     @property
     def isochrones(self):

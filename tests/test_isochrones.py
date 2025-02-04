@@ -29,11 +29,11 @@ class TestIsochrones:
             ),
         )
 
-        isochrones_ = isochrones.copy()
-        isochrones_["travel_time"] = isochrones_["travel_time"].apply(
-            lambda t: round(t.total_seconds() / 60)
-        )
-        isochrones_.to_file("/tmp/isochrones.gpkg")
+        # isochrones_ = isochrones.copy()
+        # isochrones_["travel_time"] = isochrones_["travel_time"].apply(
+        #    lambda t: round(t.total_seconds() / 60)
+        # )
+        # isochrones_.to_file("/tmp/isochrones.gpkg")
 
         assert isinstance(isochrones, r5py.Isochrones)
         assert isinstance(isochrones, geopandas.GeoDataFrame)

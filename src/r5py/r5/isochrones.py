@@ -13,9 +13,15 @@ import shapely
 
 from .base_travel_time_matrix import BaseTravelTimeMatrix
 from .travel_time_matrix import TravelTimeMatrix
+from ..util import GoodEnoughEquidistantCrs
 
 
 __all__ = ["Isochrones"]
+
+
+CONCAVE_HULL_RATIO = 0.2
+CONCAVE_HULL_BUFFER = 5.0  # metres
+R5_CRS = "EPSG:4326"
 
 
 class Isochrones(BaseTravelTimeMatrix):
@@ -107,6 +113,8 @@ class Isochrones(BaseTravelTimeMatrix):
             **kwargs,
         )
 
+        self.EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(self.transport_network.extent)
+
         data = self._compute()
 
         with warnings.catch_warnings():
@@ -153,23 +161,29 @@ class Isochrones(BaseTravelTimeMatrix):
             "geometry": [],
         }
 
-        #print(travel_times, travel_time_column, travel_times[travel_time_column])
-        # self.describe()
-        self.destinations.describe()
-
         for isochrone in self.isochrones:
-            reached_nodes = self.destinations.set_index("id").join(travel_times[
+            reached_nodes = self.destinations.set_index("id").join(
                 travel_times[
                     travel_times[travel_time_column] <= (isochrone.total_seconds() / 60)
-                ]
-            ].set_index("to_id"), how="inner")
-            reached_nodes.describe()
-
+                ].set_index("to_id"),
+                how="inner",
+            )
             isochrones["travel_time"].append(isochrone)
-            isochrones["geometry"].append(reached_nodes.geometry.concave_hull())
+            isochrones["geometry"].append(
+                geopandas.GeoSeries([reached_nodes.geometry.union_all()])
+                .concave_hull(ratio=CONCAVE_HULL_RATIO)
+                .iat[0]
+            )
 
-        print(isochrones)
-        return geopandas.GeoDataFrame(isochrones)
+        isochrones = geopandas.GeoDataFrame(isochrones, geometry="geometry", crs=R5_CRS)
+        isochrones["geometry"] = (
+            isochrones["geometry"]
+            .to_crs(self.EQUIDISTANT_CRS)
+            .buffer(CONCAVE_HULL_BUFFER)
+            .to_crs(R5_CRS)
+        )
+
+        return isochrones
 
     @property
     def isochrones(self):

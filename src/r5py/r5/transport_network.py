@@ -283,7 +283,7 @@ class TransportNetwork:
         nodes = geopandas.GeoDataFrame(
             {
                 "geometry": [
-                    shapely.Point(lat / FIXED_FACTOR, lon / FIXED_FACTOR)
+                    shapely.Point(lon / FIXED_FACTOR, lat / FIXED_FACTOR)
                     for lat, lon in coordinate_pairs
                 ]
             },

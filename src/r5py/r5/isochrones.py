@@ -187,6 +187,12 @@ class Isochrones(BaseTravelTimeMatrix):
 
     @property
     def isochrones(self):
+        """
+        Compute isochrones for these travel times.
+
+        pandas.TimedeltaIndex | collections.abc.Iterable[int]
+        An iterable of integers is interpreted as minutes.
+        """
         try:
             return self._isochrones
         except AttributeError:

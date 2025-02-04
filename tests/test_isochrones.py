@@ -26,7 +26,7 @@ class TestIsochrones:
                 start=datetime.timedelta(minutes=15),
                 end=datetime.timedelta(hours=2),
                 freq=datetime.timedelta(minutes=15),
-            )
+            ),
         )
 
         isochrones_ = isochrones.copy()

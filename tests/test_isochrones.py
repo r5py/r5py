@@ -43,3 +43,22 @@ class TestIsochrones:
         assert isinstance(isochrones.origins, geopandas.GeoDataFrame)
 
         assert isochrones.origins.shape == origin_point.shape
+
+    def test_isochrones_origin_shapely_point(
+        self,
+        transport_network,
+        population_grid_points,
+        origin_point,
+        departure_datetime,
+    ):
+        _ = r5py.Isochrones(
+            transport_network,
+            origin=origin_point.iat[0, 2],
+            departure=departure_datetime,
+            transport_modes=[r5py.TransportMode.TRANSIT],
+            isochrones=pandas.timedelta_range(
+                start=datetime.timedelta(minutes=15),
+                end=datetime.timedelta(hours=2),
+                freq=datetime.timedelta(minutes=15),
+            ),
+        )

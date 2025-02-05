@@ -94,7 +94,13 @@ class Isochrones(BaseTravelTimeMatrix):
         )
 
         if isinstance(origin, shapely.Geometry):
-            origin = geopandas.GeoDataFrame({"id": ["origin"], "geometry": [origin]})
+            origin = geopandas.GeoDataFrame(
+                {
+                    "id": ["origin"],
+                    "geometry": [origin],
+                },
+                crs=R5_CRS,
+            )
         self.origins = origin
 
         self.destinations = self.request.transport_network.nodes

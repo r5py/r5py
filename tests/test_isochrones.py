@@ -3,7 +3,9 @@
 import datetime
 
 import pandas
+import pandas.testing
 import geopandas
+import pytest
 
 import r5py
 import r5py.util.exceptions
@@ -62,3 +64,35 @@ class TestIsochrones:
                 freq=datetime.timedelta(minutes=15),
             ),
         )
+
+    @pytest.mark.parametrize(
+        [
+            "requested_isochrones",
+            "expected_isochrones",
+        ],
+        [
+            (
+                [15, 30],
+                pandas.TimedeltaIndex(
+                    [datetime.timedelta(minutes=15), datetime.timedelta(minutes=30)]
+                ),
+            ),
+        ],
+    )
+    def test_isochrones_integer_isochrones(
+        self,
+        transport_network,
+        population_grid_points,
+        origin_point,
+        departure_datetime,
+        requested_isochrones,
+        expected_isochrones,
+    ):
+        isochrones = r5py.Isochrones(
+            transport_network,
+            origin=origin_point.iat[0, 2],
+            departure=departure_datetime,
+            transport_modes=[r5py.TransportMode.TRANSIT],
+            isochrones=requested_isochrones,
+        )
+        pandas.testing.assert_index_equal(isochrones.isochrones, expected_isochrones)

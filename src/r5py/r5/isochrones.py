@@ -207,5 +207,5 @@ class Isochrones(BaseTravelTimeMatrix):
     @isochrones.setter
     def isochrones(self, isochrones):
         if not isinstance(isochrones, pandas.TimedeltaIndex):
-            isochrones = pandas.TimedeltaIndex(isochrones, unit="m")
+            isochrones = pandas.to_timedelta(isochrones, unit="minutes")
         self._isochrones = isochrones

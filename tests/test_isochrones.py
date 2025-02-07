@@ -109,3 +109,17 @@ class TestIsochrones:
         del isochrones._isochrones
         with pytest.raises(AttributeError):
             _ = isochrones.isochrones
+
+    def test_isochrones_custom_percentiles(
+        self,
+        transport_network,
+        origin_point,
+        departure_datetime,
+    ):
+        _ = r5py.Isochrones(
+            transport_network,
+            origin=origin_point.iat[0, 2],
+            departure=departure_datetime,
+            transport_modes=[r5py.TransportMode.TRANSIT],
+            percentiles=[1,],
+        )

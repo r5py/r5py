@@ -158,9 +158,10 @@ class Isochrones(BaseTravelTimeMatrix):
         travel_times = self._travel_times.dropna()
 
         if self.request.percentiles == [50]:
+
             travel_time_column = "travel_time"
         else:
-            travel_time_column = f"travel_time_p{self.request_percentile[0]:d}"
+            travel_time_column = f"travel_time_p{self.request.percentiles[0]:d}"
 
         isochrones = {
             "travel_time": [],

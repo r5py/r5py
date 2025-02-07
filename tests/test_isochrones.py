@@ -15,7 +15,6 @@ class TestIsochrones:
     def test_isochrones_initialization(
         self,
         transport_network,
-        population_grid_points,
         origin_point,
         departure_datetime,
     ):
@@ -49,7 +48,6 @@ class TestIsochrones:
     def test_isochrones_origin_shapely_point(
         self,
         transport_network,
-        population_grid_points,
         origin_point,
         departure_datetime,
     ):
@@ -82,7 +80,6 @@ class TestIsochrones:
     def test_isochrones_integer_isochrones(
         self,
         transport_network,
-        population_grid_points,
         origin_point,
         departure_datetime,
         requested_isochrones,
@@ -96,3 +93,19 @@ class TestIsochrones:
             isochrones=requested_isochrones,
         )
         pandas.testing.assert_index_equal(isochrones.isochrones, expected_isochrones)
+
+    def test_isochrones_unset_properties(
+        self,
+        transport_network,
+        origin_point,
+        departure_datetime
+    ):
+        isochrones = r5py.Isochrones(
+            transport_network,
+            origin=origin_point.iat[0, 2],
+            departure=departure_datetime,
+            transport_modes=[r5py.TransportMode.TRANSIT],
+        )
+        del isochrones._isochrones
+        with pytest.raises(AttributeError):
+            _ = isochrones.isochrones

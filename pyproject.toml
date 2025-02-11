@@ -27,6 +27,7 @@ dependencies = [
     "psutil",
     "pyproj",
     "requests",
+    "scikit-learn",
     "shapely>=2.0"
 ]
 requires-python = ">=3.9"

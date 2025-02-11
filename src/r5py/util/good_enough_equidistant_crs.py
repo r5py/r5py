@@ -12,7 +12,7 @@ from .exceptions import UnexpectedCrsError
 
 FALLBACK_CRS = 3857
 DATUM_NAME = "WGS 84"
-VERY_SMALL_BUFFER_SIZE = 0.1
+VERY_SMALL_BUFFER_SIZE = 0.001
 
 
 class GoodEnoughEquidistantCrs(pyproj.CRS):

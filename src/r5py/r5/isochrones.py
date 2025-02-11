@@ -5,23 +5,28 @@
 
 
 import datetime
+import math
 import warnings
 
 import geopandas
 import pandas
+import pyproj
 import shapely
 
 from .base_travel_time_matrix import BaseTravelTimeMatrix
 from .travel_time_matrix import TravelTimeMatrix
-from ..util import GoodEnoughEquidistantCrs
+from ..util import GoodEnoughEquidistantCrs, SpatiallyClusteredGeoDataFrame
 
 
 __all__ = ["Isochrones"]
 
 
-CONCAVE_HULL_RATIO = 0.2
-CONCAVE_HULL_BUFFER = 5.0  # metres
+CONCAVE_HULL_BUFFER_SIZE = 5.0  # metres
+CONCAVE_HULL_RATIO = 1.0
+POINT_GRID_RESOLUTION = 20  # metres
 R5_CRS = "EPSG:4326"
+SIMPLIFICATION_TOLERANCE = 50  # metres
+VERY_SMALL_BUFFER_SIZE = 0.001  # turn points into polygons
 
 
 class Isochrones(BaseTravelTimeMatrix):
@@ -30,23 +35,23 @@ class Isochrones(BaseTravelTimeMatrix):
     _r5py_attributes = BaseTravelTimeMatrix._r5py_attributes + [
         "_isochrones",
         "isochrones",
-        "_travel_times",
     ]
 
     def __init__(
         self,
         transport_network,
-        origin=None,
+        origins=None,
         isochrones=pandas.timedelta_range(
             start=datetime.timedelta(minutes=0),
             end=datetime.timedelta(hours=1),
             freq=datetime.timedelta(minutes=15),
         ),
+        point_grid_resolution=POINT_GRID_RESOLUTION,
         snap_to_network=False,
         **kwargs,
     ):
         """
-        Compute polygons of equal travel time from a destination.
+        Compute polygons of equal travel time from one or more destinations.
 
         ``r5py.Isochrones`` are child classes of ``geopandas.GeoDataFrame`` and
         support all of their methods and properties, see
@@ -60,12 +65,16 @@ class Isochrones(BaseTravelTimeMatrix):
             passed to ``TransportNetwork.__init__()``: the path to an OpenStreetMap
             extract in PBF format, a list of zero of more paths to GTFS transport
             schedule files, and a dict with ``build_config`` options.
-        origin : geopandas.GeoDataFrame | shapely.geometry.Point
-            Place to find a route _from_
-            Has to be/have a point geometry
+        origins : geopandas.GeoDataFrame | shapely.geometry.Point
+            Place(s) to find a route _from_
+            Must be/have a point geometry. If multiple origin points are passed,
+            isochrones will be computed as minimum travel time from any of them.
         isochrones : pandas.TimedeltaIndex | collections.abc.Iterable[int]
             For which interval to compute isochrone polygons. An iterable of
             integers is interpreted as minutes.
+        point_grid_resolution : int
+            Base the isochrone computation on a grid of points with this
+            distance
         snap_to_network : bool or int, default False
             Should origin an destination points be snapped to the street network
             before routing? If `True`, the default search radius (defined in
@@ -83,34 +92,35 @@ class Isochrones(BaseTravelTimeMatrix):
             isochrone computation.
         """
         geopandas.GeoDataFrame.__init__(self)
-
         BaseTravelTimeMatrix.__init__(
             self,
             transport_network,
-            origins=None,
-            destinations=None,
             snap_to_network=snap_to_network,
             **kwargs,
         )
 
-        if isinstance(origin, shapely.Geometry):
-            origin = geopandas.GeoDataFrame(
+        self.EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(self.transport_network.extent)
+
+        if isinstance(origins, shapely.Geometry):
+            origins = geopandas.GeoDataFrame(
                 {
-                    "id": ["origin"],
-                    "geometry": [origin],
+                    "id": [
+                        "origin",
+                    ],
+                    "geometry": [
+                        origins,
+                    ],
                 },
                 crs=R5_CRS,
             )
-        self.origins = origin
-
-        self.destinations = self.request.transport_network.nodes
-
+        self.origins = origins
+        self.destinations = self._regular_point_grid(
+            self.transport_network.extent,
+            point_grid_resolution,
+        )
         self.isochrones = isochrones
 
-        # print(transport_network.nodes)
-        # raise RuntimeError
-
-        self._travel_times = TravelTimeMatrix(
+        travel_times = TravelTimeMatrix(
             transport_network,
             origins=self.origins,
             destinations=self.destinations,
@@ -118,10 +128,7 @@ class Isochrones(BaseTravelTimeMatrix):
             max_time=self.isochrones.max(),
             **kwargs,
         )
-
-        self.EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(self.transport_network.extent)
-
-        data = self._compute()
+        data = self._compute_isochrones_from_travel_times(travel_times)
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=FutureWarning)
@@ -129,36 +136,10 @@ class Isochrones(BaseTravelTimeMatrix):
                 self[column] = data[column]
             self.set_geometry("geometry")
 
-    def _compute(self):
-        """
-        Compute TODO.
-
-        Returns
-        -------
-        geopandas.GeoDataFrame
-
-            TODO TODO TODO
-
-            The resulting detailed routes. For each origin/destination pair,
-            multiple route alternatives (‘options’) might be reported that each
-            consist of one or more segments. Each segment represents one row.
-            multiple route alternatives (‘options’) might be reported that each consist of
-            one or more segments. Each segment represents one row.
-
-            The data frame comprises of the following columns: `from_id`,
-            `to_id`, `option` (`int`), `segment` (`int`), `transport_mode`
-            (`r5py.TransportMode`), `departure_time` (`datetime.datetime`),
-            `distance` (`float`, metres), `travel_time` (`datetime.timedelta`),
-            `wait_time` (`datetime.timedelta`), `feed` (`str`, the feed name
-            used), `agency_id` (`str` the public transport agency identifier),
-            `route_id` (`str`, public transport route ID), `start_stop_id`
-            (`str`, the GTFS stop_id for boarding), `end_stop_id` (`str`, the
-            GTFS stop_id for alighting), `geometry` (`shapely.LineString`)
-        """
-        travel_times = self._travel_times.dropna()
+    def _compute_isochrones_from_travel_times(self, travel_times):
+        travel_times = travel_times.dropna().groupby("to_id").min().reset_index()
 
         if self.request.percentiles == [50]:
-
             travel_time_column = "travel_time"
         else:
             travel_time_column = f"travel_time_p{self.request.percentiles[0]:d}"
@@ -169,24 +150,65 @@ class Isochrones(BaseTravelTimeMatrix):
         }
 
         for isochrone in self.isochrones:
-            reached_nodes = self.destinations.set_index("id").join(
-                travel_times[
-                    travel_times[travel_time_column] <= (isochrone.total_seconds() / 60)
-                ].set_index("to_id"),
-                how="inner",
+            reached_nodes = (
+                self.destinations.set_index("id")
+                .join(
+                    travel_times[
+                        travel_times[travel_time_column]
+                        <= (isochrone.total_seconds() / 60)
+                    ].set_index("to_id"),
+                    how="inner",
+                )
+                .reset_index()
             )
-            isochrones["travel_time"].append(isochrone)
-            isochrones["geometry"].append(
-                geopandas.GeoSeries([reached_nodes.geometry.union_all()])
-                .concave_hull(ratio=CONCAVE_HULL_RATIO)
-                .iat[0]
-            )
+
+            # isochrone polygons might be disjoint (e.g., around metro stops)
+            if not reached_nodes.empty:
+                reached_nodes = SpatiallyClusteredGeoDataFrame(reached_nodes)
+                isochrone_polygons = shapely.unary_union(
+                    [
+                        (
+                            geopandas.GeoSeries([group.geometry.union_all()])
+                            .concave_hull(ratio=CONCAVE_HULL_RATIO)
+                            .iat[0]
+                        )
+                        for _, group in (
+                            reached_nodes[reached_nodes["cluster"] != -1].groupby(
+                                "cluster"
+                            )
+                        )
+                    ]
+                    + list(
+                        reached_nodes[reached_nodes["cluster"] == -1]
+                        .geometry.to_crs(self.EQUIDISTANT_CRS)
+                        .buffer(VERY_SMALL_BUFFER_SIZE)
+                        .to_crs(R5_CRS)
+                        .values
+                    )
+                )
+
+                reached_nodes.to_file(
+                    f"/tmp/reached_nodes_{isochrone.total_seconds() / 60:03.0f}.gpkg"
+                )
+
+                isochrones["travel_time"].append(isochrone)
+                isochrones["geometry"].append(isochrone_polygons)
 
         isochrones = geopandas.GeoDataFrame(isochrones, geometry="geometry", crs=R5_CRS)
         isochrones["geometry"] = (
             isochrones["geometry"]
             .to_crs(self.EQUIDISTANT_CRS)
-            .buffer(CONCAVE_HULL_BUFFER)
+            .apply(
+                lambda geometry: shapely.simplify(geometry, SIMPLIFICATION_TOLERANCE)
+            )
+            .buffer(CONCAVE_HULL_BUFFER_SIZE)
+            .apply(
+                lambda geometry: (
+                    geometry
+                    if isinstance(geometry, shapely.MultiPolygon)
+                    else shapely.MultiPolygon([geometry])
+                )
+            )
             .to_crs(R5_CRS)
         )
 
@@ -210,3 +232,34 @@ class Isochrones(BaseTravelTimeMatrix):
         if not isinstance(isochrones, pandas.TimedeltaIndex):
             isochrones = pandas.to_timedelta(isochrones, unit="minutes")
         self._isochrones = isochrones
+
+    def _regular_point_grid(self, extent, resolution):
+        # print(extent)
+        extent = shapely.ops.transform(
+            pyproj.Transformer.from_crs(
+                R5_CRS,
+                self.EQUIDISTANT_CRS,
+                always_xy=True,
+            ).transform,
+            extent,
+        )
+        minx, miny, maxx, maxy = extent.bounds
+        # print([minx, miny, maxx, maxy], resolution)
+        points = [
+            shapely.Point([x, y])
+            for x in range(math.floor(minx), math.ceil(maxx), round(resolution))
+            for y in range(math.floor(miny), math.ceil(maxy), round(resolution))
+        ]
+        grid = geopandas.GeoDataFrame(
+            {
+                "geometry": points,
+            },
+            crs=self.EQUIDISTANT_CRS,
+        ).to_crs(R5_CRS)
+        grid["id"] = grid.index
+
+        # print(self.EQUIDISTANT_CRS, R5_CRS)
+        # grid.to_file("/tmp/destinations.gpkg")
+        # raise RuntimeError
+
+        return grid

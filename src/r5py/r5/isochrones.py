@@ -22,8 +22,10 @@ __all__ = ["Isochrones"]
 
 
 CONCAVE_HULL_BUFFER_SIZE = 5.0  # metres
-CONCAVE_HULL_RATIO = 1.0
+CONCAVE_HULL_RATIO = 0.1
+EMPTY_POINT = shapely.Point()
 POINT_GRID_RESOLUTION = 20  # metres
+POINT_MERGE_BUFFER_SIZE = POINT_GRID_RESOLUTION * math.sqrt(2)
 R5_CRS = "EPSG:4326"
 SIMPLIFICATION_TOLERANCE = 50  # metres
 VERY_SMALL_BUFFER_SIZE = 0.001  # turn points into polygons
@@ -47,7 +49,7 @@ class Isochrones(BaseTravelTimeMatrix):
             freq=datetime.timedelta(minutes=15),
         ),
         point_grid_resolution=POINT_GRID_RESOLUTION,
-        snap_to_network=False,
+        snap_to_network=True,
         **kwargs,
     ):
         """
@@ -75,11 +77,6 @@ class Isochrones(BaseTravelTimeMatrix):
         point_grid_resolution : int
             Base the isochrone computation on a grid of points with this
             distance
-        snap_to_network : bool or int, default False
-            Should origin an destination points be snapped to the street network
-            before routing? If `True`, the default search radius (defined in
-            `com.conveyal.r5.streets.StreetLayer.LINK_RADIUS_METERS`) is used,
-            if `int`, use `snap_to_network` meters as the search radius.
         **kwargs : mixed
             Any arguments than can be passed to r5py.RegionalTask:
             ``departure``, ``departure_time_window``, ``percentiles``, ``transport_modes``,
@@ -95,7 +92,6 @@ class Isochrones(BaseTravelTimeMatrix):
         BaseTravelTimeMatrix.__init__(
             self,
             transport_network,
-            snap_to_network=snap_to_network,
             **kwargs,
         )
 
@@ -114,17 +110,23 @@ class Isochrones(BaseTravelTimeMatrix):
                 crs=R5_CRS,
             )
         self.origins = origins
-        self.destinations = self._regular_point_grid(
+        destinations = self._regular_point_grid(
             self.transport_network.extent,
             point_grid_resolution,
         )
+        destinations["geometry"] = self.transport_network.snap_to_network(
+            destinations["geometry"]
+        )
+        destinations = destinations[destinations["geometry"] != EMPTY_POINT]
+        destinations["geometry"] = destinations["geometry"].normalize()
+        destinations = destinations.drop_duplicates()
+        self.destinations = destinations
         self.isochrones = isochrones
 
         travel_times = TravelTimeMatrix(
             transport_network,
             origins=self.origins,
             destinations=self.destinations,
-            snap_to_network=snap_to_network,
             max_time=self.isochrones.max(),
             **kwargs,
         )
@@ -164,43 +166,37 @@ class Isochrones(BaseTravelTimeMatrix):
 
             # isochrone polygons might be disjoint (e.g., around metro stops)
             if not reached_nodes.empty:
-                reached_nodes = SpatiallyClusteredGeoDataFrame(reached_nodes)
-                isochrone_polygons = shapely.unary_union(
+                reached_nodes = SpatiallyClusteredGeoDataFrame(
+                    reached_nodes, eps=(5 * POINT_GRID_RESOLUTION)
+                ).to_crs(self.EQUIDISTANT_CRS)
+                isochrone_polygons = pandas.concat(
                     [
                         (
-                            geopandas.GeoSeries([group.geometry.union_all()])
+                            reached_nodes[reached_nodes["cluster"] != -1]
+                            .dissolve(by="cluster")
                             .concave_hull(ratio=CONCAVE_HULL_RATIO)
-                            .iat[0]
-                        )
-                        for _, group in (
-                            reached_nodes[reached_nodes["cluster"] != -1].groupby(
-                                "cluster"
+                            .buffer(VERY_SMALL_BUFFER_SIZE)
+                        ),
+                        (
+                            reached_nodes[reached_nodes["cluster"] == -1].buffer(
+                                VERY_SMALL_BUFFER_SIZE
                             )
-                        )
+                        ),
                     ]
-                    + list(
-                        reached_nodes[reached_nodes["cluster"] == -1]
-                        .geometry.to_crs(self.EQUIDISTANT_CRS)
-                        .buffer(VERY_SMALL_BUFFER_SIZE)
-                        .to_crs(R5_CRS)
-                        .values
-                    )
-                )
-
-                reached_nodes.to_file(
-                    f"/tmp/reached_nodes_{isochrone.total_seconds() / 60:03.0f}.gpkg"
-                )
+                ).union_all()
 
                 isochrones["travel_time"].append(isochrone)
                 isochrones["geometry"].append(isochrone_polygons)
 
-        isochrones = geopandas.GeoDataFrame(isochrones, geometry="geometry", crs=R5_CRS)
+        isochrones = geopandas.GeoDataFrame(
+            isochrones, geometry="geometry", crs=self.EQUIDISTANT_CRS
+        )
+
         isochrones["geometry"] = (
             isochrones["geometry"]
-            .to_crs(self.EQUIDISTANT_CRS)
-            .apply(
-                lambda geometry: shapely.simplify(geometry, SIMPLIFICATION_TOLERANCE)
-            )
+            # .apply(
+            #     lambda geometry: shapely.simplify(geometry, SIMPLIFICATION_TOLERANCE)
+            # )
             .buffer(CONCAVE_HULL_BUFFER_SIZE)
             .apply(
                 lambda geometry: (
@@ -234,7 +230,6 @@ class Isochrones(BaseTravelTimeMatrix):
         self._isochrones = isochrones
 
     def _regular_point_grid(self, extent, resolution):
-        # print(extent)
         extent = shapely.ops.transform(
             pyproj.Transformer.from_crs(
                 R5_CRS,
@@ -244,7 +239,6 @@ class Isochrones(BaseTravelTimeMatrix):
             extent,
         )
         minx, miny, maxx, maxy = extent.bounds
-        # print([minx, miny, maxx, maxy], resolution)
         points = [
             shapely.Point([x, y])
             for x in range(math.floor(minx), math.ceil(maxx), round(resolution))
@@ -257,9 +251,5 @@ class Isochrones(BaseTravelTimeMatrix):
             crs=self.EQUIDISTANT_CRS,
         ).to_crs(R5_CRS)
         grid["id"] = grid.index
-
-        # print(self.EQUIDISTANT_CRS, R5_CRS)
-        # grid.to_file("/tmp/destinations.gpkg")
-        # raise RuntimeError
 
         return grid

@@ -24,19 +24,17 @@ class TestIsochrones:
         departure_datetime,
     ):
 
-        with pytest.warns():
-            isochrones = r5py.Isochrones(
-                transport_network,
-                origins=origin_point,
-                departure=departure_datetime,
-                transport_modes=[r5py.TransportMode.TRANSIT],
-                isochrones=pandas.timedelta_range(
-                    start=datetime.timedelta(minutes=5),
-                    end=datetime.timedelta(hours=0.5),
-                    freq=datetime.timedelta(minutes=5),
-                ),
-                snap_to_network=True,
-            )
+        isochrones = r5py.Isochrones(
+            transport_network,
+            origins=origin_point,
+            departure=departure_datetime,
+            transport_modes=[r5py.TransportMode.TRANSIT],
+            isochrones=pandas.timedelta_range(
+                start=datetime.timedelta(minutes=5),
+                end=datetime.timedelta(hours=0.5),
+                freq=datetime.timedelta(minutes=5),
+            ),
+        )
 
         isochrones_ = isochrones.copy()
         isochrones_["travel_time"] = isochrones_["travel_time"].apply(

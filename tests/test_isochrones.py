@@ -14,12 +14,6 @@ import r5py
 import r5py.util.exceptions
 
 
-# TODO:
-# - add tests for multiple origins
-# - compare results against pre-computed test data sets
-# - add tests for different modes
-
-
 class TestIsochrones:
     def test_isochrones_initialization(
         self,
@@ -86,8 +80,6 @@ class TestIsochrones:
             lambda t: round(t.total_seconds() / 60)
         )
 
-        isochrones.to_file("/tmp/test_isochrones_from_multiple_origins.gpkg")
-
         geopandas.testing.assert_geodataframe_equal(
             isochrones,
             isochrones_from_multiple_origins,
@@ -138,8 +130,6 @@ class TestIsochrones:
         isochrones["travel_time"] = isochrones["travel_time"].apply(
             lambda t: round(t.total_seconds() / 60)
         )
-
-        isochrones.to_file(f"/tmp/test_isochrones_{transport_mode.value.lower()}.gpkg")
 
         geopandas.testing.assert_geodataframe_equal(
             isochrones,

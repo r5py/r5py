@@ -64,9 +64,7 @@ class TripPlanner:
 
         EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(self.transport_network.extent)
         self._crs_transformer_function = pyproj.Transformer.from_crs(
-            R5_CRS,
-            EQUIDISTANT_CRS,
-            always_xy=True,
+            R5_CRS, EQUIDISTANT_CRS
         ).transform
 
     @property

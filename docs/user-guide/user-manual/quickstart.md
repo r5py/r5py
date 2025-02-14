@@ -24,7 +24,7 @@ self
 data-requirements
 travel-time-matrices
 Detailed itineraries <detailed-itineraries>
-isochrones
+Isochrones <isochrones>
 advanced-use
 configuration
 :::

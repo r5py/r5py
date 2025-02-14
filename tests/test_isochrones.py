@@ -2,10 +2,13 @@
 
 import datetime
 
+import geopandas
+import geopandas.testing
 import pandas
 import pandas.testing
-import geopandas
 import pytest
+import pytest_lazy_fixtures
+import shapely
 
 import r5py
 import r5py.util.exceptions
@@ -14,6 +17,7 @@ import r5py.util.exceptions
 # TODO:
 # - add tests for multiple origins
 # - compare results against pre-computed test data sets
+# - add tests for different modes
 
 
 class TestIsochrones:
@@ -36,18 +40,9 @@ class TestIsochrones:
             ),
         )
 
-        isochrones_ = isochrones.copy()
-        isochrones_["travel_time"] = isochrones_["travel_time"].apply(
-            lambda t: round(t.total_seconds() / 60)
-        )
-        isochrones_.to_file("/tmp/isochrones.gpkg")
-
-        isochrones.destinations.to_file("/tmp/destinations.gpkg")
-
         assert isinstance(isochrones, r5py.Isochrones)
         assert isinstance(isochrones, geopandas.GeoDataFrame)
-        print(isochrones.geometry.geom_type.unique())
-        assert isochrones.geometry.geom_type.unique() == ["MultiPolygon"]
+        assert isochrones.geometry.geom_type.unique() == ["MultiLineString"]
 
         assert isinstance(isochrones.transport_network, r5py.TransportNetwork)
         assert isinstance(isochrones.origins, geopandas.GeoDataFrame)
@@ -60,9 +55,12 @@ class TestIsochrones:
         origin_point,
         departure_datetime,
     ):
+        origin_point = origin_point.iat[0, 2]
+        assert isinstance(origin_point, shapely.Point)
+
         _ = r5py.Isochrones(
             transport_network,
-            origins=origin_point.iat[0, 2],
+            origins=origin_point,
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT],
             isochrones=pandas.timedelta_range(
@@ -70,6 +68,85 @@ class TestIsochrones:
                 end=datetime.timedelta(hours=2),
                 freq=datetime.timedelta(minutes=15),
             ),
+        )
+
+    def test_isochrones_from_multiple_origins(
+        self,
+        transport_network,
+        multiple_origins,
+        departure_datetime,
+        isochrones_from_multiple_origins,  # expected
+    ):
+        isochrones = r5py.Isochrones(
+            transport_network,
+            origins=multiple_origins,
+            departure=departure_datetime,
+        )
+        isochrones["travel_time"] = isochrones["travel_time"].apply(
+            lambda t: round(t.total_seconds() / 60)
+        )
+
+        isochrones.to_file("/tmp/test_isochrones_from_multiple_origins.gpkg")
+
+        geopandas.testing.assert_geodataframe_equal(
+            isochrones,
+            isochrones_from_multiple_origins,
+            check_less_precise=True,  # geometries
+            check_dtype=False,
+            normalize=True,
+        )
+
+    @pytest.mark.parametrize(
+        [
+            "transport_mode",
+            "expected_isochrones",
+        ],
+        [
+            (
+                r5py.TransportMode.BICYCLE,
+                pytest_lazy_fixtures.lf("isochrones_bicycle"),
+            ),
+            (
+                r5py.TransportMode.CAR,
+                pytest_lazy_fixtures.lf("isochrones_car"),
+            ),
+            (
+                r5py.TransportMode.TRANSIT,
+                pytest_lazy_fixtures.lf("isochrones_transit"),
+            ),
+            (
+                r5py.TransportMode.WALK,
+                pytest_lazy_fixtures.lf("isochrones_walk"),
+            ),
+        ],
+    )
+    def test_isochrones_multimodal(
+        self,
+        transport_network,
+        origin_point,
+        departure_datetime,
+        transport_mode,
+        expected_isochrones,
+    ):
+        isochrones = r5py.Isochrones(
+            transport_network,
+            origins=origin_point,
+            isochrones=[5, 10, 15],
+            departure=departure_datetime,
+            transport_modes=[transport_mode],
+        )
+        isochrones["travel_time"] = isochrones["travel_time"].apply(
+            lambda t: round(t.total_seconds() / 60)
+        )
+
+        isochrones.to_file(f"/tmp/test_isochrones_{transport_mode.value.lower()}.gpkg")
+
+        geopandas.testing.assert_geodataframe_equal(
+            isochrones,
+            expected_isochrones,
+            check_less_precise=True,  # geometries
+            check_dtype=False,
+            normalize=True,
         )
 
     @pytest.mark.parametrize(
@@ -82,6 +159,12 @@ class TestIsochrones:
                 [15, 30],
                 pandas.TimedeltaIndex(
                     [datetime.timedelta(minutes=15), datetime.timedelta(minutes=30)]
+                ),
+            ),
+            (
+                [0, 5, 10],
+                pandas.TimedeltaIndex(
+                    [datetime.timedelta(minutes=5), datetime.timedelta(minutes=10)]
                 ),
             ),
         ],

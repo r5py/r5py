@@ -16,6 +16,7 @@ from .destinations import (
 )
 
 from .origins import (
+    multiple_origins,
     origin_point,
     origins_invalid_duplicate_ids,
     origins_invalid_no_id,
@@ -41,6 +42,11 @@ from .routing_results import (
     detailed_itineraries_car,
     detailed_itineraries_transit,
     detailed_itineraries_walk,
+    isochrones_from_multiple_origins,
+    isochrones_bicycle,
+    isochrones_car,
+    isochrones_transit,
+    isochrones_walk,
     travel_times_bicycle,
     travel_times_car,
     travel_times_transit,
@@ -76,6 +82,12 @@ __all__ = [
     "detailed_itineraries_walk",
     "gtfs_file_path",
     "gtfs_timezone_helsinki",
+    "isochrones_from_multiple_origins",
+    "isochrones_bicycle",
+    "isochrones_car",
+    "isochrones_transit",
+    "isochrones_walk",
+    "multiple_origins",
     "not_a_gtfs_file",
     "origin_point",
     "origins_invalid_duplicate_ids",

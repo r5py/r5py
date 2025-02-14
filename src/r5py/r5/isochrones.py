@@ -21,7 +21,7 @@ from ..util import GoodEnoughEquidistantCrs, SpatiallyClusteredGeoDataFrame
 __all__ = ["Isochrones"]
 
 
-CONCAVE_HULL_BUFFER_SIZE = 5.0  # metres
+CONCAVE_HULL_BUFFER_SIZE = 20.0  # metres
 CONCAVE_HULL_RATIO = 0.1
 EMPTY_POINT = shapely.Point()
 POINT_GRID_RESOLUTION = 20  # metres
@@ -47,7 +47,6 @@ class Isochrones(BaseTravelTimeMatrix):
             end=datetime.timedelta(hours=1),
             freq=datetime.timedelta(minutes=15),
         ),
-        snap_to_network=True,
         **kwargs,
     ):
         """
@@ -182,11 +181,11 @@ class Isochrones(BaseTravelTimeMatrix):
                 lambda geometry: shapely.simplify(geometry, SIMPLIFICATION_TOLERANCE)
             )
             .buffer(CONCAVE_HULL_BUFFER_SIZE)
-            .apply(
+            .boundary.apply(
                 lambda geometry: (
                     geometry
-                    if isinstance(geometry, shapely.MultiPolygon)
-                    else shapely.MultiPolygon([geometry])
+                    if isinstance(geometry, shapely.MultiLineString)
+                    else shapely.MultiLineString([geometry])
                 )
             )
             .to_crs(R5_CRS)
@@ -234,6 +233,11 @@ class Isochrones(BaseTravelTimeMatrix):
     def isochrones(self, isochrones):
         if not isinstance(isochrones, pandas.TimedeltaIndex):
             isochrones = pandas.to_timedelta(isochrones, unit="minutes")
+        try:
+            # do not compute for 0 travel time
+            isochrones = isochrones.drop(datetime.timedelta(0))
+        except KeyError:
+            pass
         self._isochrones = isochrones
 
     @property

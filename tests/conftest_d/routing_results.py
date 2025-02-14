@@ -20,6 +20,14 @@ DETAILED_ITINERARIES_TRANSIT = (
 )
 DETAILED_ITINERARIES_WALK = DATA_DIRECTORY / "test_detailed_itineraries_walk.gpkg.zip"
 
+ISOCHRONES_FROM_MULTIPLE_ORIGINS = (
+    DATA_DIRECTORY / "test_isochrones_from_multiple_origins.gpkg.zip"
+)
+ISOCHRONES_BICYCLE = DATA_DIRECTORY / "test_isochrones_bicycle.gpkg.zip"
+ISOCHRONES_CAR = DATA_DIRECTORY / "test_isochrones_car.gpkg.zip"
+ISOCHRONES_TRANSIT = DATA_DIRECTORY / "test_isochrones_transit.gpkg.zip"
+ISOCHRONES_WALK = DATA_DIRECTORY / "test_isochrones_walk.gpkg.zip"
+
 TRAVEL_TIMES_BICYCLE = DATA_DIRECTORY / "test_travel_times_bicycle.csv"
 TRAVEL_TIMES_CAR = DATA_DIRECTORY / "test_travel_times_car.csv"
 TRAVEL_TIMES_TRANSIT = DATA_DIRECTORY / "test_travel_times_transit.csv"
@@ -53,6 +61,36 @@ def detailed_itineraries_transit():
 def detailed_itineraries_walk():
     """Retrieve expected detailed itineraries for walking."""
     yield geopandas.read_file(DETAILED_ITINERARIES_WALK)
+
+
+@pytest.fixture
+def isochrones_from_multiple_origins():
+    """Retrieve expected isochrones for multiple origins."""
+    yield geopandas.read_file(ISOCHRONES_FROM_MULTIPLE_ORIGINS)
+
+
+@pytest.fixture
+def isochrones_bicycle():
+    """Retrieve expected isochrones for cycling."""
+    yield geopandas.read_file(ISOCHRONES_BICYCLE)
+
+
+@pytest.fixture
+def isochrones_car():
+    """Retrieve expected isochrones for driving."""
+    yield geopandas.read_file(ISOCHRONES_CAR)
+
+
+@pytest.fixture
+def isochrones_transit():
+    """Retrieve expected isochrones for public transport."""
+    yield geopandas.read_file(ISOCHRONES_TRANSIT)
+
+
+@pytest.fixture
+def isochrones_walk():
+    """Retrieve expected isochrones for walking."""
+    yield geopandas.read_file(ISOCHRONES_WALK)
 
 
 @pytest.fixture

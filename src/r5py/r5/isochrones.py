@@ -48,7 +48,6 @@ class Isochrones(BaseTravelTimeMatrix):
             end=datetime.timedelta(hours=1),
             freq=datetime.timedelta(minutes=15),
         ),
-        point_grid_resolution=POINT_GRID_RESOLUTION,
         snap_to_network=True,
         **kwargs,
     ):
@@ -74,9 +73,6 @@ class Isochrones(BaseTravelTimeMatrix):
         isochrones : pandas.TimedeltaIndex | collections.abc.Iterable[int]
             For which interval to compute isochrone polygons. An iterable of
             integers is interpreted as minutes.
-        point_grid_resolution : int
-            Base the isochrone computation on a grid of points with this
-            distance
         **kwargs : mixed
             Any arguments than can be passed to r5py.RegionalTask:
             ``departure``, ``departure_time_window``, ``percentiles``, ``transport_modes``,
@@ -110,17 +106,6 @@ class Isochrones(BaseTravelTimeMatrix):
                 crs=R5_CRS,
             )
         self.origins = origins
-        destinations = self._regular_point_grid(
-            self.transport_network.extent,
-            point_grid_resolution,
-        )
-        destinations["geometry"] = self.transport_network.snap_to_network(
-            destinations["geometry"]
-        )
-        destinations = destinations[destinations["geometry"] != EMPTY_POINT]
-        destinations["geometry"] = destinations["geometry"].normalize()
-        destinations = destinations.drop_duplicates()
-        self.destinations = destinations
         self.isochrones = isochrones
 
         travel_times = TravelTimeMatrix(
@@ -211,6 +196,29 @@ class Isochrones(BaseTravelTimeMatrix):
         return isochrones
 
     @property
+    def destinations(self):
+        try:
+            return self._destinations
+        except AttributeError:
+            destinations = self._regular_point_grid.copy()
+            destinations["geometry"] = self.transport_network.snap_to_network(
+                destinations["geometry"]
+            )
+            destinations = destinations[destinations["geometry"] != EMPTY_POINT]
+            destinations["geometry"] = destinations["geometry"].normalize()
+            destinations = destinations.drop_duplicates()
+
+            self._destinations = destinations
+
+            return destinations
+
+    @destinations.setter
+    def destinations(self, destinations):
+        # https://bugs.python.org/issue14965
+        super(self.__class__, self.__class__).destinations.__set__(self, destinations)
+        #BaseTravelTimeMatrix.destinations(self, destinations)
+
+    @property
     def isochrones(self):
         """
         Compute isochrones for these travel times.
@@ -229,20 +237,21 @@ class Isochrones(BaseTravelTimeMatrix):
             isochrones = pandas.to_timedelta(isochrones, unit="minutes")
         self._isochrones = isochrones
 
-    def _regular_point_grid(self, extent, resolution):
+    @property
+    def _regular_point_grid(self):
         extent = shapely.ops.transform(
             pyproj.Transformer.from_crs(
                 R5_CRS,
                 self.EQUIDISTANT_CRS,
                 always_xy=True,
             ).transform,
-            extent,
+            self.transport_network.extent,
         )
         minx, miny, maxx, maxy = extent.bounds
         points = [
             shapely.Point([x, y])
-            for x in range(math.floor(minx), math.ceil(maxx), round(resolution))
-            for y in range(math.floor(miny), math.ceil(maxy), round(resolution))
+            for x in range(math.floor(minx), math.ceil(maxx), round(POINT_GRID_RESOLUTION))
+            for y in range(math.floor(miny), math.ceil(maxy), round(POINT_GRID_RESOLUTION))
         ]
         grid = geopandas.GeoDataFrame(
             {

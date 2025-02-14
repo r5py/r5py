@@ -25,7 +25,6 @@ CONCAVE_HULL_BUFFER_SIZE = 5.0  # metres
 CONCAVE_HULL_RATIO = 0.1
 EMPTY_POINT = shapely.Point()
 POINT_GRID_RESOLUTION = 20  # metres
-POINT_MERGE_BUFFER_SIZE = POINT_GRID_RESOLUTION * math.sqrt(2)
 R5_CRS = "EPSG:4326"
 SIMPLIFICATION_TOLERANCE = 50  # metres
 VERY_SMALL_BUFFER_SIZE = 0.001  # turn points into polygons
@@ -179,9 +178,9 @@ class Isochrones(BaseTravelTimeMatrix):
 
         isochrones["geometry"] = (
             isochrones["geometry"]
-            # .apply(
-            #     lambda geometry: shapely.simplify(geometry, SIMPLIFICATION_TOLERANCE)
-            # )
+            .apply(
+                lambda geometry: shapely.simplify(geometry, SIMPLIFICATION_TOLERANCE)
+            )
             .buffer(CONCAVE_HULL_BUFFER_SIZE)
             .apply(
                 lambda geometry: (
@@ -197,6 +196,7 @@ class Isochrones(BaseTravelTimeMatrix):
 
     @property
     def destinations(self):
+        """A regular grid of points covering the transport network extent."""
         try:
             return self._destinations
         except AttributeError:
@@ -216,7 +216,6 @@ class Isochrones(BaseTravelTimeMatrix):
     def destinations(self, destinations):
         # https://bugs.python.org/issue14965
         super(self.__class__, self.__class__).destinations.__set__(self, destinations)
-        #BaseTravelTimeMatrix.destinations(self, destinations)
 
     @property
     def isochrones(self):
@@ -250,8 +249,12 @@ class Isochrones(BaseTravelTimeMatrix):
         minx, miny, maxx, maxy = extent.bounds
         points = [
             shapely.Point([x, y])
-            for x in range(math.floor(minx), math.ceil(maxx), round(POINT_GRID_RESOLUTION))
-            for y in range(math.floor(miny), math.ceil(maxy), round(POINT_GRID_RESOLUTION))
+            for x in range(
+                math.floor(minx), math.ceil(maxx), round(POINT_GRID_RESOLUTION)
+            )
+            for y in range(
+                math.floor(miny), math.ceil(maxy), round(POINT_GRID_RESOLUTION)
+            )
         ]
         grid = geopandas.GeoDataFrame(
             {

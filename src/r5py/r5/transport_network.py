@@ -272,27 +272,6 @@ class TransportNetwork:
         """Expose the `TransportNetwork`’s `linkageCache` to Python."""
         return self._transport_network.linkageCache
 
-    @functools.cached_property
-    def nodes(self):
-        """Extract all nodes that make up the linestrings of the network."""
-        coordinate_pairs = zip(
-            list(self.street_layer.vertex_store.fixedLats.toArray()),
-            list(self.street_layer.vertex_store.fixedLons.toArray()),
-        )
-
-        nodes = geopandas.GeoDataFrame(
-            {
-                "geometry": [
-                    shapely.Point(lon / FIXED_FACTOR, lat / FIXED_FACTOR)
-                    for lat, lon in coordinate_pairs
-                ]
-            },
-            crs="EPSG:4326",
-        )
-        nodes["id"] = nodes.index
-
-        return nodes
-
     def snap_to_network(
         self,
         points,

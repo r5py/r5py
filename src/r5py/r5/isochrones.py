@@ -113,6 +113,7 @@ class Isochrones(BaseTravelTimeMatrix):
             max_time=self.isochrones.max(),
             **kwargs,
         )
+
         data = self._compute_isochrones_from_travel_times(travel_times)
 
         with warnings.catch_warnings():

@@ -12,10 +12,8 @@ import time
 import warnings
 
 import filelock
-import geopandas
 import jpype
 import jpype.types
-import shapely
 
 from .street_layer import StreetLayer
 from .transit_layer import TransitLayer
@@ -30,7 +28,6 @@ import com.conveyal.r5
 __all__ = ["TransportNetwork"]
 
 
-FIXED_FACTOR = com.conveyal.r5.streets.VertexStore.FIXED_FACTOR
 PACKAGE = __package__.split(".")[0]
 
 

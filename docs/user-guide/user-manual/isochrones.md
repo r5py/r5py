@@ -39,9 +39,36 @@ if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
 
 # Compute isochrones
 
-Isochrones are geographical lines that represent points of equal travel time from a specific location. They are used to visualize how far you can travel within a given time frame from a starting point, usually by a specific mode of transport like walking, driving, or public transit.
+TODO: Write an introduction to what isochrones are
 
-For example, if you want to see all the areas you can reach within a 10-minute walk from your house, the isochrone would show a boundary that connects all locations you could get to in that time. Isochrones are useful in various fields, including urban planning, transportation, and logistics, as they help understand accessibility, identify service gaps, and optimize routes.
 
-In transportation modeling, isochrones can also help to show how areas are connected by infrastructure, or how long it takes to get from one place to another under different conditions.
-TODO
+```{code-cell}
+:tags: [remove-output]
+
+import r5py
+import r5py.sampledata.helsinki
+import shapely
+
+transport_network = r5py.TransportNetwork(
+    r5py.sampledata.helsinki.osm_pbf,
+    [
+        r5py.sampledata.helsinki.gtfs,
+    ]
+)
+
+RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
+```
+
+```{code-cell}
+import datetime
+
+isochrones = r5py.Isochrones(
+    transport_network,
+    origins=RAILWAY_STATION,
+    departure=datetime.datetime(2022, 2, 22, 8, 30),
+    transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+    isochrones=[5, 10, 15],
+)
+
+isochrones.explore()
+```

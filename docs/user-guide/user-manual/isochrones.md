@@ -70,5 +70,5 @@ isochrones = r5py.Isochrones(
     isochrones=[5, 10, 15],
 )
 
-isochrones.explore()
+isochrones
 ```

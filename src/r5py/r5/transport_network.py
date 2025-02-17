@@ -53,10 +53,9 @@ class TransportNetwork:
 
         # a hash representing all input files
         digest = hashlib.sha256(
-            "".join(
-                [FileDigest(osm_pbf)]
-                + [FileDigest(path) for path in gtfs]
-            ).encode("utf-8")
+            "".join([FileDigest(osm_pbf)] + [FileDigest(path) for path in gtfs]).encode(
+                "utf-8"
+            )
         ).hexdigest()
 
         try:
@@ -80,7 +79,9 @@ class TransportNetwork:
             transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
             transport_network.transitLayer.parentNetwork = transport_network
             for gtfs_file in gtfs:
-                gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(f"{gtfs_file}")
+                gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(
+                    f"{gtfs_file}"
+                )
                 transport_network.transitLayer.loadFromGtfs(gtfs_feed)
                 gtfs_feed.close()
 
@@ -98,8 +99,7 @@ class TransportNetwork:
             osm_file.close()  # not needed after here?
 
             self._save_pickled_transport_network(
-                transport_network,
-                Config().CACHE_DIR / f"{digest}.transport_network"
+                transport_network, Config().CACHE_DIR / f"{digest}.transport_network"
             )
 
         self._transport_network = transport_network

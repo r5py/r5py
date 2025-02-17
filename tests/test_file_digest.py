@@ -13,11 +13,11 @@ class TestFileDigest:
         [
             (
                 pytest_lazy_fixtures.lf("file_digest_test_file_as_pathlib_path"),
-                pytest_lazy_fixtures.lf("file_digest_blake2s")
+                pytest_lazy_fixtures.lf("file_digest_blake2s"),
             ),
             (
                 pytest_lazy_fixtures.lf("file_digest_test_file_as_str"),
-                pytest_lazy_fixtures.lf("file_digest_blake2s")
+                pytest_lazy_fixtures.lf("file_digest_blake2s"),
             ),
         ],
     )
@@ -30,34 +30,36 @@ class TestFileDigest:
             (
                 pytest_lazy_fixtures.lf("file_digest_test_file_as_pathlib_path"),
                 "blake2s",
-                pytest_lazy_fixtures.lf("file_digest_blake2s")
+                pytest_lazy_fixtures.lf("file_digest_blake2s"),
             ),
             (
                 pytest_lazy_fixtures.lf("file_digest_test_file_as_str"),
                 "blake2s",
-                pytest_lazy_fixtures.lf("file_digest_blake2s")
+                pytest_lazy_fixtures.lf("file_digest_blake2s"),
             ),
             (
                 pytest_lazy_fixtures.lf("file_digest_test_file_as_pathlib_path"),
                 "blake2b",
-                pytest_lazy_fixtures.lf("file_digest_blake2b")
+                pytest_lazy_fixtures.lf("file_digest_blake2b"),
             ),
             (
                 pytest_lazy_fixtures.lf("file_digest_test_file_as_str"),
                 "blake2b",
-                pytest_lazy_fixtures.lf("file_digest_blake2b")
+                pytest_lazy_fixtures.lf("file_digest_blake2b"),
             ),
             (
                 pytest_lazy_fixtures.lf("file_digest_test_file_as_pathlib_path"),
                 "sha256",
-                pytest_lazy_fixtures.lf("file_digest_sha256")
+                pytest_lazy_fixtures.lf("file_digest_sha256"),
             ),
             (
                 pytest_lazy_fixtures.lf("file_digest_test_file_as_str"),
                 "sha256",
-                pytest_lazy_fixtures.lf("file_digest_sha256")
+                pytest_lazy_fixtures.lf("file_digest_sha256"),
             ),
         ],
     )
-    def test_file_digest_algorithms(self, input_file, digest_algorithm, expected_digest):
+    def test_file_digest_algorithms(
+        self, input_file, digest_algorithm, expected_digest
+    ):
         assert r5py.util.FileDigest(input_file, digest_algorithm) == expected_digest

@@ -82,10 +82,7 @@ class Config:
         cache_dir.mkdir(parents=True, exist_ok=True)
 
         # clean old files to keep cache dir from growing too much
-        cache_treshold = (
-            datetime.datetime.now()
-            - CACHE_MAX_AGE
-        ).timestamp()
+        cache_treshold = (datetime.datetime.now() - CACHE_MAX_AGE).timestamp()
         for cached_file in cache_dir.glob("**"):
             try:
                 stats = os.stat(cached_file)

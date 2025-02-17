@@ -12,6 +12,7 @@ __all__ = ["FileDigest"]
 
 class FileDigest(str):
     """Create a hash sum of a file."""
+
     def __new__(cls, input_file, digest="blake2s"):
         """
         Create a hash sum of a file.

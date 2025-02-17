@@ -38,9 +38,7 @@ class WorkingCopy(pathlib.Path):
         path = pathlib.Path(path).absolute()
         destination = pathlib.Path(CACHE_DIR / path.name).absolute()
 
-        with filelock.FileLock(
-            destination.parent / f"{destination.name}.lock"
-        ):
+        with filelock.FileLock(destination.parent / f"{destination.name}.lock"):
             if not destination.exists():
                 try:
                     destination.symlink_to(path)

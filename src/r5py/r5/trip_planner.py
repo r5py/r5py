@@ -17,6 +17,7 @@ import shapely
 from .access_leg import AccessLeg
 from .direct_leg import DirectLeg
 from .egress_leg import EgressLeg
+from .street_segment import StreetSegment
 from .transfer_leg import TransferLeg
 from .transit_leg import TransitLeg
 from .transport_mode import TransportMode
@@ -167,17 +168,13 @@ class TripPlanner:
         return direct_paths
 
     def _street_segment_from_router_state(self, router_state, transport_mode):
-        """Retrieve a com.conveyal.r5.street.StreetSegment for a route."""
+        """Retrieve a StreetSegment for a route."""
         street_path = com.conveyal.r5.profile.StreetPath(
             router_state,
             self.transport_network,
             False,
         )
-        street_segment = com.conveyal.r5.api.util.StreetSegment(
-            street_path,
-            transport_mode,
-            self.transport_network.street_layer,
-        )
+        street_segment = StreetSegment(street_path)
         return street_segment
 
     @functools.cached_property

@@ -61,7 +61,8 @@ class TransportNetwork:
         osm_file.intersectionDetection = True
         osm_file.readFromFile(f"{osm_pbf}")
 
-        self.osm_file = osm_file  # keep the mapdb open, close in destructor
+        # self.osm_file = osm_file  # keep the mapdb open, close in destructor
+        osm_file.close()
 
         transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
         transport_network.streetLayer.loadFromOsm(osm_file)
@@ -96,7 +97,7 @@ class TransportNetwork:
         # delete Java objects, and
         # trigger Java garbage collection
         try:
-            self.osm_file.close()
+            pass  # self.osm_file.close()
         except jpype.JVMNotRunning:
             # JVM was stopped already, file should be closed
             pass

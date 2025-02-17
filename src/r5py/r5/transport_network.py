@@ -5,24 +5,22 @@
 
 
 import functools
+import hashlib
 import pathlib
-import random
-import shutil
-import time
 import warnings
 
-import filelock
 import jpype
 import jpype.types
 
 from .street_layer import StreetLayer
 from .transit_layer import TransitLayer
 from .transport_mode import TransportMode
-from ..util import Config, contains_gtfs_data, start_jvm
+from ..util import Config, contains_gtfs_data, FileDigest, start_jvm, WorkingCopy
 
 import com.conveyal.gtfs
 import com.conveyal.osmlib
 import com.conveyal.r5
+import java.io
 
 
 __all__ = ["TransportNetwork"]
@@ -48,114 +46,63 @@ class TransportNetwork:
         gtfs : str | pathlib.Path | list[str] | list[pathlib.Path]
             path(s) to public transport schedule information in GTFS format
         """
-        osm_pbf = self._working_copy(pathlib.Path(osm_pbf)).absolute()
+        osm_pbf = WorkingCopy(osm_pbf)
         if isinstance(gtfs, (str, pathlib.Path)):
             gtfs = [gtfs]
-        gtfs = [str(self._working_copy(path).absolute()) for path in gtfs]
+        gtfs = [WorkingCopy(path) for path in gtfs]
 
-        transport_network = com.conveyal.r5.transit.TransportNetwork()
-        transport_network.scenarioId = PACKAGE
+        # a hash representing all input files
+        digest = hashlib.sha256(
+            "".join(
+                [FileDigest(osm_pbf)]
+                + [FileDigest(path) for path in gtfs]
+            ).encode("utf-8")
+        ).hexdigest()
 
-        osm_mapdb = pathlib.Path(f"{osm_pbf}.mapdb")
-        osm_file = com.conveyal.osmlib.OSM(f"{osm_mapdb}")
-        osm_file.intersectionDetection = True
-        osm_file.readFromFile(f"{osm_pbf}")
+        try:
+            transport_network = self._load_pickled_transport_network(
+                Config().CACHE_DIR / f"{digest}.transport_network"
+            )
+        except FileNotFoundError:
+            transport_network = com.conveyal.r5.transit.TransportNetwork()
+            transport_network.scenarioId = PACKAGE
 
-        self.osm_file = osm_file  # keep the mapdb open, close in destructor
+            osm_mapdb = Config().CACHE_DIR / f"{digest}.mapdb"
+            osm_file = com.conveyal.osmlib.OSM(f"{osm_mapdb}")
+            osm_file.intersectionDetection = True
+            osm_file.readFromFile(f"{osm_pbf}")
 
-        transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
-        transport_network.streetLayer.loadFromOsm(osm_file)
-        transport_network.streetLayer.parentNetwork = transport_network
-        transport_network.streetLayer.indexStreets()
+            transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
+            transport_network.streetLayer.parentNetwork = transport_network
+            transport_network.streetLayer.loadFromOsm(osm_file)
+            transport_network.streetLayer.indexStreets()
 
-        transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
-        for gtfs_file in gtfs:
-            gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(gtfs_file)
-            transport_network.transitLayer.loadFromGtfs(gtfs_feed)
-            gtfs_feed.close()
-        transport_network.transitLayer.parentNetwork = transport_network
+            transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
+            transport_network.transitLayer.parentNetwork = transport_network
+            for gtfs_file in gtfs:
+                gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(f"{gtfs_file}")
+                transport_network.transitLayer.loadFromGtfs(gtfs_feed)
+                gtfs_feed.close()
 
-        transport_network.streetLayer.associateStops(transport_network.transitLayer)
-        transport_network.streetLayer.buildEdgeLists()
+            transport_network.streetLayer.associateStops(transport_network.transitLayer)
+            transport_network.streetLayer.buildEdgeLists()
 
-        transport_network.transitLayer.rebuildTransientIndexes()
+            transport_network.transitLayer.rebuildTransientIndexes()
 
-        transfer_finder = com.conveyal.r5.transit.TransferFinder(transport_network)
-        transfer_finder.findTransfers()
-        transfer_finder.findParkRideTransfer()
+            transfer_finder = com.conveyal.r5.transit.TransferFinder(transport_network)
+            transfer_finder.findTransfers()
+            transfer_finder.findParkRideTransfer()
 
-        transport_network.transitLayer.buildDistanceTables(None)
+            transport_network.transitLayer.buildDistanceTables(None)
+
+            osm_file.close()  # not needed after here?
+
+            self._save_pickled_transport_network(
+                transport_network,
+                Config().CACHE_DIR / f"{digest}.transport_network"
+            )
 
         self._transport_network = transport_network
-
-    def __del__(self):
-        """Delete all temporary files upon destruction."""
-        MAX_TRIES = 10
-
-        # first, close the open osm_file,
-        # delete Java objects, and
-        # trigger Java garbage collection
-        try:
-            self.osm_file.close()
-        except jpype.JVMNotRunning:
-            # JVM was stopped already, file should be closed
-            pass
-        try:
-            del self.street_layer
-        except AttributeError:  # might not have been accessed a single time
-            pass
-        try:
-            del self.transit_layer
-        except AttributeError:
-            pass
-        try:
-            del self._transport_network
-        except AttributeError:
-            pass
-
-        time.sleep(1.0)
-        try:
-            jpype.java.lang.System.gc()
-        except jpype.JVMNotRunning:
-            pass
-
-        # then, try to delete all files in cache directory
-        try:
-            temporary_files = [child for child in self._cache_directory.iterdir()]
-        except FileNotFoundError:  # deleted in the meantime/race condition
-            temporary_files = []
-
-        for _ in range(MAX_TRIES):
-            for temporary_file in temporary_files:
-                try:
-                    temporary_file.unlink()
-                    temporary_files.remove(temporary_file)
-                except (FileNotFoundError, IOError, OSError):
-                    print(
-                        f"could not delete {temporary_file}, keeping in {temporary_files}"
-                    )
-                    pass
-
-            if not temporary_files:  # empty
-                break
-
-            # there are still files open, let’s wait a moment and try again
-            time.sleep(0.1)
-        else:
-            remaining_files = ", ".join(
-                [f"{temporary_file}" for temporary_file in temporary_files]
-            )
-            warnings.warn(
-                f"Failed to clean cache directory ‘{self._cache_directory}’. "
-                f"Remaining file(s): {remaining_files}",
-                RuntimeWarning,
-            )
-
-        # finally, try to delete the cache directory itself
-        try:
-            self._cache_directory.rmdir()
-        except OSError:  # not empty
-            pass  # the JVM destructor is going to take care of this
 
     @classmethod
     def from_directory(cls, path):
@@ -219,55 +166,21 @@ class TransportNetwork:
         # then find the smaller extent of the two (or the larger one?)
         return self.street_layer.extent
 
-    @functools.cached_property
-    def _cache_directory(self):
-        cache_dir = (
-            pathlib.Path(Config().TEMP_DIR)
-            / f"{self.__class__.__name__:s}_{id(self):x}_{random.randrange(16**5):07x}"
-        )
-        cache_dir.mkdir(exist_ok=True)
-        return cache_dir
-
-    def _working_copy(self, input_file):
-        """Create a copy or link of an input file in a cache directory.
-
-        This method exists because R5 creates temporary files in the
-        directory of input files. This can not only be annoying clutter,
-        but also create problems of concurrency, performance, etc., for
-        instance, when the data comes from a shared network drive or a
-        read-only file system.
-
-        Arguments
-        ---------
-        input_file : str or pathlib.Path
-            The file to create a copy or link of in a cache directory
-
-        Returns
-        -------
-        pathlib.Path
-            The path to the copy or link created
-        """
-        # try to first create a symbolic link, if that fails (e.g., on Windows),
-        # copy the file to a cache directory
-        input_file = pathlib.Path(input_file).absolute()
-        destination_file = pathlib.Path(
-            self._cache_directory / input_file.name
-        ).absolute()
-
-        with filelock.FileLock(
-            destination_file.parent / f"{destination_file.name}.lock"
-        ):
-            if not destination_file.exists():
-                try:
-                    destination_file.symlink_to(input_file)
-                except OSError:
-                    shutil.copyfile(str(input_file), str(destination_file))
-        return destination_file
-
     @property
     def linkage_cache(self):
         """Expose the `TransportNetwork`’s `linkageCache` to Python."""
         return self._transport_network.linkageCache
+
+    def _load_pickled_transport_network(self, path):
+        try:
+            input_file = java.io.File(f"{path}")
+            return com.conveyal.r5.kryo.KryoNetworkSerializer.read(input_file)
+        except java.io.FileNotFoundException:
+            raise FileNotFoundError
+
+    def _save_pickled_transport_network(self, transport_network, path):
+        output_file = java.io.File(f"{path}")
+        com.conveyal.r5.kryo.KryoNetworkSerializer.write(transport_network, output_file)
 
     def snap_to_network(
         self,

@@ -15,6 +15,14 @@ from .destinations import (
     unsnappable_points,
 )
 
+from .file_digest import (
+    file_digest_test_file_as_pathlib_path,
+    file_digest_test_file_as_str,
+    file_digest_sha256,
+    file_digest_blake2b,
+    file_digest_blake2s,
+)
+
 from .origins import (
     multiple_origins,
     origin_point,
@@ -80,6 +88,11 @@ __all__ = [
     "detailed_itineraries_car",
     "detailed_itineraries_transit",
     "detailed_itineraries_walk",
+    "file_digest_test_file_as_pathlib_path",
+    "file_digest_test_file_as_str",
+    "file_digest_sha256",
+    "file_digest_blake2b",
+    "file_digest_blake2s",
     "gtfs_file_path",
     "gtfs_timezone_helsinki",
     "isochrones_from_multiple_origins",

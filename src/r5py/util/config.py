@@ -2,6 +2,7 @@
 
 """Handle configuration options and command line options."""
 
+import datetime
 import functools
 import importlib.resources
 import os
@@ -19,6 +20,7 @@ PACKAGE = __package__.split(".")[0]
 CONFIG_FILE_TEMPLATE = importlib.resources.files(f"{PACKAGE}.util").joinpath(
     f"{PACKAGE}.yml.template"
 )
+CACHE_MAX_AGE = datetime.timedelta(weeks=2)
 
 if "HOME" not in os.environ:  # e.g., testing environment or container
     os.environ["HOME"] = "."
@@ -78,6 +80,22 @@ class Config:
             / PACKAGE
         )
         cache_dir.mkdir(parents=True, exist_ok=True)
+
+        # clean old files to keep cache dir from growing too much
+        cache_treshold = (
+            datetime.datetime.now()
+            - CACHE_MAX_AGE
+        ).timestamp()
+        for cached_file in cache_dir.glob("**"):
+            try:
+                stats = os.stat(cached_file)
+                assert max(stats.st_atime, stats.st_mtime) > cache_treshold
+            except (
+                AssertionError,  # expired
+                FileNotFoundError,  # broken symlink
+            ):
+                cached_file.unlink()
+
         return cache_dir
 
     @functools.cached_property

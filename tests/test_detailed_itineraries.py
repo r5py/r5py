@@ -7,6 +7,7 @@ import geopandas.testing
 import pandas
 import pytest
 import pytest_lazy_fixtures
+import shapely
 
 import r5py
 import r5py.util.exceptions
@@ -532,6 +533,14 @@ class TestDetailedItineraries:
         )
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
+
+        travel_details["geometry"] = travel_details["geometry"].apply(
+            lambda geometry: (
+                geometry
+                if isinstance(geometry, shapely.MultiLineString)
+                else shapely.MultiLineString([geometry])
+            )
+        )
 
         geopandas.testing.assert_geodataframe_equal(
             travel_details,

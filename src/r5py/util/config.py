@@ -85,8 +85,8 @@ class Config:
         cache_treshold = (datetime.datetime.now() - CACHE_MAX_AGE).timestamp()
         for cached_file in cache_dir.glob("**"):
             try:
-                stats = os.stat(cached_file)
-                assert max(stats.st_atime, stats.st_mtime) > cache_treshold
+                *_, atime, mtime, _ = cached_file.stat()
+                assert max(atime, mtime) > cache_treshold
             except (
                 AssertionError,  # expired
                 FileNotFoundError,  # broken symlink

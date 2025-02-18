@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
 
+import datetime
 import importlib
+import pathlib
 import os
 import sys
 
 import r5py.util.config
+from r5py.util.config import CACHE_MAX_AGE
 
 
 class TestConfig:
@@ -25,3 +28,20 @@ class TestConfig:
             tmp_path
         )
         sys.argv = sys.argv[:-2]
+
+    def test_cache_clearing(self):
+        config = r5py.util.config.Config()
+
+        past_best_by_date = (
+            datetime.datetime.now()
+            - CACHE_MAX_AGE
+            - datetime.timedelta(seconds=1)
+        ).timestamp()
+        expired_file = pathlib.Path(config.CACHE_DIR / "expired-file")
+        expired_file.touch()
+        os.utime(expired_file, (past_best_by_date, past_best_by_date))
+
+        config.__dict__.pop("CACHE_DIR", None)  # clear functools.cached_property
+        _ = config.CACHE_DIR  # re-evaluate cache dir contents
+
+        assert not expired_file.exists()

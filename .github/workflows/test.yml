@@ -50,9 +50,17 @@ jobs:
 
       - run: python -m pip install .[tests]
 
-      - run: python -m pytest ${{env.R5PY_ARGUMENTS}}
-        env:
-          R5PY_ARGUMENTS: "${{ matrix.r5_version == 'conveyal' && '-- --r5-classpath=https://github.com/conveyal/r5/releases/download/v7.3/r5-v7.3-all.jar' || '' }}"
+      - name: Configure r5py to use upstream R5
+        run: |
+          mkdir -p .config
+          echo "r5-classpath: https://github.com/conveyal/r5/releases/download/v7.3/r5-v7.3-all.jar" >> $HOME/.config/r5py.yml
+          cat $HOME/.config/r5py.yml
+        if: ${{matrix.r5_version == 'conveyal'}}
+
+      - name: Show r5py configuration
+        run: python -c 'from r5py.util.config import Config; print(Config().arguments)'
+
+      - run: python -m pytest
 
       - uses: codecov/codecov-action@v4
         with:

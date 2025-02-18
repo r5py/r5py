@@ -33,9 +33,7 @@ class TestConfig:
         config = r5py.util.config.Config()
 
         past_best_by_date = (
-            datetime.datetime.now()
-            - CACHE_MAX_AGE
-            - datetime.timedelta(seconds=1)
+            datetime.datetime.now() - CACHE_MAX_AGE - datetime.timedelta(seconds=1)
         ).timestamp()
         expired_file = pathlib.Path(config.CACHE_DIR / "expired-file")
         expired_file.touch()

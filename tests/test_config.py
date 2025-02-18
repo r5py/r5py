@@ -13,9 +13,11 @@ from r5py.util.config import CACHE_MAX_AGE
 
 class TestConfig:
     def test_setdefaulthome(self):
+        original_home = os.environ["HOME"]
         del os.environ["HOME"]
         importlib.reload(r5py.util.config)
         assert os.environ["HOME"] == "."
+        os.environ["HOME"] = original_home
 
     def test_custom_temporary_directory(self, tmp_path):
         sys.argv.extend(
@@ -33,8 +35,9 @@ class TestConfig:
         config = r5py.util.config.Config()
 
         past_best_by_date = (
-            datetime.datetime.now() - CACHE_MAX_AGE - datetime.timedelta(days=1)
+            datetime.datetime.now() - CACHE_MAX_AGE - datetime.timedelta(seconds=1)
         ).timestamp()
+
         expired_file = pathlib.Path(config.CACHE_DIR / "expired-file")
         expired_file.touch()
         os.utime(expired_file, (past_best_by_date, past_best_by_date))

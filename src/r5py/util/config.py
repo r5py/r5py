@@ -75,7 +75,7 @@ class Config:
             pathlib.Path(
                 os.environ.get("LOCALAPPDATA")
                 or os.environ.get("XDG_CACHE_HOME")
-                or (pathlib.Path(os.environ["HOME"]) / ".cache")
+                or (pathlib.Path(os.environ.get("HOME")) / ".cache")
             )
             / PACKAGE
         )
@@ -83,7 +83,7 @@ class Config:
 
         # clean old files to keep cache dir from growing too much
         cache_treshold = (datetime.datetime.now() - CACHE_MAX_AGE).timestamp()
-        for cached_file in cache_dir.glob("**"):
+        for cached_file in cache_dir.glob("**/*"):
             try:
                 *_, atime, mtime, _ = cached_file.stat()
                 assert max(atime, mtime) > cache_treshold
@@ -104,7 +104,7 @@ class Config:
             pathlib.Path(
                 os.environ.get("APPDATA")
                 or os.environ.get("XDG_CONFIG_HOME")
-                or (pathlib.Path(os.environ["HOME"]) / ".config")
+                or (pathlib.Path(os.environ.get("HOME")) / ".config")
             )
             / f"{PACKAGE}.yml",
         ]

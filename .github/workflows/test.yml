@@ -51,6 +51,7 @@ jobs:
       - run: python -m pip install .[tests]
 
       - name: Configure r5py to use upstream R5
+        shell: bash
         run: |
           mkdir -p .config
           echo "r5-classpath: https://github.com/conveyal/r5/releases/download/v7.3/r5-v7.3-all.jar" >> $HOME/.config/r5py.yml

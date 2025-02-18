@@ -90,6 +90,7 @@ class Config:
             except (
                 AssertionError,  # expired
                 FileNotFoundError,  # broken symlink
+                PermissionError,
             ):
                 cached_file.unlink()
 

@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
 import datetime
-import time
 
 import geopandas
 import geopandas.testing
-import jpype
 import pandas
 import pandas.testing
 import pytest
@@ -44,10 +42,6 @@ class TestIsochrones:
         assert isinstance(isochrones.origins, geopandas.GeoDataFrame)
 
         assert isochrones.origins.shape == origin_point.shape
-
-        del isochrones
-        time.sleep(0.5)
-        jpype.java.lang.System.gc()
 
     def test_isochrones_origin_shapely_point(
         self,
@@ -93,10 +87,6 @@ class TestIsochrones:
             check_dtype=False,
             normalize=True,
         )
-
-        del isochrones
-        time.sleep(0.5)
-        jpype.java.lang.System.gc()
 
     @pytest.mark.parametrize(
         [
@@ -149,10 +139,6 @@ class TestIsochrones:
             normalize=True,
         )
 
-        del isochrones
-        time.sleep(0.5)
-        jpype.java.lang.System.gc()
-
     @pytest.mark.parametrize(
         [
             "requested_isochrones",
@@ -190,10 +176,6 @@ class TestIsochrones:
         )
         pandas.testing.assert_index_equal(isochrones.isochrones, expected_isochrones)
 
-        del isochrones
-        time.sleep(0.5)
-        jpype.java.lang.System.gc()
-
     def test_isochrones_unset_properties(
         self, transport_network, origin_point, departure_datetime
     ):
@@ -206,10 +188,6 @@ class TestIsochrones:
         del isochrones._isochrones
         with pytest.raises(AttributeError):
             _ = isochrones.isochrones
-
-        del isochrones
-        time.sleep(0.5)
-        jpype.java.lang.System.gc()
 
     def test_isochrones_custom_percentiles(
         self,

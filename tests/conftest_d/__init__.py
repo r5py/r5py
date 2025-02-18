@@ -23,6 +23,8 @@ from .file_digest import (
     file_digest_blake2s,
 )
 
+from .garbage_collection import java_garbage_collection
+
 from .origins import (
     multiple_origins,
     origin_point,
@@ -98,6 +100,7 @@ __all__ = [
     "file_digest_sha256",
     "file_digest_blake2b",
     "file_digest_blake2s",
+    "java_garbage_collection",
     "gtfs_file_path",
     "gtfs_timezone_helsinki",
     "isochrones_from_multiple_origins",

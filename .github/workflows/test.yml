@@ -52,7 +52,7 @@ jobs:
 
       - run: python -m pytest ${env.R5PY_ARGUMENTS}}
         env:
-          R5PY_ARGUMENTS: "${{ matrix.r5_version == 'conveyal' && '-- --r5-classpath="https://github.com/conveyal/r5/releases/download/v7.3/r5-v7.3-all.jar"' || '' }}"
+          R5PY_ARGUMENTS: "${{ matrix.r5_version == 'conveyal' && '-- --r5-classpath=https://github.com/conveyal/r5/releases/download/v7.3/r5-v7.3-all.jar' || '' }}"
 
       - uses: codecov/codecov-action@v4
         with:

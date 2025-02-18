@@ -222,7 +222,5 @@ class TestIsochrones:
             origins=origin_point.iat[0, 2],
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT],
-            percentiles=[
-                1,
-            ],
+            percentiles=[1],
         )

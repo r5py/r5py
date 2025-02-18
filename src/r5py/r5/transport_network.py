@@ -70,9 +70,14 @@ class TransportNetwork:
 
         transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
         for gtfs_file in gtfs:
-            gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(gtfs_file)
-            transport_network.transitLayer.loadFromGtfs(gtfs_feed)
-            gtfs_feed.close()
+            try:
+                gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(
+                    gtfs_file
+                )
+                transport_network.transitLayer.loadFromGtfs(gtfs_feed)
+                gtfs_feed.close()
+            except Exception:
+                raise ValueError(f"There was an error loading feed {gtfs_file}")
         transport_network.transitLayer.parentNetwork = transport_network
 
         transport_network.streetLayer.associateStops(transport_network.transitLayer)

@@ -50,10 +50,15 @@ jobs:
 
       - run: python -m pip install .[tests]
 
+      - name: Configure r5py to use upstream R5
       - run: |
           mkdir -p .config
           echo "r5-classpath: https://github.com/conveyal/r5/releases/download/v7.3/r5-v7.3-all.jar" >> .config/r5py.yml
+          cat .config/r5py.yml
         if: ${{matrix.r5_version == 'conveyal'}}
+
+      - name: Show r5py configuration
+      - run: python -c 'from r5py.util.config import Config; print(Config().arguments)'
 
       - run: python -m pytest
 

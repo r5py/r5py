@@ -53,9 +53,12 @@ jobs:
       - name: Configure r5py to use upstream R5
         shell: bash
         run: |
-          mkdir -pv $HOME/.config
-          echo "r5-classpath: https://github.com/conveyal/r5/releases/download/v7.3/r5-v7.3-all.jar" >> $HOME/.config/r5py.yml
-          cat $HOME/.config/r5py.yml
+          CONFIG_DIR="${HOME}/.config"
+          [[ $XDG_CONFIG_HOME ]] && CONFIG_DIR="${XDG_CONFIG_HOME}"
+          [[ $APPDATA ]] && CONFIG_DIR="${APPDATA}"
+          mkdir -pv "${CONFIG_DIR}"
+          echo "r5-classpath: https://github.com/conveyal/r5/releases/download/v7.3/r5-v7.3-all.jar" >> "${CONFIG_DIR}/r5py.yml"
+          cat "${CONFIG_DIR}/r5py.yml"
         if: ${{matrix.r5_version == 'conveyal'}}
 
       - name: Show r5py configuration

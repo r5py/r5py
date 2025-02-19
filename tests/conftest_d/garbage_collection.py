@@ -8,7 +8,7 @@ import jpype
 import pytest
 
 
-@pytest.fixture(autouse=True, scope="class")
+@pytest.fixture(autouse=True, scope="function")
 def java_garbage_collection():
     """Call Java GC before every class."""
     jpype.java.lang.System.gc()

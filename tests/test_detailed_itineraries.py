@@ -593,7 +593,9 @@ class TestDetailedItineraries:
             and not can_compute_detailed_route_geometries
         ):
             travel_details["distance"] = 0
+            travel_details["geometry"] = None
             expected_travel_details["distance"] = 0
+            expected_travel_details["geometry"] = None
 
         geopandas.testing.assert_geodataframe_equal(
             travel_details,

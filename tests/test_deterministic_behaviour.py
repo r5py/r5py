@@ -50,9 +50,12 @@ class TestDeterministicBehaviour:
         intermediate_results,
         iteration,
     ):
+        # subset to keep test comparison data sets small
+        origins = population_grid_points[::5].copy()
+
         travel_times = r5py.TravelTimeMatrix(
             transport_network,
-            population_grid_points,
+            origins,
             departure=departure_datetime,
             transport_modes=transport_modes,
             snap_to_network=True,

@@ -122,6 +122,8 @@ class Isochrones(BaseTravelTimeMatrix):
                 self[column] = data[column]
             self.set_geometry("geometry")
 
+        del self.transport_network
+
     def _compute_isochrones_from_travel_times(self, travel_times):
         travel_times = travel_times.dropna().groupby("to_id").min().reset_index()
 

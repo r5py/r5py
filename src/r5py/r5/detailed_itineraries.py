@@ -127,6 +127,8 @@ class DetailedItineraries(BaseTravelTimeMatrix):
                 self[column] = data[column]
             self.set_geometry("geometry")
 
+        del self.transport_network
+
     def _compute(self):
         """
         Compute travel times from all origins to all destinations.

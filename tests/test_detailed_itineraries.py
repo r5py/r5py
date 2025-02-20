@@ -548,7 +548,13 @@ class TestDetailedItineraries:
     ):
         # subset to keep test comparison data sets small
         origins = population_grid_points[::5].copy()
-        with self._expectations:
+
+        if transport_mode == r5py.TransportMode.TRANSIT:
+            expectations = self._expectations
+        else:
+            expectations = contextlib.nullcontext
+
+        with expectations:
             travel_details = r5py.DetailedItineraries(
                 transport_network,
                 origins=origins,

@@ -207,8 +207,8 @@ class TestTravelTimeMatrix:
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
-        assert travel_time_matrix.isinstance(r5py.TravelTimeMatrix)
-        assert travel_time_matrix.isinstance(pandas.DataFrame)
+        assert isinstance(travel_time_matrix, r5py.TravelTimeMatrix)
+        assert isinstance(travel_time_matrix, pandas.DataFrame)
 
     def test_all_to_all(
         self,

@@ -187,7 +187,6 @@ class TestTravelTimeMatrix:
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
-        assert isinstance(travel_time_matrix.transport_network, r5py.TransportNetwork)
         assert isinstance(travel_time_matrix.origins, geopandas.GeoDataFrame)
         assert isinstance(travel_time_matrix.destinations, geopandas.GeoDataFrame)
 
@@ -208,7 +207,8 @@ class TestTravelTimeMatrix:
             departure=departure_datetime,
             transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
         )
-        assert isinstance(travel_time_matrix.transport_network, r5py.TransportNetwork)
+        assert travel_time_matrix.isinstance(r5py.TravelTimeMatrix)
+        assert travel_time_matrix.isinstance(pandas.DataFrame)
 
     def test_all_to_all(
         self,

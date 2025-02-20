@@ -193,7 +193,8 @@ class TestDetailedItineraries:
                 departure=departure_datetime,
                 transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
             )
-        assert isinstance(detailed_itineraries.transport_network, r5py.TransportNetwork)
+        assert isinstance(detailed_itineraries, r5py.DetailedItineraries)
+        assert isinstance(detailed_itineraries, geopandas.GeoDataFrame)
 
     def test_detailed_itineraries_initialization_with_files(
         self,
@@ -208,7 +209,8 @@ class TestDetailedItineraries:
                 departure=departure_datetime,
                 transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
             )
-        assert isinstance(detailed_itineraries.transport_network, r5py.TransportNetwork)
+        assert isinstance(detailed_itineraries, r5py.DetailedItineraries)
+        assert isinstance(detailed_itineraries, geopandas.GeoDataFrame)
 
     @pytest.mark.parametrize(
         [
@@ -552,7 +554,7 @@ class TestDetailedItineraries:
         if transport_mode == r5py.TransportMode.TRANSIT:
             expectations = self._expectations
         else:
-            expectations = contextlib.nullcontext
+            expectations = contextlib.nullcontext()
 
         with expectations:
             travel_details = r5py.DetailedItineraries(

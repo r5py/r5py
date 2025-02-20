@@ -38,7 +38,6 @@ class TestIsochrones:
         assert isinstance(isochrones, geopandas.GeoDataFrame)
         assert isochrones.geometry.geom_type.unique() == ["MultiLineString"]
 
-        assert isinstance(isochrones.transport_network, r5py.TransportNetwork)
         assert isinstance(isochrones.origins, geopandas.GeoDataFrame)
 
         assert isochrones.origins.shape == origin_point.shape

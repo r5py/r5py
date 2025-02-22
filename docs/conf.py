@@ -32,7 +32,7 @@ from _helpers.citation_style import R5PY_CITATION_STYLE, R5PY_REFERENCE_STYLE
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "r5py"
-copyright = "2023, r5py contributors"
+copyright = "2025, r5py contributors"
 author = "r5py contributors"
 
 
@@ -107,6 +107,7 @@ intersphinx_mapping = {
     "pandas": ("https://pandas.pydata.org/docs/", None),
     "python": ("https://docs.python.org/3/", None),
     "shapely": ("https://shapely.readthedocs.io/en/stable/", None),
+    "sklearn": ("https://scikit-learn.org/stable/", None),
 }
 
 nb_execution_mode = "force"

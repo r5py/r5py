@@ -61,13 +61,11 @@ class TestDeterministicBehaviour:
             snap_to_network=True,
         )
 
-        if transport_modes not in intermediate_results:
-            intermediate_results[transport_modes] = []
-        intermediate_results[transport_modes].append(travel_times)
-
-        for matrix_a, matrix_b in pairwise(intermediate_results[transport_modes]):
+        if transport_modes in intermediate_results:
+            previous_results = intermediate_results[transport_modes]
             pandas.testing.assert_frame_equal(
-                matrix_a,
-                matrix_b,
+                travel_times,
+                previous_results,
                 check_like=True,
             )
+        intermediate_results[transport_modes] = travel_times.copy()

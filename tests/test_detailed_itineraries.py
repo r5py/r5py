@@ -142,12 +142,13 @@ class TestDetailedItinerariesInputValidation:
         destinations,
         departure_datetime,
     ):
-        _ = r5py.DetailedItineraries(
-            transport_network,
-            origins=origins,
-            destinations=destinations,
-            departure=departure_datetime,
-        )
+        with self._expectations:
+            _ = r5py.DetailedItineraries(
+                transport_network,
+                origins=origins,
+                destinations=destinations,
+                departure=departure_datetime,
+            )
 
     def test_try_to_route_without_origins(
         self,

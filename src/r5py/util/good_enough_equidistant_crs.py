@@ -10,6 +10,11 @@ import shapely
 from .exceptions import UnexpectedCrsError
 
 
+FALLBACK_CRS = 3857
+DATUM_NAME = "WGS 84"
+VERY_SMALL_BUFFER_SIZE = 0.001
+
+
 class GoodEnoughEquidistantCrs(pyproj.CRS):
     """
     Find the most appropriate UTM reference system for the current extent.
@@ -33,13 +38,13 @@ class GoodEnoughEquidistantCrs(pyproj.CRS):
         """
         if GoodEnoughEquidistantCrs._is_plausible_in_epsg4326(extent):
             # default CRS in case we do not find any better match
-            crs = pyproj.CRS.from_epsg(3857)
+            crs = pyproj.CRS.from_epsg(FALLBACK_CRS)
 
             # buffer extent (so everything is a polygon)
-            extent = extent.buffer(0.1)
+            extent = extent.buffer(VERY_SMALL_BUFFER_SIZE)
 
             crsinfo = pyproj.database.query_utm_crs_info(
-                datum_name="WGS 84",
+                datum_name=DATUM_NAME,
                 area_of_interest=pyproj.aoi.AreaOfInterest(*extent.bounds),
             )
             for candidate_crs in crsinfo:

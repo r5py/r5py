@@ -5,9 +5,7 @@
 
 
 import datetime
-import time
 
-import jpype
 import pytest
 
 
@@ -33,8 +31,3 @@ def regional_task(
         departure=departure_datetime,
     )
     yield regional_task
-
-    # clean up once this fixture has been used
-    del regional_task
-    time.sleep(0.5)
-    jpype.java.lang.System.gc()

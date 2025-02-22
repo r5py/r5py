@@ -72,3 +72,7 @@ isochrones = r5py.Isochrones(
 
 isochrones
 ```
+
+```{code-cell}
+isochrones.explore()
+```

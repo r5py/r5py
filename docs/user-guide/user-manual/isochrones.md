@@ -74,5 +74,5 @@ isochrones
 ```
 
 ```{code-cell}
-isochrones.explore()
+isochrones[["geometry"]].explore()
 ```

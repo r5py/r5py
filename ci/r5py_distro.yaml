@@ -16,3 +16,4 @@ dependencies:
     - pyarrow
     - r5py
     - shapely
+    - scikit-learn

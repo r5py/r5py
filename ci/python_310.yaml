@@ -19,3 +19,4 @@ dependencies:
     - psutil
     - requests
     - shapely
+    - scikit-learn

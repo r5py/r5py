@@ -1,0 +1,19 @@
+name: Pre-build binder images
+
+on:
+  push:
+    tags:
+      - v*.*.*
+      - v*.*.*.dev*
+      - v*.*.*.post*
+  pull_request:
+
+permissions: read-all
+
+jobs:
+  runs-on: ubuntu-latest
+  steps:
+  - uses: jupyterhub/repo2docker-action@master
+    with:
+      NO_PUSH: true
+      MYBINDERORG_TAG: ${{ github.event.ref }} 

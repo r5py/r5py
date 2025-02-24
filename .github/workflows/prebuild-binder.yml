@@ -12,6 +12,7 @@ permissions: read-all
 
 jobs:
   prebuild-binder:
+    runs-on: ubuntu-latest
     steps:
       - uses: jupyterhub/repo2docker-action@master
         with:

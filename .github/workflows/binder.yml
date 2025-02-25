@@ -15,16 +15,16 @@ jobs:
       content: read
       pull-requests: write
     steps:
-      -  uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - uses: conda-incubator/setup-miniconda@v3
 
       - run: |
-        conda env create --file=ci/r5py_dev.yaml 
-        conda env export --no-builds --name r5py | grep -Ev '^prefix:' > .binder/environment.yml
+          conda env create --file=ci/r5py_dev.yaml 
+          conda env export --no-builds --name r5py | grep -Ev '^prefix:' > .binder/environment.yml
 
       - run: |
-        git config user.name christophfink
-        git config user.email christophfink@users.noreply.github.com
-        git commit .binder/environment.yml -m "🤖: updated binder environment"
-        git push
+          git config user.name christophfink
+          git config user.email christophfink@users.noreply.github.com
+          git commit .binder/environment.yml -m "🤖: updated binder environment"
+          git push

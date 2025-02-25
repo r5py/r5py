@@ -94,7 +94,6 @@ dependencies:
   - geographiclib=2.0
   - geopandas=1.0.1
   - geopandas-base=1.0.1
-  - geopy=2.4.1
   - geos=3.13.0
   - geotiff=1.7.4
   - gflags=2.2.2

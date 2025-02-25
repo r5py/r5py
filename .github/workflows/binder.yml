@@ -1,0 +1,30 @@
+# vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
+
+name: Update binder environment
+on:
+  pull_request:
+    paths:
+      - ci/*.yml
+  workflow_call:
+
+jobs:
+  update-binder-env:
+    name: Update binder environment
+    runs-on: ubuntu-latest
+    permissions:
+      content: read
+      pull-requests: write
+    steps:
+      -  uses: actions/checkout@v4
+
+      - uses: conda-incubator/setup-miniconda@v3
+
+      - run: |
+        conda env create --file=ci/r5py_dev.yaml 
+        conda env export --no-builds --name r5py | grep -Ev '^prefix:' > .binder/environment.yml
+
+      - run: |
+        git config user.name christophfink
+        git config user.email christophfink@users.noreply.github.com
+        git commit .binder/environment.yml -m "🤖: updated binder environment"
+        git push

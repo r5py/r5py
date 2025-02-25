@@ -23,8 +23,10 @@ dependencies:
     - black
     - black-jupyter
     - codecov
+    - contextily
     - folium
     - gitpython
+    - h3
     - jupyterlab
     - jupyterlab-myst
     - jupytext[myst]
@@ -43,6 +45,7 @@ dependencies:
     - sphinx
     - sphinx-book-theme
     - sphinx-design
+    - sphinxcontrib-bibtex
 
     - pip
     - pip:

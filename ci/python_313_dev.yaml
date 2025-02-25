@@ -46,6 +46,7 @@ dependencies:
     - sphinx-book-theme
     - sphinx-design
     - sphinxcontrib-bibtex
+    - wolkenbruch
 
     - pip
     - pip:

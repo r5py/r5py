@@ -4,7 +4,7 @@ name: Update binder environment
 on:
   pull_request:
     paths:
-      - ci/*.yml
+      - ci/*.yaml
   workflow_call:
 
 jobs:

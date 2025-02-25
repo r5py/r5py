@@ -5,18 +5,4 @@ channels:
 
 dependencies:
     - python=3.12
-    - configargparse
-    - filelock
-    - fiona
-    - geopandas
-    - importlib_resources
-    - joblib
-    - jpype1
-    - numpy
-    - pandas
-    - pyarrow
-    - pyproj
-    - psutil
-    - requests
-    - shapely
-    - scikit-learn
+    - r5py

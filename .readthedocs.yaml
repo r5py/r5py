@@ -6,7 +6,7 @@ build:
         python: "mambaforge-22.9"
 
 conda:
-    environment: ci/python_311_dev.yaml
+    environment: ci/r5py_dev.yaml
 
 python:
     install:

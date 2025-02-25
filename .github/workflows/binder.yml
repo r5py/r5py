@@ -27,5 +27,7 @@ jobs:
           conda env export --no-builds --name r5py | grep -Ev '^prefix:' > .binder/environment.yml
 
       - run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
           git commit .binder/environment.yml -m "🤖: updated binder environment"
           git push

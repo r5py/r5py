@@ -26,7 +26,8 @@ CONCAVE_HULL_RATIO = 0.1
 EMPTY_POINT = shapely.Point()
 POINT_GRID_RESOLUTION = 20  # metres
 R5_CRS = "EPSG:4326"
-SIMPLIFICATION_TOLERANCE = 50  # metres
+SIMPLIFICATION_TOLERANCE = 5 * POINT_GRID_RESOLUTION  # metres
+SMOOTHING_BUFFER = 5 * POINT_GRID_RESOLUTION  # metres
 VERY_SMALL_BUFFER_SIZE = 0.001  # turn points into polygons
 
 
@@ -153,7 +154,7 @@ class Isochrones(BaseTravelTimeMatrix):
             # isochrone polygons might be disjoint (e.g., around metro stops)
             if not reached_nodes.empty:
                 reached_nodes = SpatiallyClusteredGeoDataFrame(
-                    reached_nodes, eps=(5 * POINT_GRID_RESOLUTION)
+                    reached_nodes, eps=(10 * POINT_GRID_RESOLUTION)
                 ).to_crs(self.EQUIDISTANT_CRS)
                 isochrone_polygons = pandas.concat(
                     [
@@ -184,6 +185,8 @@ class Isochrones(BaseTravelTimeMatrix):
                 lambda geometry: shapely.simplify(geometry, SIMPLIFICATION_TOLERANCE)
             )
             .buffer(CONCAVE_HULL_BUFFER_SIZE)
+            .buffer(SMOOTHING_BUFFER * -1.0)
+            .buffer(SMOOTHING_BUFFER)
             .boundary.apply(
                 lambda geometry: (
                     geometry

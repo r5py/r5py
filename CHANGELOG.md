@@ -1,4 +1,5 @@
 - **1.0.0** (2024-09-01):
+    - introduced Isochrones: compute areas of equal travel time from an origin
     - introduced TravelTimeMatrix, DetailedItineraries that inherit from
       pandas.DataFrame
     - deprecated TravelTimeMatrixComputer, DetailedItinerariesComputer

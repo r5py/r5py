@@ -18,6 +18,7 @@ ORIGINS_INVALID_DUPLICATE_IDS = (
 )
 ORIGINS_VALID_IDS = DATA_DIRECTORY / "test_valid_points_data.geojson"
 SINGLE_VALID_ORIGIN = DATA_DIRECTORY / "test_valid_single_point_data.geojson"
+MULTIPLE_ORIGINS = DATA_DIRECTORY / "test_multiple_origins.geojson"
 
 
 @pytest.fixture()
@@ -61,4 +62,11 @@ def origin_point():
 def origins_valid_ids():
     """Return a set of origins that has valid ID values."""
     origins = geopandas.read_file(ORIGINS_VALID_IDS)
+    yield origins
+
+
+@pytest.fixture()
+def multiple_origins():
+    """Return a set of multiple origins."""
+    origins = geopandas.read_file(MULTIPLE_ORIGINS)
     yield origins

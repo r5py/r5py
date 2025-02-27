@@ -4,9 +4,6 @@
 """Fixtures related to transport networks."""
 
 
-import time
-
-import jpype
 import pytest
 
 
@@ -54,7 +51,7 @@ def transport_network(transport_network_from_test_files):
     yield transport_network_from_test_files
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def transport_network_from_test_directory():
     """Return an `r5py.TransportNetwork` initiated from a directory path."""
     import r5py
@@ -74,11 +71,8 @@ def transport_network_from_test_directory():
 
         del transport_network
 
-    time.sleep(0.5)
-    jpype.java.lang.System.gc()
 
-
-@pytest.fixture(scope="session")
+@pytest.fixture
 def transport_network_from_test_files():
     """Return an `r5py.TransportNetwork` initiated from test file paths."""
     import r5py
@@ -91,11 +85,8 @@ def transport_network_from_test_files():
 
     del transport_network
 
-    time.sleep(0.5)
-    jpype.java.lang.System.gc()
 
-
-@pytest.fixture(scope="session")
+@pytest.fixture
 def transport_network_from_test_files_without_gtfs():
     """Return an `r5py.TransportNetwork` initiated without GTFS data."""
     import r5py
@@ -105,6 +96,3 @@ def transport_network_from_test_files_without_gtfs():
     yield transport_network
 
     del transport_network
-
-    time.sleep(0.5)
-    jpype.java.lang.System.gc()

@@ -3,10 +3,10 @@ version: 2
 build:
     os: ubuntu-22.04
     tools:
-        python: "mambaforge-22.9"
+        python: mambaforge-latest
 
 conda:
-    environment: ci/python_311_dev.yaml
+  environment: ci/r5py_dev.yaml
 
 python:
     install:

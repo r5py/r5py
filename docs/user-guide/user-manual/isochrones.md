@@ -74,5 +74,10 @@ isochrones
 ```
 
 ```{code-cell}
-isochrones[["geometry"]].explore()
+:tags: [remove-input, remove-output]
+isochrones["travel_time"] = isochrones["travel_time"].apply(str)
+```
+
+```{code-cell}
+isochrones.explore(column="travel_time", cmap="YlOrRd")
 ```

@@ -37,9 +37,21 @@ if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
     sys.argv.extend(["--max-memory", f"{max_memory}"])
 ```
 
+
 # Compute isochrones
 
-TODO: Write an introduction to what isochrones are
+Isochrones are lines of equal travel time. They are the boundaries of a
+geographic area reachable from a point of origin within a specified amount of
+time. Isochrones can be used to answer questions of a spatial accessibility
+footprint. They are visually intuitive, can reveal barriers and bottlenecks and
+the seemingly teleportative powers of fast public transport. Isochrones are
+often used to plan service areas, carry out equity analysis, or select sites for
+services.
+
+To compute isochrones in *r5py*, you need a
+{class}`TransportNetwork<r5py.TransportNetwork>` and a point of origin. For this
+example, we use [the main railway station in
+Helsinki](https://en.wikipedia.org/wiki/Helsinki_Central_Station).
 
 
 ```{code-cell}
@@ -59,6 +71,13 @@ transport_network = r5py.TransportNetwork(
 RAILWAY_STATION = shapely.Point(24.941521, 60.170666)
 ```
 
+We then instantiate an {class}`r5py.Isochrones()` object, to which we pass the
+transport network, the origin point, a departure
+{class}`datetime<datetime.datetime>` and the {class}`transport
+modes<r5py.TransportMode>` which will be used for routing. Note that when
+multiple origin points or multiple transport modes are specified, the respective
+fastest will be recorded in the outputs.
+
 ```{code-cell}
 import datetime
 
@@ -69,12 +88,30 @@ isochrones = r5py.Isochrones(
     transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
     isochrones=[5, 10, 15],
 )
+```
 
+
+{class}`Isochrones<r5py.Isochrones>`, just like
+{class}`travel time matrices<r5py.TravelTimeMatrix>` and {class}`detailed
+itineraries<r5py.DetailedItineraries>`, inherit from {class}`pandas.DataFrame`
+and {class}`geopandas.GeoDataFrame`: all methods and attributes of (geo) data
+frames work on isochrone data sets.
+
+The output has two columns: a {class}`MultiLineString<shapely.MultiLineString>` geometry
+and the travel time to the geometry as {class}`datetime.Timedelta`:
+
+```{code-cell}
 isochrones
 ```
 
+
 ```{code-cell}
 :tags: [remove-input, remove-output]
+
+# hidden from readthedocs,
+# converts the travel time column to string, as folium
+# has troubles with complex data types
+
 isochrones["travel_time"] = isochrones["travel_time"].apply(str)
 ```
 

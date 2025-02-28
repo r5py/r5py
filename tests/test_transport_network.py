@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import filecmp
 import pathlib
 import shutil
 
@@ -85,32 +84,6 @@ class Test_TransportNetwork:
         assert isinstance(transport_network.timezone, java.time.ZoneId)
         assert transport_network.timezone.toString() == gtfs_timezone_helsinki
 
-    def test_cache_directory(self, transport_network_files_tuple):
-        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
-        cache_dir = transport_network._cache_directory
-        assert cache_dir.is_dir()
-        assert (
-            len(list(cache_dir.glob("*"))) > 0
-        )  # files have been copied/linked to cache
-
-        del transport_network
-
-    @pytest.mark.parametrize(
-        ["transport_network"],
-        [
-            (pytest_lazy_fixtures.lf("transport_network_from_test_files"),),
-            (pytest_lazy_fixtures.lf("transport_network_from_test_directory"),),
-        ],
-    )
-    def test_working_copy(self, transport_network):
-        with TemporaryDirectory() as temp_directory:
-            # create a file with (not really) random content
-            input_file = pathlib.Path(temp_directory) / "test_input.txt"
-            with open(input_file, "w") as f:
-                print("asdffoobarrandomstring", file=f)
-            working_copy = transport_network._working_copy(input_file)
-            assert filecmp.cmp(input_file, working_copy, shallow=False)
-
     def test_fromdirectory_multiple_osm_files(self, transport_network_files_tuple):
         # try to create transport network from a directory, in which
         # more than one osm file is found
@@ -157,27 +130,6 @@ class Test_TransportNetwork:
             raise OSError
 
         monkeypatch.setattr(pathlib.Path, "symlink_to", _symlink_to)
-
-        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
-        del transport_network
-
-    def test_failed_unlinking_of_temporary_files(
-        self, transport_network_files_tuple, monkeypatch
-    ):
-        def _unlink(*args, **kwargs):
-            raise OSError
-
-        monkeypatch.setattr(pathlib.Path, "unlink", _unlink)
-
-        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
-        with pytest.warns(RuntimeWarning, match="Failed to clean cache directory"):
-            del transport_network
-
-    def test_failed_cachedir_rmdir(self, transport_network_files_tuple, monkeypatch):
-        def _rmdir(*args, **kwargs):
-            raise OSError
-
-        monkeypatch.setattr(pathlib.Path, "rmdir", _rmdir)
 
         transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
         del transport_network

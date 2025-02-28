@@ -13,6 +13,11 @@
 ```
 
 ```{eval-rst}
+.. autoclass:: r5py.Isochrones
+    :members:
+```
+
+```{eval-rst}
 .. autoclass:: r5py.TransportNetwork
     :members:
     :inherited-members:

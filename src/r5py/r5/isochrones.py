@@ -5,15 +5,17 @@
 
 
 import datetime
-import math
 import warnings
 
+import geohexgrid
 import geopandas
 import pandas
 import pyproj
 import shapely
+import simplification.cutil
 
 from .base_travel_time_matrix import BaseTravelTimeMatrix
+from .transport_mode import TransportMode
 from .travel_time_matrix import TravelTimeMatrix
 from ..util import GoodEnoughEquidistantCrs, SpatiallyClusteredGeoDataFrame
 
@@ -21,13 +23,12 @@ from ..util import GoodEnoughEquidistantCrs, SpatiallyClusteredGeoDataFrame
 __all__ = ["Isochrones"]
 
 
-CONCAVE_HULL_BUFFER_SIZE = 20.0  # metres
-CONCAVE_HULL_RATIO = 0.1
 EMPTY_POINT = shapely.Point()
-POINT_GRID_RESOLUTION = 20  # metres
 R5_CRS = "EPSG:4326"
-SIMPLIFICATION_TOLERANCE = 5 * POINT_GRID_RESOLUTION  # metres
-SMOOTHING_BUFFER = 5 * POINT_GRID_RESOLUTION  # metres
+
+CONCAVE_HULL_BUFFER_SIZE = 20.0  # metres
+CONCAVE_HULL_RATIO = 0.3
+
 VERY_SMALL_BUFFER_SIZE = 0.001  # turn points into polygons
 
 
@@ -37,17 +38,21 @@ class Isochrones(BaseTravelTimeMatrix):
     _r5py_attributes = BaseTravelTimeMatrix._r5py_attributes + [
         "_isochrones",
         "isochrones",
+        "point_grid_resolution",
+        "point_grid_sample_ratio",
     ]
 
     def __init__(
         self,
         transport_network,
-        origins=None,
+        origins,
         isochrones=pandas.timedelta_range(
             start=datetime.timedelta(minutes=0),
             end=datetime.timedelta(hours=1),
             freq=datetime.timedelta(minutes=15),
         ),
+        point_grid_resolution=100,
+        point_grid_sample_ratio=1.0,
         **kwargs,
     ):
         """
@@ -72,6 +77,14 @@ class Isochrones(BaseTravelTimeMatrix):
         isochrones : pandas.TimedeltaIndex | collections.abc.Iterable[int]
             For which interval to compute isochrone polygons. An iterable of
             integers is interpreted as minutes.
+        point_grid_resolution : int
+            Distance in meters between points in the regular grid of points laid over the
+            transport network’s extent that is used to compute isochrones.
+            Increase this value for performance, decrease it for precision.
+        point_grid_sample_ratio : float
+            Share of points of the point grid that are used in computation,
+            ranging from 0.01 to 1.0.
+            Increase this value for performance, decrease it for precision.
         **kwargs : mixed
             Any arguments than can be passed to r5py.RegionalTask:
             ``departure``, ``departure_time_window``, ``percentiles``, ``transport_modes``,
@@ -106,6 +119,9 @@ class Isochrones(BaseTravelTimeMatrix):
             )
         self.origins = origins
         self.isochrones = isochrones
+
+        self.point_grid_resolution = point_grid_resolution
+        self.point_grid_sample_ratio = max(0.01, min(1.0, point_grid_sample_ratio))
 
         travel_times = TravelTimeMatrix(
             transport_network,
@@ -154,7 +170,7 @@ class Isochrones(BaseTravelTimeMatrix):
             # isochrone polygons might be disjoint (e.g., around metro stops)
             if not reached_nodes.empty:
                 reached_nodes = SpatiallyClusteredGeoDataFrame(
-                    reached_nodes, eps=(10 * POINT_GRID_RESOLUTION)
+                    reached_nodes, eps=(2.0 * self.point_grid_resolution)
                 ).to_crs(self.EQUIDISTANT_CRS)
                 isochrone_polygons = pandas.concat(
                     [
@@ -179,19 +195,35 @@ class Isochrones(BaseTravelTimeMatrix):
             isochrones, geometry="geometry", crs=self.EQUIDISTANT_CRS
         )
 
+        # clip smaller isochrones by larger isochrones
+        # (concave_hull’s ratio parameter depends on input shapes and does not
+        # produce the same results, e.g., around bridges or at the coast line)
+        for row in range(len(isochrones) - 2, 0, -1):
+            isochrones.loc[row, "geometry"] = shapely.intersection(
+                isochrones.loc[row, "geometry"], isochrones.loc[row + 1, "geometry"]
+            )
+
         isochrones["geometry"] = (
             isochrones["geometry"]
-            .apply(
-                lambda geometry: shapely.simplify(geometry, SIMPLIFICATION_TOLERANCE)
-            )
             .buffer(CONCAVE_HULL_BUFFER_SIZE)
-            .buffer(SMOOTHING_BUFFER * -1.0)
-            .buffer(SMOOTHING_BUFFER)
             .boundary.apply(
                 lambda geometry: (
                     geometry
                     if isinstance(geometry, shapely.MultiLineString)
                     else shapely.MultiLineString([geometry])
+                )
+            )
+            .apply(
+                lambda multilinestring: (
+                    shapely.MultiLineString(
+                        [
+                            simplification.cutil.simplify_coords_vwp(
+                                linestring.coords,
+                                self.point_grid_resolution * 5.0,
+                            )
+                            for linestring in multilinestring.geoms
+                        ]
+                    )
                 )
             )
             .to_crs(R5_CRS)
@@ -201,11 +233,11 @@ class Isochrones(BaseTravelTimeMatrix):
 
     @property
     def destinations(self):
-        """A regular grid of points covering the transport network extent."""
+        """A regular grid of points covering the range of the chosen transport mode."""
         try:
             return self._destinations
         except AttributeError:
-            destinations = self._regular_point_grid.copy()
+            destinations = self._regular_point_grid
             destinations["geometry"] = self.transport_network.snap_to_network(
                 destinations["geometry"]
             )
@@ -256,22 +288,39 @@ class Isochrones(BaseTravelTimeMatrix):
             ).transform,
             self.transport_network.extent,
         )
-        minx, miny, maxx, maxy = extent.bounds
-        points = [
-            shapely.Point([x, y])
-            for x in range(
-                math.floor(minx), math.ceil(maxx), round(POINT_GRID_RESOLUTION)
-            )
-            for y in range(
-                math.floor(miny), math.ceil(maxy), round(POINT_GRID_RESOLUTION)
-            )
-        ]
-        grid = geopandas.GeoDataFrame(
-            {
-                "geometry": points,
-            },
-            crs=self.EQUIDISTANT_CRS,
-        ).to_crs(R5_CRS)
-        grid["id"] = grid.index
 
-        return grid
+        grid = geohexgrid.make_grid_from_bounds(
+            *extent.bounds,
+            self.point_grid_resolution,
+            crs=self.EQUIDISTANT_CRS,
+        )
+        grid["geometry"] = grid["geometry"].centroid
+        grid["id"] = grid.index
+        grid = grid[["id", "geometry"]].to_crs(R5_CRS)
+
+        # for walking and cycling, we can clip the extent to an area reachable
+        # by the (well-defined) travel speeds:
+        if set(self.request.transport_modes) <= set(
+            (TransportMode.WALK, TransportMode.BICYCLE)
+        ):
+            if TransportMode.WALK in self.request.transport_modes:
+                speed = self.request.speed_walking
+            if TransportMode.BICYCLE in self.request.transport_modes:
+                speed = self.request.speed_cycling
+
+            speed = speed * (1000.0 / 3600.0) * 1.1  # km/h -> m/s, plus a bit of buffer
+
+            grid = grid.clip(
+                (
+                    pandas.concat([self.origins] * 2)  # workaround until
+                    # https://github.com/pyproj4/pyproj/issues/1309 is fixed
+                    .to_crs(self.EQUIDISTANT_CRS)
+                    .buffer(speed * max(self.isochrones).total_seconds())
+                    .to_crs(R5_CRS)
+                )
+            )
+
+        if self.point_grid_sample_ratio < 1.0:
+            grid = grid.sample(frac=self.point_grid_sample_ratio)
+
+        return grid.copy()

@@ -70,7 +70,7 @@ class Isochrones(BaseTravelTimeMatrix):
             passed to ``TransportNetwork.__init__()``: the path to an OpenStreetMap
             extract in PBF format, a list of zero of more paths to GTFS transport
             schedule files, and a dict with ``build_config`` options.
-        origins : geopandas.GeoDataFrame | shapely.geometry.Point
+        origins : geopandas.GeoDataFrame | shapely.Point
             Place(s) to find a route _from_
             Must be/have a point geometry. If multiple origin points are passed,
             isochrones will be computed as minimum travel time from any of them.

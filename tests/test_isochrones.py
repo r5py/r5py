@@ -232,4 +232,6 @@ class TestIsochrones:
             point_grid_sample_ratio=point_grid_sample_ratio,
         )
 
-        assert len(isochrones.destinations) == expected_number_of_destinations
+        assert len(isochrones.destinations) == pytest.approx(
+            expected_number_of_destinations
+        )

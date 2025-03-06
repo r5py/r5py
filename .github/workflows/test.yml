@@ -48,7 +48,7 @@ jobs:
           python-version: '${{matrix.python_version}}'
           cache: 'pip'
 
-      - run: python -m pip install .[tests]
+      - run: python -m pip install --prefer-binary .[tests]
 
       - name: Configure r5py to use upstream R5
         shell: bash

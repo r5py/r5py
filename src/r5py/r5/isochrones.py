@@ -245,6 +245,24 @@ class Isochrones(BaseTravelTimeMatrix):
             destinations["geometry"] = destinations["geometry"].normalize()
             destinations = destinations.drop_duplicates()
 
+            # with snapping, sometimes we end up with clumps of points
+            # below, we try to form clusters, from all clusters we retain
+            # one geometry, only
+            destinations = SpatiallyClusteredGeoDataFrame(
+                destinations, eps=(0.5 * self.point_grid_resolution)
+            )
+            destinations = pandas.concat(
+                [
+                    (
+                        destinations[destinations["cluster"] != -1]
+                        .groupby("cluster")
+                        .first()
+                        .set_crs(R5_CRS)
+                    ),
+                    destinations[destinations["cluster"] == -1],
+                ]
+            )[["id", "geometry"]].copy()
+
             self._destinations = destinations
 
             return destinations

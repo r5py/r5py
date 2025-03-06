@@ -22,6 +22,7 @@ dependencies = [
     "geopandas",
     "joblib",
     "jpype1",
+    "loguru",  # undocumented dependency of geohexgrid
     "numpy",
     "pandas>=2.1.0",
     "psutil",

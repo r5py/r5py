@@ -2,6 +2,7 @@
     - introduced Isochrones: compute areas of equal travel time from an origin
     - introduced TravelTimeMatrix, DetailedItineraries that inherit from
       pandas.DataFrame
+    - TransportNetworks are now cached and loaded from disk on subsequent runs
     - deprecated TravelTimeMatrixComputer, DetailedItinerariesComputer
     - more detailed output (additional columns on routes, stops, etc.) for
       detailed itineraries

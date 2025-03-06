@@ -202,3 +202,34 @@ class TestIsochrones:
             transport_modes=[r5py.TransportMode.TRANSIT],
             percentiles=[1],
         )
+
+    @pytest.mark.parametrize(
+        [
+            "point_grid_resolution",
+            "point_grid_sample_ratio",
+            "expected_number_of_destinations",
+        ],
+        [
+            (100, 0.8, 2654),
+            (50, 1.0, 12101),
+            (200, 0.3, 285),
+        ],
+    )
+    def test_isochrones_point_grid_parameters(
+        self,
+        transport_network,
+        origin_point,
+        departure_datetime,
+        point_grid_resolution,
+        point_grid_sample_ratio,
+        expected_number_of_destinations,
+    ):
+        isochrones = r5py.Isochrones(
+            transport_network,
+            origins=origin_point,
+            departure=departure_datetime,
+            point_grid_resolution=point_grid_resolution,
+            point_grid_sample_ratio=point_grid_sample_ratio,
+        )
+
+        assert len(isochrones.destinations) == expected_number_of_destinations

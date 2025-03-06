@@ -263,6 +263,9 @@ class Isochrones(BaseTravelTimeMatrix):
                 ]
             )[["id", "geometry"]].copy()
 
+            if self.point_grid_sample_ratio < 1.0:
+                destinations = destinations.sample(frac=self.point_grid_sample_ratio)
+
             self._destinations = destinations
 
             return destinations
@@ -337,8 +340,5 @@ class Isochrones(BaseTravelTimeMatrix):
                     .to_crs(R5_CRS)
                 )
             )
-
-        if self.point_grid_sample_ratio < 1.0:
-            grid = grid.sample(frac=self.point_grid_sample_ratio)
 
         return grid.copy()

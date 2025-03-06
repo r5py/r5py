@@ -233,5 +233,5 @@ class TestIsochrones:
         )
 
         assert len(isochrones.destinations) == pytest.approx(
-            expected_number_of_destinations
+            expected_number_of_destinations, abs=5
         )

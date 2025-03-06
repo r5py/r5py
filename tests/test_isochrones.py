@@ -74,6 +74,7 @@ class TestIsochrones:
             transport_network,
             origins=multiple_origins,
             departure=departure_datetime,
+            isochrones=[5, 10],
         )
         isochrones["travel_time"] = isochrones["travel_time"].apply(
             lambda t: round(t.total_seconds() / 60)

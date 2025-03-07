@@ -13,9 +13,6 @@ from .config import Config
 __all__ = ["WorkingCopy"]
 
 
-CACHE_DIR = Config().CACHE_DIR
-
-
 class WorkingCopy(pathlib.Path):
     """Create a copy or link of an input file in a cache directory."""
 
@@ -36,7 +33,7 @@ class WorkingCopy(pathlib.Path):
         # try to first create a symbolic link, if that fails (e.g., on Windows),
         # copy the file to a cache directory
         path = pathlib.Path(path).absolute()
-        destination = pathlib.Path(CACHE_DIR / path.name).absolute()
+        destination = pathlib.Path(Config().CACHE_DIR / path.name).absolute()
 
         with filelock.FileLock(destination.parent / f"{destination.name}.lock"):
             if not destination.exists():

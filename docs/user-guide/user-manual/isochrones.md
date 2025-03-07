@@ -11,7 +11,7 @@ kernelspec:
   name: python3
 ---
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-input, remove-output]
 
 # this cell is hidden from READTHEDOCS output
@@ -23,7 +23,7 @@ import pandas
 pandas.set_option("display.max_columns", None)
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-input, remove-output]
 
 # also this cell is hidden from READTHEDOCS output
@@ -51,7 +51,7 @@ To compute isochrones in *r5py*, you need a
 example, we use [the main railway station in
 Helsinki](https://en.wikipedia.org/wiki/Helsinki_Central_Station).
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-output]
 
 import r5py
@@ -75,7 +75,7 @@ modes<r5py.TransportMode>` which will be used for routing. Note that when
 multiple origin points or multiple transport modes are specified, the respective
 fastest will be recorded in the outputs.
 
-```{code-cell} ipython3
+```{code-cell}
 import datetime
 
 isochrones = r5py.Isochrones(
@@ -94,11 +94,11 @@ work on isochrone data sets.
 The output has two columns: a {class}`MultiLineString<shapely.MultiLineString>` geometry
 and the travel time to the geometry as {class}`TimeDelta<datetime.TimeDelta>`:
 
-```{code-cell} ipython3
+```{code-cell}
 isochrones
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-input, remove-output]
 
 # hidden from readthedocs,
@@ -108,7 +108,7 @@ isochrones
 isochrones["travel_time"] = isochrones["travel_time"].apply(str)
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 isochrones.explore(column="travel_time", cmap="YlOrRd")
 ```
 
@@ -122,7 +122,7 @@ rescue departments can reach within 5, 10, or 15 minutes.
 First, we download the locations of the rescue stations from the city’s WFS open
 data endpoint:
 
-```{code-cell} ipython3
+```{code-cell}
 import geopandas
 
 rescue_stations = geopandas.read_file(
@@ -142,7 +142,7 @@ rescue_stations = geopandas.read_file(
 Then we use this `rescue_stations` as `origins` and restrict `transport_modes`
 to cycling.
 
-```{code-cell} ipython3
+```{code-cell}
 isochrones = r5py.Isochrones(
     transport_network,
     origins=rescue_stations,
@@ -153,7 +153,7 @@ isochrones = r5py.Isochrones(
 isochrones
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [remove-input, remove-output]
 
 # hidden from readthedocs,
@@ -163,7 +163,7 @@ isochrones
 isochrones["travel_time"] = isochrones["travel_time"].apply(str)
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 isochrones.explore(column="travel_time", cmap="YlOrRd")
 ```
 

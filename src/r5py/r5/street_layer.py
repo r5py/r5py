@@ -22,6 +22,9 @@ __all__ = ["StreetLayer"]
 start_jvm()
 
 
+EMPTY_POINT = shapely.Point()
+
+
 class StreetLayer:
     """Wrap a com.conveyal.r5.streets.StreetLayer."""
 
@@ -79,7 +82,7 @@ class StreetLayer:
                 split.fixedLat / com.conveyal.r5.streets.VertexStore.FIXED_FACTOR,
             )
         except (AttributeError, TypeError):
-            return shapely.Point()
+            return EMPTY_POINT
 
 
 @jpype._jcustomizer.JConversion(

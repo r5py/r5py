@@ -6,6 +6,7 @@
     - deprecated TravelTimeMatrixComputer, DetailedItinerariesComputer
     - more detailed output (additional columns on routes, stops, etc.) for
       detailed itineraries
+    - testing with different R5 versions
     - numerous minor improvements and bug fixes
 
 - **0.1.2** (2024-07-28):

@@ -69,7 +69,7 @@ dependencies:
   - cyrus-sasl=2.1.27
   - dav1d=1.2.1
   - dbus=1.13.6
-  - debugpy=1.8.12
+  - debugpy=1.8.13
   - decorator=5.2.1
   - defusedxml=0.7.1
   - docutils=0.21.2
@@ -79,7 +79,7 @@ dependencies:
   - expat=2.6.4
   - filelock=3.17.0
   - fiona=1.10.1
-  - folium=0.19.4
+  - folium=0.19.5
   - font-ttf-dejavu-sans-mono=2.37
   - font-ttf-inconsolata=3.000
   - font-ttf-source-code-pro=2.038
@@ -94,7 +94,8 @@ dependencies:
   - geographiclib=2.0
   - geopandas=1.0.1
   - geopandas-base=1.0.1
-  - geos=3.13.0
+  - geopy=2.4.1
+  - geos=3.13.1
   - geotiff=1.7.4
   - gflags=2.2.2
   - giflib=5.2.2
@@ -106,7 +107,7 @@ dependencies:
   - h11=0.14.0
   - h2=4.2.0
   - h3=4.2.0
-  - harfbuzz=10.3.0
+  - harfbuzz=10.4.0
   - hpack=4.1.0
   - httpcore=1.0.7
   - httpx=0.28.1
@@ -118,10 +119,11 @@ dependencies:
   - importlib_resources=6.5.2
   - iniconfig=2.0.0
   - ipykernel=6.29.5
-  - ipython=8.32.0
+  - ipython=9.0.0
+  - ipython_pygments_lexers=1.1.1
   - isoduration=20.11.0
   - jedi=0.19.2
-  - jinja2=3.1.5
+  - jinja2=3.1.6
   - joblib=1.4.2
   - jpype1=1.5.2
   - json-c=0.18
@@ -155,7 +157,7 @@ dependencies:
   - libarrow-acero=19.0.1
   - libarrow-dataset=19.0.1
   - libarrow-substrait=19.0.1
-  - libavif16=1.1.1
+  - libavif16=1.2.0
   - libblas=3.9.0
   - libbrotlicommon=1.1.0
   - libbrotlidec=1.1.0
@@ -185,10 +187,10 @@ dependencies:
   - libglvnd=1.7.0
   - libglx=1.7.0
   - libgomp=14.2.0
-  - libgoogle-cloud=2.35.0
-  - libgoogle-cloud-storage=2.35.0
+  - libgoogle-cloud=2.36.0
+  - libgoogle-cloud-storage=2.36.0
   - libgrpc=1.67.1
-  - libheif=1.19.5
+  - libheif=1.19.7
   - libiconv=1.18
   - libjpeg-turbo=3.0.0
   - libkml=1.3.0
@@ -231,8 +233,8 @@ dependencies:
   - mapclassify=2.8.1
   - markdown-it-py=3.0.0
   - markupsafe=3.0.2
-  - matplotlib=3.10.0
-  - matplotlib-base=3.10.0
+  - matplotlib=3.10.1
+  - matplotlib-base=3.10.1
   - matplotlib-inline=0.1.7
   - mdit-py-plugins=0.4.2
   - mdurl=0.1.2
@@ -250,7 +252,7 @@ dependencies:
   - nbconvert-core=7.16.6
   - nbconvert-pandoc=7.16.6
   - nbformat=5.10.4
-  - nbsphinx=0.9.6
+  - nbsphinx=0.9.7
   - nbstripout=0.8.1
   - ncurses=6.5
   - nest-asyncio=1.6.0
@@ -262,7 +264,7 @@ dependencies:
   - openjpeg=2.5.3
   - openldap=2.6.9
   - openssl=3.4.1
-  - orc=2.0.3
+  - orc=2.1.1
   - overrides=7.7.0
   - packaging=24.2
   - pandas=2.2.3
@@ -283,7 +285,7 @@ dependencies:
   - prometheus-cpp=1.3.0
   - prometheus_client=0.21.1
   - prompt-toolkit=3.0.50
-  - psutil=6.1.1
+  - psutil=7.0.0
   - pthread-stubs=0.4
   - ptyprocess=0.7.0
   - pure_eval=0.2.3
@@ -299,7 +301,7 @@ dependencies:
   - pyproj=3.7.1
   - pyside6=6.8.2
   - pysocks=1.7.1
-  - pytest=8.3.4
+  - pytest=8.3.5
   - pytest-asyncio=0.25.3
   - pytest-cov=6.0.0
   - python=3.13.2
@@ -329,7 +331,7 @@ dependencies:
   - scikit-learn=1.6.1
   - scipy=1.15.2
   - send2trash=1.8.3
-  - setuptools=75.8.0
+  - setuptools=75.8.2
   - shapely=2.0.7
   - six=1.17.0
   - smmap=5.0.2
@@ -338,7 +340,7 @@ dependencies:
   - snowballstemmer=2.2.0
   - snuggs=1.4.7
   - soupsieve=2.5
-  - sphinx=8.2.1
+  - sphinx=8.2.3
   - sphinx-book-theme=1.1.4
   - sphinx-design=0.6.1
   - sphinxcontrib-applehelp=2.0.0
@@ -369,7 +371,7 @@ dependencies:
   - tzdata=2025a
   - uri-template=1.3.0
   - uriparser=0.9.8
-  - urllib3=2.3.0
+  - urllib3=2.2.2
   - wayland=1.23.1
   - wcwidth=0.2.13
   - webcolors=24.11.1
@@ -405,8 +407,7 @@ dependencies:
   - zeromq=4.3.5
   - zipp=3.21.0
   - zlib=1.3.1
-  - zstandard=0.23.0
-  - zstd=1.5.6
+  - zstd=1.5.7
   - pip:
       - pybtex-apa7-style==0.1.3
       - pytest-lazy-fixtures==1.1.2

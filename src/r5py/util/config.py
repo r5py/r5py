@@ -2,6 +2,7 @@
 
 """Handle configuration options and command line options."""
 
+import datetime
 import functools
 import importlib.resources
 import os
@@ -19,6 +20,7 @@ PACKAGE = __package__.split(".")[0]
 CONFIG_FILE_TEMPLATE = importlib.resources.files(f"{PACKAGE}.util").joinpath(
     f"{PACKAGE}.yml.template"
 )
+CACHE_MAX_AGE = datetime.timedelta(weeks=2)
 
 if "HOME" not in os.environ:  # e.g., testing environment or container
     os.environ["HOME"] = "."
@@ -73,11 +75,25 @@ class Config:
             pathlib.Path(
                 os.environ.get("LOCALAPPDATA")
                 or os.environ.get("XDG_CACHE_HOME")
-                or (pathlib.Path(os.environ["HOME"]) / ".cache")
+                or (pathlib.Path(os.environ.get("HOME")) / ".cache")
             )
             / PACKAGE
         )
         cache_dir.mkdir(parents=True, exist_ok=True)
+
+        # clean old files to keep cache dir from growing too much
+        cache_treshold = (datetime.datetime.now() - CACHE_MAX_AGE).timestamp()
+        for cached_file in cache_dir.glob("**/*"):
+            try:
+                *_, atime, mtime, _ = cached_file.stat()
+                assert max(atime, mtime) > cache_treshold
+            except (
+                AssertionError,  # expired
+                FileNotFoundError,  # broken symlink
+                PermissionError,
+            ):
+                cached_file.unlink()
+
         return cache_dir
 
     @functools.cached_property
@@ -88,7 +104,7 @@ class Config:
             pathlib.Path(
                 os.environ.get("APPDATA")
                 or os.environ.get("XDG_CONFIG_HOME")
-                or (pathlib.Path(os.environ["HOME"]) / ".config")
+                or (pathlib.Path(os.environ.get("HOME")) / ".config")
             )
             / f"{PACKAGE}.yml",
         ]

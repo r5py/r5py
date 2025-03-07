@@ -50,21 +50,22 @@ class TestDeterministicBehaviour:
         intermediate_results,
         iteration,
     ):
+        # subset to keep test comparison data sets small
+        origins = population_grid_points[::5].copy()
+
         travel_times = r5py.TravelTimeMatrix(
             transport_network,
-            population_grid_points,
+            origins,
             departure=departure_datetime,
             transport_modes=transport_modes,
             snap_to_network=True,
         )
 
-        if transport_modes not in intermediate_results:
-            intermediate_results[transport_modes] = []
-        intermediate_results[transport_modes].append(travel_times)
-
-        for matrix_a, matrix_b in pairwise(intermediate_results[transport_modes]):
+        if transport_modes in intermediate_results:
+            previous_results = intermediate_results[transport_modes]
             pandas.testing.assert_frame_equal(
-                matrix_a,
-                matrix_b,
+                travel_times,
+                previous_results,
                 check_like=True,
             )
+        intermediate_results[transport_modes] = travel_times.copy()

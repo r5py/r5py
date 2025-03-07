@@ -18,7 +18,7 @@ authors = [
 dependencies = [
     "ConfigArgParse",
     "filelock",
-    "fiona",
+    "geohexgrid",
     "geopandas",
     "joblib",
     "jpype1",
@@ -27,7 +27,9 @@ dependencies = [
     "psutil",
     "pyproj",
     "requests",
-    "shapely>=2.0"
+    "scikit-learn",
+    "shapely>=2.0",
+    "simplification"
 ]
 requires-python = ">=3.9"
 

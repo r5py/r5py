@@ -15,7 +15,7 @@ jobs:
     secrets: inherit
 
   test:
-    name: Run tests (${{ matrix.os }}, Python ${{ matrix.python_version }})
+    name: Run tests (${{ matrix.os }}, Python ${{ matrix.python_version }}, ${{ matrix.r5_version }}-R5)
     needs: lint
     runs-on: ${{ matrix.os }}
     strategy:
@@ -31,6 +31,9 @@ jobs:
           - '3.11'
           - '3.10'
           - '3.9'
+        r5_version:
+          - r5py
+          - conveyal
 
     steps:
       -  uses: actions/checkout@v4
@@ -45,7 +48,21 @@ jobs:
           python-version: '${{matrix.python_version}}'
           cache: 'pip'
 
-      - run: python -m pip install .[tests]
+      - run: python -m pip install --prefer-binary .[tests]
+
+      - name: Configure r5py to use upstream R5
+        shell: bash
+        run: |
+          CONFIG_DIR="${HOME}/.config"
+          [[ $XDG_CONFIG_HOME ]] && CONFIG_DIR="${XDG_CONFIG_HOME}"
+          [[ $APPDATA ]] && CONFIG_DIR="${APPDATA}"
+          mkdir -pv "${CONFIG_DIR}"
+          echo "r5-classpath: https://github.com/conveyal/r5/releases/download/v7.3/r5-v7.3-all.jar" >> "${CONFIG_DIR}/r5py.yml"
+          cat "${CONFIG_DIR}/r5py.yml"
+        if: ${{matrix.r5_version == 'conveyal'}}
+
+      - name: Show r5py configuration
+        run: python -c 'from r5py.util.config import Config; print(Config().arguments)'
 
       - run: python -m pytest
 

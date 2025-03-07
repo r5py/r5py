@@ -78,6 +78,7 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
         data = self._compute()
         for column in data.columns:
             self[column] = data[column]
+        del self.transport_network
 
     def _compute(self):
         """

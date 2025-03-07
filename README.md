@@ -96,7 +96,7 @@ your project better.
 <!-- (2) other links -->
 [conda-create-env-from-yml]: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file
 [conveyal]: https://www.conveyal.com/
-[env-file]: https://github.com/r5py/r5py/blob/main/ci/r5py_distro.yaml
+[env-file]: https://github.com/r5py/r5py/blob/main/ci/r5py.yaml
 [geopandas]: https://geopandas.org/
 [r5-github]: https://github.com/conveyal/r5/
 [r5r-github]: https://github.com/ipeaGIT/r5r/

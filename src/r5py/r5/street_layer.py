@@ -22,6 +22,9 @@ __all__ = ["StreetLayer"]
 start_jvm()
 
 
+EMPTY_POINT = shapely.Point()
+
+
 class StreetLayer:
     """Wrap a com.conveyal.r5.streets.StreetLayer."""
 
@@ -72,13 +75,14 @@ class StreetLayer:
             Closest location on the street network or `POINT EMPTY` if no
             such location could be found within `radius`
         """
-        if split := self._street_layer.findSplit(point.y, point.x, radius, street_mode):
+        try:
+            split = self._street_layer.findSplit(point.y, point.x, radius, street_mode)
             return shapely.Point(
                 split.fixedLon / com.conveyal.r5.streets.VertexStore.FIXED_FACTOR,
                 split.fixedLat / com.conveyal.r5.streets.VertexStore.FIXED_FACTOR,
             )
-        else:
-            return shapely.Point()
+        except (AttributeError, TypeError):
+            return EMPTY_POINT
 
 
 @jpype._jcustomizer.JConversion(

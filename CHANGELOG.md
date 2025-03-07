@@ -1,9 +1,12 @@
 - **1.0.0** (2024-09-01):
+    - introduced Isochrones: compute areas of equal travel time from an origin
     - introduced TravelTimeMatrix, DetailedItineraries that inherit from
       pandas.DataFrame
+    - TransportNetworks are now cached and loaded from disk on subsequent runs
     - deprecated TravelTimeMatrixComputer, DetailedItinerariesComputer
     - more detailed output (additional columns on routes, stops, etc.) for
       detailed itineraries
+    - testing with different R5 versions
     - numerous minor improvements and bug fixes
 
 - **0.1.2** (2024-07-28):

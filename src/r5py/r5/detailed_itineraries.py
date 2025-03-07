@@ -84,7 +84,7 @@ class DetailedItineraries(BaseTravelTimeMatrix):
             ``access_modes``, ``egress_modes``, ``max_time``, ``max_time_walking``,
             ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
             ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
-            Not that not all arguments might make sense in this context, and the
+            Note that not all arguments might make sense in this context, and the
             underlying R5 engine might ignore some of them.
         """
         super().__init__(
@@ -122,10 +122,19 @@ class DetailedItineraries(BaseTravelTimeMatrix):
 
         data = self._compute()
         with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=FutureWarning)
+            warnings.filterwarnings(
+                "ignore",
+                message=(
+                    "You are adding a column named 'geometry' to a GeoDataFrame "
+                    "constructed without an active geometry column"
+                ),
+                category=FutureWarning,
+            )
             for column in data.columns:
                 self[column] = data[column]
             self.set_geometry("geometry")
+
+        del self.transport_network
 
     def _compute(self):
         """

@@ -15,7 +15,18 @@ from .destinations import (
     unsnappable_points,
 )
 
+from .file_digest import (
+    file_digest_test_file_as_pathlib_path,
+    file_digest_test_file_as_str,
+    file_digest_sha256,
+    file_digest_blake2b,
+    file_digest_blake2s,
+)
+
+from .garbage_collection import java_garbage_collection
+
 from .origins import (
+    multiple_origins,
     origin_point,
     origins_invalid_duplicate_ids,
     origins_invalid_no_id,
@@ -41,6 +52,11 @@ from .routing_results import (
     detailed_itineraries_car,
     detailed_itineraries_transit,
     detailed_itineraries_walk,
+    isochrones_from_multiple_origins,
+    isochrones_bicycle,
+    isochrones_car,
+    isochrones_transit,
+    isochrones_walk,
     travel_times_bicycle,
     travel_times_car,
     travel_times_transit,
@@ -68,14 +84,31 @@ from .transport_network import (
     transport_network_from_test_files_without_gtfs,
 )
 
+from .upstream_r5 import (
+    can_compute_detailed_route_geometries,
+)
+
 __all__ = [
+    "can_compute_detailed_route_geometries",
     "departure_datetime",
     "detailed_itineraries_bicycle",
     "detailed_itineraries_car",
     "detailed_itineraries_transit",
     "detailed_itineraries_walk",
+    "file_digest_test_file_as_pathlib_path",
+    "file_digest_test_file_as_str",
+    "file_digest_sha256",
+    "file_digest_blake2b",
+    "file_digest_blake2s",
+    "java_garbage_collection",
     "gtfs_file_path",
     "gtfs_timezone_helsinki",
+    "isochrones_from_multiple_origins",
+    "isochrones_bicycle",
+    "isochrones_car",
+    "isochrones_transit",
+    "isochrones_walk",
+    "multiple_origins",
     "not_a_gtfs_file",
     "origin_point",
     "origins_invalid_duplicate_ids",

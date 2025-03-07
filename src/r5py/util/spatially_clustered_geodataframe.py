@@ -17,13 +17,10 @@ from .good_enough_equidistant_crs import GoodEnoughEquidistantCrs
 __all__ = ["SpatiallyClusteredGeoDataFrame"]
 
 
-MIN_CLUSTER_SIZE = 3
-
-
 class SpatiallyClusteredGeoDataFrame(geopandas.GeoDataFrame):
     """Assign a cluster label column to a point-geometry GeoDataFrame."""
 
-    def __init__(self, data, *args, eps=200.0, **kwargs):
+    def __init__(self, data, *args, eps=200.0, min_cluster_size=3, **kwargs):
         """
         Assign a cluster label column to a point-geometry GeoDataFrame.
 
@@ -60,7 +57,7 @@ class SpatiallyClusteredGeoDataFrame(geopandas.GeoDataFrame):
             data["cluster"] = (
                 sklearn.cluster.DBSCAN(
                     eps=eps,
-                    min_samples=MIN_CLUSTER_SIZE,
+                    min_samples=min_cluster_size,
                     n_jobs=-1,
                 )
                 .fit(coordinates)

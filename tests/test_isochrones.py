@@ -123,7 +123,7 @@ class TestIsochrones:
         isochrones = r5py.Isochrones(
             transport_network,
             origins=origin_point,
-            isochrones=[5,],
+            isochrones=[5],
             departure=departure_datetime,
             transport_modes=[transport_mode],
         )

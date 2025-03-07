@@ -134,7 +134,14 @@ class Isochrones(BaseTravelTimeMatrix):
         data = self._compute_isochrones_from_travel_times(travel_times)
 
         with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=FutureWarning)
+            warnings.filterwarnings(
+                "ignore",
+                message=(
+                    "You are adding a column named 'geometry' to a GeoDataFrame "
+                    "constructed without an active geometry column"
+                ),
+                category=FutureWarning,
+            )
             for column in data.columns:
                 self[column] = data[column]
             self.set_geometry("geometry")

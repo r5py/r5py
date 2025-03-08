@@ -2,7 +2,10 @@
 
 name: Update binder environment
 on:
-  pull_request_target:
+  push:
+    paths:
+      - ci/*.yaml
+  pull_request:
     paths:
       - ci/*.yaml
   workflow_call:

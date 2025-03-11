@@ -32,7 +32,7 @@ dependencies = [
     "simplification",
     "typing_extensions; python_version < '3.13'"
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 classifiers = [
     "Programming Language :: Python :: 3",

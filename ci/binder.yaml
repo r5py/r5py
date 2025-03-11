@@ -5,13 +5,10 @@ channels:
 
 dependencies:
     - python=3.11
+    - openjdk>=21
 
     - r5py
 
-    # testing / dev / docs related
-    - black
-    - black-jupyter
-    - codecov
     - contextily
     - folium
     - gitpython
@@ -25,11 +22,7 @@ dependencies:
     - nbsphinx
     - nbstripout
     - notebook
-    - openjdk>=21
     - pyarrow
-    - pytest
-    - pytest-asyncio
-    - pytest-cov
     - r5py.sampledata.helsinki>=0.1.1dev2
     - r5py.sampledata.sao_paulo>=0.1.1dev2
     - sphinx
@@ -40,4 +33,3 @@ dependencies:
     - pip
     - pip:
         - pybtex-apa7-style
-        - pytest-lazy-fixtures

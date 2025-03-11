@@ -37,8 +37,6 @@ dependencies:
   - azure-storage-files-datalake-cpp=12.12.0
   - babel=2.17.0
   - beautifulsoup4=4.13.3
-  - black=25.1.0
-  - black-jupyter=25.1.0
   - bleach=6.2.0
   - bleach-with-css=6.2.0
   - blosc=1.21.6
@@ -58,13 +56,11 @@ dependencies:
   - click=8.1.8
   - click-plugins=1.1.1
   - cligj=0.7.2
-  - codecov=2.1.13
   - colorama=0.4.6
   - comm=0.2.2
   - configargparse=1.7
   - contextily=1.6.2
   - contourpy=1.3.1
-  - coverage=7.6.12
   - cycler=0.12.1
   - cyrus-sasl=2.1.27
   - dav1d=1.2.1
@@ -117,7 +113,6 @@ dependencies:
   - imagesize=1.4.1
   - importlib-metadata=8.6.1
   - importlib_resources=6.5.2
-  - iniconfig=2.0.0
   - ipykernel=6.29.5
   - ipython=9.0.2
   - ipython_pygments_lexers=1.1.1
@@ -243,7 +238,6 @@ dependencies:
   - minizip=4.0.7
   - mistune=3.1.2
   - munkres=1.1.4
-  - mypy_extensions=1.0.0
   - mysql-common=9.0.1
   - mysql-libs=9.0.1
   - myst-nb=1.2.0
@@ -273,7 +267,6 @@ dependencies:
   - pandoc=3.6.3
   - pandocfilters=1.5.0
   - parso=0.8.4
-  - pathspec=0.12.1
   - pcre2=10.44
   - pexpect=4.9.0
   - pickleshare=0.7.5
@@ -282,7 +275,6 @@ dependencies:
   - pixman=0.44.2
   - pkgutil-resolve-name=1.3.10
   - platformdirs=4.3.6
-  - pluggy=1.5.0
   - proj=9.5.1
   - prometheus-cpp=1.3.0
   - prometheus_client=0.21.1
@@ -303,9 +295,6 @@ dependencies:
   - pyproj=3.7.1
   - pyside6=6.8.2
   - pysocks=1.7.1
-  - pytest=8.3.5
-  - pytest-asyncio=0.25.3
-  - pytest-cov=6.0.0
   - python=3.11.11
   - python-dateutil=2.9.0.post0
   - python-fastjsonschema=2.21.1
@@ -364,8 +353,6 @@ dependencies:
   - threadpoolctl=3.5.0
   - tinycss2=1.4.0
   - tk=8.6.13
-  - tokenize-rt=6.1.0
-  - toml=0.10.2
   - tomli=2.2.1
   - tornado=6.4.2
   - traitlets=5.14.3
@@ -418,4 +405,3 @@ dependencies:
   - zstd=1.5.7
   - pip:
       - pybtex-apa7-style==0.1.3
-      - pytest-lazy-fixtures==1.1.2

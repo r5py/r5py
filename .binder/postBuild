@@ -8,11 +8,7 @@ cp ".binder/labconfig"/* "${HOME}/.jupyter/labconfig/"
 
 
 # # pre-generate transport networks for examples
-conda env list
-conda activate notebook
-conda list
-
-python - <<'___HERE'
+conda run -n notebook python - <<'___HERE'
 import r5py
 import r5py.sampledata.helsinki
 import r5py.sampledata.sao_paulo

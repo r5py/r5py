@@ -1,5 +1,6 @@
 - **1.0.1** (2025-03-11):
     - Added typing-extensions to dependencies
+    - Downgraded Binder environment
 
 - **1.0.0** (2025-03-09):
     - introduced Isochrones: compute areas of equal travel time from an origin

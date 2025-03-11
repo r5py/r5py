@@ -31,6 +31,7 @@ pandas.set_option("display.max_columns", None)
 # as otherwise, the examples would fail
 
 import os
+import sys
 
 if "MEM_LIMIT" in os.environ:  # binder/kubernetes!
     max_memory = int(os.environ["MEM_LIMIT"]) / 2

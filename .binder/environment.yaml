@@ -316,6 +316,7 @@ dependencies:
   - pyzmq=26.2.1
   - qhull=2020.2
   - qt6-main=6.8.2
+  - r5py=1.0.0
   - r5py.sampledata.helsinki=0.1.2
   - r5py.sampledata.sao_paulo=0.1.2
   - rasterio=1.4.3

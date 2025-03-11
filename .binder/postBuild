@@ -8,6 +8,7 @@ cp ".binder/labconfig"/* "${HOME}/.jupyter/labconfig/"
 
 
 # # pre-generate transport networks for examples
+conda env list
 conda activate notebook
 conda list
 

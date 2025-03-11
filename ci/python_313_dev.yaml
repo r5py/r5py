@@ -7,6 +7,7 @@ dependencies:
     - python=3.13
     - configargparse
     - filelock
+    - geohexgrid
     - geopandas
     - joblib
     - jpype1
@@ -49,6 +50,5 @@ dependencies:
 
     - pip
     - pip:
-        - geohexgrid
         - pybtex-apa7-style
         - pytest-lazy-fixtures

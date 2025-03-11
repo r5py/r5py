@@ -8,4 +8,4 @@ cp ".binder/labconfig"/* "${HOME}/.jupyter/labconfig/"
 
 
 # # pre-generate transport networks for examples
-conda run -n notebook ./pre-generate-transport-networks.py
+conda run -n notebook .binder/pre-generate-transport-networks.py

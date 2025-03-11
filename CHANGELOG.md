@@ -1,3 +1,8 @@
+- **1.0.1** (2025-03-11):
+    - Added typing-extensions to dependencies
+    - Optimised binder integration and environment
+    - Updated to Python>=3.10
+
 - **1.0.0** (2025-03-09):
     - introduced Isochrones: compute areas of equal travel time from an origin
     - introduced TravelTimeMatrix, DetailedItineraries that inherit from

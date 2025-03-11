@@ -29,9 +29,10 @@ dependencies = [
     "requests",
     "scikit-learn",
     "shapely>=2.0",
-    "simplification"
+    "simplification",
+    "typing_extensions; python_version < '3.13'"
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 classifiers = [
     "Programming Language :: Python :: 3",

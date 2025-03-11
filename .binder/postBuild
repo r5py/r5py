@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -xeu
+
+# copy jupyter lab config (myst == notebook)
+mkdir -p "${HOME}/.jupyter/labconfig/"
+cp ".binder/labconfig"/* "${HOME}/.jupyter/labconfig/"
+
+
+# pre-generate transport networks for examples
+conda run -n notebook .binder/pre-generate-transport-networks.py

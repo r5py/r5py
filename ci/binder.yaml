@@ -4,26 +4,11 @@ channels:
     - conda-forge
 
 dependencies:
-    - python=3.13
-    - configargparse
-    - filelock
-    - geohexgrid
-    - geopandas
-    - joblib
-    - jpype1
-    - numpy
-    - pandas
-    - pyproj
-    - psutil
-    - requests
-    - shapely
-    - scikit-learn
-    - simplification
+    - python=3.11
+    - openjdk>=21
 
-    # testing / dev / docs related
-    - black
-    - black-jupyter
-    - codecov
+    - r5py
+
     - contextily
     - folium
     - gitpython
@@ -36,11 +21,8 @@ dependencies:
     - myst-nb
     - nbsphinx
     - nbstripout
-    - openjdk>=21
+    - notebook
     - pyarrow
-    - pytest
-    - pytest-asyncio
-    - pytest-cov
     - r5py.sampledata.helsinki>=0.1.1dev2
     - r5py.sampledata.sao_paulo>=0.1.1dev2
     - sphinx
@@ -51,4 +33,3 @@ dependencies:
     - pip
     - pip:
         - pybtex-apa7-style
-        - pytest-lazy-fixtures

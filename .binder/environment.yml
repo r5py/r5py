@@ -51,7 +51,7 @@ dependencies:
   - ca-certificates=2025.1.31
   - cached-property=1.5.2
   - cached_property=1.5.2
-  - cairo=1.18.2
+  - cairo=1.18.4
   - certifi=2025.1.31
   - cffi=1.17.1
   - charset-normalizer=3.4.1
@@ -91,6 +91,7 @@ dependencies:
   - freetype=2.12.1
   - freexl=2.0.0
   - geographiclib=2.0
+  - geohexgrid=2.1.1
   - geopandas=1.0.1
   - geopandas-base=1.0.1
   - geopy=2.4.1
@@ -196,7 +197,6 @@ dependencies:
   - liblapack=3.9.0
   - libllvm19=19.1.7
   - liblzma=5.6.4
-  - libmpdec=4.0.0
   - libnghttp2=1.64.0
   - libnsl=2.0.1
   - libntlm=1.8
@@ -212,6 +212,7 @@ dependencies:
   - libre2-11=2024.07.02
   - librttopo=1.1.0
   - libsodium=1.0.20
+  - libspatialindex=2.1.0
   - libspatialite=5.1.0
   - libsqlite=3.49.1
   - libssh2=1.11.1
@@ -223,6 +224,7 @@ dependencies:
   - libuuid=2.38.1
   - libwebp-base=1.5.0
   - libxcb=1.17.0
+  - libxcrypt=4.4.36
   - libxkbcommon=1.8.0
   - libxml2=2.13.6
   - libxslt=1.1.39
@@ -303,12 +305,12 @@ dependencies:
   - pytest=8.3.5
   - pytest-asyncio=0.25.3
   - pytest-cov=6.0.0
-  - python=3.13.2
+  - python=3.11.11
   - python-dateutil=2.9.0.post0
   - python-fastjsonschema=2.21.1
   - python-json-logger=2.0.7
   - python-tzdata=2025.1
-  - python_abi=3.13
+  - python_abi=3.11
   - pytz=2024.1
   - pyyaml=6.0.2
   - pyzmq=26.2.1
@@ -326,6 +328,7 @@ dependencies:
   - rfc3986-validator=0.1.1
   - roman-numerals-py=3.1.0
   - rpds-py=0.23.1
+  - rtree=1.4.0
   - s2n=1.5.11
   - scikit-learn=1.6.1
   - scipy=1.15.2
@@ -369,14 +372,16 @@ dependencies:
   - typing_extensions=4.12.2
   - typing_utils=0.1.0
   - tzdata=2025a
+  - unicodedata2=16.0.0
   - uri-template=1.3.0
   - uriparser=0.9.8
-  - urllib3=2.2.2
+  - urllib3=2.3.0
   - wayland=1.23.1
   - wcwidth=0.2.13
   - webcolors=24.11.1
   - webencodings=0.5.1
   - websocket-client=1.8.0
+  - wheel=0.45.1
   - x265=3.5
   - xcb-util=0.4.1
   - xcb-util-cursor=0.1.5
@@ -407,9 +412,8 @@ dependencies:
   - zeromq=4.3.5
   - zipp=3.21.0
   - zlib=1.3.1
+  - zstandard=0.19.0
   - zstd=1.5.7
   - pip:
-      - geohexgrid==2.1.1
       - pybtex-apa7-style==0.1.3
       - pytest-lazy-fixtures==1.1.2
-      - rtree==1.4.0

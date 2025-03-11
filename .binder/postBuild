@@ -7,5 +7,5 @@ mkdir -p "${HOME}/.jupyter/labconfig/"
 cp ".binder/labconfig"/* "${HOME}/.jupyter/labconfig/"
 
 
-# # pre-generate transport networks for examples
+# pre-generate transport networks for examples
 conda run -n notebook .binder/pre-generate-transport-networks.py

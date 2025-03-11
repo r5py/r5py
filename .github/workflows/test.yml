@@ -1,6 +1,6 @@
 # vim: set tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
 
-name: Run unit tests
+name: Unit tests
 on:
   pull_request:
   workflow_call:

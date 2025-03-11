@@ -24,6 +24,7 @@ dependencies:
     - myst-nb
     - nbsphinx
     - nbstripout
+    - notebook
     - openjdk>=21
     - pyarrow
     - pytest

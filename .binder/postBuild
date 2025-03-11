@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -xeu
+
+mkdir -p ${HOME}/.jupyter/labconfig
+cp binder/labconfig/* ${HOME}/.jupyter/labconfig

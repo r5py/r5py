@@ -1,3 +1,6 @@
+- **1.0.2** (2025-03-13):
+    - Include test fixtures and data in sdist
+
 - **1.0.1** (2025-03-11):
     - Added typing-extensions to dependencies
     - Optimised binder integration and environment

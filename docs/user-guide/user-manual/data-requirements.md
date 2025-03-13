@@ -126,7 +126,7 @@ of the scope of a GTFS data set.
 
 ## Origin and destination locations
 
-In addition to OSM and GTFS datasets, you need data that represents the origin
+In addition to OSM and GTFS datasets, you need data that represent the origin
 and destination locations (OD-data) of routes. *R5py* accepts data sets as
 {class}`geopandas.GeoDataFrame`s.
 
@@ -163,10 +163,14 @@ the sample data comprises of the following data sets:
     
 - São Paulo, Brazil
   - A population grid data set of São Paulo city centre, obtained from the
-    [Access to Opportunities Project](https://www.ipea.gov.br/acessooportunidades/en/) conducted at the Institute for Applied Economic Research - Ipea, Brazil.
+    [Access to Opportunities
+    Project](https://www.ipea.gov.br/acessooportunidades/en/) conducted at the
+    Institute for Applied Economic Research - Ipea, Brazil.
   
-  - An OpenStreetMap extract covering São Paulo city centre.
+  - An OpenStreetMap extract covering São Paulo city centre (© OpenStreetMap
+    contributors, [ODbL license](https://www.openstreetmap.org/copyright)).
   
   - A GTFS public transport schedule dataset for São Paulo, cropped and minimised
     from the official open-data download from *SPTRANS*’s
-    [open data web page](https://www.sptrans.com.br/desenvolvedores/).
+    [open data web page](https://www.sptrans.com.br/desenvolvedores/) (intended
+    for open use, but no license specified).

@@ -192,8 +192,8 @@ travel_times
 ```
 
 As mentioned above, a {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` is also a
-{class}`pandas.DataFrame`, (all methods of the latter can be
-used)[https://pandas.pydata.org/docs/user_guide/dsintro.html#dataframe].  The
+{class}`pandas.DataFrame`, [all methods of the latter can be
+used](https://pandas.pydata.org/docs/user_guide/dsintro.html#dataframe).  The
 values in its `travel_time` column are travel times in minutes between the
 points identified by `from_id` and `to_id` (the IDs of the origins and
 destinations, respectively). As you can see, the `id` value in the `to_id`

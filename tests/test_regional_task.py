@@ -4,6 +4,8 @@
 import pytest
 
 import datetime
+import geopandas
+import pytest_lazy_fixtures
 import shapely.geometry
 
 import r5py
@@ -451,17 +453,6 @@ class TestRegionalTask:
         assert regional_task._regional_task.walkSpeed == pytest.approx(expected_java)
 
     @pytest.mark.parametrize(
-        ["breakdown"],
-        [
-            (True,),
-            (False,),
-        ],
-    )
-    def test_breakdown_setter_getter(self, regional_task, breakdown):
-        regional_task.breakdown = breakdown
-        assert regional_task.breakdown == breakdown
-
-    @pytest.mark.parametrize(
         ["origin"],
         [
             (shapely.geometry.Point(60, 24),),
@@ -471,6 +462,21 @@ class TestRegionalTask:
     def test_origin_setter_getter(self, regional_task, origin):
         regional_task.origin = origin
         assert regional_task.origin == origin
+
+    @pytest.mark.parametrize(
+        ["destinations"],
+        [
+            (pytest_lazy_fixtures.lf("population_grid_points"),),
+            (pytest_lazy_fixtures.lf("population_grid_points_first_three"),),
+            (pytest_lazy_fixtures.lf("population_grid_points_second_three"),),
+        ],
+    )
+    def test_destinations_setter_getter(self, regional_task, destinations):
+        regional_task.destinations = destinations
+        geopandas.testing.assert_geodataframe_equal(
+            regional_task.destinations,
+            destinations,
+        )
 
     @pytest.mark.parametrize(
         ["transport_modes", "expected"],

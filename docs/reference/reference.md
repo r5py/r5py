@@ -36,12 +36,6 @@
 ```
 
 ```{eval-rst}
-.. autoclass:: r5py.r5.BreakdownStat
-    :members:
-    :inherited-members:
-```
-
-```{eval-rst}
 .. autoclass:: r5py.r5.TripPlanner
     :members:
     :inherited-members:

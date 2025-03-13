@@ -451,17 +451,6 @@ class TestRegionalTask:
         assert regional_task._regional_task.walkSpeed == pytest.approx(expected_java)
 
     @pytest.mark.parametrize(
-        ["breakdown"],
-        [
-            (True,),
-            (False,),
-        ],
-    )
-    def test_breakdown_setter_getter(self, regional_task, breakdown):
-        regional_task.breakdown = breakdown
-        assert regional_task.breakdown == breakdown
-
-    @pytest.mark.parametrize(
         ["origin"],
         [
             (shapely.geometry.Point(60, 24),),

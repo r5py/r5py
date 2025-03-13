@@ -45,7 +45,6 @@ class RegionalTask:
         speed_cycling=12.0,
         max_public_transport_rides=8,
         max_bicycle_traffic_stress=3,
-        breakdown=False,
     ):
         """
         Create a RegionalTask, a computing request for R5.
@@ -110,8 +109,6 @@ class RegionalTask:
         max_bicycle_traffic_stress : int
             Maximum stress level for cyclist routing, ranges from 1-4 see
             https://docs.conveyal.com/learn-more/traffic-stress Default: 3
-        breakdown : bool
-            Compute a more detailed breakdown of the routes. Default: False
         """
         self._regional_task = com.conveyal.r5.analyst.cluster.RegionalTask()
         self.scenario = Scenario()
@@ -149,8 +146,6 @@ class RegionalTask:
 
         # always record travel times
         self._regional_task.recordTimes = True
-        # also report paths, if `breakdown`
-        self.breakdown = breakdown
 
         # a few settings we don’t expose (yet?)
         self._regional_task.makeTauiSite = False
@@ -184,32 +179,6 @@ class RegionalTask:
         self._regional_task.accessModes = RegionalTask._enum_set(
             access_modes, com.conveyal.r5.api.util.LegMode
         )
-
-    @property
-    def breakdown(self):
-        """Compute a more detailed breakdown of the routes."""
-        return self._breakdown
-
-    @breakdown.setter
-    def breakdown(self, breakdown):
-        self._breakdown = breakdown
-        self._regional_task.includePathResults = breakdown
-
-        # R5 has a maximum number of destinations for which it returns detailed
-        # information, and it’s set to 5000 by default.
-        # The value is a static property of com.conveyal.r5.analyst.cluster.PathResult;
-        # static properites of Java classes can be modified in a singleton kind of way
-        try:
-            num_destinations = len(self.destinations)
-        except AttributeError:
-            num_destinations = 0
-        if (
-            num_destinations
-            > com.conveyal.r5.analyst.cluster.PathResult.MAX_PATH_DESTINATIONS
-        ):
-            com.conveyal.r5.analyst.cluster.PathResult.MAX_PATH_DESTINATIONS = (
-                num_destinations + 1
-            )
 
     @property
     def departure(self):

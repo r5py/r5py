@@ -3,7 +3,6 @@
 """R5 classes."""
 
 from .access_leg import AccessLeg
-from .breakdown_stat import BreakdownStat
 from .detailed_itineraries import DetailedItineraries, DetailedItinerariesComputer
 from .direct_leg import DirectLeg
 from .egress_leg import EgressLeg
@@ -21,7 +20,6 @@ from .trip_planner import TripPlanner
 
 __all__ = [
     "AccessLeg",
-    "BreakdownStat",
     "DetailedItineraries",
     "DetailedItinerariesComputer",
     "DirectLeg",

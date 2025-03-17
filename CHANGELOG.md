@@ -2,6 +2,7 @@
     - Include test fixtures and data in sdist
     - Remove unused parameter breakdown
     - Fixed a few typos in documentation
+    - Relaxed unit tests for isochrones
 
 - **1.0.1** (2025-03-11):
     - Added typing-extensions to dependencies

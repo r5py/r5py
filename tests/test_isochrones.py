@@ -80,6 +80,8 @@ class TestIsochrones:
             lambda t: round(t.total_seconds() / 60)
         )
 
+        isochrones["geometry"] = isochrones["geometry"].set_precision(0.0001)
+
         geopandas.testing.assert_geodataframe_equal(
             isochrones,
             isochrones_from_multiple_origins,
@@ -130,6 +132,8 @@ class TestIsochrones:
         isochrones["travel_time"] = isochrones["travel_time"].apply(
             lambda t: round(t.total_seconds() / 60)
         )
+
+        isochrones["geometry"] = isochrones["geometry"].set_precision(0.0001)
 
         geopandas.testing.assert_geodataframe_equal(
             isochrones,

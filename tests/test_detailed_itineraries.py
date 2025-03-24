@@ -284,8 +284,8 @@ class TestDetailedItineraries:
             pytest.warns(
                 RuntimeWarning,
                 match=(
-                    "Departure time .* is outside of the time range covered by "
-                    "currently loaded GTFS data sets."
+                    "The currently loaded GTFS data sets do not define "
+                    "any services on .*"
                 ),
             ),
             self._expectations,
@@ -309,8 +309,8 @@ class TestDetailedItineraries:
             pytest.warns(
                 RuntimeWarning,
                 match=(
-                    "Departure time .* is outside of the time range covered by "
-                    "currently loaded GTFS data sets."
+                    "The currently loaded GTFS data sets do not define "
+                    "any services on .*"
                 ),
             ),
             self._expectations,

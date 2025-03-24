@@ -291,7 +291,13 @@ class TestTravelTimeMatrix:
         origin_point,
         departure_datetime,
     ):
-        with pytest.warns(RuntimeWarning, match="Departure time"):
+        with pytest.warns(
+            RuntimeWarning,
+            match=(
+                "The currently loaded GTFS data sets do not define "
+                "any services on .*"
+            ),
+        ):
             _ = r5py.TravelTimeMatrix(
                 transport_network,
                 origins=origin_point,
@@ -307,7 +313,13 @@ class TestTravelTimeMatrix:
         origin_point,
         departure_datetime,
     ):
-        with pytest.warns(RuntimeWarning, match="Departure"):
+        with pytest.warns(
+            RuntimeWarning,
+            match=(
+                "The currently loaded GTFS data sets do not define "
+                "any services on .*"
+            ),
+        ):
             _ = r5py.TravelTimeMatrix(
                 transport_network_from_test_files_without_gtfs,
                 origins=origin_point,

@@ -4,13 +4,12 @@
 """Wraps a com.conveyal.r5.transit.TransitLayer."""
 
 
-import datetime
 import functools
 
 import jpype
 import jpype.types
 
-from ..util import parse_int_date
+import java.time
 
 
 __all__ = ["TransitLayer"]
@@ -32,44 +31,24 @@ class TransitLayer:
         instance._transit_layer = transit_layer
         return instance
 
-    @functools.cached_property
-    def start_date(self):
-        """The earliest date the loaded GTFS data covers."""
-        try:
-            start_date = min(
-                [
-                    parse_int_date(service.calendar.start_date)
-                    for service in self._transit_layer.services
-                ]
-            )
-        except (AttributeError, ValueError) as exception:
-            raise ValueError("No GTFS data set loaded") from exception
-        return start_date
+    def covers(self, date):
+        """
+        Check whether `date` is covered by GTFS data sets.
 
-    @functools.cached_property
-    def end_date(self):
-        """The latest date the loaded GTFS data covers."""
-        try:
-            end_date = max(
-                [
-                    parse_int_date(service.calendar.end_date)
-                    for service in self._transit_layer.services
-                ]
-            )
-            end_date += datetime.timedelta(
-                hours=23, minutes=59, seconds=59
-            )  # *end* of day
-        except (AttributeError, ValueError) as exception:
-            raise ValueError("No GTFS data set loaded") from exception
-        return end_date
+        Arguments:
+        ----------
+        date : datetime.date
+            date for which to check whether a GTFS service exists.
 
-    def covers(self, point_in_time):
-        """Check whether `point_in_time` is covered by GTFS data sets."""
-        try:
-            covers = self.start_date <= point_in_time <= self.end_date
-        except ValueError:  # no GTFS data loaded
-            covers = False
-        return covers
+        Returns:
+        --------
+        bool
+            Whether or not any services exist on `date`.
+        """
+        date = java.time.LocalDate.of(date.year, date.month, date.day)
+        return True in set(
+            [service.activeOn(date) for service in self._transit_layer.services]
+        )
 
     def get_street_vertex_for_stop(self, stop):
         """

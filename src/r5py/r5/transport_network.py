@@ -36,7 +36,7 @@ start_jvm()
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
 
-    def __init__(self, osm_pbf, gtfs=[]):
+    def __init__(self, osm_pbf, gtfs=[], allow_errors=False):
         """
         Load a transport network.
 
@@ -46,6 +46,9 @@ class TransportNetwork:
             file path of an OpenStreetMap extract in PBF format
         gtfs : str | pathlib.Path | list[str] | list[pathlib.Path]
             path(s) to public transport schedule information in GTFS format
+        allow_errors : bool
+            try to proceed with loading the transport network even if input data
+            contain errors
         """
         osm_pbf = WorkingCopy(osm_pbf)
         if isinstance(gtfs, (str, pathlib.Path)):
@@ -84,33 +87,11 @@ class TransportNetwork:
                     f"{gtfs_file}"
                 )
                 if gtfs_feed.errors.size() > 0:
-                    # fail if encountering high priority errors
                     errors = [
                         f"{error.errorType}: {error.getMessageWithContext()}"
                         for error in gtfs_feed.errors
-                        if (
-                            error.getPriority
-                            == com.conveyal.gtfs.validator.model.Priority.HIGH
-                        )
                     ]
-                    if errors:
-                        raise GtfsFileError(
-                            (
-                                f"Could not load GTFS file {gtfs_file.name}. \n"
-                                + ("\n- ".join(errors))
-                            )
-                        )
-
-                    # warn for all other errors
-                    errors = [
-                        f"{error.errorType}: {error.getMessageWithContext()}"
-                        for error in gtfs_feed.errors
-                        if (
-                            error.getPriority
-                            != com.conveyal.gtfs.validator.model.Priority.HIGH
-                        )
-                    ]
-                    if errors:
+                    if allow_errors:
                         warnings.warn(
                             (
                                 "R5 reported the following non-critical issues with "
@@ -118,6 +99,13 @@ class TransportNetwork:
                                 + ("\n- ".join(errors))
                             ),
                             RuntimeWarning,
+                        )
+                    else:
+                        raise GtfsFileError(
+                            (
+                                f"Could not load GTFS file {gtfs_file.name}. \n"
+                                + ("\n- ".join(errors))
+                            )
                         )
 
                 transport_network.transitLayer.loadFromGtfs(gtfs_feed)

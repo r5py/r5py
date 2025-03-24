@@ -27,14 +27,6 @@ def broken_gtfs_file_path():
 
 
 @pytest.fixture
-def gtfs_file_that_raises_warnings():
-    """Return a file path of a GTFS file that has non-criticial issues."""
-    import r5py.sampledata.sao_paulo
-
-    yield r5py.sampledata.sao_paulo.gtfs
-
-
-@pytest.fixture
 def gtfs_file_path():
     """Return the file path of a GTFS sample data set."""
     import r5py.sampledata.helsinki

@@ -296,7 +296,7 @@ class TestTravelTimeMatrix:
             match=(
                 "Departure time .* is outside of the time range covered by "
                 "currently loaded GTFS data sets."
-            )
+            ),
         ):
             _ = r5py.TravelTimeMatrix(
                 transport_network,
@@ -318,7 +318,7 @@ class TestTravelTimeMatrix:
             match=(
                 "Departure time .* is outside of the time range covered by "
                 "currently loaded GTFS data sets."
-            )
+            ),
         ):
             _ = r5py.TravelTimeMatrix(
                 transport_network_from_test_files_without_gtfs,

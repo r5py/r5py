@@ -172,3 +172,16 @@ class Test_TransportNetwork:
             match="Could not load GTFS file.*ReferentialIntegrityError",
         ):
             _ = r5py.TransportNetwork(osm_pbf_file_path, [broken_gtfs_file_path])
+
+    def test_gtfs_file_with_non_critical_issues(
+        self,
+        osm_pbf_file_path,
+        gtfs_file_that_raises_warnings,
+    ):
+        with pytest.warns(
+            RuntimeWarning,
+            match=".*non-critical issues with GTFS file.*",
+        ):
+            _ = r5py.TransportNetwork(
+                osm_pbf_file_path, [gtfs_file_that_raises_warnings]
+            )

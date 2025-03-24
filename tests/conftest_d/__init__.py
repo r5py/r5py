@@ -75,6 +75,7 @@ from .sample_data import (
 from .transport_network import (
     broken_gtfs_file_path,
     gtfs_file_path,
+    gtfs_file_that_raises_warnings,
     gtfs_timezone_helsinki,
     not_a_gtfs_file,
     osm_pbf_file_path,
@@ -104,6 +105,7 @@ __all__ = [
     "file_digest_blake2s",
     "java_garbage_collection",
     "gtfs_file_path",
+    "gtfs_file_that_raises_warnings",
     "gtfs_timezone_helsinki",
     "isochrones_from_multiple_origins",
     "isochrones_bicycle",

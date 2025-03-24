@@ -84,6 +84,7 @@ class TransportNetwork:
                     f"{gtfs_file}"
                 )
                 if gtfs_feed.errors.size() > 0:
+                    # fail if encountering high priority errors
                     errors = [
                         f"{error.errorType}: {error.getMessageWithContext()}"
                         for error in gtfs_feed.errors
@@ -99,6 +100,25 @@ class TransportNetwork:
                                 + ("\n".join(errors))
                             )
                         )
+
+                    # warn for all other errors
+                    errors = [
+                        f"{error.errorType}: {error.getMessageWithContext()}"
+                        for error in gtfs_feed.errors
+                        if (
+                            error.getPriority
+                            != com.conveyal.gtfs.validator.model.Priority.HIGH
+                        )
+                    ]
+                    if errors:
+                        warnings.warn(
+                            (
+                                "R5 reported the following non-critical issues with "
+                                f"GTFS file {gtfs_file.name}: " + ("\n".join(errors))
+                            ),
+                            RuntimeWarning,
+                        )
+
                 transport_network.transitLayer.loadFromGtfs(gtfs_feed)
                 gtfs_feed.close()
 

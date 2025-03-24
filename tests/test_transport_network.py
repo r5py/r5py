@@ -161,3 +161,14 @@ class Test_TransportNetwork:
             gtfs = [gtfs]
         transport_network = r5py.TransportNetwork(osm_pbf, gtfs)
         del transport_network
+
+    def test_broken_gtfs_file(
+        self,
+        osm_pbf_file_path,
+        broken_gtfs_file_path,
+    ):
+        with pytest.raises(
+            r5py.util.exceptions.GtfsFileError,
+            match="Could not load GTFS file.*ReferentialIntegrityError"
+        ):
+            _ = r5py.TransportNetwork(osm_pbf_file_path, [broken_gtfs_file_path])

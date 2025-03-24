@@ -16,6 +16,7 @@ from .street_layer import StreetLayer
 from .transit_layer import TransitLayer
 from .transport_mode import TransportMode
 from ..util import Config, contains_gtfs_data, FileDigest, start_jvm, WorkingCopy
+from ..util.exceptions import GtfsFileError
 
 import com.conveyal.gtfs
 import com.conveyal.osmlib
@@ -79,9 +80,20 @@ class TransportNetwork:
             transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
             transport_network.transitLayer.parentNetwork = transport_network
             for gtfs_file in gtfs:
-                gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(
+                gtfs_feed = com.conveyal.gtfs.GTFSFeed.writableTempFileFromGtfs(
                     f"{gtfs_file}"
                 )
+                if gtfs_feed.errors.size() > 0:
+                    errors = f"Could not load GTFS file {gtfs_file.name}. "
+                    errors += (
+                        "\n".join(
+                            [
+                                f"{error.errorType}: {error.getMessageWithContext()}"
+                                for error in gtfs_feed.errors
+                            ]
+                        )
+                    )
+                    raise GtfsFileError(errors)
                 transport_network.transitLayer.loadFromGtfs(gtfs_feed)
                 gtfs_feed.close()
 

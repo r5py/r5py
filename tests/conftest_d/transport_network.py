@@ -6,6 +6,11 @@
 
 import pytest
 
+from .data_directory import DATA_DIRECTORY
+
+
+BROKEN_GTFS_FILE = DATA_DIRECTORY / "test_broken_gtfs.zip"
+
 
 @pytest.fixture
 def not_a_gtfs_file():
@@ -13,6 +18,12 @@ def not_a_gtfs_file():
     import r5py.sampledata.helsinki
 
     yield r5py.sampledata.helsinki.osm_pbf
+
+
+@pytest.fixture
+def broken_gtfs_file_path():
+    """Return a file path of a broken GTFS file."""
+    yield BROKEN_GTFS_FILE
 
 
 @pytest.fixture

@@ -73,6 +73,7 @@ from .sample_data import (
 )
 
 from .transport_network import (
+    broken_gtfs_file_path,
     gtfs_file_path,
     gtfs_timezone_helsinki,
     not_a_gtfs_file,
@@ -89,6 +90,7 @@ from .upstream_r5 import (
 )
 
 __all__ = [
+    "broken_gtfs_file_path",
     "can_compute_detailed_route_geometries",
     "departure_datetime",
     "detailed_itineraries_bicycle",

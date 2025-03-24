@@ -194,8 +194,10 @@ class RegionalTask:
         ):
             # fmt: on
             warnings.warn(
-                f"Departure time {departure} is outside of the time range "
-                "covered by currently loaded GTFS data sets.",
+                (
+                    "The currently loaded GTFS data sets do not define "
+                    f"any services on {departure.date()}."
+                ),
                 RuntimeWarning,
             )
 

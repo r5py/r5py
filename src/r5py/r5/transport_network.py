@@ -96,8 +96,8 @@ class TransportNetwork:
                     if errors:
                         raise GtfsFileError(
                             (
-                                f"Could not load GTFS file {gtfs_file.name}. "
-                                + ("\n".join(errors))
+                                f"Could not load GTFS file {gtfs_file.name}. \n"
+                                + ("\n- ".join(errors))
                             )
                         )
 
@@ -114,7 +114,8 @@ class TransportNetwork:
                         warnings.warn(
                             (
                                 "R5 reported the following non-critical issues with "
-                                f"GTFS file {gtfs_file.name}: " + ("\n".join(errors))
+                                f"GTFS file {gtfs_file.name}: \n"
+                                + ("\n- ".join(errors))
                             ),
                             RuntimeWarning,
                         )

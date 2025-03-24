@@ -167,6 +167,12 @@ class Test_TransportNetwork:
         osm_pbf_file_path,
         broken_gtfs_file_path,
     ):
+        # first, delete possible cached transport network
+        for cached_transport_network in r5py.util.Config().CACHE_DIR.glob(
+            "*.transport_network"
+        ):
+            cached_transport_network.unlink()
+
         with pytest.raises(
             r5py.util.exceptions.GtfsFileError,
             match="Could not load GTFS file.*",
@@ -178,6 +184,12 @@ class Test_TransportNetwork:
         osm_pbf_file_path,
         broken_gtfs_file_path,
     ):
+        # first, delete possible cached transport network
+        for cached_transport_network in r5py.util.Config().CACHE_DIR.glob(
+            "*.transport_network"
+        ):
+            cached_transport_network.unlink()
+
         with pytest.warns(
             RuntimeWarning,
             match=".*non-critical issues with GTFS file.*",

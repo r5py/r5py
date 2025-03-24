@@ -294,8 +294,8 @@ class TestTravelTimeMatrix:
         with pytest.warns(
             RuntimeWarning,
             match=(
-                "Departure time .* is outside of the time range covered by "
-                "currently loaded GTFS data sets."
+                "The currently loaded GTFS data sets do not define "
+                "any services on .*"
             ),
         ):
             _ = r5py.TravelTimeMatrix(
@@ -316,8 +316,8 @@ class TestTravelTimeMatrix:
         with pytest.warns(
             RuntimeWarning,
             match=(
-                "Departure time .* is outside of the time range covered by "
-                "currently loaded GTFS data sets."
+                "The currently loaded GTFS data sets do not define "
+                "any services on .*"
             ),
         ):
             _ = r5py.TravelTimeMatrix(

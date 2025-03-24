@@ -4,13 +4,12 @@
 """Wraps a com.conveyal.r5.transit.TransitLayer."""
 
 
-import datetime
 import functools
 
 import jpype
 import jpype.types
 
-from ..util import parse_int_date
+import java.time
 
 
 __all__ = ["TransitLayer"]
@@ -46,6 +45,7 @@ class TransitLayer:
         bool
             Whether or not any services exist on `date`.
         """
+        date = java.time.LocalDate.of(date.year, date.month, date.day)
         return True in set(
             [service.activeOn(date) for service in self._transit_layer.services]
         )

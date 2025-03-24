@@ -85,13 +85,11 @@ class TransportNetwork:
                 )
                 if gtfs_feed.errors.size() > 0:
                     errors = f"Could not load GTFS file {gtfs_file.name}. "
-                    errors += (
-                        "\n".join(
-                            [
-                                f"{error.errorType}: {error.getMessageWithContext()}"
-                                for error in gtfs_feed.errors
-                            ]
-                        )
+                    errors += "\n".join(
+                        [
+                            f"{error.errorType}: {error.getMessageWithContext()}"
+                            for error in gtfs_feed.errors
+                        ]
                     )
                     raise GtfsFileError(errors)
                 transport_network.transitLayer.loadFromGtfs(gtfs_feed)

@@ -13,7 +13,7 @@ class R5pyError(Exception):
 
 # more specific exceptions
 class GtfsFileError(R5pyError):
-    """"GTFS file contained errors."""
+    """GTFS file contained errors."""
 
 
 class ChecksumFailed(requests.RequestException, R5pyError):

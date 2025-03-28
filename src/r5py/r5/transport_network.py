@@ -94,7 +94,7 @@ class TransportNetwork:
                     if allow_errors:
                         warnings.warn(
                             (
-                                "R5 reported the following non-critical issues with "
+                                "R5 reported the following issues with "
                                 f"GTFS file {gtfs_file.name}: \n"
                                 + ("\n- ".join(errors))
                             ),

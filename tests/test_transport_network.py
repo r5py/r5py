@@ -183,7 +183,7 @@ class Test_TransportNetwork:
     ):
         with pytest.warns(
             RuntimeWarning,
-            match=".*non-critical issues with GTFS file.*",
+            match=".*issues with GTFS file.*",
         ):
             _ = r5py.TransportNetwork(
                 sao_paulo_osm_pbf_file_path,

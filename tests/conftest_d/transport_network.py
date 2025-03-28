@@ -41,11 +41,19 @@ def gtfs_timezone_helsinki():
 
 
 @pytest.fixture
-def osm_pbf_file_path():
-    """Return the path of the OSM sample data set."""
+def helsinki_osm_pbf_file_path():
+    """Return the path of the OSM sample data set covering Helsinki."""
     import r5py.sampledata.helsinki
 
     yield r5py.sampledata.helsinki.osm_pbf
+
+
+@pytest.fixture
+def sao_paulo_osm_pbf_file_path():
+    """Return the path of the OSM sample data set covering São Paulo."""
+    import r5py.sampledata.sao_paulo
+
+    yield r5py.sampledata.sao_paulo.osm_pbf
 
 
 @pytest.fixture

@@ -150,13 +150,13 @@ class Test_TransportNetwork:
     )
     def test_argument_types(
         self,
-        osm_pbf_file_path,
+        helsinki_osm_pbf_file_path,
         gtfs_file_path,
         osm_pbf_type,
         gtfs_type,
         gtfs_is_list,
     ):
-        osm_pbf = osm_pbf_type(osm_pbf_file_path)
+        osm_pbf = osm_pbf_type(helsinki_osm_pbf_file_path)
         gtfs = gtfs_type(gtfs_file_path)
         if gtfs_is_list:
             gtfs = [gtfs]
@@ -165,40 +165,29 @@ class Test_TransportNetwork:
 
     def test_broken_gtfs_file(
         self,
-        osm_pbf_file_path,
+        helsinki_osm_pbf_file_path,
         broken_gtfs_file_path,
     ):
-        # first, delete possible cached transport network
-        for cached_transport_network in itertools.chain(
-            r5py.util.Config().CACHE_DIR.glob("*.transport_network"),
-            r5py.util.Config().CACHE_DIR.glob("*.mapdb*"),
-        ):
-            cached_transport_network.rename(f"{cached_transport_network}_invalid")
-
         with pytest.raises(
             r5py.util.exceptions.GtfsFileError,
             match="Could not load GTFS file.*",
         ):
-            _ = r5py.TransportNetwork(osm_pbf_file_path, [broken_gtfs_file_path])
+            _ = r5py.TransportNetwork(
+                helsinki_osm_pbf_file_path,
+                [broken_gtfs_file_path],
+            )
 
     def test_broken_gtfs_file_allow_errors(
         self,
-        osm_pbf_file_path,
+        sao_paulo_osm_pbf_file_path,
         broken_gtfs_file_path,
     ):
-        # first, delete possible cached transport network
-        for cached_transport_network in itertools.chain(
-            r5py.util.Config().CACHE_DIR.glob("*.transport_network"),
-            r5py.util.Config().CACHE_DIR.glob("*.mapdb*"),
-        ):
-            cached_transport_network.rename(f"{cached_transport_network}_invalid")
-
         with pytest.warns(
             RuntimeWarning,
             match=".*non-critical issues with GTFS file.*",
         ):
             _ = r5py.TransportNetwork(
-                osm_pbf_file_path,
+                sao_paulo_osm_pbf_file_path,
                 [broken_gtfs_file_path],
                 allow_errors=True,
             )

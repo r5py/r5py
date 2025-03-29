@@ -6,6 +6,11 @@
 
 import pytest
 
+from .data_directory import DATA_DIRECTORY
+
+
+BROKEN_GTFS_FILE = DATA_DIRECTORY / "test_broken_gtfs.zip"
+
 
 @pytest.fixture
 def not_a_gtfs_file():
@@ -13,6 +18,12 @@ def not_a_gtfs_file():
     import r5py.sampledata.helsinki
 
     yield r5py.sampledata.helsinki.osm_pbf
+
+
+@pytest.fixture
+def broken_gtfs_file_path():
+    """Return a file path of a broken GTFS file."""
+    yield BROKEN_GTFS_FILE
 
 
 @pytest.fixture
@@ -30,11 +41,19 @@ def gtfs_timezone_helsinki():
 
 
 @pytest.fixture
-def osm_pbf_file_path():
-    """Return the path of the OSM sample data set."""
+def helsinki_osm_pbf_file_path():
+    """Return the path of the OSM sample data set covering Helsinki."""
     import r5py.sampledata.helsinki
 
     yield r5py.sampledata.helsinki.osm_pbf
+
+
+@pytest.fixture
+def sao_paulo_osm_pbf_file_path():
+    """Return the path of the OSM sample data set covering São Paulo."""
+    import r5py.sampledata.sao_paulo
+
+    yield r5py.sampledata.sao_paulo.osm_pbf
 
 
 @pytest.fixture

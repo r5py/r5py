@@ -16,6 +16,7 @@ from .street_layer import StreetLayer
 from .transit_layer import TransitLayer
 from .transport_mode import TransportMode
 from ..util import Config, contains_gtfs_data, FileDigest, start_jvm, WorkingCopy
+from ..util.exceptions import GtfsFileError
 
 import com.conveyal.gtfs
 import com.conveyal.osmlib
@@ -35,7 +36,7 @@ start_jvm()
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
 
-    def __init__(self, osm_pbf, gtfs=[]):
+    def __init__(self, osm_pbf, gtfs=[], allow_errors=False):
         """
         Load a transport network.
 
@@ -45,6 +46,9 @@ class TransportNetwork:
             file path of an OpenStreetMap extract in PBF format
         gtfs : str | pathlib.Path | list[str] | list[pathlib.Path]
             path(s) to public transport schedule information in GTFS format
+        allow_errors : bool
+            try to proceed with loading the transport network even if input data
+            contain errors
         """
         osm_pbf = WorkingCopy(osm_pbf)
         if isinstance(gtfs, (str, pathlib.Path)):
@@ -79,9 +83,31 @@ class TransportNetwork:
             transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
             transport_network.transitLayer.parentNetwork = transport_network
             for gtfs_file in gtfs:
-                gtfs_feed = com.conveyal.gtfs.GTFSFeed.readOnlyTempFileFromGtfs(
+                gtfs_feed = com.conveyal.gtfs.GTFSFeed.writableTempFileFromGtfs(
                     f"{gtfs_file}"
                 )
+                if gtfs_feed.errors.size() > 0:
+                    errors = [
+                        f"{error.errorType}: {error.getMessageWithContext()}"
+                        for error in gtfs_feed.errors
+                    ]
+                    if allow_errors:
+                        warnings.warn(
+                            (
+                                "R5 reported the following issues with "
+                                f"GTFS file {gtfs_file.name}: \n"
+                                + ("\n- ".join(errors))
+                            ),
+                            RuntimeWarning,
+                        )
+                    else:
+                        raise GtfsFileError(
+                            (
+                                f"Could not load GTFS file {gtfs_file.name}. \n"
+                                + ("\n- ".join(errors))
+                            )
+                        )
+
                 transport_network.transitLayer.loadFromGtfs(gtfs_feed)
                 gtfs_feed.close()
 

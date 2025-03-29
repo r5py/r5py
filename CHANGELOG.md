@@ -1,8 +1,12 @@
+- **1.0.3** (2025-03-29):
+    - More precise checking of GTFS coverage for departure date
+    - Report issues in input GTFS data
+    - Relaxed unit tests for isochrones
+
 - **1.0.2** (2025-03-13):
     - Include test fixtures and data in sdist
     - Remove unused parameter breakdown
     - Fixed a few typos in documentation
-    - Relaxed unit tests for isochrones
 
 - **1.0.1** (2025-03-11):
     - Added typing-extensions to dependencies

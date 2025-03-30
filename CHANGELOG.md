@@ -1,4 +1,4 @@
-- **1.0.3** (2025-03-29):
+- **1.0.3** (2025-03-30):
     - More precise checking of GTFS coverage for departure date
     - Report issues in input GTFS data
     - Relaxed unit tests for isochrones

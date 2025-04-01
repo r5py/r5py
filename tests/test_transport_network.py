@@ -190,3 +190,15 @@ class Test_TransportNetwork:
                 [broken_gtfs_file_path],
                 allow_errors=True,
             )
+
+    def test_transport_network_with_elevation_model(
+        self,
+        helsinki_osm_pbf_file_path,
+        gtfs_file_path,
+        elevation_model_file_path,
+    ):
+        _ = r5py.TransportNetwork(
+            helsinki_osm_pbf_file_path,
+            gtfs_file_path,
+            elevation_model_file_path,
+        )

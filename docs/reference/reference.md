@@ -36,6 +36,12 @@
 ```
 
 ```{eval-rst}
+.. autoclass:: r5py.ElevationCostFunction
+    :members:
+    :inherited-members:
+```
+
+```{eval-rst}
 .. autoclass:: r5py.r5.TripPlanner
     :members:
     :inherited-members:

@@ -74,6 +74,7 @@ from .sample_data import (
 
 from .transport_network import (
     broken_gtfs_file_path,
+    elevation_model_file_path,
     gtfs_file_path,
     gtfs_timezone_helsinki,
     helsinki_osm_pbf_file_path,
@@ -98,6 +99,7 @@ __all__ = [
     "detailed_itineraries_car",
     "detailed_itineraries_transit",
     "detailed_itineraries_walk",
+    "elevation_model_file_path",
     "file_digest_blake2b",
     "file_digest_blake2s",
     "file_digest_sha256",

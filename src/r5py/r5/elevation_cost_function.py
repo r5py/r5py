@@ -21,7 +21,7 @@ start_jvm()
 
 class ElevationCostFunction(enum.Enum):
     """
-    Elevation cost functions
+    Elevation cost functions.
 
     TOBLER: Waldo Tobler’s hiking function, cf. https://en.wikipedia.org/wiki/Tobler%27s_hiking_function
     MINETTI: Minetti et al.’s perceived effort/energy consumption, cf.

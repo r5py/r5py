@@ -26,6 +26,7 @@ dependencies = [
     "pandas>=2.1.0",
     "psutil",
     "pyproj",
+    "rasterio",
     "requests",
     "scikit-learn",
     "shapely>=2.0",

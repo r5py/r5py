@@ -29,11 +29,9 @@ def broken_gtfs_file_path():
 @pytest.fixture
 def elevation_model_file_path():
     """Return the file path of a GTFS sample data set."""
-    # import r5py.sampledata.helsinki
+    import r5py.sampledata.helsinki
 
-    # yield r5py.sampledata.helsinki.elevation_model
-    import pathlib
-    yield pathlib.Path("/home/christoph/.cache/r5py/sampledata/elevation_model_2021_.tif")
+    yield r5py.sampledata.helsinki.elevation_model
 
 
 @pytest.fixture

@@ -13,7 +13,7 @@ import jpype
 import jpype.types
 
 from .elevation_cost_function import ElevationCostFunction
-from .file_storage import FileStorage
+from .elevation_model import ElevationModel
 from .street_layer import StreetLayer
 from .transit_layer import TransitLayer
 from .transport_mode import TransportMode
@@ -70,8 +70,6 @@ class TransportNetwork:
         if isinstance(gtfs, (str, pathlib.Path)):
             gtfs = [gtfs]
         gtfs = [WorkingCopy(path) for path in gtfs]
-        if elevation_model:
-            elevation_model = WorkingCopy(elevation_model)
 
         # a hash representing all input files
         digest = hashlib.sha256(
@@ -143,13 +141,10 @@ class TransportNetwork:
             transport_network.transitLayer.buildDistanceTables(None)
 
             if elevation_model is not None:
-                com.conveyal.analysis.components.WorkerComponents.fileStorage = FileStorage()
-                elevation_raster = com.conveyal.r5.analyst.scenario.RasterCost()
-                elevation_raster.dataSourceId = f"{elevation_model.with_suffix('')}"
-                elevation_raster.costFunction = elevation_cost_function
-                print(elevation_raster.dataSourceId)
-                elevation_raster.resolve(transport_network)
-                elevation_raster.apply(transport_network)
+                ElevationModel(
+                    elevation_model,
+                    elevation_cost_function,
+                ).apply_to(transport_network)
 
             osm_file.close()  # not needed after here?
 

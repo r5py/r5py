@@ -42,7 +42,6 @@ class FileStorage:
         java.io.File
             The file identified by file_storage_key
         """
-        print(file_storage_key, file_storage_key.path)
         return java.io.File(file_storage_key.path)
 
     @jpype.JOverride

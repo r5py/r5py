@@ -15,7 +15,7 @@ with warnings.catch_warnings():
             "The 'shapely.geos' module is deprecated, and will be removed in "
             "a future version. All attributes of 'shapely.geos' are available "
             "directly from the top-level 'shapely' namespace (since shapely "
-            "2.0.0)"
+            "2.0.0)."
         ),
     )
     import geopandas  # noqa: F401

@@ -6,6 +6,7 @@
 # geopandas 1.0.1 imports shapely.geos which raises
 # a Deprecation warning in Shapely 2.1.0
 import warnings
+
 with warnings.catch_warnings():
     warnings.filterwarnings(
         "ignore",

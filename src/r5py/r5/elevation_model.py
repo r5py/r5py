@@ -38,7 +38,7 @@ class ElevationModel:
             of slopes
         """
         elevation_model = WorkingCopy(elevation_model)
-        self._convert_tiff_to_format_readable_by_r5(elevation_model)
+        elevation_model = self._convert_tiff_to_format_readable_by_r5(elevation_model)
 
         # instantiate an com.conveyal.file.FileStorage singleton
         com.conveyal.analysis.components.WorkerComponents.fileStorage = FileStorage()
@@ -66,7 +66,7 @@ class ElevationModel:
         # to work around it, convert the input to a format known to work.
 
         input_tiff = tiff.with_stem(f".{tiff.stem}")
-        output_tiff = tiff  # this is a copy and not just a pointer
+        output_tiff = tiff.with_suffix(".tif")
         tiff.rename(input_tiff)
 
         with rasterio.open(input_tiff) as source:
@@ -80,3 +80,5 @@ class ElevationModel:
             with rasterio.open(output_tiff, "w", **metadata) as destination:
                 destination.write(source.read())
         input_tiff.unlink()
+
+        return output_tiff

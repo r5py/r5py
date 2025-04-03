@@ -3,6 +3,22 @@
 
 """Fixtures to be used in r5py tests."""
 
+# geopandas 1.0.1 imports shapely.geos which raises
+# a Deprecation warning in Shapely 2.1.0
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings(
+        "ignore",
+        category=DeprecationWarning,
+        message=(
+            "The 'shapely.geos' module is deprecated, and will be removed in "
+            "a future version. All attributes of 'shapely.geos' are available "
+            "directly from the top-level 'shapely' namespace (since shapely "
+            "2.0.0)"
+        ),
+    )
+    import geopandas  # noqa: F401
+
 
 from .destinations import (
     population_grid,

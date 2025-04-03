@@ -82,7 +82,6 @@ filterwarnings = [
     "error",
     "ignore:Could not find R5 jar, trying to download it from upstream",
     "ignore:Successfully downloaded r5-",
-    "ignore:The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0)"
 ]
 testpaths = ["tests"]
 

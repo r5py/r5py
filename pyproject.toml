@@ -81,7 +81,7 @@ addopts = "-p no:faulthandler --cov=r5py --cov-report term-missing --cov-report 
 filterwarnings = [
     "error",
     "ignore:Could not find R5 jar, trying to download it from upstream",
-    "ignore:Successfully downloaded r5-",
+    "ignore:Successfully downloaded r5-"
 ]
 testpaths = ["tests"]
 

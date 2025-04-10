@@ -92,7 +92,10 @@ class Config:
                 FileNotFoundError,  # broken symlink
                 PermissionError,
             ):
-                cached_file.unlink()
+                try:
+                    cached_file.unlink()
+                except IsADirectoryError:
+                    pass
 
         return cache_dir
 

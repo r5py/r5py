@@ -46,3 +46,20 @@ class TestConfig:
         _ = config.CACHE_DIR  # re-evaluate cache dir contents
 
         assert not expired_file.exists()
+
+    def test_cache_clearing_skip_directory(self):
+        config = r5py.util.config.Config()
+
+        past_best_by_date = (
+            datetime.datetime.now() - CACHE_MAX_AGE - datetime.timedelta(seconds=1)
+        ).timestamp()
+
+        expired_directory = pathlib.Path(config.CACHE_DIR / "expired-file")
+        expired_directory.mkdir()
+        os.utime(expired_directory, (past_best_by_date, past_best_by_date))
+
+        config.__dict__.pop("CACHE_DIR", None)  # clear functools.cached_property
+        _ = config.CACHE_DIR  # re-evaluate cache dir contents
+
+        assert expired_directory.exists()
+        expired_directory.rmdir()

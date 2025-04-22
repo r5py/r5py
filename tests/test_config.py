@@ -62,4 +62,7 @@ class TestConfig:
         _ = config.CACHE_DIR  # re-evaluate cache dir contents
 
         assert expired_directory.exists()
-        expired_directory.rmdir()
+        try:
+            expired_directory.rmdir()
+        except PermissionError:
+            pass  # Windows ...

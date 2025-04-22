@@ -94,7 +94,10 @@ class Config:
             ):
                 try:
                     cached_file.unlink()
-                except IsADirectoryError:
+                except (
+                    IsADirectoryError,  # only available on Linux kernels
+                    PermissionError,  # what’s raised instead on Win and MacOs
+                ):
                     pass
 
         return cache_dir

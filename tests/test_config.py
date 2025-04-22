@@ -54,7 +54,7 @@ class TestConfig:
             datetime.datetime.now() - CACHE_MAX_AGE - datetime.timedelta(seconds=1)
         ).timestamp()
 
-        expired_directory = pathlib.Path(config.CACHE_DIR / "expired-file")
+        expired_directory = pathlib.Path(config.CACHE_DIR / "expired-dir")
         expired_directory.mkdir()
         os.utime(expired_directory, (past_best_by_date, past_best_by_date))
 

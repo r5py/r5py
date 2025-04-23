@@ -4,6 +4,9 @@ name: Unit tests
 on:
   pull_request:
   workflow_call:
+  push:
+    branches:
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

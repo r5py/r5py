@@ -3,6 +3,18 @@
 
 """Fixtures to be used in r5py tests."""
 
+# geopandas 1.0.1 imports shapely.geos which raises
+# a Deprecation warning in Shapely 2.1.0
+import warnings
+
+with warnings.catch_warnings():
+    warnings.filterwarnings(
+        "ignore",
+        category=DeprecationWarning,
+        message=".*shapely.geos.*deprecated.*",
+    )
+    import geopandas  # noqa: F401
+
 
 from .destinations import (
     population_grid,
@@ -74,6 +86,7 @@ from .sample_data import (
 
 from .transport_network import (
     broken_gtfs_file_path,
+    elevation_model_file_path,
     gtfs_file_path,
     gtfs_timezone_helsinki,
     helsinki_osm_pbf_file_path,
@@ -98,6 +111,7 @@ __all__ = [
     "detailed_itineraries_car",
     "detailed_itineraries_transit",
     "detailed_itineraries_walk",
+    "elevation_model_file_path",
     "file_digest_blake2b",
     "file_digest_blake2s",
     "file_digest_sha256",

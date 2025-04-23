@@ -2,10 +2,10 @@
 
 ## Data for creating a routable network
 
-When calculating travel times with *r5py*, you typically need two types of
+When calculating travel times with *r5py*, you typically need three types of
 datasets:
 
-:::::{grid} 1 1 2 2
+:::::{grid} 1 1 3 3
 
 ::::{grid-item-card}
 a **road network** dataset from [OpenStreetMap
@@ -25,6 +25,13 @@ Specification*](https://en.wikipedia.org/wiki/GTFS) format (optional):
 These data contain all information necessary to calculate travel times on
 public transport, such as the stops, routes, trips and schedules of busses,
 trams, trains, and other vehicles.
+::::
+
+::::{grid-item-card}
+a **digital elevation model** in
+[*GeoTIFF*](https://en.wikipedia.org/wiki/GeoTIFF) format (optional):
+
+These data can be used to model the terrain. They allow travel times to include the extra effort necessary to climb slopes on a bicycle or walking. This includes the walking trips to a public transport stop, or when changing from one line to another.
 ::::
 
 ::::{grid-item}
@@ -97,6 +104,20 @@ you are aware of.
     cities. *Deprecated: will be replaced by Mobility Database*.
 
 
+#### Digital elevation models in GeoTIFF format
+
+  - *Your local municipality’s, county’s, or regional *Open Governmental Data
+    (OGD)* portal*: many cities and regions across the world share detailed
+    geographical data, including digital elevation models. They might also be
+    called ‘height models’, or be hidden with complicated-to-use LIDAR point
+    cloud data sets.
+  - [OpenDEM](https://www.opendem.info) maintains a list of freely available
+    high-resolution elevation data sets
+  - [EU-DEM](http://www.eea.europa.eu/data-and-maps/data/eu-dem#tab-metadata),
+    the ‘digital elevation model over Europe’ covers the 39 member countries of
+    the European environment agency
+
+
 (check-gtfs-files)=
 
 :::{admonition} Check GTFS files
@@ -157,9 +178,14 @@ the sample data comprises of the following data sets:
     [ODbL license](https://www.openstreetmap.org/copyright))
   
   - A GTFS public transport schedule dataset for Helsinki, cropped and minimised
-    from the official open-data download from *Helsingin seudun liikenne*’s (HSL)
-    [open data web page](https://github.com/r5py/r5py/tree/main/docs/_static/data/),
-    licensed under a Creative Commons By Attribution 4.0.
+    from the official open-data download from *Helsingin seudun liikenne*’s
+    (HSL) [open data web page](https://www.hsl.fi/en/hsl/open-data/) published
+    under a Creative Commons By Attribution 4.0 license.
+
+  - An elevation model for Helsinki, cropped to cover the extent of the other
+    data sets, and downloaded from the [City of
+    Helsinki](https://hri.fi/data/en_GB/dataset/helsingin-korkeusmalli),
+    published under a Creative Commons By Attribution 4.0 license.
     
 - São Paulo, Brazil
   - A population grid data set of São Paulo city centre, obtained from the

@@ -26,6 +26,7 @@ dependencies = [
     "pandas>=2.1.0",
     "psutil",
     "pyproj",
+    "rasterio",
     "requests",
     "scikit-learn",
     "shapely>=2.0",
@@ -52,7 +53,7 @@ docs = ["contextily", "folium", "GitPython", "h3>=4.0.0b2", "jupyterlab_myst",
         "shapely", "sphinx", "sphinx-book-theme", "sphinx-design",
         "sphinxcontrib-bibtex", "sphinxcontrib-images"]
 tests = ["pyarrow", "pytest", "pytest-cov", "pytest-lazy-fixtures",
-         "r5py.sampledata.helsinki>=0.1.1", "r5py.sampledata.sao_paulo>=0.1.1",
+         "r5py.sampledata.helsinki>=1.0.3", "r5py.sampledata.sao_paulo>=0.1.1",
          "typing-extensions"]
 
 

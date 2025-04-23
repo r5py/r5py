@@ -8,6 +8,7 @@ __version__ = "1.0.3"
 from .r5 import (
     DetailedItineraries,
     DetailedItinerariesComputer,
+    ElevationCostFunction,
     Isochrones,
     RegionalTask,
     TransportMode,
@@ -19,6 +20,7 @@ from .r5 import (
 __all__ = [
     "DetailedItineraries",
     "DetailedItinerariesComputer",
+    "ElevationCostFunction",
     "Isochrones",
     "RegionalTask",
     "TransportMode",

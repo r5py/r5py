@@ -12,12 +12,15 @@ import warnings
 import jpype
 import jpype.types
 
+from .elevation_cost_function import ElevationCostFunction
+from .elevation_model import ElevationModel
 from .street_layer import StreetLayer
 from .transit_layer import TransitLayer
 from .transport_mode import TransportMode
 from ..util import Config, contains_gtfs_data, FileDigest, start_jvm, WorkingCopy
 from ..util.exceptions import GtfsFileError
 
+import com.conveyal.analysis
 import com.conveyal.gtfs
 import com.conveyal.osmlib
 import com.conveyal.r5
@@ -36,7 +39,14 @@ start_jvm()
 class TransportNetwork:
     """Wrap a com.conveyal.r5.transit.TransportNetwork."""
 
-    def __init__(self, osm_pbf, gtfs=[], allow_errors=False):
+    def __init__(
+        self,
+        osm_pbf,
+        gtfs=[],
+        elevation_model=None,
+        elevation_cost_function=ElevationCostFunction.TOBLER,
+        allow_errors=False,
+    ):
         """
         Load a transport network.
 
@@ -46,6 +56,12 @@ class TransportNetwork:
             file path of an OpenStreetMap extract in PBF format
         gtfs : str | pathlib.Path | list[str] | list[pathlib.Path]
             path(s) to public transport schedule information in GTFS format
+        elevation_model : str | pathlib.Path
+            file path to a digital elevation model in TIF format,
+            single-band, the value of which is the elevation in metres
+        elevation_cost_function : r5py.ElevationCostFunction
+            which algorithm to use to compute the added effort and travel time
+            of slopes
         allow_errors : bool
             try to proceed with loading the transport network even if input data
             contain errors
@@ -57,9 +73,11 @@ class TransportNetwork:
 
         # a hash representing all input files
         digest = hashlib.sha256(
-            "".join([FileDigest(osm_pbf)] + [FileDigest(path) for path in gtfs]).encode(
-                "utf-8"
-            )
+            "".join(
+                [FileDigest(osm_pbf)]
+                + [FileDigest(path) for path in gtfs]
+                + [FileDigest(elevation_model) if elevation_model is not None else ""]
+            ).encode("utf-8")
         ).hexdigest()
 
         try:
@@ -121,6 +139,12 @@ class TransportNetwork:
             transfer_finder.findParkRideTransfer()
 
             transport_network.transitLayer.buildDistanceTables(None)
+
+            if elevation_model is not None:
+                ElevationModel(
+                    elevation_model,
+                    elevation_cost_function,
+                ).apply_to(transport_network)
 
             osm_file.close()  # not needed after here?
 

@@ -6,6 +6,7 @@ from .access_leg import AccessLeg
 from .detailed_itineraries import DetailedItineraries, DetailedItinerariesComputer
 from .direct_leg import DirectLeg
 from .egress_leg import EgressLeg
+from .elevation_cost_function import ElevationCostFunction
 from .isochrones import Isochrones
 from .regional_task import RegionalTask
 from .scenario import Scenario
@@ -24,6 +25,7 @@ __all__ = [
     "DetailedItinerariesComputer",
     "DirectLeg",
     "EgressLeg",
+    "ElevationCostFunction",
     "Isochrones",
     "RegionalTask",
     "Scenario",

@@ -106,7 +106,8 @@ overview_map
 ## Transport network
 
 Virtually all operations of *r5py* require a transport network. *R5py*
-understands and reads the following types of transport networks:
+understands and reads the following types of data that relates to transport
+networks:
 
 - a street network, including infrastructure for cycling and walking, is
   loaded from an [OpenStreetMap
@@ -114,6 +115,10 @@ understands and reads the following types of transport networks:
   (`.pbf`) format (mandatory)
 - a public transport schedule from one or more
   [GTFS](https://en.wikipedia.org/wiki/GTFS) files (optional).
+- a [digital elevation model
+  (DEM)](https://en.wikipedia.org/wiki/Digital_elevation_model), in
+  [GeoTIFF](https://www.ogc.org/standards/geotiff/) format, to estimate the
+  impact of topography on active transport modes (optional).
 
 For the quickstart example, you find sample data sets in the
 `r5py.sampledata.helsinki` package (see [above](#origins-and-destination)).
@@ -132,6 +137,7 @@ import r5py.sampledata.helsinki
 transport_network = r5py.TransportNetwork(
     r5py.sampledata.helsinki.osm_pbf,
     [r5py.sampledata.helsinki.gtfs],
+    r5py.sampledata.helsinki.elevation_model,
 )
 ```
 

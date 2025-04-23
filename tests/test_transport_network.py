@@ -190,3 +190,29 @@ class Test_TransportNetwork:
                 [broken_gtfs_file_path],
                 allow_errors=True,
             )
+
+    def test_transport_network_with_elevation_model_tobler(
+        self,
+        helsinki_osm_pbf_file_path,
+        gtfs_file_path,
+        elevation_model_file_path,
+    ):
+        _ = r5py.TransportNetwork(
+            osm_pbf=helsinki_osm_pbf_file_path,
+            gtfs=[gtfs_file_path],
+            elevation_model=elevation_model_file_path,
+            elevation_cost_function=r5py.ElevationCostFunction.TOBLER,
+        )
+
+    def test_transport_network_with_elevation_model_minetti(
+        self,
+        helsinki_osm_pbf_file_path,
+        gtfs_file_path,
+        elevation_model_file_path,
+    ):
+        _ = r5py.TransportNetwork(
+            osm_pbf=helsinki_osm_pbf_file_path,
+            gtfs=[gtfs_file_path],
+            elevation_model=elevation_model_file_path,
+            elevation_cost_function=r5py.ElevationCostFunction.MINETTI,
+        )

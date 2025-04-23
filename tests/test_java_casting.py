@@ -28,6 +28,14 @@ class TestJavaCasting:
             (r5py.TransportMode.WALK, com.conveyal.r5.api.util.LegMode),
             (r5py.TransportMode.BICYCLE_RENT, com.conveyal.r5.api.util.LegMode),
             (r5py.TransportMode.CAR_PARK, com.conveyal.r5.api.util.LegMode),
+            (
+                r5py.ElevationCostFunction.TOBLER,
+                com.conveyal.r5.analyst.scenario.RasterCost.CostFunction,
+            ),
+            (
+                r5py.ElevationCostFunction.MINETTI,
+                com.conveyal.r5.analyst.scenario.RasterCost.CostFunction,
+            ),
         ],
     )
     def test_transport_modes_cast(self, python_object, java_class):

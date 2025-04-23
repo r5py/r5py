@@ -15,6 +15,7 @@ dependencies:
     - pandas
     - pyproj
     - psutil
+    - rasterio
     - requests
     - shapely
     - scikit-learn

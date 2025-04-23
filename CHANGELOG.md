@@ -1,3 +1,6 @@
+- **1.0.4** (2025-XX-XX):
+    - terrain-sensitive routing
+
 - **1.0.3** (2025-03-30):
     - More precise checking of GTFS coverage for departure date
     - Report issues in input GTFS data

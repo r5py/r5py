@@ -7,7 +7,7 @@ Please provide a brief summary of the changes included in this pull request:
 
 Fixes #[issue-number] (if applicable)
 
-## Type of Change
+## Type of change
 
 Please delete options that are not relevant.
 
@@ -36,12 +36,12 @@ Please check off the items you completed before requesting a review:
 - [ ] I have rebased/merged the latest changes from `main`.
 - [ ] I have verified that CI passes after my changes.
 
-## Screenshots / Output (if applicable)
+## Screenshots / output (if applicable)
 
 _Add screenshots or paste output/logs to help explain the changes visually or
 for clarity._
 
-## Additional Notes
+## Additional notes
 
 _Anything else reviewers should be aware of? Known limitations, follow-up
 issues, etc._

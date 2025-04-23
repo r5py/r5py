@@ -1,6 +1,6 @@
-# Security Policy
+# Security policy
 
-## Reporting a Vulnerability
+## Reporting a vulnerability
 
 If you discover a security vulnerability in r⁵py, please report it privately to
 the maintainers to allow for a coordinated fix.
@@ -11,42 +11,42 @@ the maintainers to allow for a coordinated fix.
 Please provide as much detail as possible, including steps to reproduce the
 issue and any relevant logs or screenshots.
 
-## Security Practices
+## Security practices
 
 We adhere to the following security measures to ensure the safety and integrity
 of the r⁵py project:
 
-### Dependency Management
+### Dependency management
 
 - Utilise GitHub’s Dependabot to monitor and update dependencies with known
   vulnerabilities.
 - Regularly audit dependencies for security issues.
 
-### Code Quality and Review
+### Code quality and review
 
 - Enforce code formatting standards using tools like `black` and `flake8`.
 - Require code reviews for all pull requests to ensure adherence to security and
   quality standards.
 
-### Sensitive Data Handling
+### Sensitive data handling
 
 - Prohibit the inclusion of sensitive information (e.g., passwords, API keys) in
   the codebase.
 - Implement checks to detect and prevent accidental commits of sensitive data.
 
-### Access Control
+### Access control
 
 - Apply the principle of least privilege for repository access.
 - Require two-factor authentication (2FA) for all contributors with write
   access.
 
-### Continuous Integration and Deployment
+### Continuous integration and deployment
 
 - Use GitHub Actions with restricted permissions to automate testing and
   deployment.
 - Ensure that CI/CD pipelines do not expose sensitive information.
 
-## Contributor Responsibilities
+## Contributor responsibilities
 
 All contributors are expected to follow the [contribution
 guidelines](https://r5py.readthedocs.io/en/stable/contributing/CONTRIBUTING.html)

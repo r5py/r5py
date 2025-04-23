@@ -5,6 +5,7 @@ import random
 import shutil
 import string
 
+import jpype
 import geopandas
 import pytest
 import pytest_lazy_fixtures
@@ -224,6 +225,11 @@ class Test_TransportNetwork:
         transport_network_cache_files_glob,
         transport_network_files_tuple,
     ):
+        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
+        del transport_network
+
+        jpype.java.lang.System.gc()
+
         for cache_file in transport_network_cache_files_glob:
             cache_file.write_text("".join(random.choices(string.printable, k=64)))
         _ = r5py.TransportNetwork(*transport_network_files_tuple)

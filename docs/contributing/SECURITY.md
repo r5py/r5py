@@ -67,5 +67,3 @@ For any security-related inquiries or concerns, please contact the
 
 This security policy is intended to evolve over time. We welcome feedback and
 suggestions to improve our security practices.
-
---- 

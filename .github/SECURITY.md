@@ -1,0 +1,1 @@
+../docs/contributing/SECURITY.md

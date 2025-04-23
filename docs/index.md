@@ -51,6 +51,7 @@ user-guide/citation
 
 contributing/CONTRIBUTING
 Code of conduct <contributing/CODE_OF_CONDUCT>
+contributing/SECURITY
 :::
 
 :::{toctree}

@@ -113,6 +113,9 @@ you are aware of.
     cloud data sets.
   - [OpenDEM](https://www.opendem.info) maintains a list of freely available
     high-resolution elevation data sets
+  - [EU-DEM](http://www.eea.europa.eu/data-and-maps/data/eu-dem#tab-metadata),
+    the ‘digital elevation model over Europe’ covers the 39 member countries of
+    the European environment agency
 
 
 (check-gtfs-files)=

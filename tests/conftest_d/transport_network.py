@@ -74,7 +74,7 @@ def transport_network_files_tuple():
 
 @pytest.fixture
 def transport_network_checksum():
-    """The checksum of the default transport network (from files tuple)."""
+    """Return the checksum of the default transport network (from files tuple)."""
     yield "43bb097531f722016b26293d9e1cd11878d91e07e89846e1f5ba85c43a4b243c"
 
 

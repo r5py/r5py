@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import pathlib
+import random
 import shutil
+import string
 
 import geopandas
 import pytest
@@ -216,3 +218,12 @@ class Test_TransportNetwork:
             elevation_model=elevation_model_file_path,
             elevation_cost_function=r5py.ElevationCostFunction.MINETTI,
         )
+
+    def test_invalid_cache(
+        self,
+        transport_network_cache_files_glob,
+        transport_network_files_tuple,
+    ):
+        for cache_file in transport_network_cache_files_glob:
+            cache_file.write_text("".join(random.choices(string.printable, k=64)))
+        _ = r5py.TransportNetwork(*transport_network_files_tuple)

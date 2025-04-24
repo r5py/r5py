@@ -73,6 +73,20 @@ def transport_network_files_tuple():
 
 
 @pytest.fixture
+def transport_network_checksum():
+    """Return the checksum of the default transport network (from files tuple)."""
+    yield "43bb097531f722016b26293d9e1cd11878d91e07e89846e1f5ba85c43a4b243c"
+
+
+@pytest.fixture
+def cache_directory():
+    """Return a pathlib.Path pointing to r5py’s cache directory."""
+    from r5py.util.config import Config
+
+    yield Config().CACHE_DIR
+
+
+@pytest.fixture
 def transport_network(transport_network_from_test_files):
     """Return an `r5py.TransportNetwork`."""
     yield transport_network_from_test_files

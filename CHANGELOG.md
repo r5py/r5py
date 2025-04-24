@@ -1,5 +1,6 @@
 - **1.0.4** (2025-XX-XX):
-    - terrain-sensitive routing
+    - Added terrain-sensitive routing
+    - Improved handling of cached transport networks
     - based on R⁵-v7.4
 
 - **1.0.3** (2025-03-30):

@@ -84,7 +84,7 @@ class TransportNetwork:
             transport_network = self._load_pickled_transport_network(
                 Config().CACHE_DIR / f"{digest}.transport_network"
             )
-        except FileNotFoundError:
+        except (FileNotFoundError, java.io.IOError, java.lang.RuntimeException):
             transport_network = com.conveyal.r5.transit.TransportNetwork()
             transport_network.scenarioId = PACKAGE
 

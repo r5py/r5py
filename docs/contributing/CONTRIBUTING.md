@@ -48,8 +48,8 @@ git remote add upstream git://github.com/r5py/r5py.git
 
 :::
 
-This creates the directory `r5py-yourname` and connects your repository to
-the upstream (main project) r5py repository.
+This creates the directory `r5py-yourname` and connects your repository to the
+upstream (main project) r5py repository.
 
 Then simply create a new branch of main branch.
 
@@ -69,12 +69,12 @@ An easy way to create a *r5py* development environment is as follows:
 - `cd` to the *r5py* source directory (the root folder)
 
 Tell `mamba` to create a new environment from a [YAML
-file](https://github.com/r5py/r5py/blob/main/ci/python_311_dev.yaml) inside `ci`
+file](https://github.com/r5py/r5py/blob/main/ci/r5py_dev.yaml) inside `ci`
 directory, by running:
 
 :::{code} sh
 
-mamba env create -f ci/python_311_dev.yaml
+mamba env create -f ci/r5py_dev.yaml
 
 :::
 
@@ -184,8 +184,9 @@ The resulting html pages will be located in `docs/_build/html/`.
 
 #### Python (PEP8 / black)
 
-*r5py* follows the [PEP8](http://www.python.org/dev/peps/pep-0008) standard
-and uses [Black](https://black.readthedocs.io/en/stable/) to ensure a consistent code format throughout the project.
+*r5py* follows the [PEP8](http://www.python.org/dev/peps/pep-0008) standard and
+uses [Black](https://black.readthedocs.io/en/stable/) to ensure a consistent
+code format throughout the project.
 
 CI will run `black --check` and fails if there are files which would be
 auto-formatted by `black`. Therefore, it is helpful before submitting code to
@@ -197,8 +198,8 @@ black src
 
 :::
 
-Additionally, many editors have plugins that will apply `black` as you edit files.
-If you don't have black, you can install it using pip:
+Additionally, many editors have plugins that will apply `black` as you edit
+files. If you don't have black, you can install it using pip:
 
 :::{code} python
 

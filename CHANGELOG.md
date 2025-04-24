@@ -1,7 +1,7 @@
-- **1.0.4** (2025-XX-XX):
+- **1.0.4** (2025-04-24):
     - Added terrain-sensitive routing
     - Improved handling of cached transport networks
-    - based on R⁵-v7.4
+    - Based on R⁵-v7.4
 
 - **1.0.3** (2025-03-30):
     - More precise checking of GTFS coverage for departure date

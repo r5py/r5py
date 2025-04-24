@@ -80,13 +80,12 @@ class TransportNetwork:
             ).encode("utf-8")
         ).hexdigest()
 
+        cache_file = Config().CACHE_DIR / f"{digest}.transport_network"
+
         try:
-            transport_network = self._load_pickled_transport_network(
-                Config().CACHE_DIR / f"{digest}.transport_network"
-            )
+            transport_network = self._load_pickled_transport_network(cache_file)
         except (FileNotFoundError, java.io.IOError, java.lang.RuntimeException):
-            for cache_file in Config().CACHE_DIR.glob(f"{digest}.*"):
-                cache_file.unlink()
+            cache_file.unlink()
 
             transport_network = com.conveyal.r5.transit.TransportNetwork()
             transport_network.scenarioId = PACKAGE

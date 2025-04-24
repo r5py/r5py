@@ -42,7 +42,8 @@ using following:
 
 :::{code} sh
 
-git clone git@github.com:your-user-name/r5py.git r5py-yourname cd r5py-yourname
+git clone git@github.com:your-user-name/r5py.git r5py-yourname
+cd r5py-yourname
 git remote add upstream git://github.com/r5py/r5py.git
 
 :::

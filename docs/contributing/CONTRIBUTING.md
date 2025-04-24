@@ -199,7 +199,7 @@ black src
 :::
 
 Additionally, many editors have plugins that will apply `black` as you edit
-files.  If you don't have black, you can install it using pip:
+files. If you don't have black, you can install it using pip:
 
 :::{code} python
 

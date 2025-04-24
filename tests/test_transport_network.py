@@ -228,8 +228,9 @@ class Test_TransportNetwork:
         _ = r5py.TransportNetwork(*transport_network_files_tuple)
         del _
 
-        for cache_file in cache_directory.glob(f"{transport_network_checksum}.*"):
-            cache_file.write_text("".join(random.choices(string.printable, k=64)))
+        (
+            cache_directory / f"{transport_network_checksum}.transport_network"
+        ).write_text("".join(random.choices(string.printable, k=64)))
 
         _ = r5py.TransportNetwork(*transport_network_files_tuple)
 

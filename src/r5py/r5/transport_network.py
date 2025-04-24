@@ -234,7 +234,9 @@ class TransportNetwork:
     def _load_pickled_transport_network(self, path):
         try:
             input_file = java.io.File(f"{path}")
-            transport_network = com.conveyal.r5.kryo.KryoNetworkSerializer.read(input_file)
+            transport_network = com.conveyal.r5.kryo.KryoNetworkSerializer.read(
+                input_file
+            )
         except java.io.FileNotFoundException:
             raise FileNotFoundError
         finally:
@@ -244,6 +246,7 @@ class TransportNetwork:
     def _save_pickled_transport_network(self, transport_network, path):
         output_file = java.io.File(f"{path}")
         com.conveyal.r5.kryo.KryoNetworkSerializer.write(transport_network, output_file)
+        output_file.close()
 
     def snap_to_network(
         self,

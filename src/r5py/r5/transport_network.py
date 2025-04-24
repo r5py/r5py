@@ -85,16 +85,9 @@ class TransportNetwork:
                 Config().CACHE_DIR / f"{digest}.transport_network"
             )
         except (FileNotFoundError, java.io.IOError, java.lang.RuntimeException):
-            # input files are not closed properly when exception is thrown:
-            # https://github.com/conveyal/r5/blob/dev/src/main/java/com/conveyal/r5/kryo/KryoNetworkSerializer.java#L144
-            jpype.java.lang.System.gc()
-
             for cache_file in Config().CACHE_DIR.glob(f"{digest}.*"):
-                try:
-                    cache_file.unlink()
-                except PermissionError:  # Windows ...
-                    print(f"renaming {cache_file}")
-                    cache_file.rename("f{cache_file}.backup")
+                cache_file.unlink()
+
             transport_network = com.conveyal.r5.transit.TransportNetwork()
             transport_network.scenarioId = PACKAGE
 
@@ -234,19 +227,13 @@ class TransportNetwork:
     def _load_pickled_transport_network(self, path):
         try:
             input_file = java.io.File(f"{path}")
-            transport_network = com.conveyal.r5.kryo.KryoNetworkSerializer.read(
-                input_file
-            )
+            return com.conveyal.r5.kryo.KryoNetworkSerializer.read(input_file)
         except java.io.FileNotFoundException:
             raise FileNotFoundError
-        finally:
-            input_file.close()
-        return transport_network
 
     def _save_pickled_transport_network(self, transport_network, path):
         output_file = java.io.File(f"{path}")
         com.conveyal.r5.kryo.KryoNetworkSerializer.write(transport_network, output_file)
-        output_file.close()
 
     def snap_to_network(
         self,

@@ -227,16 +227,11 @@ class Test_TransportNetwork:
         cache_directory,
         transport_network_checksum,
     ):
-        transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
-        del transport_network
-
-        jpype.java.lang.System.gc()
+        _ = r5py.TransportNetwork(*transport_network_files_tuple)
+        del _
 
         for cache_file in cache_directory.glob(f"{transport_network_checksum}.*"):
-            print(f"{cache_file} exists: {cache_file.exists()}")
             cache_file.write_text("".join(random.choices(string.printable, k=64)))
-
-        time.sleep(1.5)  # Windows takes a while to close handle
 
         _ = r5py.TransportNetwork(*transport_network_files_tuple)
 

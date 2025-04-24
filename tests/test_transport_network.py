@@ -239,3 +239,14 @@ class Test_TransportNetwork:
         time.sleep(1.5)  # Windows takes a while to close handle
 
         _ = r5py.TransportNetwork(*transport_network_files_tuple)
+
+    def test_cache_exists(
+        self,
+        transport_network,
+        cache_directory,
+        transport_network_checksum,
+    ):
+        del transport_network
+        assert (
+            cache_directory / f"{transport_network_checksum}.transport_network"
+        ).exists()

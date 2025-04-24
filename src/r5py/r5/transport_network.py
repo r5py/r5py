@@ -85,6 +85,10 @@ class TransportNetwork:
                 Config().CACHE_DIR / f"{digest}.transport_network"
             )
         except (FileNotFoundError, java.io.IOError, java.lang.RuntimeException):
+            # input files are not closed properly when exception is thrown:
+            # https://github.com/conveyal/r5/blob/dev/src/main/java/com/conveyal/r5/kryo/KryoNetworkSerializer.java#L144
+            jpype.java.lang.System.gc()
+
             for cache_file in Config().CACHE_DIR.glob(f"{digest}.*"):
                 try:
                     cache_file.unlink()

@@ -20,7 +20,7 @@ from .warnings import R5pyWarning
 R5_JAR_URL = (
     "https://github.com/r5py/r5/releases/download/v7.4-r5py/r5-v7.4-r5py-all.jar"
 )
-R5_JAR_SHA256 = "1ee1e7c0a8a2caf69097f15076949fefe04edcda724b1b05ee0eb6730ed97741"
+R5_JAR_SHA256 = "c51b566671165d113add84e10e60fb9273014ca4a2e2a52591446954f68e7340"
 # ---
 
 

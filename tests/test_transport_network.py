@@ -4,9 +4,7 @@ import pathlib
 import random
 import shutil
 import string
-import time
 
-import jpype
 import geopandas
 import pytest
 import pytest_lazy_fixtures

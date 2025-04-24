@@ -232,6 +232,7 @@ class Test_TransportNetwork:
         jpype.java.lang.System.gc()
 
         for cache_file in transport_network_cache_files_glob:
+            print(f"{cache_file} exists: {cache_file.exists()}")
             cache_file.write_text("".join(random.choices(string.printable, k=64)))
 
         time.sleep(1.5)  # Windows takes a while to close handle

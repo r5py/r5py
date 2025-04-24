@@ -89,6 +89,7 @@ class TransportNetwork:
                 try:
                     cache_file.unlink()
                 except PermissionError:  # Windows ...
+                    print(f"renaming {cache_file}")
                     cache_file.rename("f{cache_file}.backup")
             transport_network = com.conveyal.r5.transit.TransportNetwork()
             transport_network.scenarioId = PACKAGE

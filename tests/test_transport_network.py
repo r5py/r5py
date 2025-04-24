@@ -232,4 +232,5 @@ class Test_TransportNetwork:
 
         for cache_file in transport_network_cache_files_glob:
             cache_file.write_text("".join(random.choices(string.printable, k=64)))
+
         _ = r5py.TransportNetwork(*transport_network_files_tuple)

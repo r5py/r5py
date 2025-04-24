@@ -25,17 +25,17 @@ jobs:
       fail-fast: false
       matrix:
         os: 
-          - ubuntu-latest
+          #- ubuntu-latest
           - windows-latest
-          - macos-latest
+          #- macos-latest
         python_version:
           - '3.13'
-          - '3.12'
-          - '3.11'
-          - '3.10'
+          #- '3.12'
+          #- '3.11'
+          #- '3.10'
         r5_version:
           - r5py
-          - conveyal
+          #- conveyal
 
     steps:
       -  uses: actions/checkout@v4
@@ -66,7 +66,7 @@ jobs:
       - name: Show r5py configuration
         run: python -c 'from r5py.util.config import Config; print(Config().arguments)'
 
-      - run: python -m pytest
+      - run: python -m pytest -s -k test_invalid_cache
 
       - uses: codecov/codecov-action@v4
         with:

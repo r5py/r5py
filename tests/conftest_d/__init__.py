@@ -86,6 +86,7 @@ from .sample_data import (
 
 from .transport_network import (
     broken_gtfs_file_path,
+    cache_directory,
     elevation_model_file_path,
     gtfs_file_path,
     gtfs_timezone_helsinki,
@@ -93,7 +94,6 @@ from .transport_network import (
     not_a_gtfs_file,
     sao_paulo_osm_pbf_file_path,
     transport_network,
-    transport_network_cache_files_glob,
     transport_network_checksum,
     transport_network_files_tuple,
     transport_network_from_test_directory,
@@ -107,6 +107,7 @@ from .upstream_r5 import (
 
 __all__ = [
     "broken_gtfs_file_path",
+    "cache_directory",
     "can_compute_detailed_route_geometries",
     "departure_datetime",
     "detailed_itineraries_bicycle",
@@ -151,7 +152,6 @@ __all__ = [
     "sao_paulo_osm_pbf_file_path",
     "snapped_population_grid_points",
     "transport_network",
-    "transport_network_cache_files_glob",
     "transport_network_checksum",
     "transport_network_files_tuple",
     "transport_network_from_test_directory",

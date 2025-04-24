@@ -223,15 +223,16 @@ class Test_TransportNetwork:
 
     def test_invalid_cache(
         self,
-        transport_network_cache_files_glob,
         transport_network_files_tuple,
+        cache_directory,
+        transport_network_checksum,
     ):
         transport_network = r5py.TransportNetwork(*transport_network_files_tuple)
         del transport_network
 
         jpype.java.lang.System.gc()
 
-        for cache_file in transport_network_cache_files_glob:
+        for cache_file in cache_directory.glob(f"{transport_network_checksum}.*"):
             print(f"{cache_file} exists: {cache_file.exists()}")
             cache_file.write_text("".join(random.choices(string.printable, k=64)))
 

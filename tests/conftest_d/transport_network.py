@@ -79,11 +79,11 @@ def transport_network_checksum():
 
 
 @pytest.fixture
-def transport_network_cache_files_glob(transport_network_checksum):
-    """Return a pathlib.Path.glob() iterator over cached transport network files."""
+def cache_directory():
+    """Return a pathlib.Path pointing to r5py’s cache directory."""
     from r5py.util.config import Config
 
-    yield Config().CACHE_DIR.glob(f"{transport_network_checksum}.*")
+    yield Config().CACHE_DIR
 
 
 @pytest.fixture

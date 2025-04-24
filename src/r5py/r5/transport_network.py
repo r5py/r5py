@@ -85,11 +85,6 @@ class TransportNetwork:
         try:
             transport_network = self._load_pickled_transport_network(cache_file)
         except (FileNotFoundError, java.io.IOError, java.lang.RuntimeException):
-            try:
-                cache_file.unlink()
-            except FileNotFoundError:
-                pass
-
             transport_network = com.conveyal.r5.transit.TransportNetwork()
             transport_network.scenarioId = PACKAGE
 

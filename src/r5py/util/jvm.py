@@ -48,7 +48,7 @@ def start_jvm():
 
         jpype.startJVM(
             f"-Xmx{MAX_JVM_MEMORY:d}",
-            "-XX:+RestoreMXCSROnJNICalls", # https://github.com/r5py/r5py/issues/485
+            "-XX:+RestoreMXCSROnJNICalls",  # https://github.com/r5py/r5py/issues/485
             "-Xcheck:jni",
             "-Xrs",  # https://stackoverflow.com/q/34951812
             "-Duser.language=en",  # Set a default locale, …

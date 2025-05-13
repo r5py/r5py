@@ -4,6 +4,9 @@ name: Lint code
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Linting code

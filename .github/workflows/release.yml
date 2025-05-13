@@ -9,6 +9,9 @@ on:
       - v*.*.*.dev*
       - v*.*.*.post*
 
+permissions:
+  contents: read
+
 jobs:
   test:
     uses: ./.github/workflows/test.yml

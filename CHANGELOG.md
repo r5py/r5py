@@ -1,3 +1,7 @@
+- **1.0.5** (2025-05-13):
+    - Fix OpenJDK64 issue (#486)
+    - Improve build environments
+
 - **1.0.4** (2025-04-24):
     - Added terrain-sensitive routing
     - Improved handling of cached transport networks

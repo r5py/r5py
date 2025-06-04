@@ -1,5 +1,5 @@
 - **1.0.6** (2025-06-04):
-    - workaround #492 (clamping geopandas version)
+    - workaround for #492 (clamping geopandas version)
 
 - **1.0.5** (2025-05-13):
     - Fix OpenJDK64 issue (#486)

@@ -101,6 +101,6 @@ your project better.
 [r5-github]: https://github.com/conveyal/r5/
 [r5r-github]: https://github.com/ipeaGIT/r5r/
 [r5r-vignette]: https://ipeagit.github.io/r5r/
-[rtd-quickstart]: https://r5py.readthedocs.io/en/stable/user-guide/user-manual/quickstart.html
-[rtd-installation]: https://r5py.readthedocs.io/en/stable/user-guide/installation/installation.html
+[rtd-quickstart]: https://r5py.readthedocs.io/stable/user-guide/user-manual/quickstart.html
+[rtd-installation]: https://r5py.readthedocs.io/stable/user-guide/installation/installation.html
 [rtd-link]: https://r5py.readthedocs.io/

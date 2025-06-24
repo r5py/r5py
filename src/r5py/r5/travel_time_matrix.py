@@ -26,6 +26,10 @@ start_jvm()
 class TravelTimeMatrix(BaseTravelTimeMatrix):
     """Compute travel times between many origins and destinations."""
 
+    @property
+    def _constructor(self):
+        return TravelTimeMatrix
+
     def __init__(
         self,
         transport_network,

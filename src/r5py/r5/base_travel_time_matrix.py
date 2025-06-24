@@ -47,6 +47,10 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
         "verbose",
     ]
 
+    @property
+    def _constructor(self):
+        return BaseTravelTimeMatrix
+
     def __init__(
         self,
         transport_network,

@@ -47,6 +47,10 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
         "verbose",
     ]
 
+    @property
+    def _constructor(self):
+        return BaseTravelTimeMatrix
+
     def __init__(
         self,
         transport_network,
@@ -85,7 +89,7 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
             ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
             ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
         """
-        geopandas.GeoDataFrame.__init__(self)
+        super().__init__(data={})
 
         if not isinstance(transport_network, TransportNetwork):
             transport_network = TransportNetwork(*transport_network)

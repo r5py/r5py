@@ -216,6 +216,20 @@ travel_time_matrix.pivot(index="from_id", columns="to_id", values="travel_time")
 ```
 
 
+:::{admonition} Travel times greater than 2 hours
+:class: attention
+
+R⁵ uses a cut-off value for travel times, in order to make computation more
+efficient. By default, it is at 120 minutes.  To calculate travel time matrices
+with distances greater than that, pass {class}`max_time<r5py.RegionalTask>`, or
+the more specific {class}`max_time_walking<r5py.RegionalTask>`,
+{class}`max_time_cycling<r5py.RegionalTask>`, or
+{class}`max_time_driving<r5py.RegionalTask>` to the
+{class}`r5py.TravelTimeMatrix` constructor.
+
+:::
+
+
 ***
 
 

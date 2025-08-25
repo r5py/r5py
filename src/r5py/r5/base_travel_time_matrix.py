@@ -2,6 +2,7 @@
 
 """Calculate travel times between many origins and destinations."""
 
+import inspect
 import math
 import multiprocessing
 import warnings
@@ -51,12 +52,20 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
     def _constructor(self):
         return BaseTravelTimeMatrix
 
+    @classmethod
+    def _geodataframe_constructor_with_fallback(
+        cls, *args, **kwargs
+    ):
+        print(cls, args, kwargs)
+        return super()._geodataframe_constructor_with_fallback(cls, *args, **kwargs)
+
     def __init__(
         self,
         transport_network,
         origins=None,
         destinations=None,
         snap_to_network=False,
+        *args,
         **kwargs,
     ):
         """
@@ -89,9 +98,17 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
             ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
             ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
         """
-        super().__init__(data={})
+
+        super_parameters = inspect.signature(geopandas.GeoDataFrame).parameters
+        super_kwargs = {
+            key: value
+            for key, value in kwargs.items()
+            if key in super_parameters
+        }
+        super().__init__()  #*args, **super_kwargs)
 
         if not isinstance(transport_network, TransportNetwork):
+            print(transport_network, type(transport_network))
             transport_network = TransportNetwork(*transport_network)
         self.transport_network = transport_network
 

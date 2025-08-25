@@ -33,6 +33,7 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
     def __init__(
         self,
         transport_network,
+        *args,
         origins=None,
         destinations=None,
         snap_to_network=False,
@@ -77,6 +78,7 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
             origins,
             destinations,
             snap_to_network,
+            *args,
             **kwargs,
         )
         data = self._compute()

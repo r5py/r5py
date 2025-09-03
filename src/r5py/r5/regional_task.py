@@ -90,7 +90,10 @@ class RegionalTask:
         egress_modes : list[r5py.TransportMode]
             Mode of transport from public transport stops. Default: access_modes
         max_time : datetime.timedelta
-            Maximum trip duration. Default: 2 hours
+            Maximum trip duration. If any of ``max_time_walking``,
+            ``max_time_cycling``, or ``max_time_driving`` are set, ``max_time``
+            is increased to the maximum value of those, if it is lower.
+            Default: 2 hours
         max_time_walking : datetime.timedelta
             Maximum time spent walking, potentially including access and egress
             Default: max_time
@@ -127,7 +130,6 @@ class RegionalTask:
         self.departure_time_window = departure_time_window
         self.percentiles = percentiles
 
-        self.max_time = max_time
         self.max_time_walking = (
             max_time_walking if max_time_walking is not None else max_time
         )
@@ -136,6 +138,14 @@ class RegionalTask:
         )
         self.max_time_driving = (
             max_time_driving if max_time_driving is not None else max_time
+        )
+        self.max_time = max(
+            [
+                max_time,
+                self.max_time_walking,
+                self.max_time_cycling,
+                self.max_time_driving,
+            ]
         )
 
         self.speed_cycling = speed_cycling
@@ -336,7 +346,6 @@ class RegionalTask:
         max_time = int(max_time.total_seconds() / 60)
         self._regional_task.streetTime = max_time
         self._regional_task.maxTripDurationMinutes = max_time
-        self._regional_task.maxCarTime = max_time
 
     @property
     def max_time_cycling(self):

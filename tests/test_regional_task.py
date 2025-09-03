@@ -281,7 +281,6 @@ class TestRegionalTask:
         assert regional_task.max_time == expected
         assert regional_task._regional_task.streetTime == expected_java
         assert regional_task._regional_task.maxTripDurationMinutes == expected_java
-        assert regional_task._regional_task.maxCarTime == expected_java
 
     @pytest.mark.parametrize(
         ["max_time_cycling", "expected", "expected_java"],

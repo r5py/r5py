@@ -341,17 +341,22 @@ class RegionalTask:
             max_time_cycling = self.max_time_cycling
         except AttributeError:
             max_time_cycling = max_time
+        if max_time_cycling > max_time:
+            max_time_cycling = max_time
+
         try:
             max_time_driving = self.max_time_driving
         except AttributeError:
             max_time_driving = max_time
+        if max_time_driving > max_time:
+            max_time_driving = max_time
+
         try:
             max_time_walking = self.max_time_walking
         except AttributeError:
             max_time_walking = max_time
-        self.max_time_cycling = min(max_time_cycling, max_time)
-        self.max_time_driving = min(max_time_driving, max_time)
-        self.max_time_walking = min(max_time_walking, max_time)
+        if max_time_walking > max_time:
+            max_time_walking = max_time
 
         max_time_sec = int(max_time.total_seconds() / 60)
         self._regional_task.streetTime = max_time_sec
@@ -372,14 +377,15 @@ class RegionalTask:
             max_time_walking = self.max_time_walking
         except AttributeError:
             max_time_walking = zero_seconds
-        self.max_time = max(
+        max_time_per_mode = max(
             [
-                self.max_time,
                 max_time_cycling,
                 max_time_driving,
                 max_time_walking,
             ]
         )
+        if max_time_per_mode > self.max_time:
+            self.max_time = max_time_per_mode
 
     @property
     def max_time_cycling(self):

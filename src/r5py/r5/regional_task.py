@@ -38,9 +38,9 @@ class RegionalTask:
         access_modes=[TransportMode.WALK],
         egress_modes=None,  # default: access_modes
         max_time=datetime.timedelta(hours=2),
-        max_time_walking=datetime.timedelta(hours=2),
-        max_time_cycling=datetime.timedelta(hours=2),
-        max_time_driving=datetime.timedelta(hours=2),
+        max_time_walking=None,
+        max_time_cycling=None,
+        max_time_driving=None,
         speed_walking=3.6,
         speed_cycling=12.0,
         max_public_transport_rides=8,
@@ -131,9 +131,15 @@ class RegionalTask:
         self.percentiles = percentiles
 
         self.max_time = max_time
-        self.max_time_walking = max_time_walking
-        self.max_time_cycling = max_time_cycling
-        self.max_time_driving = max_time_driving
+        self.max_time_cycling = (
+            max_time_cycling if max_time_cycling is not None else max_time
+        )
+        self.max_time_driving = (
+            max_time_driving if max_time_driving is not None else max_time
+        )
+        self.max_time_walking = (
+            max_time_walking if max_time_walking is not None else max_time
+        )
 
         self.speed_cycling = speed_cycling
         self.speed_walking = speed_walking

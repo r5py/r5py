@@ -339,53 +339,26 @@ class RegionalTask:
 
         try:
             max_time_cycling = self.max_time_cycling
+            if max_time_cycling > max_time:
+                max_time_cycling = max_time
         except AttributeError:
-            max_time_cycling = max_time
-        if max_time_cycling > max_time:
-            max_time_cycling = max_time
-
+            pass
         try:
             max_time_driving = self.max_time_driving
+            if max_time_driving > max_time:
+                max_time_driving = max_time
         except AttributeError:
-            max_time_driving = max_time
-        if max_time_driving > max_time:
-            max_time_driving = max_time
-
+            pass
         try:
             max_time_walking = self.max_time_walking
+            if max_time_walking > max_time:
+                max_time_walking = max_time
         except AttributeError:
-            max_time_walking = max_time
-        if max_time_walking > max_time:
-            max_time_walking = max_time
+            pass
 
         max_time_sec = int(max_time.total_seconds() / 60)
         self._regional_task.streetTime = max_time_sec
         self._regional_task.maxTripDurationMinutes = max_time_sec
-
-    def _adjust_max_time(self):
-        """Set max_time to a value that accommodates max_time_*."""
-        zero_seconds = datetime.timedelta()
-        try:
-            max_time_cycling = self.max_time_cycling
-        except AttributeError:
-            max_time_cycling = zero_seconds
-        try:
-            max_time_driving = self.max_time_driving
-        except AttributeError:
-            max_time_driving = zero_seconds
-        try:
-            max_time_walking = self.max_time_walking
-        except AttributeError:
-            max_time_walking = zero_seconds
-        max_time_per_mode = max(
-            [
-                max_time_cycling,
-                max_time_driving,
-                max_time_walking,
-            ]
-        )
-        if max_time_per_mode > self.max_time:
-            self.max_time = max_time_per_mode
 
     @property
     def max_time_cycling(self):
@@ -401,7 +374,9 @@ class RegionalTask:
     def max_time_cycling(self, max_time_cycling):
         self._max_time_cycling = max_time_cycling
         self._regional_task.maxBikeTime = int(max_time_cycling.total_seconds() / 60)
-        self._adjust_max_time()
+
+        if self.max_time < max_time_cycling:
+            self.max_time = max_time_cycling
 
     @property
     def max_time_driving(self):
@@ -412,7 +387,9 @@ class RegionalTask:
     def max_time_driving(self, max_time_driving):
         self._max_time_driving = max_time_driving
         self._regional_task.maxCarTime = int(max_time_driving.total_seconds() / 60)
-        self._adjust_max_time()
+
+        if self.max_time < max_time_driving:
+            self.max_time = max_time_driving
 
     @property
     def max_time_walking(self):
@@ -428,7 +405,9 @@ class RegionalTask:
     def max_time_walking(self, max_time_walking):
         self._max_time_walking = max_time_walking
         self._regional_task.maxWalkTime = int(max_time_walking.total_seconds() / 60)
-        self._adjust_max_time()
+
+        if self.max_time < max_time_walking:
+            self.max_time = max_time_walking
 
     @property
     def percentiles(self):

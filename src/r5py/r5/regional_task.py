@@ -342,18 +342,19 @@ class RegionalTask:
 
     def _adjust_max_time(self):
         """Set max_time to a value that accommodates max_time_*."""
+        zero_seconds = datetime.timedelta()
         try:
             max_time_cycling = self.max_time_cycling
         except AttributeError:
-            max_time_cycling = datetime.timedelta()
+            max_time_cycling = zero_seconds
         try:
             max_time_driving = self.max_time_driving
         except AttributeError:
-            max_time_driving = datetime.timedelta()
+            max_time_driving = zero_seconds
         try:
             max_time_walking = self.max_time_walking
         except AttributeError:
-            max_time_walking = datetime.timedelta()
+            max_time_walking = zero_seconds
         self.max_time = max(
             [
                 self.max_time,

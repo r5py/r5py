@@ -1,5 +1,8 @@
+- **1.0.7** (2025-09-05):
+    - Fix wrong max_time (#504)
+
 - **1.0.6** (2025-06-04):
-    - workaround for #492 (clamping geopandas version)
+    - Workaround for #492 (clamping geopandas version)
 
 - **1.0.5** (2025-05-13):
     - Fix OpenJDK64 issue (#486)

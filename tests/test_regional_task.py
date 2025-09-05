@@ -281,7 +281,6 @@ class TestRegionalTask:
         assert regional_task.max_time == expected
         assert regional_task._regional_task.streetTime == expected_java
         assert regional_task._regional_task.maxTripDurationMinutes == expected_java
-        assert regional_task._regional_task.maxCarTime == expected_java
 
     @pytest.mark.parametrize(
         ["max_time_cycling", "expected", "expected_java"],
@@ -313,6 +312,7 @@ class TestRegionalTask:
         regional_task.max_time_cycling = max_time_cycling
         assert regional_task.max_time_cycling == expected
         assert regional_task._regional_task.maxBikeTime == expected_java
+        assert regional_task.max_time >= regional_task.max_time_cycling
 
     @pytest.mark.parametrize(
         ["max_time_driving", "expected", "expected_java"],
@@ -344,6 +344,7 @@ class TestRegionalTask:
         regional_task.max_time_driving = max_time_driving
         assert regional_task.max_time_driving == expected
         assert regional_task._regional_task.maxCarTime == expected_java
+        assert regional_task.max_time >= regional_task.max_time_driving
 
     @pytest.mark.parametrize(
         ["max_time_walking", "expected", "expected_java"],
@@ -375,6 +376,7 @@ class TestRegionalTask:
         regional_task.max_time_walking = max_time_walking
         assert regional_task.max_time_walking == expected
         assert regional_task._regional_task.maxWalkTime == expected_java
+        assert regional_task.max_time >= regional_task.max_time_walking
 
     @pytest.mark.parametrize(
         ["percentiles"],

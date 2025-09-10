@@ -20,15 +20,15 @@ if (
     "CONDA_PREFIX" not in os.environ
     and "CONDA_DEFAULT_ENV" in os.environ
     and "CONDA_ENVS_PATH" in os.environ
-):
+):  # pragma: no-cover
     os.environ["CONDA_PREFIX"] = str(
         pathlib.Path(os.environ["CONDA_ENVS_PATH"]) / os.environ["CONDA_DEFAULT_ENV"]
     )
-if "JAVA_HOME" not in os.environ and "CONDA_PREFIX" in os.environ:
+if "JAVA_HOME" not in os.environ and "CONDA_PREFIX" in os.environ:  # pragma: no-cover
     os.environ["JAVA_HOME"] = str(
         pathlib.Path(os.environ["CONDA_PREFIX"]) / "lib" / "jvm"
     )
-if "PROJ_LIB" not in os.environ and "CONDA_PREFIX" in os.environ:
+if "PROJ_LIB" not in os.environ and "CONDA_PREFIX" in os.environ:   # pragma: no-cover
     os.environ["PROJ_LIB"] = str(
         pathlib.Path(os.environ["CONDA_PREFIX"]) / "share" / "proj"
     )

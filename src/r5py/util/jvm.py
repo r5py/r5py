@@ -35,13 +35,13 @@ def start_jvm():
             try:
                 LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.so"))
                 os.environ["LD_PRELOAD"] = str(LIBJSIG)
-            except StopIteration:  # pragma: no-cover
+            except StopIteration:  # pragma: no cover
                 pass  # don’t fail completely if libjsig not found
         elif sys.platform == "darwin":
             try:
                 LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.dylib"))
                 os.environ["DYLD_INSERT_LIBRARIES"] = str(LIBJSIG)
-            except StopIteration:  # pragma: no-cover
+            except StopIteration:  # pragma: no cover
                 pass  # don’t fail completely if libjsig not found
 
         TEMP_DIR = Config().TEMP_DIR
@@ -63,7 +63,7 @@ def start_jvm():
         @jpype.JImplements("java.lang.Runnable")
         class ShutdownHookToCleanUpTempDir:
             @jpype.JOverride
-            def run(self):  # pragma: no-cover
+            def run(self):  # pragma: no cover
                 shutil.rmtree(TEMP_DIR)
 
         import java.lang

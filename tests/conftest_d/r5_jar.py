@@ -10,9 +10,9 @@ import pytest
 
 
 R5_JAR_URL = (
-    "https://github.com/r5py/r5/releases/download/v7.4-r5py/r5-v7.4-r5py-all.jar"
+    "https://github.com/r5py/r5/releases/download/v7.5-r5py/r5-v7.5-r5py-all.jar"
 )
-R5_JAR_SHA256 = "c51b566671165d113add84e10e60fb9273014ca4a2e2a52591446954f68e7340"
+R5_JAR_SHA256 = "12d0a5d407cdd3f79a0d72180a0a9afe9cb918d391a749d1390e44da07d93d80"
 R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
 R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
     "14aa2347be79c280e4d0fd3a137fb8f5bf2863261a1e48e1a122df1a52a0f453"

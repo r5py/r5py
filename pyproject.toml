@@ -19,7 +19,7 @@ dependencies = [
     "ConfigArgParse",
     "filelock",
     "geohexgrid",
-    "geopandas",
+    "geopandas<1.1.0",
     "joblib",
     "jpype1",
     "numpy",

@@ -75,7 +75,8 @@ class TransportMode(enum.Enum):
             return [self] + other
         else:
             raise TypeError(
-                f"unsupported operand type(s) for '+': '{type(other)}' and '{type(self)}'"
+                "unsupported operand type(s) for '+': "
+                f"'{type(other)}' and '{type(self)}'"
             )
 
     def __radd__(self, other):

@@ -483,7 +483,10 @@ class TestTravelTimeMatrix:
             ),
             pytest.warns(
                 RuntimeWarning,
-                match="Some destination points could not be snapped to the street network",
+                match=(
+                    "Some destination points could not be snapped to "
+                    "the street network"
+                ),
             ),
         ):
             _ = r5py.TravelTimeMatrix(
@@ -537,7 +540,10 @@ class TestTravelTimeMatrixComputer:
 
         with pytest.warns(
             DeprecationWarning,
-            match="Use `TravelTimeMatrix` instead, `TravelTimeMatrixComputer will be deprecated in a future release.",
+            match=(
+                "Use `TravelTimeMatrix` instead, "
+                "`TravelTimeMatrixComputer will be deprecated in a future release."
+            ),
         ):
             ttm_old = r5py.TravelTimeMatrixComputer(
                 transport_network,

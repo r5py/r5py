@@ -30,7 +30,7 @@ import java.io
 __all__ = ["TransportNetwork"]
 
 
-PACKAGE = __package__.split(".")[0]
+PACKAGE = __package__.split(".", maxsplit=1)[0]
 
 
 start_jvm()
@@ -42,7 +42,7 @@ class TransportNetwork:
     def __init__(
         self,
         osm_pbf,
-        gtfs=[],
+        gtfs=[],  # noqa: B006
         elevation_model=None,
         elevation_cost_function=ElevationCostFunction.TOBLER,
         allow_errors=False,
@@ -117,6 +117,7 @@ class TransportNetwork:
                                 + ("\n- ".join(errors))
                             ),
                             RuntimeWarning,
+                            stacklevel=1,
                         )
                     else:
                         raise GtfsFileError(
@@ -188,11 +189,13 @@ class TransportNetwork:
                         f"using alphabetically first one ({osm_pbf.name})"
                     ),
                     RuntimeWarning,
+                    stacklevel=1,
                 )
-        except IndexError:
+        except IndexError as exception:
             raise FileNotFoundError(
-                f"Could not find any OpenStreetMap extract file (`.osm.pbf`) in {path.absolute()}"
-            )
+                "Could not find any OpenStreetMap extract file (`.osm.pbf`) "
+                f"in {path.absolute()}"
+            ) from exception
         gtfs = [
             potential_gtfs_file
             for potential_gtfs_file in path.glob("*.zip")
@@ -225,8 +228,8 @@ class TransportNetwork:
         try:
             input_file = java.io.File(f"{path}")
             return com.conveyal.r5.kryo.KryoNetworkSerializer.read(input_file)
-        except java.io.FileNotFoundException:
-            raise FileNotFoundError
+        except java.io.FileNotFoundException as exception:
+            raise FileNotFoundError from exception
 
     def _save_pickled_transport_network(self, transport_network, path):
         output_file = java.io.File(f"{path}")

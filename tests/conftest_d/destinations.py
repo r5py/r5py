@@ -54,7 +54,7 @@ def population_grid_points_four(population_grid_points):
 
 @pytest.fixture(scope="session")
 def snapped_population_grid_points():
-    """Return a `geopandas.GeoDataFrame` that contains grid points snapped to the street network."""
+    """Return a `geopandas.GeoDataFrame` of snapped grid points."""
     yield geopandas.read_file(SNAPPED_POPULATION_GRID_POINTS)
 
 

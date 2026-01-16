@@ -37,16 +37,16 @@ class TripLeg:
     def __init__(
         self,
         transport_mode=None,
-        departure_time=numpy.datetime64("NaT"),
+        departure_time=numpy.datetime64("NaT"),  # noqa: B008
         distance=None,
-        travel_time=datetime.timedelta(seconds=0),
-        wait_time=datetime.timedelta(seconds=0),
+        travel_time=datetime.timedelta(seconds=0),  # noqa: B008
+        wait_time=datetime.timedelta(seconds=0),  # noqa: B008
         feed=None,
         agency_id=None,
         route_id=None,
         start_stop_id=None,
         end_stop_id=None,
-        geometry=shapely.LineString(),
+        geometry=shapely.LineString(),  # noqa: B008
     ):
         """
         Represent one leg of a trip.
@@ -103,7 +103,8 @@ class TripLeg:
             return other
         else:
             raise TypeError(
-                f"unsupported operand type(s) for '+': '{type(other)}' and '{type(self)}'"
+                "unsupported operand type(s) for '+': "
+                f"'{type(other)}' and '{type(self)}'"
             )
 
     def __radd__(self, other):

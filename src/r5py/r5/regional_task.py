@@ -31,13 +31,13 @@ class RegionalTask:
         transport_network,
         origin=None,
         destinations=None,
-        departure=datetime.datetime.now(),
-        departure_time_window=datetime.timedelta(minutes=10),
-        percentiles=[50],
-        transport_modes=[TransportMode.TRANSIT],
-        access_modes=[TransportMode.WALK],
+        departure=None,  # default: datetime.datetime.now(),
+        departure_time_window=datetime.timedelta(minutes=10),  # noqa: B008
+        percentiles=(50,),
+        transport_modes=(TransportMode.TRANSIT,),
+        access_modes=(TransportMode.WALK,),
         egress_modes=None,  # default: access_modes
-        max_time=datetime.timedelta(hours=2),
+        max_time=datetime.timedelta(hours=2),  # noqa: B008
         max_time_walking=None,
         max_time_cycling=None,
         max_time_driving=None,
@@ -126,6 +126,8 @@ class RegionalTask:
         # last, because extra logic that depends on the others having been set
         self.transport_modes = transport_modes
 
+        if departure is None:
+            departure = datetime.datetime.now()
         self.departure = departure  # transport modes should be set before this line
         self.departure_time_window = departure_time_window
         self.percentiles = percentiles
@@ -171,13 +173,13 @@ class RegionalTask:
 
     @property
     def access_modes(self):
-        """Route with these modes of transport to reach public transport (r5py.TransportMode)."""
+        """Route with these modes to reach public transport (r5py.TransportMode)."""
         return self._access_modes
 
     @access_modes.setter
     def access_modes(self, access_modes):
         # eliminate duplicates, cast to TransportMode (converts str values)
-        access_modes = set([TransportMode(mode) for mode in set(access_modes)])
+        access_modes = (TransportMode(mode) for mode in set(access_modes))
         self._access_modes = access_modes
         self._regional_task.accessModes = RegionalTask._enum_set(
             access_modes, com.conveyal.r5.api.util.LegMode
@@ -185,7 +187,12 @@ class RegionalTask:
 
     @property
     def departure(self):
-        """Find public transport connections leaving within ``departure_time_window`` after ``departure`` (datetime.datetime)."""
+        """
+        Find public transport connections.
+
+        Find public transport connections leaving within
+        ``departure_time_window`` after ``departure`` (datetime.datetime).
+        """
         return self._departure
 
     @departure.setter
@@ -202,6 +209,7 @@ class RegionalTask:
                     f"any services on {departure.date()}."
                 ),
                 RuntimeWarning,
+                stacklevel=1,
             )
 
         self._departure = departure
@@ -224,7 +232,10 @@ class RegionalTask:
 
     @property
     def departure_time_window(self):
-        """Find public transport connections leaving within ``departure_time_window`` after ``departure`` (datetime.timedelta).
+        """Find public transport connections.
+
+        Find public transport connections leaving within
+        ``departure_time_window`` after ``departure`` (datetime.timedelta).
 
         **Note:** The value of ``departure_time_window`` should be set with some
         caution. Specifically, setting values near or below the typical headways
@@ -238,8 +249,10 @@ class RegionalTask:
     def departure_time_window(self, departure_time_window: datetime.timedelta):
         if departure_time_window.total_seconds() < 300:
             warnings.warn(
-                "The provided departure time window is below 5 minutes. This may cause adverse effects with routing.",
+                "The provided departure time window is below 5 minutes. "
+                "This may cause adverse effects with routing.",
                 RuntimeWarning,
+                stacklevel=1,
             )
         self._departure_time_window = departure_time_window
         self._regional_task.toTime = int(
@@ -285,20 +298,21 @@ class RegionalTask:
 
             self._regional_task.destinationPointSets = [destinations_point_set]
 
-            # TODO: figure out whether we could cut this a bit shorter. We should be able
-            # to construct the ByteArray fed to java.io.ByteArrayInputStream as a Python `bytes`
-            # without the detour via two Java OutputStreams.
-            # (but not sure how to distinguish between the writeUTF/writeDouble/etc)
+            # TODO: figure out whether we could cut this a bit shorter. We
+            # should be able to construct the ByteArray fed to
+            # java.io.ByteArrayInputStream as a Python `bytes` without the
+            # detour via two Java OutputStreams.  (but not sure how to
+            # distinguish between the writeUTF/writeDouble/etc)
 
     @property
     def egress_modes(self):
-        """Route with these modes of transport to reach the destination from public transport (r5py.TransportMode)."""
+        """Route with these modes from public transport (r5py.TransportMode)."""
         return self._egress_modes
 
     @egress_modes.setter
     def egress_modes(self, egress_modes):
         # eliminate duplicates, cast to TransportMode (converts str values)
-        egress_modes = set([TransportMode(mode) for mode in set(egress_modes)])
+        egress_modes = (TransportMode(mode) for mode in set(egress_modes))
         self._egress_modes = egress_modes
         self._regional_task.egressModes = RegionalTask._enum_set(
             egress_modes, com.conveyal.r5.api.util.LegMode
@@ -340,19 +354,19 @@ class RegionalTask:
         try:
             max_time_cycling = self.max_time_cycling
             if max_time_cycling > max_time:
-                max_time_cycling = max_time
+                self.max_time_cycling = max_time
         except AttributeError:
             pass
         try:
             max_time_driving = self.max_time_driving
             if max_time_driving > max_time:
-                max_time_driving = max_time
+                self.max_time_driving = max_time
         except AttributeError:
             pass
         try:
             max_time_walking = self.max_time_walking
             if max_time_walking > max_time:
-                max_time_walking = max_time
+                self.max_time_walking = max_time
         except AttributeError:
             pass
 
@@ -412,7 +426,7 @@ class RegionalTask:
     @property
     def percentiles(self):
         """
-        Return the travel time for these percentiles of all computed trips, by travel time.
+        Return the travel time for these percentiles.
 
         By default, return the median travel time.
         (collections.abc.Sequence[int])
@@ -499,7 +513,7 @@ class RegionalTask:
     @transport_modes.setter
     def transport_modes(self, transport_modes):
         # eliminate duplicates, cast to TransportMode (converts str values)
-        transport_modes = set([TransportMode(mode) for mode in set(transport_modes)])
+        transport_modes = (TransportMode(mode) for mode in set(transport_modes))
         self._transport_modes = transport_modes
 
         # split them up into direct and transit modes,
@@ -508,7 +522,8 @@ class RegionalTask:
 
         # the different modes underlie certain rules
         # e.g., some direct modes require certain access modes
-        # see https://github.com/ipeaGIT/r5r/blob/2e8b9acfd81834f185d95ce53dc5c34beb1315f2/r-package/R/utils.R#L86
+        # see https://github.com/ipeaGIT/r5r/blob/
+        # 2e8b9acfd81834f185d95ce53dc5c34beb1315f2/r-package/R/utils.R#L86
         if transit_modes:  # public transport:
             egress_modes = self.egress_modes
             if TransportMode.TRANSIT in transport_modes:
@@ -524,9 +539,10 @@ class RegionalTask:
         else:  # no public transport
             egress_modes = []  # ignore egress (why?)
 
-            #     # this is weird (the following is the logic implemented in r5r)
-            #     # I reckon this is trying to keep the fastest mode only, and
-            #     # assumes that car is always faster that bike is always faster than walking
+            #     # this is weird (the following is the logic implemented in
+            #     r5r) # I reckon this is trying to keep the fastest mode only,
+            #     and # assumes that car is always faster that bike is always
+            #     faster than walking
             #     if TransportMode.CAR in transport_modes:
             #         access_modes = direct_modes = [TransportMode.CAR]
             #     elif TransportMode.BICYCLE in transport_modes:
@@ -534,7 +550,8 @@ class RegionalTask:
             #     elif TransportMode.WALK in transport_modes:
             #         access_modes = direct_modes = [TransportMode.WALK]
 
-            # let’s do that differently (even if potentially more expensive, computationally)
+            # let’s do that differently
+            # (even if potentially more expensive, computationally)
             access_modes = direct_modes
 
         self.access_modes = access_modes
@@ -547,9 +564,10 @@ class RegionalTask:
             direct_modes, com.conveyal.r5.api.util.LegMode
         )
 
-        # pre-compute closest road segments/public transport stops to destination points
-        # (for fully-interconnected travel time matrices this also covers all origin points,
-        # but potentially this needs to be extended to run also for origins) //TODO
+        # pre-compute closest road segments/public transport stops to
+        # destination points (for fully-interconnected travel time matrices this
+        # also covers all origin points, but potentially this needs to be
+        # extended to run also for origins) //TODO
 
         if self._regional_task.destinationPointSets is not None:
             for mode in direct_modes:

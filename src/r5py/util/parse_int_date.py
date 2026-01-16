@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Parse an integer date value (as return by com.conveyal.gtfs.GtfsFeed.services.end_date)."""
+"""Parse an integer date value."""
 
 
 import datetime

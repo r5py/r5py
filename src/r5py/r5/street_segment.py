@@ -20,7 +20,7 @@ class StreetSegment:
 
     def __init__(self, street_path):
         """
-        Initialise a less complex representation of com.conveyal.r5.api.util.StreetSegment.
+        Initialise a less complex StreetSegment.
 
         Arguments
         ---------

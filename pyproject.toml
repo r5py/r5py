@@ -124,7 +124,7 @@ skip = ["build", "dist", "docs/conf.py", ".virtualenv"]
 "docs/md/" = "md"
 
 [tool.pydocstyle]
-#match-dir = "^(src|tests|build_backend).*"
+match-dir = "^src"
 
 [tool.pylintrc]
 good-names = ["i", "j", "k", "e", "ex", "id", "Run", "_"]

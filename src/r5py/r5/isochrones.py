@@ -46,10 +46,10 @@ class Isochrones(BaseTravelTimeMatrix):
         self,
         transport_network,
         origins,
-        isochrones=pandas.timedelta_range(
-            start=datetime.timedelta(minutes=0),
-            end=datetime.timedelta(hours=1),
-            freq=datetime.timedelta(minutes=15),
+        isochrones=pandas.timedelta_range(  # noqa: B008
+            start=datetime.timedelta(minutes=0),  # noqa: B008
+            end=datetime.timedelta(hours=1),  # noqa: B008
+            freq=datetime.timedelta(minutes=15),  # noqa: B008
         ),
         point_grid_resolution=100,
         point_grid_sample_ratio=1.0,
@@ -78,23 +78,24 @@ class Isochrones(BaseTravelTimeMatrix):
             For which interval to compute isochrone polygons. An iterable of
             integers is interpreted as minutes.
         point_grid_resolution : int
-            Distance in meters between points in the regular grid of points laid over the
-            transport network’s extent that is used to compute isochrones.
-            Increase this value for performance, decrease it for precision.
+            Distance in meters between points in the regular grid of points laid
+            over the transport network’s extent that is used to compute
+            isochrones.  Increase this value for performance, decrease it for
+            precision.
         point_grid_sample_ratio : float
             Share of points of the point grid that are used in computation,
             ranging from 0.01 to 1.0.
             Increase this value for performance, decrease it for precision.
         **kwargs : mixed
             Any arguments than can be passed to r5py.RegionalTask:
-            ``departure``, ``departure_time_window``, ``percentiles``, ``transport_modes``,
-            ``access_modes``, ``egress_modes``, ``max_time``, ``max_time_walking``,
-            ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
-            ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
-            Note that not all arguments might make sense in this context, and the
-            underlying R5 engine might ignore some of them.
-            If percentiles are specified, the lowest one will be used for
-            isochrone computation.
+            ``departure``, ``departure_time_window``, ``percentiles``,
+            ``transport_modes``, ``access_modes``, ``egress_modes``,
+            ``max_time``, ``max_time_walking``, ``max_time_cycling``,
+            ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
+            ``max_public_transport_rides``, ``max_bicycle_traffic_stress`` Note
+            that not all arguments might make sense in this context, and the
+            underlying R5 engine might ignore some of them.  If percentiles are
+            specified, the lowest one will be used for isochrone computation.
         """
         geopandas.GeoDataFrame.__init__(self)
         BaseTravelTimeMatrix.__init__(

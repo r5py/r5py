@@ -21,7 +21,7 @@ class Trip:
         "segment",
     ] + TripLeg.COLUMNS
 
-    def __init__(self, legs=[]):
+    def __init__(self, legs=[]):  # noqa: B006
         """
         Represent one trip, consisting of one of more `r5py.r5.TripLeg`.
 
@@ -64,14 +64,14 @@ class Trip:
     def distance(self):
         """Overall distance of this trip in metres (float)."""
         try:
-            distance = sum([leg.distance for leg in self.legs])
+            distance = sum(leg.distance for leg in self.legs)
         except TypeError:  # distance of a leg can be None
             distance = None
         return distance
 
     @property
     def geometry(self):
-        """Joined geometries of all legs of this trip (shapely.LineString or shapely.MultiLineString)."""
+        """Joined geometries of all legs of this trip."""
         return shapely.line_merge(
             shapely.MultiLineString([leg.geometry for leg in self.legs])
         )

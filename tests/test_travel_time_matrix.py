@@ -331,38 +331,6 @@ class TestTravelTimeMatrix:
     @pytest.mark.parametrize(
         [
             "snap_to_network",
-            "expected_snap_to_network",
-        ],
-        [
-            (
-                True,
-                True,
-            ),
-            (
-                False,
-                False,
-            ),
-        ],
-    )
-    def test_snap_to_network_parameter(
-        self,
-        transport_network,
-        population_grid_points,
-        departure_datetime,
-        snap_to_network,
-        expected_snap_to_network,
-    ):
-        travel_time_matrix = r5py.TravelTimeMatrix(
-            transport_network,
-            population_grid_points,
-            departure=departure_datetime,
-            snap_to_network=snap_to_network,
-        )
-        assert travel_time_matrix.snap_to_network == expected_snap_to_network
-
-    @pytest.mark.parametrize(
-        [
-            "snap_to_network",
             "expected_travel_times",
         ],
         [

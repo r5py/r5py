@@ -126,14 +126,10 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
 
         super_parameters = inspect.signature(geopandas.GeoDataFrame).parameters
         super_kwargs = {
-            key: value
-            for key, value in kwargs.items()
-            if key in super_parameters
+            key: value for key, value in kwargs.items() if key in super_parameters
         }
         kwargs = {
-            key: value
-            for key, value in kwargs.items()
-            if key not in super_parameters
+            key: value for key, value in kwargs.items() if key not in super_parameters
         }
         super().__init__(**super_kwargs)
 

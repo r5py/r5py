@@ -8,7 +8,6 @@ import warnings
 
 import geopandas
 import numpy
-import pandas
 import shapely
 
 from ..util import check_od_data_set, Config
@@ -52,11 +51,6 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
     def _constructor(self):
         """Return GeoDataFrame for slicing operations."""
         return geopandas.GeoDataFrame
-
-    @property
-    def _constructor_sliced(self):
-        """Return Series for single-column selection."""
-        return pandas.Series
 
     def __init__(
         self,

@@ -32,6 +32,10 @@ class DetailedItineraries(BaseTravelTimeMatrix):
         "od_pairs",
     ]
 
+    @property
+    def _constructor(self):
+        return DetailedItineraries
+
     def __init__(
         self,
         transport_network,

@@ -3,14 +3,12 @@
 
 """Fixtures related to routing origins."""
 
-
 import warnings
 
 import geopandas
 import pytest
 
 from .data_directory import DATA_DIRECTORY
-
 
 ORIGINS_INVALID_NO_ID = DATA_DIRECTORY / "test_invalid_points_no_id_column.geojson"
 ORIGINS_INVALID_DUPLICATE_IDS = (

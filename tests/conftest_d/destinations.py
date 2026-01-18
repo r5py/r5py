@@ -3,13 +3,11 @@
 
 """Fixtures related to the destinations used in routing."""
 
-
 import geopandas
 import pytest
 import shapely
 
 from .data_directory import DATA_DIRECTORY
-
 
 SNAPPED_POPULATION_GRID_POINTS = (
     DATA_DIRECTORY / "test_snapped_population_grid_centroids.geojson"
@@ -54,7 +52,7 @@ def population_grid_points_four(population_grid_points):
 
 @pytest.fixture(scope="session")
 def snapped_population_grid_points():
-    """Return a `geopandas.GeoDataFrame` that contains grid points snapped to the street network."""
+    """Return a `geopandas.GeoDataFrame` of snapped grid points."""
     yield geopandas.read_file(SNAPPED_POPULATION_GRID_POINTS)
 
 

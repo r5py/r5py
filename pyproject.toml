@@ -19,7 +19,7 @@ dependencies = [
     "ConfigArgParse",
     "filelock",
     "geohexgrid",
-    "geopandas",
+    "geopandas<1.1.0",
     "joblib",
     "jpype1",
     "numpy",
@@ -65,7 +65,7 @@ docs = [
     "matplotlib",
     "myst-nb",
     "nbsphinx",
-    "pybtex-apa7-style",
+    "pybtex-apa7-style @ git+https://github.com/christophfink/pybtex-apa7-style.git@5-allow-newer-pybtex",
     "r5py.sampledata.helsinki>=0.1.1",
     "r5py.sampledata.sao_paulo>=0.1.1",
     "shapely",
@@ -124,7 +124,7 @@ skip = ["build", "dist", "docs/conf.py", ".virtualenv"]
 "docs/md/" = "md"
 
 [tool.pydocstyle]
-#match-dir = "^(src|tests|build_backend).*"
+match-dir = "^src"
 
 [tool.pylintrc]
 good-names = ["i", "j", "k", "e", "ex", "id", "Run", "_"]

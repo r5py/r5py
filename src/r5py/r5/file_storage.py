@@ -3,14 +3,12 @@
 
 """A thin layer around com.conveyal.r5.file.FileStorage."""
 
-
 import jpype
 
 from ..util import start_jvm
 
 import com.conveyal.file
 import java.io.File
-
 
 __all__ = ["FileStorage"]
 

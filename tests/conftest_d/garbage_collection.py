@@ -3,7 +3,6 @@
 
 """An auto-use fixture that calls Java garbage collection before every function."""
 
-
 import jpype
 import pytest
 

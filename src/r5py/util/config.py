@@ -12,7 +12,6 @@ import tempfile
 
 import configargparse
 
-
 __all__ = ["Config"]
 
 

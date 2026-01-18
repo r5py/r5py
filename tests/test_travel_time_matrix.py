@@ -451,7 +451,10 @@ class TestTravelTimeMatrix:
             ),
             pytest.warns(
                 RuntimeWarning,
-                match="Some destination points could not be snapped to the street network",
+                match=(
+                    "Some destination points could not be snapped to "
+                    "the street network"
+                ),
             ),
         ):
             _ = r5py.TravelTimeMatrix(
@@ -505,7 +508,10 @@ class TestTravelTimeMatrixComputer:
 
         with pytest.warns(
             DeprecationWarning,
-            match="Use `TravelTimeMatrix` instead, `TravelTimeMatrixComputer will be deprecated in a future release.",
+            match=(
+                "Use `TravelTimeMatrix` instead, "
+                "`TravelTimeMatrixComputer will be deprecated in a future release."
+            ),
         ):
             ttm_old = r5py.TravelTimeMatrixComputer(
                 transport_network,
@@ -589,3 +595,19 @@ class TestTravelTimeMatrixComputer:
         ]
         assert travel_time_matrix["travel_time"].min() >= 0
         assert travel_time_matrix["travel_time"].max() <= 20
+
+    def test_departure_time_now(
+        self,
+        transport_network,
+        origins_valid_ids,
+    ):
+        with pytest.warns(
+            RuntimeWarning,
+            match=(
+                "The currently loaded GTFS data sets do not " "define any services on"
+            ),
+        ):
+            _ = r5py.TravelTimeMatrix(
+                transport_network,
+                origins=origins_valid_ids,
+            )

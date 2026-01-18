@@ -3,10 +3,8 @@
 
 """Normalise some environment variables that might not always get set."""
 
-
 import os
 import pathlib
-
 
 # if a readthedocs runner uses a conda environment, it fails to
 # properly initialise the JAVA_HOME and PROJ_LIB environment variables

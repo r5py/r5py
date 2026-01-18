@@ -2,7 +2,6 @@
 
 """R5py-specific exceptions."""
 
-
 import requests
 
 

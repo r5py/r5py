@@ -602,3 +602,20 @@ class TestTravelTimeMatrixComputer:
             travel_times,
             expected_travel_times,
         )
+
+    def test_departure_time_now(
+        self,
+        transport_network,
+        origins_valid_ids,
+    ):
+        with pytest.warns(
+            RuntimeWarning,
+            match=(
+                "The currently loaded GTFS data sets do not "
+                "define any services on"
+            )
+        ):
+            _ = r5py.TravelTimeMatrix(
+                transport_network,
+                origins=origins_valid_ids,
+            )

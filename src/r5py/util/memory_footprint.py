@@ -2,14 +2,12 @@
 
 """Determine a reasonable memory footprint for the Java virtual machine."""
 
-
 import psutil
 import re
 import warnings
 
 from .config import Config
 from .warnings import R5pyWarning
-
 
 __all__ = ["MAX_JVM_MEMORY"]
 

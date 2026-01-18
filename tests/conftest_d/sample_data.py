@@ -3,9 +3,7 @@
 
 """Fixtures related to testing the SampleData class."""
 
-
 import pytest
-
 
 SAMPLE_DATA_SET_URL = (
     "https://raw.githubusercontent.com/r5py/r5py.sampledata.sao_paulo/"

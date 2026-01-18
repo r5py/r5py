@@ -3,14 +3,12 @@
 
 """Wraps a com.conveyal.r5.transit.TransitLayer."""
 
-
 import functools
 
 import jpype
 import jpype.types
 
 import java.time
-
 
 __all__ = ["TransitLayer"]
 

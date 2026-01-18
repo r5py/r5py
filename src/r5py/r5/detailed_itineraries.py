@@ -3,7 +3,6 @@
 
 """Calculate detailed itineraries between many origins and destinations."""
 
-
 import copy
 import warnings
 
@@ -19,7 +18,6 @@ import pandas
 from .base_travel_time_matrix import BaseTravelTimeMatrix
 from .trip import Trip
 from .trip_planner import ACCURATE_GEOMETRIES, TripPlanner
-
 
 __all__ = ["DetailedItineraries", "DetailedItinerariesComputer"]
 

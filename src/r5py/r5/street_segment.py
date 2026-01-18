@@ -2,11 +2,9 @@
 
 """A less complex representation of com.conveyal.r5.api.util.StreetSegment."""
 
-
 import datetime
 
 import shapely
-
 
 __all__ = ["StreetSegment"]
 

@@ -15,7 +15,6 @@ from .exceptions import UnexpectedClasspathSchema
 from .validating_requests_session import ValidatingRequestsSession
 from .warnings import R5pyWarning
 
-
 # update these to use a newer R5 version if no R5 available locally
 R5_JAR_URL = (
     "https://github.com/r5py/r5/releases/download/v7.4-r5py/r5-v7.4-r5py-all.jar"

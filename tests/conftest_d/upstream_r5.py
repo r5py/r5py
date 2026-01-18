@@ -3,7 +3,6 @@
 
 """Determine if an upstream R5 jar is used."""
 
-
 import pytest
 
 

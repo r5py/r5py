@@ -3,13 +3,11 @@
 
 """Fixtures related to the destinations used in routing."""
 
-
 import geopandas
 import pytest
 import shapely
 
 from .data_directory import DATA_DIRECTORY
-
 
 SNAPPED_POPULATION_GRID_POINTS = (
     DATA_DIRECTORY / "test_snapped_population_grid_centroids.geojson"

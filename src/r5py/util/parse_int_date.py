@@ -2,9 +2,7 @@
 
 """Parse an integer date value."""
 
-
 import datetime
-
 
 __all__ = ["parse_int_date"]
 

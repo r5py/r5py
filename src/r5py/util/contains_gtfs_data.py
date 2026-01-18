@@ -2,9 +2,7 @@
 
 """Check whether a file contains a GTFS data set."""
 
-
 import zipfile
-
 
 __all__ = ["contains_gtfs_data"]
 

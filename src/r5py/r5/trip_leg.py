@@ -3,11 +3,9 @@
 
 """Represent one leg of a trip."""
 
-
 import datetime
 import numpy
 import shapely
-
 
 __all__ = ["TripLeg"]
 

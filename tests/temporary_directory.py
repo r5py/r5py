@@ -3,7 +3,6 @@
 
 """TemporaryDirectory that cleans up gracefully (https://bugs.python.org/issue26660)."""
 
-
 # see also https://www.scivision.dev/python-tempfile-permission-error-windows/
 # (Python 3.10 has a fix, so as soon as we deprecate 3.9, this can be changed to
 # `with tempfile.TemporaryDirectory(ignore_cleanup_errors=True)`

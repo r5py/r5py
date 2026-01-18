@@ -3,11 +3,9 @@
 
 """Fixtures related to the R5 classpath."""
 
-
 import pathlib
 
 import pytest
-
 
 R5_JAR_URL = (
     "https://github.com/r5py/r5/releases/download/v7.4-r5py/r5-v7.4-r5py-all.jar"

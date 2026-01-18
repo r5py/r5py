@@ -16,7 +16,6 @@ from ..util import start_jvm
 
 import com.conveyal.r5
 
-
 __all__ = ["TravelTimeMatrix", "TravelTimeMatrixComputer"]
 
 

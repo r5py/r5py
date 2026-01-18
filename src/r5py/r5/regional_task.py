@@ -16,7 +16,6 @@ import java.io
 import java.time
 import com.conveyal.r5
 
-
 __all__ = ["RegionalTask"]
 
 

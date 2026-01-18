@@ -3,11 +3,9 @@
 
 """Fixtures related to transport networks."""
 
-
 import pytest
 
 from .data_directory import DATA_DIRECTORY
-
 
 BROKEN_GTFS_FILE = DATA_DIRECTORY / "test_broken_gtfs.zip"
 

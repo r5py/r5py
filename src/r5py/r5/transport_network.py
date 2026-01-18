@@ -3,7 +3,6 @@
 
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
-
 import functools
 import hashlib
 import pathlib
@@ -25,7 +24,6 @@ import com.conveyal.gtfs
 import com.conveyal.osmlib
 import com.conveyal.r5
 import java.io
-
 
 __all__ = ["TransportNetwork"]
 

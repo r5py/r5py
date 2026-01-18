@@ -3,13 +3,11 @@
 
 """Fixtures describing the expected routing results."""
 
-
 import geopandas
 import pandas
 import pytest
 
 from .data_directory import DATA_DIRECTORY
-
 
 DETAILED_ITINERARIES_BICYCLE = (
     DATA_DIRECTORY / "test_detailed_itineraries_bicycle.gpkg.zip"

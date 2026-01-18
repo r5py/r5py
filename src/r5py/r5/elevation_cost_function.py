@@ -3,7 +3,6 @@
 
 """The elevation cost functions supported by R5 (Tobler, Minetti)."""
 
-
 import enum
 
 import jpype
@@ -11,7 +10,6 @@ import jpype
 from ..util import start_jvm
 
 import com.conveyal.r5
-
 
 __all__ = ["ElevationCostFunction"]
 

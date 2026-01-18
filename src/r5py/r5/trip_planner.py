@@ -3,7 +3,6 @@
 
 """Find detailed routes between two points."""
 
-
 import copy
 import collections
 import datetime
@@ -27,7 +26,6 @@ from ..util import GoodEnoughEquidistantCrs, start_jvm
 import com.conveyal.r5
 import gnu.trove.map
 import java.lang
-
 
 __all__ = ["TripPlanner"]
 

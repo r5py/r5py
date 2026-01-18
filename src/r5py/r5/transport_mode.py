@@ -3,7 +3,6 @@
 
 """The transport modes supported by R5 (Leg, Street, Transit, combined)."""
 
-
 import enum
 
 import jpype
@@ -11,7 +10,6 @@ import jpype
 from ..util import start_jvm
 
 import com.conveyal.r5
-
 
 __all__ = ["TransportMode"]
 

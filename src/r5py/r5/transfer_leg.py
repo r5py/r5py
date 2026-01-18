@@ -3,9 +3,7 @@
 
 """Represent one leg of a trip: transfers between public transport vehicles."""
 
-
 from .direct_leg import DirectLeg
-
 
 __all__ = ["TransferLeg"]
 

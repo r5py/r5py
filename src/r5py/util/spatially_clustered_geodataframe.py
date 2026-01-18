@@ -3,7 +3,6 @@
 
 """Assign a cluster label column to a point-geometry GeoDataFrame."""
 
-
 import warnings
 
 import geopandas
@@ -12,7 +11,6 @@ import shapely
 import sklearn.cluster
 
 from .good_enough_equidistant_crs import GoodEnoughEquidistantCrs
-
 
 __all__ = ["SpatiallyClusteredGeoDataFrame"]
 

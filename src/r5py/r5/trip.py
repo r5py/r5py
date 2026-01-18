@@ -3,13 +3,11 @@
 
 """Represent one trip, consisting of one or more `TripLeg`s."""
 
-
 import datetime
 
 import shapely
 
 from .trip_leg import TripLeg
-
 
 __all__ = ["Trip"]
 

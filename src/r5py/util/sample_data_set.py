@@ -3,14 +3,12 @@
 
 """A remote data set that is downloaded on demand."""
 
-
 import hashlib
 import pathlib
 import warnings
 
 from .config import Config
 from .validating_requests_session import ValidatingRequestsSession
-
 
 config = Config()
 

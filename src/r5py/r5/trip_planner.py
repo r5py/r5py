@@ -33,7 +33,6 @@ __all__ = ["TripPlanner"]
 start_jvm()
 
 
-ACCURATE_GEOMETRIES = com.conveyal.r5.transit.TransitLayer.SAVE_SHAPES
 COORDINATE_CORRECTION_FACTOR = com.conveyal.r5.streets.VertexStore.FIXED_FACTOR
 R5_CRS = "EPSG:4326"
 
@@ -373,20 +372,10 @@ class TripPlanner:
 
                                 # distance: based on the geometry, which might
                                 # be inaccurate.
-
-                                # We do not compute distance values if the
-                                # geometry is straight lines between stops
-                                # the user can still do that themselves from the
-                                # inaccurate geometries: then they at least know
-                                # what they committed to.
-                                # TODO: add to documentation
-                                if ACCURATE_GEOMETRIES:
-                                    distance = shapely.ops.transform(
-                                        self._crs_transformer_function,
-                                        geometry,
-                                    ).length
-                                else:
-                                    distance = None
+                                distance = shapely.ops.transform(
+                                    self._crs_transformer_function,
+                                    geometry,
+                                ).length
 
                                 leg = TransitLeg(
                                     transport_mode=transport_mode,

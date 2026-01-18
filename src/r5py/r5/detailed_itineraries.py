@@ -171,23 +171,6 @@ class DetailedItineraries(BaseTravelTimeMatrix):
         """
         self._prepare_origins_destinations()
 
-        # warn if public transport routes are requested, but R5 has been
-        # compiled with `TransitLayer.SAVE_SHAPES = false`.
-        if [
-            mode for mode in self.request.transport_modes if mode.is_transit_mode
-        ] and not ACCURATE_GEOMETRIES:
-            warnings.warn(
-                (
-                    "R5 has been compiled with "
-                    "`TransitLayer.SAVE_SHAPES = false` (the default). "
-                    "The geometries of public transport routes are "
-                    "inaccurate (straight lines between stops), and "
-                    "distances can not be computed."
-                ),
-                RuntimeWarning,
-                stacklevel=1,
-            )
-
         # loop over all origin/destination pairs, modify the request, and
         # compute times, distance, and other details for each trip
         with joblib.Parallel(

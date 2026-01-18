@@ -97,6 +97,7 @@ class TransportNetwork:
             transport_network.streetLayer.indexStreets()
 
             transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
+            transport_network.transitLayer.saveShapes = True
             transport_network.transitLayer.parentNetwork = transport_network
             for gtfs_file in gtfs:
                 gtfs_feed = com.conveyal.gtfs.GTFSFeed.writableTempFileFromGtfs(

@@ -3,7 +3,6 @@
 
 """Load a digital elevation model and apply it to an r5py.TransportNetwork."""
 
-
 import rasterio
 
 from .elevation_cost_function import ElevationCostFunction
@@ -12,7 +11,6 @@ from ..util import WorkingCopy
 
 import com.conveyal.analysis
 import com.conveyal.r5
-
 
 __all__ = ["ElevationModel"]
 

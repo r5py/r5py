@@ -419,7 +419,10 @@ class TestDetailedItineraries:
         ).reset_index(drop=False)
         with pytest.warns(
             RuntimeWarning,
-            match="Some (origin|destination) points could not be snapped to the street network",
+            match=(
+                "Some (origin|destination) points could not be snapped "
+                "to the street network"
+            ),
         ):
             _ = r5py.DetailedItineraries(
                 transport_network,
@@ -440,7 +443,10 @@ class TestDetailedItineraries:
         ):
             with pytest.warns(
                 RuntimeWarning,
-                match="Some (origin|destination) points could not be snapped to the street network",
+                match=(
+                    "Some (origin|destination) points could not be snapped "
+                    "to the street network"
+                ),
             ):
                 _ = r5py.DetailedItineraries(
                     transport_network,
@@ -485,7 +491,10 @@ class TestDetailedItineraries:
         ):
             with pytest.warns(
                 RuntimeWarning,
-                match="Some destination points could not be snapped to the street network",
+                match=(
+                    "Some destination points could not be snapped "
+                    "to the street network"
+                ),
             ):
                 _ = r5py.DetailedItineraries(
                     transport_network,

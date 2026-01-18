@@ -3,9 +3,7 @@
 
 """Represent one leg of a trip, specifically egress from a public transport stop."""
 
-
 from .transfer_leg import TransferLeg
-
 
 __all__ = ["EgressLeg"]
 

@@ -3,7 +3,6 @@
 
 """The elevation cost functions supported by R5 (Tobler, Minetti)."""
 
-
 import enum
 
 import jpype
@@ -11,7 +10,6 @@ import jpype
 from ..util import start_jvm
 
 import com.conveyal.r5
-
 
 __all__ = ["ElevationCostFunction"]
 
@@ -23,9 +21,11 @@ class ElevationCostFunction(enum.Enum):
     """
     Elevation cost functions.
 
-    TOBLER: Waldo Tobler’s hiking function, cf. https://en.wikipedia.org/wiki/Tobler%27s_hiking_function
-    MINETTI: Minetti et al.’s perceived effort/energy consumption, cf.
-    https://doi.org/10.1152/japplphysiol.01177.2001
+    TOBLER: Waldo Tobler’s hiking function,
+        cf. https://en.wikipedia.org/wiki/Tobler%27s_hiking_function
+    MINETTI: Minetti et al.’s perceived effort/energy consumption,
+        cf. https://doi.org/10.1152/japplphysiol.01177.2001
+
     """
 
     @classmethod

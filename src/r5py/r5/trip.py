@@ -3,13 +3,11 @@
 
 """Represent one trip, consisting of one or more `TripLeg`s."""
 
-
 import datetime
 
 import shapely
 
 from .trip_leg import TripLeg
-
 
 __all__ = ["Trip"]
 
@@ -21,7 +19,7 @@ class Trip:
         "segment",
     ] + TripLeg.COLUMNS
 
-    def __init__(self, legs=[]):
+    def __init__(self, legs=[]):  # noqa: B006
         """
         Represent one trip, consisting of one of more `r5py.r5.TripLeg`.
 
@@ -71,7 +69,7 @@ class Trip:
 
     @property
     def geometry(self):
-        """Joined geometries of all legs of this trip (shapely.LineString or shapely.MultiLineString)."""
+        """Joined geometries of all legs of this trip."""
         return shapely.line_merge(
             shapely.MultiLineString([leg.geometry for leg in self.legs])
         )

@@ -20,9 +20,10 @@ class TestTrip:
             geometry=shapely.LineString([[0, 0], [1, 1], [2, 2]]),
         )
         trip = r5py.r5.trip.Trip([trip_leg])
-        assert (
-            repr(trip)
-            == "<Trip: 12.67m, 600.0s, <TripLeg: TransportMode.TRANSIT, 12.67m, 600.0s, (0.0, 0.0) -> (2.0, 2.0)>>"
+        assert repr(trip) == (
+            "<Trip: 12.67m, 600.0s, "
+            "<TripLeg: TransportMode.TRANSIT, "
+            "12.67m, 600.0s, (0.0, 0.0) -> (2.0, 2.0)>>"
         )
 
     def test_summarised_properties(self):

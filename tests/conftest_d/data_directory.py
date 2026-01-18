@@ -2,7 +2,7 @@
 
 
 """Path to test data sets."""
-import pathlib
 
+import pathlib
 
 DATA_DIRECTORY = pathlib.Path(__file__).resolve().parent.parent / "data"

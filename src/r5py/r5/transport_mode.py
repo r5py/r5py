@@ -3,7 +3,6 @@
 
 """The transport modes supported by R5 (Leg, Street, Transit, combined)."""
 
-
 import enum
 
 import jpype
@@ -11,7 +10,6 @@ import jpype
 from ..util import start_jvm
 
 import com.conveyal.r5
-
 
 __all__ = ["TransportMode"]
 
@@ -75,7 +73,8 @@ class TransportMode(enum.Enum):
             return [self] + other
         else:
             raise TypeError(
-                f"unsupported operand type(s) for '+': '{type(other)}' and '{type(self)}'"
+                "unsupported operand type(s) for '+': "
+                f"'{type(other)}' and '{type(self)}'"
             )
 
     def __radd__(self, other):

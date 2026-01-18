@@ -33,7 +33,7 @@ class RegionalTask:
         destinations=None,
         departure=None,  # default: datetime.datetime.now(),
         departure_time_window=datetime.timedelta(minutes=10),  # noqa: B008
-        percentiles=(50,),
+        percentiles=[50],  # noqa: B006
         transport_modes=(TransportMode.TRANSIT,),
         access_modes=(TransportMode.WALK,),
         egress_modes=None,  # default: access_modes

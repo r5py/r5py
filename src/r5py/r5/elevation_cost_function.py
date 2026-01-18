@@ -23,8 +23,9 @@ class ElevationCostFunction(enum.Enum):
 
     TOBLER: Waldo Tobler’s hiking function,
         cf. https://en.wikipedia.org/wiki/Tobler%27s_hiking_function
-    MINETTI: Minetti et al.’s perceived effort/energy consumption, cf.
-    https://doi.org/10.1152/japplphysiol.01177.2001
+    MINETTI: Minetti et al.’s perceived effort/energy consumption,
+        cf. https://doi.org/10.1152/japplphysiol.01177.2001
+
     """
 
     @classmethod

@@ -3,7 +3,6 @@
 
 """Calculate detailed itineraries between many origins and destinations."""
 
-
 import copy
 import warnings
 
@@ -19,7 +18,6 @@ import pandas
 from .base_travel_time_matrix import BaseTravelTimeMatrix
 from .trip import Trip
 from .trip_planner import ACCURATE_GEOMETRIES, TripPlanner
-
 
 __all__ = ["DetailedItineraries", "DetailedItinerariesComputer"]
 
@@ -80,11 +78,12 @@ class DetailedItineraries(BaseTravelTimeMatrix):
             have different lengths, or if ``destinations`` is omitted)
         **kwargs : mixed
             Any arguments than can be passed to r5py.RegionalTask:
-            ``departure``, ``departure_time_window``, ``percentiles``, ``transport_modes``,
-            ``access_modes``, ``egress_modes``, ``max_time``, ``max_time_walking``,
-            ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
-            ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
-            Note that not all arguments might make sense in this context, and the
+            ``departure``, ``departure_time_window``, ``percentiles``,
+            ``transport_modes``, ``access_modes``, ``egress_modes``,
+            ``max_time``, ``max_time_walking``, ``max_time_cycling``,
+            ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
+            ``max_public_transport_rides``, ``max_bicycle_traffic_stress`` Note
+            that not all arguments might make sense in this context, and the
             underlying R5 engine might ignore some of them.
         """
         super().__init__(
@@ -101,24 +100,31 @@ class DetailedItineraries(BaseTravelTimeMatrix):
                 warnings.warn(
                     "No destinations specified, computing an all-to-all matrix",
                     RuntimeWarning,
+                    stacklevel=1,
                 )
 
         elif len(origins) != len(destinations):
             self.all_to_all = True
             if self.verbose:
                 warnings.warn(
-                    "Origins and destinations are of different length, computing an all-to-all matrix",
+                    "Origins and destinations are of different length, "
+                    "computing an all-to-all matrix",
                     RuntimeWarning,
+                    stacklevel=1,
                 )
         elif origins.equals(destinations):
             self.all_to_all = True
             if self.verbose:
                 warnings.warn(
-                    "Origins and destinations are identical, computing an all-to-all matrix",
+                    "Origins and destinations are identical, "
+                    "computing an all-to-all matrix",
                     RuntimeWarning,
+                    stacklevel=1,
                 )
         else:
             self.all_to_all = force_all_to_all
+
+        self.od_pairs = None
 
         data = self._compute()
         with warnings.catch_warnings():
@@ -146,8 +152,8 @@ class DetailedItineraries(BaseTravelTimeMatrix):
             The resulting detailed routes. For each origin/destination pair,
             multiple route alternatives (‘options’) might be reported that each
             consist of one or more segments. Each segment represents one row.
-            multiple route alternatives (‘options’) might be reported that each consist of
-            one or more segments. Each segment represents one row.
+            multiple route alternatives (‘options’) might be reported that each
+            consist of one or more segments. Each segment represents one row.
 
             The data frame comprises of the following columns: `from_id`,
             `to_id`, `option` (`int`), `segment` (`int`), `transport_mode`
@@ -175,6 +181,7 @@ class DetailedItineraries(BaseTravelTimeMatrix):
                     "distances can not be computed."
                 ),
                 RuntimeWarning,
+                stacklevel=1,
             )
 
         # loop over all origin/destination pairs, modify the request, and
@@ -197,7 +204,7 @@ class DetailedItineraries(BaseTravelTimeMatrix):
         return od_matrix
 
     def _prepare_origins_destinations(self):
-        """Make sure we received enough information to route from origins to destinations."""
+        """Make sure we received enough information."""
         super()._prepare_origins_destinations()
 
         if self.all_to_all:
@@ -242,7 +249,8 @@ class DetailedItineraries(BaseTravelTimeMatrix):
 
 
 @deprecated(
-    "Use `DetailedItineraries` instead, `DetailedItinerariesComputer will be deprecated in a future release."
+    "Use `DetailedItineraries` instead, "
+    "`DetailedItinerariesComputer will be deprecated in a future release."
 )
 class DetailedItinerariesComputer:
     """Compute detailed itineraries between many origins and destinations."""
@@ -259,14 +267,14 @@ class DetailedItinerariesComputer:
         -------
         geopandas.GeoDataFrame
             The resulting detailed routes. For each origin/destination pair,
-            multiple route alternatives (‘options’) might be reported that each consist of
-            one or more segments. Each segment represents one row.
+            multiple route alternatives (‘options’) might be reported that each
+            consist of one or more segments. Each segment represents one row.
             The data frame comprises of the following columns: `from_id`,
             `to_id`, `option` (`int`), `segment` (`int`), `transport_mode`
             (`r5py.TransportMode`), `departure_time` (`datetime.datetime`),
             `distance` (`float`, metres), `travel_time` (`datetime.timedelta`),
             `wait_time` (`datetime.timedelta`), `route` (`str`, public transport
-            route number or name), `geometry` (`shapely.LineString`)
-            TODO: Add description of output data frame columns and format
+            route number or name), `geometry` (`shapely.LineString`) TODO: Add
+            description of output data frame columns and format
         """
         return self._detailed_itineraries

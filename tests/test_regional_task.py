@@ -14,7 +14,6 @@ from r5py.util import start_jvm
 import com.conveyal.r5
 import java.time
 
-
 start_jvm()
 
 

@@ -3,12 +3,10 @@
 
 """Find the most appropriate equidistant (UTM) reference system for an extent."""
 
-
 import pyproj
 import shapely
 
 from .exceptions import UnexpectedCrsError
-
 
 FALLBACK_CRS = 3857
 DATUM_NAME = "WGS 84"

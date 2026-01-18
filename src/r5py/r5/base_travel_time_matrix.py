@@ -14,7 +14,6 @@ from ..util import check_od_data_set, Config
 from .regional_task import RegionalTask
 from .transport_network import TransportNetwork
 
-
 __all__ = ["BaseTravelTimeMatrix"]
 
 
@@ -63,9 +62,10 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
         transport_network : r5py.TransportNetwork | tuple(str, list(str), dict)
             The transport network to route on. This can either be a readily
             initialised r5py.TransportNetwork or a tuple of the parameters
-            passed to ``TransportNetwork.__init__()``: the path to an OpenStreetMap
-            extract in PBF format, a list of zero of more paths to GTFS transport
-            schedule files, and a dict with ``build_config`` options.
+            passed to ``TransportNetwork.__init__()``: the path to an
+            OpenStreetMap extract in PBF format, a list of zero of more paths to
+            GTFS transport schedule files, and a dict with ``build_config``
+            options.
         origins : geopandas.GeoDataFrame
             Places to find a route _from_
             Has to have a point geometry, and at least an `id` column
@@ -80,9 +80,10 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
             if `int`, use `snap_to_network` meters as the search radius.
         **kwargs : mixed
             Any arguments than can be passed to r5py.RegionalTask:
-            ``departure``, ``departure_time_window``, ``percentiles``, ``transport_modes``,
-            ``access_modes``, ``egress_modes``, ``max_time``, ``max_time_walking``,
-            ``max_time_cycling``, ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
+            ``departure``, ``departure_time_window``, ``percentiles``,
+            ``transport_modes``, ``access_modes``, ``egress_modes``,
+            ``max_time``, ``max_time_walking``, ``max_time_cycling``,
+            ``max_time_driving``, ``speed_cycling``, ``speed_walking``,
             ``max_public_transport_rides``, ``max_bicycle_traffic_stress``
         """
         geopandas.GeoDataFrame.__init__(self)
@@ -144,7 +145,7 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
         return data_set.map(lambda x: numpy.nan if x == MAX_INT32 else x)
 
     def _prepare_origins_destinations(self):
-        """Make sure we received enough information to route from origins to destinations."""
+        """Make sure we received enough information."""
         try:
             self.origins
         except AttributeError as exception:
@@ -157,8 +158,10 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
             self.destinations = self.origins.copy()
             if self.verbose:
                 warnings.warn(
-                    "No routing destinations defined, using origins as destinations, too.",
+                    "No routing destinations defined, "
+                    "using origins as destinations, too.",
                     RuntimeWarning,
+                    stacklevel=1,
                 )
 
         if self.snap_to_network:
@@ -168,11 +171,14 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
                     points.geometry
                 )
                 if len(points[points.geometry == shapely.Point()]):
-                    # if there are origins/destinations for which no snapped point could be found
+                    # if there are origins/destinations for which
+                    # no snapped point could be found
                     points = points[points.geometry != shapely.Point()]
                     warnings.warn(
-                        f"Some {which_end[:-1]} points could not be snapped to the street network",
+                        f"Some {which_end[:-1]} points could not be "
+                        "snapped to the street network",
                         RuntimeWarning,
+                        stacklevel=1,
                     )
 
                     if points.empty:

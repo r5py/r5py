@@ -3,7 +3,6 @@
 
 """Wraps a com.conveyal.r5.streets.StreetLayer."""
 
-
 import functools
 
 import jpype
@@ -14,7 +13,6 @@ from .transport_mode import TransportMode
 from ..util import start_jvm
 
 import com.conveyal.r5
-
 
 __all__ = ["StreetLayer"]
 

@@ -2,9 +2,7 @@
 
 """Convert a camelCase/CamelCase formated string to a snake_case format."""
 
-
 import re
-
 
 __all__ = ["camel_to_snake_case"]
 

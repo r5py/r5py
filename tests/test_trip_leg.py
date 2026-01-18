@@ -18,9 +18,9 @@ class TestTripLeg:
             wait_time=datetime.timedelta(minutes=2),
             geometry=shapely.LineString([[0, 0], [1, 1], [2, 2]]),
         )
-        assert (
-            repr(trip_leg)
-            == "<TripLeg: TransportMode.TRANSIT, 12.67m, 600.0s, (0.0, 0.0) -> (2.0, 2.0)>"
+        assert repr(trip_leg) == (
+            "<TripLeg: TransportMode.TRANSIT, "
+            "12.67m, 600.0s, (0.0, 0.0) -> (2.0, 2.0)>"
         )
 
         trip_leg = r5py.r5.trip_leg.TripLeg()

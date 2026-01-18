@@ -2,13 +2,11 @@
 
 """Create a copy or link of an input file in a cache directory."""
 
-
 import filelock
 import pathlib
 import shutil
 
 from .config import Config
-
 
 __all__ = ["WorkingCopy"]
 

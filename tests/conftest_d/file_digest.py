@@ -3,13 +3,14 @@
 
 """Fixtures describing the expected routing results."""
 
-
 import pytest
 
 from .routing_results import ISOCHRONES_WALK
 
-
-ISOCHRONES_WALK_BLAKE2B = "e5c0fe9d34b512363c876eec81439b2708a1171272dd721a40aefe502c6e0dc73811aab0f109a45ab83645b88dea38051112ede7fc4b99a1231d92e3b4492e11"
+ISOCHRONES_WALK_BLAKE2B = (
+    "e5c0fe9d34b512363c876eec81439b2708a1171272dd721a40aefe502c6e0dc7"
+    "3811aab0f109a45ab83645b88dea38051112ede7fc4b99a1231d92e3b4492e11"
+)
 ISOCHRONES_WALK_BLAKE2S = (
     "3d46b490841df409cbb962e25d4201bda0eea5b825fc1181cb0babfddf457299"
 )

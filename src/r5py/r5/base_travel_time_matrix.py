@@ -104,6 +104,7 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
             passed to ``TransportNetwork.__init__()``: the path to an
             OpenStreetMap extract in PBF format, and a list of zero of more
             paths to GTFS transport schedule files.
+
         origins : geopandas.GeoDataFrame
             Places to find a route _from_
             Has to have a point geometry, and at least an `id` column

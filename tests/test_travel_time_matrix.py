@@ -611,9 +611,8 @@ class TestTravelTimeMatrixComputer:
         with pytest.warns(
             RuntimeWarning,
             match=(
-                "The currently loaded GTFS data sets do not "
-                "define any services on"
-            )
+                "The currently loaded GTFS data sets do not " "define any services on"
+            ),
         ):
             _ = r5py.TravelTimeMatrix(
                 transport_network,

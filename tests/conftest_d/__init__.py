@@ -3,7 +3,6 @@
 
 """Fixtures to be used in r5py tests."""
 
-
 from .destinations import (
     population_grid,
     population_grid_points,

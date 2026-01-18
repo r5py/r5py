@@ -33,8 +33,8 @@ class RegionalTask:
         departure=None,  # default: datetime.datetime.now(),
         departure_time_window=datetime.timedelta(minutes=10),  # noqa: B008
         percentiles=[50],  # noqa: B006
-        transport_modes=(TransportMode.TRANSIT,),
-        access_modes=(TransportMode.WALK,),
+        transport_modes=[TransportMode.TRANSIT],  # noqa: B006
+        access_modes=[TransportMode.WALK],  # noqa: B006
         egress_modes=None,  # default: access_modes
         max_time=datetime.timedelta(hours=2),  # noqa: B008
         max_time_walking=None,
@@ -178,7 +178,7 @@ class RegionalTask:
     @access_modes.setter
     def access_modes(self, access_modes):
         # eliminate duplicates, cast to TransportMode (converts str values)
-        access_modes = (TransportMode(mode) for mode in set(access_modes))
+        access_modes = set(TransportMode(mode) for mode in set(access_modes))
         self._access_modes = access_modes
         self._regional_task.accessModes = RegionalTask._enum_set(
             access_modes, com.conveyal.r5.api.util.LegMode
@@ -311,7 +311,7 @@ class RegionalTask:
     @egress_modes.setter
     def egress_modes(self, egress_modes):
         # eliminate duplicates, cast to TransportMode (converts str values)
-        egress_modes = (TransportMode(mode) for mode in set(egress_modes))
+        egress_modes = set(TransportMode(mode) for mode in set(egress_modes))
         self._egress_modes = egress_modes
         self._regional_task.egressModes = RegionalTask._enum_set(
             egress_modes, com.conveyal.r5.api.util.LegMode
@@ -512,7 +512,7 @@ class RegionalTask:
     @transport_modes.setter
     def transport_modes(self, transport_modes):
         # eliminate duplicates, cast to TransportMode (converts str values)
-        transport_modes = (TransportMode(mode) for mode in set(transport_modes))
+        transport_modes = set(TransportMode(mode) for mode in set(transport_modes))
         self._transport_modes = transport_modes
 
         # split them up into direct and transit modes,
@@ -538,9 +538,9 @@ class RegionalTask:
         else:  # no public transport
             egress_modes = []  # ignore egress (why?)
 
-            #     # this is weird (the following is the logic implemented in
-            #     r5r) # I reckon this is trying to keep the fastest mode only,
-            #     and # assumes that car is always faster that bike is always
+            #     this is weird (the following is the logic implemented in
+            #     r5r) I reckon this is trying to keep the fastest mode only,
+            #     and assumes that car is always faster that bike is always
             #     faster than walking
             #     if TransportMode.CAR in transport_modes:
             #         access_modes = direct_modes = [TransportMode.CAR]

@@ -265,10 +265,12 @@ class TripPlanner:
                                 leg = egress_legs_by_stop[state.back.stop]
                             except KeyError:
                                 leg = min(
-                                    self._transit_egress_paths[transport_mode][
-                                        state.back.stop
+                                    [
+                                        self._transit_egress_paths[transport_mode][
+                                            state.back.stop
+                                        ]
+                                        for transport_mode in self._transit_egress_paths
                                     ]
-                                    for transport_mode in self._transit_egress_paths
                                 )
                                 egress_legs_by_stop[state.back.stop] = leg
                             leg.wait_time = ZERO_SECONDS
@@ -463,7 +465,7 @@ class TripPlanner:
             {
                 com.conveyal.r5.api.util.LegMode
                 @ mode: gnu.trove.map.hash.TIntIntHashMap(
-                    list(reached_stops.keys()),
+                    [stop for stop in reached_stops.keys()],
                     [
                         round(transfer_leg.travel_time.total_seconds())
                         for transfer_leg in reached_stops.values()
@@ -527,7 +529,7 @@ class TripPlanner:
             {
                 com.conveyal.r5.api.util.LegMode
                 @ mode: gnu.trove.map.hash.TIntIntHashMap(
-                    list(reached_stops.keys()),
+                    [stop for stop in reached_stops.keys()],
                     [
                         round(transfer_leg.travel_time.total_seconds())
                         for transfer_leg in reached_stops.values()

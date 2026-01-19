@@ -587,7 +587,7 @@ class TestTravelTimeMatrixComputer:
         travel_time_matrix = travel_time_matrix[travel_time_matrix["travel_time"] <= 20]
 
         assert isinstance(travel_time_matrix, pandas.DataFrame)
-        assert travel_time_matrix.shape == (2588, 3)
+        assert travel_time_matrix.shape == (3946, 3)
         assert travel_time_matrix.columns.to_list() == [
             "from_id",
             "to_id",

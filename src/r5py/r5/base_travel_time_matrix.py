@@ -152,6 +152,10 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
 
         self.verbose = Config().arguments.verbose
 
+    def __repr__(self):
+        """Return a string representation of `self`."""
+        return f"<{self.__class__.__name__}>"
+
     def __setattr__(self, attr, val):
         """Catch our own attributes here so we don’t mess with (geo)pandas columns."""
         if attr in self._r5py_attributes:

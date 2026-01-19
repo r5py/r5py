@@ -4,7 +4,7 @@ channels:
     - conda-forge
 
 dependencies:
-    - python=3.13
+    - python=3.14
     - configargparse
     - filelock
     - geohexgrid
@@ -42,8 +42,8 @@ dependencies:
     - pytest
     - pytest-asyncio
     - pytest-cov
-    - r5py.sampledata.helsinki>=0.1.1dev2
-    - r5py.sampledata.sao_paulo>=0.1.1dev2
+    - r5py.sampledata.helsinki
+    - r5py.sampledata.sao_paulo
     - sphinx
     - sphinx-book-theme
     - sphinx-design

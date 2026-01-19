@@ -2,9 +2,11 @@
 
 """Calculate travel times between many origins and destinations."""
 
+import collections.abc
 import inspect
 import math
 import multiprocessing
+import pathlib
 import warnings
 
 import geopandas
@@ -51,6 +53,40 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
     _constructor = geopandas.GeoDataFrame
 
     _constructor_sliced = pandas.Series
+
+    @classmethod
+    def _geodataframe_constructor_with_fallback(
+        cls,
+        *args,
+        **kwargs,
+    ):  # pragma: no cover
+        """
+        A flexible constructor for r5py frames.
+
+        Checks whether or not arguments of the child class are used.
+        """
+        # `transport_network` is the only required argument across all r5py
+        # data classes, it can be passed either as an r5py.TransportNetwork
+        # or a tuple (as described in the signature of __init__(), below)
+        if (
+            "transport_network" in kwargs
+            or isinstance(args[0], TransportNetwork)
+            or (
+                isinstance(args[0], tuple)
+                and isinstance(args[0][0], (pathlib.Path, str))
+                and isinstance(args[0][1], collections.abc.Iterable)
+                and all(isinstance(arg, (pathlib.Path, str)) for arg in args[0][1])
+            )
+        ):
+            df = cls(*args, **kwargs)
+
+        else:
+            df = geopandas.GeoDataFrame(*args, **kwargs)
+            geometry_cols_mask = df.dtypes == "geometry"
+            if len(geometry_cols_mask) == 0 or geometry_cols_mask.sum() == 0:
+                df = pandas.DataFrame(df)
+
+        return df
 
     def __init__(
         self,

@@ -611,3 +611,14 @@ class TestTravelTimeMatrixComputer:
                 transport_network,
                 origins=origins_valid_ids,
             )
+
+    def test_repr(
+        self,
+        transport_network,
+        origins_valid_ids,
+    ):
+        travel_time_matrix = r5py.TravelTimeMatrix(
+            transport_network,
+            origins=origins_valid_ids,
+        )
+        assert repr(travel_time_matrix) == "<TravelTimeMatrix>"

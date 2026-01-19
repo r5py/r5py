@@ -110,7 +110,7 @@ isochrones["travel_time"] = isochrones["travel_time"].apply(str)
 ```
 
 ```{code-cell}
-isochrones.explore(column="travel_time", cmap="YlOrRd")
+isochrones.explore(column="travel_time", cmap="YlOrRd", tiles="CartoDB.Positron")
 ```
 
 ## Isochrones from multiple locations
@@ -165,7 +165,7 @@ isochrones["travel_time"] = isochrones["travel_time"].apply(str)
 ```
 
 ```{code-cell}
-isochrones.explore(column="travel_time", cmap="YlOrRd")
+isochrones.explore(column="travel_time", cmap="YlOrRd", tiles="CartoDB.Positron")
 ```
 
 :::{admonition} Performance tuning

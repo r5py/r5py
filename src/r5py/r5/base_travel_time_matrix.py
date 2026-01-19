@@ -2,11 +2,9 @@
 
 """Calculate travel times between many origins and destinations."""
 
-import collections.abc
 import inspect
 import math
 import multiprocessing
-import pathlib
 import warnings
 
 import geopandas

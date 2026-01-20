@@ -77,7 +77,7 @@ equivalent_sources = [
 "docs/md/" = "md"
 
 [tool.pytest.ini_options]
-addopts = "-p no:faulthandler --cov=r5py --cov-report term-missing --cov-report xml --import-mode=importlib"
+addopts = "-p no:faulthandler --cov=r5py --cov-report term-missing --cov-report xml --import-mode=importlib --junitxml=junit.xml -o junit_family=legacy"
 filterwarnings = [
     "error",
     "ignore:Could not find R5 jar, trying to download it from upstream",

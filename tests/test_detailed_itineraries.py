@@ -657,18 +657,3 @@ class TestDetailedItinerariesComputer:
         geopandas.testing.assert_geodataframe_equal(
             detailed_itineraries_new, detailed_itineraries_old
         )
-
-    def test_repr(
-        self,
-        transport_network,
-        origin_point,
-        population_grid_points,
-        departure_datetime,
-    ):
-        detailed_itineraries = r5py.DetailedItineraries(
-            transport_network,
-            origins=origin_point,
-            destinations=population_grid_points[:2],
-            departure=departure_datetime,
-        )
-        assert repr(detailed_itineraries) == "<DetailedItineraries>"

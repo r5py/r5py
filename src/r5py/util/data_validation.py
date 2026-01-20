@@ -2,9 +2,7 @@
 
 """Utility functions for validating input data."""
 
-
 from .exceptions import NoIDColumnError, NonUniqueIDError, NoCrsError
-
 
 __all__ = ["check_od_data_set"]
 

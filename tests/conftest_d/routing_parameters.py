@@ -3,7 +3,6 @@
 
 """Fixtures related to regional tasks and routing parameters."""
 
-
 import datetime
 
 import pytest

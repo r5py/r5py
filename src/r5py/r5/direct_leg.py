@@ -3,13 +3,11 @@
 
 """Represent one leg of a direct mode (walk, cycle, car) trip."""
 
-
 import datetime
 
 import shapely
 
 from .trip_leg import TripLeg
-
 
 __all__ = ["DirectLeg"]
 

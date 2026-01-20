@@ -331,38 +331,6 @@ class TestTravelTimeMatrix:
     @pytest.mark.parametrize(
         [
             "snap_to_network",
-            "expected_snap_to_network",
-        ],
-        [
-            (
-                True,
-                True,
-            ),
-            (
-                False,
-                False,
-            ),
-        ],
-    )
-    def test_snap_to_network_parameter(
-        self,
-        transport_network,
-        population_grid_points,
-        departure_datetime,
-        snap_to_network,
-        expected_snap_to_network,
-    ):
-        travel_time_matrix = r5py.TravelTimeMatrix(
-            transport_network,
-            population_grid_points,
-            departure=departure_datetime,
-            snap_to_network=snap_to_network,
-        )
-        assert travel_time_matrix.snap_to_network == expected_snap_to_network
-
-    @pytest.mark.parametrize(
-        [
-            "snap_to_network",
             "expected_travel_times",
         ],
         [
@@ -483,7 +451,10 @@ class TestTravelTimeMatrix:
             ),
             pytest.warns(
                 RuntimeWarning,
-                match="Some destination points could not be snapped to the street network",
+                match=(
+                    "Some destination points could not be snapped to "
+                    "the street network"
+                ),
             ),
         ):
             _ = r5py.TravelTimeMatrix(
@@ -537,7 +508,10 @@ class TestTravelTimeMatrixComputer:
 
         with pytest.warns(
             DeprecationWarning,
-            match="Use `TravelTimeMatrix` instead, `TravelTimeMatrixComputer will be deprecated in a future release.",
+            match=(
+                "Use `TravelTimeMatrix` instead, "
+                "`TravelTimeMatrixComputer will be deprecated in a future release."
+            ),
         ):
             ttm_old = r5py.TravelTimeMatrixComputer(
                 transport_network,
@@ -596,3 +570,57 @@ class TestTravelTimeMatrixComputer:
             travel_times,
             expected_travel_times,
         )
+
+    def test_slicing(
+        self,
+        transport_network,
+        population_grid_points,
+        departure_datetime,
+    ):
+        travel_time_matrix = r5py.TravelTimeMatrix(
+            transport_network,
+            origins=population_grid_points,
+            departure=departure_datetime,
+            transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+        )
+
+        travel_time_matrix = travel_time_matrix[travel_time_matrix["travel_time"] <= 20]
+
+        assert isinstance(travel_time_matrix, pandas.DataFrame)
+        assert travel_time_matrix.shape == (3946, 3)
+        assert travel_time_matrix.columns.to_list() == [
+            "from_id",
+            "to_id",
+            "travel_time",
+        ]
+        assert travel_time_matrix["travel_time"].min() >= 0
+        assert travel_time_matrix["travel_time"].max() <= 20
+
+    def test_departure_time_now(
+        self,
+        transport_network,
+        origins_valid_ids,
+    ):
+        with pytest.warns(
+            RuntimeWarning,
+            match=(
+                "The currently loaded GTFS data sets do not " "define any services on"
+            ),
+        ):
+            _ = r5py.TravelTimeMatrix(
+                transport_network,
+                origins=origins_valid_ids,
+            )
+
+    def test_repr(
+        self,
+        transport_network,
+        origins_valid_ids,
+        departure_datetime,
+    ):
+        travel_time_matrix = r5py.TravelTimeMatrix(
+            transport_network,
+            origins=origins_valid_ids,
+            departure=departure_datetime,
+        )
+        assert repr(travel_time_matrix) == "<TravelTimeMatrix>"

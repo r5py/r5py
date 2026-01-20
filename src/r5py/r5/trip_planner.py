@@ -3,7 +3,6 @@
 
 """Find detailed routes between two points."""
 
-
 import copy
 import collections
 import datetime
@@ -27,7 +26,6 @@ from ..util import GoodEnoughEquidistantCrs, start_jvm
 import com.conveyal.r5
 import gnu.trove.map
 import java.lang
-
 
 __all__ = ["TripPlanner"]
 
@@ -62,6 +60,7 @@ class TripPlanner:
         """
         self.transport_network = transport_network
         self.request = request
+        self._transfer_paths = {}
 
         EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(self.transport_network.extent)
         self._crs_transformer_function = pyproj.Transformer.from_crs(
@@ -164,6 +163,7 @@ class TripPlanner:
                         f"and destination ({self.request._regional_task.toLon}, "
                         f"{self.request._regional_task.toLat})",
                         RuntimeWarning,
+                        stacklevel=1,
                     )
         return direct_paths
 
@@ -269,7 +269,7 @@ class TripPlanner:
                                         self._transit_egress_paths[transport_mode][
                                             state.back.stop
                                         ]
-                                        for transport_mode in self._transit_egress_paths.keys()
+                                        for transport_mode in self._transit_egress_paths
                                     ]
                                 )
                                 egress_legs_by_stop[state.back.stop] = leg
@@ -290,7 +290,7 @@ class TripPlanner:
                                         self._transit_access_paths[transport_mode][
                                             state.stop
                                         ]
-                                        for transport_mode in self._transit_access_paths.keys()
+                                        for transport_mode in self._transit_access_paths
                                     ]
                                 )
                                 access_legs_by_stop[state.stop] = leg
@@ -326,7 +326,8 @@ class TripPlanner:
                             else:  # TransitLeg
                                 pattern = transit_layer.trip_patterns[state.pattern]
 
-                                # Use the indices to look up the stop ids, which are scoped by the GTFS feed supplied
+                                # Use the indices to look up the stop ids, which
+                                # are scoped by the GTFS feed supplied
                                 start_stop_id = transit_layer.get_stop_id_from_index(
                                     state.back.stop
                                 ).split(":")[1]
@@ -338,7 +339,7 @@ class TripPlanner:
 
                                 route = transit_layer.routes[pattern.routeIndex]
                                 transport_mode = TransportMode(
-                                    com.conveyal.r5.transit.TransitLayer.getTransitModes(
+                                    com.conveyal.r5.transit.TransitLayer.getTransitModes(  # noqa: E501
                                         route.route_type
                                     ).toString()
                                 )
@@ -359,7 +360,7 @@ class TripPlanner:
                                 # select only the ‘hops’ between our stops, and merge
                                 # them into one LineString
                                 hops = hops[
-                                    state.boardStopPosition : state.alightStopPosition
+                                    state.boardStopPosition : state.alightStopPosition  # noqa: E203, E501
                                 ]
                                 geometry = shapely.line_merge(
                                     shapely.MultiLineString(
@@ -556,7 +557,7 @@ class TripPlanner:
                 street_router.streetMode = TransportMode.WALK
 
                 get_coordinates_for_stop = (
-                    self.transport_network.transit_layer._transit_layer.getCoordinateForStopFixed
+                    self.transport_network.transit_layer._transit_layer.getCoordinateForStopFixed  # noqa: E501
                 )
                 from_stop_coordinates = get_coordinates_for_stop(from_stop)
                 to_stop_coordinates = get_coordinates_for_stop(to_stop)

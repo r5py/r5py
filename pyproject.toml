@@ -19,17 +19,17 @@ dependencies = [
     "ConfigArgParse",
     "filelock",
     "geohexgrid",
-    "geopandas<1.1.0",
+    "geopandas",
     "joblib",
     "jpype1",
     "numpy",
-    "pandas>=2.1.0",
+    "pandas",
     "psutil",
     "pyproj",
     "rasterio",
     "requests",
     "scikit-learn",
-    "shapely>=2.0",
+    "shapely",
     "simplification",
     "typing_extensions; python_version < '3.13'"
 ]
@@ -47,14 +47,43 @@ license = {text = "GPL-3.0-or-later or MIT"}
 dynamic = ["version"]
 
 [project.optional-dependencies]
-docs = ["contextily", "folium", "GitPython", "h3>=4.0.0b2", "jupyterlab_myst",
-        "mapclassify", "matplotlib", "myst-nb", "nbsphinx", "pybtex-apa7-style",
-        "r5py.sampledata.helsinki>=0.1.1", "r5py.sampledata.sao_paulo>=0.1.1",
-        "shapely", "sphinx", "sphinx-book-theme", "sphinx-design",
-        "sphinxcontrib-bibtex", "sphinxcontrib-images"]
-tests = ["pyarrow", "pytest", "pytest-cov", "pytest-lazy-fixtures",
-         "r5py.sampledata.helsinki>=1.0.3", "r5py.sampledata.sao_paulo>=0.1.1",
-         "typing-extensions"]
+dev = [
+    "black",
+    "flake8",
+    "flake8-bugbear",
+    "flake8-pyproject",
+    "pydocstyle",
+    "pylint",
+]
+docs = [
+    "contextily",
+    "folium",
+    "GitPython",
+    "h3>=4.0.0b2",
+    "jupyterlab_myst",
+    "mapclassify",
+    "matplotlib",
+    "myst-nb",
+    "nbsphinx",
+    "pybtex-apa7-style @ git+https://github.com/christophfink/pybtex-apa7-style.git@5-allow-newer-pybtex",
+    "r5py.sampledata.helsinki>=0.1.1",
+    "r5py.sampledata.sao_paulo>=0.1.1",
+    "shapely",
+    "sphinx",
+    "sphinx-book-theme",
+    "sphinx-design",
+    "sphinxcontrib-bibtex",
+    "sphinxcontrib-images",
+]
+tests = [
+    "pyarrow",
+    "pytest",
+    "pytest-cov",
+    "pytest-lazy-fixtures",
+    "r5py.sampledata.helsinki>=1.0.3",
+    "r5py.sampledata.sao_paulo>=0.1.1",
+    "typing-extensions",
+]
 
 
 [project.urls]
@@ -72,9 +101,34 @@ equivalent_sources = [
     "C:/hostedtoolcache/windows/Python/*/x64/Lib/site-packages/r5py/"
 ]
 
+[tool.coverage.report]
+exclude_also = [
+    'if __name__ == .__main__.:',
+]
+
+[tool.coverage.run]
+omit = ["tests/*", ".virtualenv/**/*"]
+
+[tool.flake8]
+exclude = ["build", "dist", "docs/conf.py", ".virtualenv"]
+extent-ignore = ["E203", "E501", "E701"]
+extent-select = ["B950"]
+max-line-length = 88
+
+[tool.isort]
+profile = "black"
+skip = ["build", "dist", "docs/conf.py", ".virtualenv"]
+
 [tool.jupytext.formats]
 "docs/notebooks/" = "ipynb"
 "docs/md/" = "md"
+
+[tool.pydocstyle]
+match-dir = "^src"
+
+[tool.pylintrc]
+good-names = ["i", "j", "k", "e", "ex", "id", "Run", "_"]
+max-line-length = 88
 
 [tool.pytest.ini_options]
 addopts = "-p no:faulthandler --cov=r5py --cov-report term-missing --cov-report xml --import-mode=importlib --junitxml=junit.xml -o junit_family=legacy"

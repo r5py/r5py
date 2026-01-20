@@ -15,7 +15,6 @@ from .exceptions import UnexpectedClasspathSchema
 from .validating_requests_session import ValidatingRequestsSession
 from .warnings import R5pyWarning
 
-
 # update these to use a newer R5 version if no R5 available locally
 R5_JAR_URL = (
     "https://github.com/r5py/r5/releases/download/v7.4-r5py/r5-v7.4-r5py-all.jar"
@@ -46,7 +45,8 @@ def find_r5_classpath(arguments):
         # fmt: off
         if (
             schema in ("file", "")
-            or (len(schema) == 1 and schema in string.ascii_letters)  # windows drive letter
+            or (len(schema) == 1 and schema in string.ascii_letters)
+            # windows drive letter
         ):
             # fmt: on
             if pathlib.Path(arguments.r5_classpath).exists():
@@ -74,6 +74,7 @@ def find_r5_classpath(arguments):
                 warnings.warn(
                     "Could not find R5 jar, trying to download it from upstream",
                     R5pyWarning,
+                    stacklevel=1,
                 )
             with (
                 ValidatingRequestsSession() as session,
@@ -85,6 +86,7 @@ def find_r5_classpath(arguments):
                 warnings.warn(
                     f"Successfully downloaded {pathlib.Path(R5_JAR_URL).name}",
                     R5pyWarning,
+                    stacklevel=1,
                 )
 
     return r5_classpath

@@ -2,14 +2,12 @@
 
 """Determine a reasonable memory footprint for the Java virtual machine."""
 
-
 import psutil
 import re
 import warnings
 
 from .config import Config
 from .warnings import R5pyWarning
-
 
 __all__ = ["MAX_JVM_MEMORY"]
 
@@ -42,9 +40,9 @@ def _share_of_ram(share=0.8, leave_at_least=(2 * 1024**3)):
         Which portion of total RAM to return.
         Default: 0.8
     leave_at_least : float
-        How much RAM (in bytes) to leave (for other applications and system) in any case.
-        If `total RAM - (total RAM ⨉ share)` is smaller than `leave_at_least`,
-        return `total RAM - leave_at_least`, instead.
+        How much RAM (in bytes) to leave (for other applications and system) in
+        any case.  If `total RAM - (total RAM ⨉ share)` is smaller than
+        `leave_at_least`, return `total RAM - leave_at_least`, instead.
         Default: 2GiB
 
     Returns
@@ -114,7 +112,8 @@ def _interpret_power_of_two_units(value, unit):
     """
     # the position of each suffix in this string is the unit’s exponent
     # over 1024.
-    # Compare https://en.wikipedia.org/wiki/ISO%2FIEC_80000#Part_13:_Information_science_and_technology
+    # Compare https://en.wikipedia.org/wiki/
+    # ISO%2FIEC_80000#Part_13:_Information_science_and_technology
     SUFFIXES = " KMGTPEZY"
 
     if unit is None:
@@ -170,6 +169,7 @@ def _get_max_memory(max_memory):
             f"Requested maximum JVM heap size is too low for R5, "
             f"setting to minimum value {ABSOLUTE_MINIMUM_MEMORY:d} bytes.",
             R5pyWarning,
+            stacklevel=1,
         )
 
     return max_memory

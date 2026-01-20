@@ -14,7 +14,6 @@ from .classpath import R5_CLASSPATH
 from .config import Config
 from .memory_footprint import MAX_JVM_MEMORY
 
-
 __all__ = ["start_jvm"]
 
 
@@ -55,6 +54,7 @@ def start_jvm():
             "-Duser.country=US",  # … as R5 formats numeric return …
             "-Duser.variant=",  # … values as a localised string
             f"-Djava.io.tmpdir={TEMP_DIR}",
+            "--enable-native-access=ALL-UNNAMED",
             classpath=[R5_CLASSPATH],
             interrupt=True,
         )

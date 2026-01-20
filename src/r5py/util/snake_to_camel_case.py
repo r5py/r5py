@@ -2,7 +2,6 @@
 
 """Convert a snack_case formated string to a camelCase format."""
 
-
 __all__ = ["snake_to_camel_case"]
 
 

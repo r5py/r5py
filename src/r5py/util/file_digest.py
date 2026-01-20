@@ -2,10 +2,8 @@
 
 """Create a hash sum of a file."""
 
-
 import hashlib
 import pathlib
-
 
 __all__ = ["FileDigest"]
 

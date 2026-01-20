@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 
-"""Test whether routing is (more or less) deterministic (https://github.com/r5py/r5py/issues/240)."""
+"""Test whether routing is (more or less) deterministic."""
+
+# https://github.com/r5py/r5py/issues/240
 
 
 import itertools

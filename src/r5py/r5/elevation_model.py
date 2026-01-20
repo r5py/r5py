@@ -75,6 +75,13 @@ class ElevationModel:
                     "predictor": "2",
                 }
             )
+
+            # rasterio warns if these are in invalid combinations,
+            # let it choose itself
+            del metadata["blockxsize"]
+            del metadata["blockysize"]
+            del metadata["tiled"]
+
             with rasterio.open(output_tiff, "w", **metadata) as destination:
                 destination.write(source.read())
         input_tiff.unlink()

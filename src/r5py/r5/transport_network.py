@@ -102,7 +102,7 @@ class TransportNetwork:
             # GtfsTransferLoader(transitLayer, OSM_ONLY)
             gtfs_transfer_loader = com.conveyal.r5.transit.GtfsTransferLoader(
                 transport_network.transitLayer,
-                com.conveyal.r5.analyst.cluster.TransportNetworkConfig.TransferConfig.OSM_ONLY,
+                com.conveyal.r5.analyst.cluster.TransportNetworkConfig.TransferConfig.OSM_ONLY,  # noqa: E501
             )
             for gtfs_file in gtfs:
                 gtfs_feed = com.conveyal.gtfs.GTFSFeed.writableTempFileFromGtfs(

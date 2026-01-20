@@ -99,6 +99,11 @@ class TransportNetwork:
             transport_network.transitLayer = com.conveyal.r5.transit.TransitLayer()
             transport_network.transitLayer.saveShapes = True
             transport_network.transitLayer.parentNetwork = transport_network
+            # GtfsTransferLoader(transitLayer, OSM_ONLY)
+            gtfs_transfer_loader = com.conveyal.r5.transit.GtfsTransferLoader(
+                transport_network.transitLayer,
+                com.conveyal.r5.analyst.cluster.TransportNetworkConfig.TransferConfig.OSM_ONLY,
+            )
             for gtfs_file in gtfs:
                 gtfs_feed = com.conveyal.gtfs.GTFSFeed.writableTempFileFromGtfs(
                     f"{gtfs_file}"
@@ -126,7 +131,10 @@ class TransportNetwork:
                             )
                         )
 
-                transport_network.transitLayer.loadFromGtfs(gtfs_feed)
+                transport_network.transitLayer.loadFromGtfs(
+                    gtfs_feed,
+                    gtfs_transfer_loader,
+                )
                 gtfs_feed.close()
 
             transport_network.streetLayer.associateStops(transport_network.transitLayer)
@@ -134,7 +142,10 @@ class TransportNetwork:
 
             transport_network.transitLayer.rebuildTransientIndexes()
 
-            transfer_finder = com.conveyal.r5.transit.TransferFinder(transport_network)
+            transfer_finder = com.conveyal.r5.transit.TransferFinder(
+                transport_network,
+                gtfs_transfer_loader,
+            )
             transfer_finder.findTransfers()
             transfer_finder.findParkRideTransfer()
 

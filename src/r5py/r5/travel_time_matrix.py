@@ -42,12 +42,13 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
 
         Arguments
         ---------
-        transport_network : r5py.TransportNetwork | tuple(str, list(str), dict)
+        transport_network : r5py.TransportNetwork | tuple(
+        pathlib.Paths | str, list(pathlib.Path | str))
             The transport network to route on. This can either be a readily
             initialised r5py.TransportNetwork or a tuple of the parameters
-            passed to ``TransportNetwork.__init__()``: the path to an OpenStreetMap
-            extract in PBF format, a list of zero of more paths to GTFS transport
-            schedule files, and a dict with ``build_config`` options.
+            passed to ``TransportNetwork.__init__()``: the path to an
+            OpenStreetMap extract in PBF format, and a list of zero of more
+            paths to GTFS transport schedule files.
         origins : geopandas.GeoDataFrame
             Places to find a route _from_
             Has to have a point geometry, and at least an `id` column

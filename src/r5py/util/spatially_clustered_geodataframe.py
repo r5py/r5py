@@ -15,10 +15,10 @@ from .good_enough_equidistant_crs import GoodEnoughEquidistantCrs
 __all__ = ["SpatiallyClusteredGeoDataFrame"]
 
 
-class SpatiallyClusteredGeoDataFrame(geopandas.GeoDataFrame):
+class SpatiallyClusteredGeoDataFrame:
     """Assign a cluster label column to a point-geometry GeoDataFrame."""
 
-    def __init__(self, data, *args, eps=200.0, min_cluster_size=3, **kwargs):
+    def __new__(cls, data, eps=200.0, min_cluster_size=3):
         """
         Assign a cluster label column to a point-geometry GeoDataFrame.
 
@@ -29,9 +29,10 @@ class SpatiallyClusteredGeoDataFrame(geopandas.GeoDataFrame):
         eps : int | float
             EPS parameter to a DBSCAN cluster algorithm, the maximum
             intra-cluster distance between two points
-        *args, **kwargs: passed to geopandas.GeoDataFrame.__init__()
+        min_cluster_size : int
+            Do not form clusters with less members
         """
-        geopandas.GeoDataFrame.__init__(self, *args, **kwargs)
+        data = geopandas.GeoDataFrame(data)
 
         EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(
             shapely.box(*data.to_crs("EPSG:4326").geometry.total_bounds)
@@ -62,15 +63,4 @@ class SpatiallyClusteredGeoDataFrame(geopandas.GeoDataFrame):
                 .labels_
             )
 
-        with warnings.catch_warnings():
-            warnings.filterwarnings(
-                "ignore",
-                message=(
-                    "You are adding a column named 'geometry' to a GeoDataFrame "
-                    "constructed without an active geometry column"
-                ),
-                category=FutureWarning,
-            )
-            for column in data.columns:
-                self[column] = data[column]
-            self.set_geometry("geometry")
+        return data

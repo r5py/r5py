@@ -95,12 +95,7 @@ class Isochrones(BaseTravelTimeMatrix):
             underlying R5 engine might ignore some of them.  If percentiles are
             specified, the lowest one will be used for isochrone computation.
         """
-        geopandas.GeoDataFrame.__init__(self)
-        BaseTravelTimeMatrix.__init__(
-            self,
-            transport_network,
-            **kwargs,
-        )
+        super().__init__(transport_network, **kwargs)
 
         self.EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(self.transport_network.extent)
 

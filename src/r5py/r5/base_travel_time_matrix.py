@@ -55,7 +55,11 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
     _constructor_sliced = pandas.Series
 
     @classmethod
-    def _geodataframe_constructor_with_fallback(cls, *args, **kwargs):
+    def _geodataframe_constructor_with_fallback(
+        cls,
+        *args,
+        **kwargs,
+    ):  # pragma: no cover
         """
         A flexible constructor for r5py frames.
 

@@ -16,7 +16,6 @@ import r5py
 
 @pytest.fixture(scope="module")
 def intermediate_results():
-    print("intermediate fixture")
     # will be modified in each iteration,
     # used to compare results across computation runs
     yield {}

@@ -523,7 +523,6 @@ class TestDetailedItineraries:
         departure_datetime,
         transport_mode,
         expected_travel_details,
-        can_compute_detailed_route_geometries,
     ):
         # subset to keep test comparison data sets small
         origins = population_grid_points[::5].copy()
@@ -560,15 +559,6 @@ class TestDetailedItineraries:
                 else shapely.MultiLineString([geometry])
             )
         )
-
-        if (
-            transport_mode == r5py.TransportMode.TRANSIT
-            and not can_compute_detailed_route_geometries
-        ):
-            travel_details["distance"] = 0
-            travel_details["geometry"] = None
-            expected_travel_details["distance"] = 0
-            expected_travel_details["geometry"] = None
 
         geopandas.testing.assert_geodataframe_equal(
             travel_details,

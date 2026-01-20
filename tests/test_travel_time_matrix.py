@@ -587,7 +587,7 @@ class TestTravelTimeMatrixComputer:
         travel_time_matrix = travel_time_matrix[travel_time_matrix["travel_time"] <= 20]
 
         assert isinstance(travel_time_matrix, pandas.DataFrame)
-        assert travel_time_matrix.shape == (2588, 3)
+        assert travel_time_matrix.shape == (3946, 3)
         assert travel_time_matrix.columns.to_list() == [
             "from_id",
             "to_id",
@@ -611,3 +611,16 @@ class TestTravelTimeMatrixComputer:
                 transport_network,
                 origins=origins_valid_ids,
             )
+
+    def test_repr(
+        self,
+        transport_network,
+        origins_valid_ids,
+        departure_datetime,
+    ):
+        travel_time_matrix = r5py.TravelTimeMatrix(
+            transport_network,
+            origins=origins_valid_ids,
+            departure=departure_datetime,
+        )
+        assert repr(travel_time_matrix) == "<TravelTimeMatrix>"

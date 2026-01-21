@@ -1,7 +1,10 @@
-- **1.0.8** (2027-xx-xx):
+- **1.1.0** (2027-01-21):
     - made compatible with latest geopandas
     - upgraded development dependencies
     - upgraded to R⁵-v7.5
+    - BREAKING: removed deprecated interfaces TravelTimeMatrixComputer
+      and DetailedItinerariesComputer
+    - improved unit tests runtime
 
 - **1.0.7** (2025-09-05):
     - Fix wrong max_time (#504)

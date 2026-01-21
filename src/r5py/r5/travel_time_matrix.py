@@ -4,11 +4,6 @@
 
 import copy
 
-try:
-    from warnings import deprecated
-except ImportError:  # Python<=3.12
-    from typing_extensions import deprecated
-
 import pandas
 
 from .base_travel_time_matrix import BaseTravelTimeMatrix

@@ -6,11 +6,6 @@
 import copy
 import warnings
 
-try:
-    from warnings import deprecated
-except ImportError:  # Python<=3.12
-    from typing_extensions import deprecated
-
 import geopandas
 import joblib
 import pandas

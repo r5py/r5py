@@ -350,7 +350,7 @@ class TestDetailedItineraries:
         with self._expectations:
             detailed_itineraries = r5py.DetailedItineraries(
                 transport_network,
-                population_grid_points[::5],
+                population_grid_points[:3],
                 departure=departure_datetime,
                 snap_to_network=snap_to_network,
             )

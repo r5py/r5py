@@ -1,3 +1,8 @@
+- **1.0.8** (2027-xx-xx):
+    - made compatible with latest geopandas
+    - upgraded development dependencies
+    - upgraded to R⁵-v7.5
+
 - **1.0.7** (2025-09-05):
     - Fix wrong max_time (#504)
 

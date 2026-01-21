@@ -153,6 +153,13 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
             travel_times = results.travelTimes.getValues()[p]
             od_matrix[f"travel_time_p{percentile:d}"] = travel_times
 
+            # R5 always routes from/to next street segment
+            # (results in >0 travel time for from_id==to_id)
+            od_matrix.loc[
+                (od_matrix.from_id == od_matrix.to_id),
+                f"travel_time_p{percentile:d}",
+            ] = 0
+
         # rename percentile column if only median requested (the default)
         if self.request.percentiles == [50]:
             od_matrix = od_matrix.rename(columns={"travel_time_p50": "travel_time"})

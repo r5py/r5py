@@ -88,14 +88,9 @@ from .transport_network import (
     transport_network_from_test_files_without_gtfs,
 )
 
-from .upstream_r5 import (
-    can_compute_detailed_route_geometries,
-)
-
 __all__ = [
     "broken_gtfs_file_path",
     "cache_directory",
-    "can_compute_detailed_route_geometries",
     "departure_datetime",
     "detailed_itineraries_bicycle",
     "detailed_itineraries_car",

@@ -177,8 +177,7 @@ of. (starts with `0`)
 current segment; `NaT` in case of other modes of transport
 
 `distance` ({class}`float`)
-: the distance travelled on the current segment, in metres. For public
-transport, see [note below](detailed-geometries-with-upstream-r5).
+: the distance travelled on the current segment, in metres.
 
 `travel_time` ({class}`datetime.timedelta`)
 : The time spent travelling on the current segment
@@ -214,33 +213,8 @@ in the [`stops.txt`](https://gtfs.org/schedule/reference/#stopstxt) which was
 used as the alighting stop for that vehicle.
 
 `geometry` ({class}`shapely.LineString`)
-: the path travelled on the current segment. For public transport, see [note
-below](detailed-geometries-with-upstream-r5).
+: the path travelled on the current segment.
 
-
-(detailed-geometries-with-upstream-r5)=
-
-:::{admonition} Geometries of public transport routes, and distances travelled
-:class: important
-
-The default upstream version of R⁵ is compiled with
-`com.conveyal.r5.transit.TransitLayer.SAVE_SHAPES = false`, which improves
-performance by *not reading the geometries included in GTFS data sets*.
-
-As a consequence, the `geometry` reported in
-{class}`DetailedItineraries<r5py.DetailedItineraries>` are straight lines
-in-between the stops of a public transport line, and do not reflect the actual
-path travelled in public transport modes.
-
-With this in mind, *r5py* does not attempt to compute the distance of public
-transport segments if `SAVE_SHAPES = false`, as distances would be very crude
-approximations, only. Instead it reports `NaN`/`None`.
-
-R⁵py ships with a version of R⁵ that has been patched to retain geometries.
-Unless you use a [custom R⁵
-jar](advanced-use.md#use-a-custom-installation-of-r⁵), you should not be
-bothered by this.
-:::
 
 
 ## Visualise travel details

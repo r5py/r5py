@@ -8,9 +8,9 @@ import pathlib
 import pytest
 
 R5_JAR_URL = (
-    "https://github.com/r5py/r5/releases/download/v7.4-r5py/r5-v7.4-r5py-all.jar"
+    "https://github.com/r5py/r5/releases/download/v7.5-r5py/r5-v7.5-r5py-all.jar"
 )
-R5_JAR_SHA256 = "c51b566671165d113add84e10e60fb9273014ca4a2e2a52591446954f68e7340"
+R5_JAR_SHA256 = "70c89e57f9f98dd96c9d2be5fdc00d53a133893b2620e0d8d05e3e602f34e4d5"
 R5_JAR_SHA256_INVALID = "adfadsfadsfadsfasdfasdf"
 R5_JAR_SHA256_GITHUB_ERROR_MESSAGE_WHEN_POSTING = (
     "1e0a6adb25d2cc8cf1fe7170ef0ce6206e7a0cb7fc98a9a13af26df74afaa08b"

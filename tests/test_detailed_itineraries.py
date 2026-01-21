@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import contextlib
 import datetime
 
 import geopandas
@@ -12,26 +11,6 @@ import shapely
 
 import r5py
 import r5py.util.exceptions
-
-
-@pytest.fixture(autouse=True, scope="class")
-def _expectations(
-    request,
-    can_compute_detailed_route_geometries,
-):
-    if can_compute_detailed_route_geometries:
-        expectations = contextlib.nullcontext()
-    else:
-        expectations = pytest.warns(
-            RuntimeWarning,
-            match=(
-                "R5 has been compiled with `TransitLayer.SAVE_SHAPES = false` "
-                "\\(the default\\). The geometries of public transport routes "
-                "are inaccurate \\(straight lines between stops\\), and distances "
-                "can not be computed."
-            ),
-        )
-    request.cls._expectations = expectations
 
 
 class TestDetailedItinerariesInputValidation:
@@ -71,12 +50,11 @@ class TestDetailedItinerariesInputValidation:
         origins_valid_ids,
         departure_datetime,
     ):
-        with self._expectations:
-            _ = r5py.DetailedItineraries(
-                transport_network,
-                origins=origins_valid_ids,
-                departure=departure_datetime,
-            )
+        _ = r5py.DetailedItineraries(
+            transport_network,
+            origins=origins_valid_ids,
+            departure=departure_datetime,
+        )
 
     @pytest.mark.parametrize(
         [
@@ -142,13 +120,12 @@ class TestDetailedItinerariesInputValidation:
         destinations,
         departure_datetime,
     ):
-        with self._expectations:
-            _ = r5py.DetailedItineraries(
-                transport_network,
-                origins=origins,
-                destinations=destinations,
-                departure=departure_datetime,
-            )
+        _ = r5py.DetailedItineraries(
+            transport_network,
+            origins=origins,
+            destinations=destinations,
+            departure=departure_datetime,
+        )
 
     def test_try_to_route_without_origins(
         self,
@@ -167,12 +144,11 @@ class TestDetailedItinerariesInputValidation:
         population_grid_points,
         departure_datetime,
     ):
-        with self._expectations:
-            detailed_itineraries = r5py.DetailedItineraries(
-                transport_network,
-                origins=population_grid_points[0:3],
-                departure=departure_datetime,
-            )
+        detailed_itineraries = r5py.DetailedItineraries(
+            transport_network,
+            origins=population_grid_points[0:3],
+            departure=departure_datetime,
+        )
 
         pandas.testing.assert_frame_equal(
             detailed_itineraries.origins,
@@ -187,13 +163,12 @@ class TestDetailedItineraries:
         population_grid_points_first_three,
         departure_datetime,
     ):
-        with self._expectations:
-            detailed_itineraries = r5py.DetailedItineraries(
-                transport_network,
-                origins=population_grid_points_first_three,
-                departure=departure_datetime,
-                transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
-            )
+        detailed_itineraries = r5py.DetailedItineraries(
+            transport_network,
+            origins=population_grid_points_first_three,
+            departure=departure_datetime,
+            transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+        )
         assert isinstance(detailed_itineraries, r5py.DetailedItineraries)
         assert isinstance(detailed_itineraries, geopandas.GeoDataFrame)
 
@@ -203,13 +178,12 @@ class TestDetailedItineraries:
         population_grid_points_first_three,
         departure_datetime,
     ):
-        with self._expectations:
-            detailed_itineraries = r5py.DetailedItineraries(
-                transport_network_files_tuple,
-                origins=population_grid_points_first_three,
-                departure=departure_datetime,
-                transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
-            )
+        detailed_itineraries = r5py.DetailedItineraries(
+            transport_network_files_tuple,
+            origins=population_grid_points_first_three,
+            departure=departure_datetime,
+            transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+        )
         assert isinstance(detailed_itineraries, r5py.DetailedItineraries)
         assert isinstance(detailed_itineraries, geopandas.GeoDataFrame)
 
@@ -280,15 +254,12 @@ class TestDetailedItineraries:
         origin_point,
         departure_datetime,
     ):
-        with (
-            pytest.warns(
-                RuntimeWarning,
-                match=(
-                    "The currently loaded GTFS data sets do not define "
-                    "any services on .*"
-                ),
+        with pytest.warns(
+            RuntimeWarning,
+            match=(
+                "The currently loaded GTFS data sets do not define "
+                "any services on .*"
             ),
-            self._expectations,
         ):
             _ = r5py.DetailedItineraries(
                 transport_network,
@@ -305,15 +276,12 @@ class TestDetailedItineraries:
         origin_point,
         departure_datetime,
     ):
-        with (
-            pytest.warns(
-                RuntimeWarning,
-                match=(
-                    "The currently loaded GTFS data sets do not define "
-                    "any services on .*"
-                ),
+        with pytest.warns(
+            RuntimeWarning,
+            match=(
+                "The currently loaded GTFS data sets do not define "
+                "any services on .*"
             ),
-            self._expectations,
         ):
             _ = r5py.DetailedItineraries(
                 transport_network_from_test_files_without_gtfs,
@@ -347,13 +315,12 @@ class TestDetailedItineraries:
         snap_to_network,
         expected_snap_to_network,
     ):
-        with self._expectations:
-            detailed_itineraries = r5py.DetailedItineraries(
-                transport_network,
-                population_grid_points[::5],
-                departure=departure_datetime,
-                snap_to_network=snap_to_network,
-            )
+        detailed_itineraries = r5py.DetailedItineraries(
+            transport_network,
+            population_grid_points[::5],
+            departure=departure_datetime,
+            snap_to_network=snap_to_network,
+        )
         assert detailed_itineraries.snap_to_network == expected_snap_to_network
 
     @pytest.mark.parametrize(
@@ -556,26 +523,19 @@ class TestDetailedItineraries:
         departure_datetime,
         transport_mode,
         expected_travel_details,
-        can_compute_detailed_route_geometries,
     ):
         # subset to keep test comparison data sets small
         origins = population_grid_points[::5].copy()
 
-        if transport_mode == r5py.TransportMode.TRANSIT:
-            expectations = self._expectations
-        else:
-            expectations = contextlib.nullcontext()
-
-        with expectations:
-            travel_details = r5py.DetailedItineraries(
-                transport_network,
-                origins=origins,
-                departure=departure_datetime,
-                departure_time_window=datetime.timedelta(
-                    hours=1
-                ),  # using old default for simplicity
-                transport_modes=[transport_mode],
-            )
+        travel_details = r5py.DetailedItineraries(
+            transport_network,
+            origins=origins,
+            departure=departure_datetime,
+            departure_time_window=datetime.timedelta(
+                hours=1
+            ),  # using old default for simplicity
+            transport_modes=[transport_mode],
+        )
 
         travel_details.travel_time = travel_details.travel_time.apply(
             lambda t: t.total_seconds()
@@ -599,15 +559,6 @@ class TestDetailedItineraries:
                 else shapely.MultiLineString([geometry])
             )
         )
-
-        if (
-            transport_mode == r5py.TransportMode.TRANSIT
-            and not can_compute_detailed_route_geometries
-        ):
-            travel_details["distance"] = 0
-            travel_details["geometry"] = None
-            expected_travel_details["distance"] = 0
-            expected_travel_details["geometry"] = None
 
         geopandas.testing.assert_geodataframe_equal(
             travel_details,

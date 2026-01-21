@@ -6,11 +6,6 @@
 import copy
 import warnings
 
-try:
-    from warnings import deprecated
-except ImportError:  # Python<=3.12
-    from typing_extensions import deprecated
-
 import geopandas
 import joblib
 import pandas
@@ -19,7 +14,7 @@ from .base_travel_time_matrix import BaseTravelTimeMatrix
 from .trip import Trip
 from .trip_planner import TripPlanner
 
-__all__ = ["DetailedItineraries", "DetailedItinerariesComputer"]
+__all__ = ["DetailedItineraries"]
 
 
 class DetailedItineraries(BaseTravelTimeMatrix):
@@ -229,35 +224,3 @@ class DetailedItineraries(BaseTravelTimeMatrix):
         # fmt: on
 
         return pandas.DataFrame(trips, columns=self.COLUMNS)
-
-
-@deprecated(
-    "Use `DetailedItineraries` instead, "
-    "`DetailedItinerariesComputer will be deprecated in a future release."
-)
-class DetailedItinerariesComputer:
-    """Compute detailed itineraries between many origins and destinations."""
-
-    def __init__(self, *args, **kwargs):
-        """Compute detailed itineraries between many origins and destinations."""
-        self._detailed_itineraries = DetailedItineraries(*args, **kwargs)
-
-    def compute_travel_details(self):
-        """
-        Compute travel times from all origins to all destinations.
-
-        Returns
-        -------
-        geopandas.GeoDataFrame
-            The resulting detailed routes. For each origin/destination pair,
-            multiple route alternatives (‘options’) might be reported that each
-            consist of one or more segments. Each segment represents one row.
-            The data frame comprises of the following columns: `from_id`,
-            `to_id`, `option` (`int`), `segment` (`int`), `transport_mode`
-            (`r5py.TransportMode`), `departure_time` (`datetime.datetime`),
-            `distance` (`float`, metres), `travel_time` (`datetime.timedelta`),
-            `wait_time` (`datetime.timedelta`), `route` (`str`, public transport
-            route number or name), `geometry` (`shapely.LineString`) TODO: Add
-            description of output data frame columns and format
-        """
-        return self._detailed_itineraries

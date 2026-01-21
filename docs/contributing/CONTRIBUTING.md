@@ -229,7 +229,7 @@ separated by an empty line.
 The import of submodules (`from ... import ...`), as well as the use of aliases
 for imported modules (`import ... as ...`) are discouraged. An exception to this
 rule, assets from other modules from within *r5py* should always be imported as
-submodules (`from . import TravelTimeMatrixComputer`).
+submodules (`from . import TravelTimeMatrix`).
 
 
 ### 7. Submit a *Pull Request*

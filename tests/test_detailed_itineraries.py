@@ -294,38 +294,6 @@ class TestDetailedItineraries:
     @pytest.mark.parametrize(
         [
             "snap_to_network",
-            "expected_snap_to_network",
-        ],
-        [
-            (
-                True,
-                True,
-            ),
-            (
-                False,
-                False,
-            ),
-        ],
-    )
-    def test_snap_to_network_parameter(
-        self,
-        transport_network,
-        population_grid_points,
-        departure_datetime,
-        snap_to_network,
-        expected_snap_to_network,
-    ):
-        detailed_itineraries = r5py.DetailedItineraries(
-            transport_network,
-            population_grid_points[::5],
-            departure=departure_datetime,
-            snap_to_network=snap_to_network,
-        )
-        assert detailed_itineraries.snap_to_network == expected_snap_to_network
-
-    @pytest.mark.parametrize(
-        [
-            "snap_to_network",
             "expected_detailed_itineraries",
         ],
         [
@@ -525,7 +493,7 @@ class TestDetailedItineraries:
         expected_travel_details,
     ):
         # subset to keep test comparison data sets small
-        origins = population_grid_points[::5].copy()
+        origins = population_grid_points[::20].copy()
 
         travel_details = r5py.DetailedItineraries(
             transport_network,

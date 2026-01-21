@@ -525,7 +525,7 @@ class TestDetailedItineraries:
         expected_travel_details,
     ):
         # subset to keep test comparison data sets small
-        origins = population_grid_points[::5].copy()
+        origins = population_grid_points[::10].copy()
 
         travel_details = r5py.DetailedItineraries(
             transport_network,

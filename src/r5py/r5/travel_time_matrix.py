@@ -16,7 +16,7 @@ from ..util import start_jvm
 
 import com.conveyal.r5
 
-__all__ = ["TravelTimeMatrix", "TravelTimeMatrixComputer"]
+__all__ = ["TravelTimeMatrix"]
 
 
 start_jvm()
@@ -182,32 +182,3 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
         od_matrix = self._parse_results(from_id, results)
 
         return od_matrix
-
-
-@deprecated(
-    "Use `TravelTimeMatrix` instead, "
-    "`TravelTimeMatrixComputer will be deprecated in a future release."
-)
-class TravelTimeMatrixComputer:
-    """Compute travel times between many origins and destinations."""
-
-    def __init__(self, *args, **kwargs):
-        """Compute travel times between many origins and destinations."""
-        self._ttm = TravelTimeMatrix(*args, **kwargs)
-
-    def compute_travel_times(self):
-        """
-        Compute travel times from all origins to all destinations.
-
-        Returns
-        -------
-        pandas.DataFrame
-            A data frame containing the columns ``from_id``, ``to_id``, and
-            ``travel_time``, where ``travel_time`` is the median calculated
-            travel time between ``from_id`` and ``to_id`` or ``numpy.nan``
-            if no connection with the given parameters was found.
-            If non-default ``percentiles`` were requested: one or more columns
-            ``travel_time_p{:02d}`` representing the particular percentile of
-            travel time.
-        """
-        return self._ttm

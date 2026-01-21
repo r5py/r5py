@@ -323,17 +323,3 @@ hexagons_with_median_travel_times.explore(
 :::{bibliography}
 :filter: docname in docnames
 :::
-
-
-:::{admonition} Deprecated interface
-:class: caution
-
-Prior to r5py version 1.0.0, travel time matrices had to be computed by first
-initialising a
-{class}`TravelTimeMatrixComputer()<r5py.TravelTimeMatrixComputer>`, then calling
-its
-{func}`compute_travel_times()<r5py.TravelTimeMatrixComputer.compute_travel_times()>`.
-
-This interface has now been **deprecated** and will be removed in a future
-version.
-:::

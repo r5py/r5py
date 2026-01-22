@@ -299,7 +299,7 @@ from any cell to any other cell in our grid, we group the results using
 `from_id` and {meth}`median()<pandas.GroupBy.median()>`:
 
 ```{code-cell} ipython3
-median_travel_times = travel_time_matrix.groupby("from_id").median("travel_time")
+median_travel_times = travel_time_matrix.groupby("from_id")[["travel_time"]].median()
 median_travel_times
 ```
 

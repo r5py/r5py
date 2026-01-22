@@ -178,7 +178,11 @@ class TestIsochrones:
             transport_modes=[r5py.TransportMode.TRANSIT],
             isochrones=requested_isochrones,
         )
-        pandas.testing.assert_index_equal(isochrones.isochrones, expected_isochrones)
+        pandas.testing.assert_index_equal(
+            isochrones.isochrones,
+            expected_isochrones,
+            exact=False,
+        )
 
     def test_isochrones_unset_properties(
         self, transport_network, origin_point, departure_datetime

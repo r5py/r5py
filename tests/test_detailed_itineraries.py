@@ -4,6 +4,7 @@ import datetime
 
 import geopandas
 import geopandas.testing
+import numpy
 import pandas
 import pytest
 import pytest_lazy_fixtures
@@ -11,6 +12,8 @@ import shapely
 
 import r5py
 import r5py.util.exceptions
+
+PANDAS_GT_2 = int(pandas.__version__.split(".")[0]) > 2
 
 
 class TestDetailedItinerariesInputValidation:
@@ -326,8 +329,15 @@ class TestDetailedItineraries:
         )
 
         detailed_itineraries = (
-            detailed_itineraries.groupby(["from_id", "to_id", "option"])
-            .sum(["travel_time", "distance"])
+            detailed_itineraries.groupby(
+                [
+                    "from_id",
+                    "to_id",
+                    "option",
+                    "segment",
+                ]
+            )[["distance"]]
+            .sum()
             .reset_index()
         )
 
@@ -518,6 +528,20 @@ class TestDetailedItineraries:
             "datetime64[ms]"
         )
 
+        if PANDAS_GT_2:  # pandas>=3.0.0: dtype(str)
+            for column in [
+                "agency_id",
+                "feed",
+                "route_id",
+                "start_stop_id",
+                "end_stop_id",
+            ]:
+                if travel_details[column].notnull().any():
+                    travel_details[column] = travel_details[column].fillna(
+                        numpy.nan
+                    )  # avoid mixed None, nan
+                    travel_details[column] = travel_details[column].astype("str")
+
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
 
         travel_details["geometry"] = travel_details["geometry"].apply(
@@ -532,6 +556,5 @@ class TestDetailedItineraries:
             travel_details,
             expected_travel_details,
             check_less_precise=True,  # geometries
-            check_dtype=False,
             normalize=True,
         )

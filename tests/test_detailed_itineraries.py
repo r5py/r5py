@@ -4,6 +4,7 @@ import datetime
 
 import geopandas
 import geopandas.testing
+import numpy
 import pandas
 import pytest
 import pytest_lazy_fixtures
@@ -326,8 +327,15 @@ class TestDetailedItineraries:
         )
 
         detailed_itineraries = (
-            detailed_itineraries.groupby(["from_id", "to_id", "option"])
-            .sum(["travel_time", "distance"])
+            detailed_itineraries.groupby(
+                [
+                    "from_id",
+                    "to_id",
+                    "option",
+                    "segment",
+                ]
+            )[["distance"]]
+            .sum()
             .reset_index()
         )
 
@@ -517,6 +525,17 @@ class TestDetailedItineraries:
         travel_details["departure_time"] = travel_details["departure_time"].astype(
             "datetime64[ms]"
         )
+        # pandas>=3.0.0: dtype(str)
+        for column in [
+            "agency_id",
+            "feed",
+            "route_id",
+            "start_stop_id",
+            "end_stop_id",
+        ]:
+            if travel_details[column].notnull().any():
+                travel_details[column].fillna(numpy.nan)  # avoid mixed None, nan
+                travel_details[column] = travel_details[column].astype("str")
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
 

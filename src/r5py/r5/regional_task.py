@@ -527,20 +527,17 @@ class RegionalTask:
             egress_modes = self.egress_modes
             if TransportMode.TRANSIT in transport_modes:
                 transit_modes = [mode for mode in TransportMode if mode.is_transit_mode]
-            if not direct_modes:
-                # only public transport modes passed in,
-                # let people walk to and from the stops
+            if not direct_modes and not self.access_modes:
                 access_modes = direct_modes = [TransportMode.WALK]
             else:
-                # otherwise, include the supplied direct modes into access_modes
-                access_modes = set(list(self.access_modes) + direct_modes)
+                access_modes = direct_modes = set(list(self.access_modes) + direct_modes)
 
         else:  # no public transport
             egress_modes = []  # ignore egress (why?)
 
             #     this is weird (the following is the logic implemented in
             #     r5r) I reckon this is trying to keep the fastest mode only,
-            #     and assumes that car is always faster that bike is always
+            #     and assumes that car is always faster than bike is always
             #     faster than walking
             #     if TransportMode.CAR in transport_modes:
             #         access_modes = direct_modes = [TransportMode.CAR]
@@ -551,7 +548,7 @@ class RegionalTask:
 
             # let’s do that differently
             # (even if potentially more expensive, computationally)
-            access_modes = direct_modes
+            access_modes = direct_modes = set(list(self.access_modes) + direct_modes)
 
         self.access_modes = access_modes
         self.egress_modes = egress_modes

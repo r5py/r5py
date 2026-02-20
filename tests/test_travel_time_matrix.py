@@ -542,3 +542,26 @@ class TestTravelTimeMatrix:
             departure=departure_datetime,
         )
         assert repr(travel_time_matrix) == "<TravelTimeMatrix>"
+
+    def test_transit_with_bicycle_access(
+        self,
+        transport_network,
+        population_grid_points,
+        origin_point,
+        departure_datetime,
+    ):
+        travel_time_matrix = r5py.TravelTimeMatrix(
+            transport_network,
+            origins=origin_point,
+            destinations=population_grid_points,
+            departure=departure_datetime,
+            transport_modes=[r5py.TransportMode.TRANSIT],
+            access_modes=[r5py.TransportMode.BICYCLE],
+            egress_modes=[r5py.TransportMode.BICYCLE],
+        )
+        assert travel_time_matrix.shape == (92, 3)
+        assert travel_time_matrix["from_id"].unique() == [0]
+        assert travel_time_matrix["to_id"].min() == 0
+        assert travel_time_matrix["to_id"].max() == 91
+        # There can be a bit of fluctuation in the maximum travel time
+        assert travel_time_matrix["travel_time"].max() == pytest.approx(16, abs=3)

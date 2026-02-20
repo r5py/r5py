@@ -578,7 +578,7 @@ class TestTravelTimeMatrix:
             origins=origin_point,
             destinations=population_grid_points,
             departure=departure_datetime,
-            transport_modes=[r5py.TransportMode.WALK],
+            transport_modes=[r5py.TransportMode.TRANSIT],
             access_modes=[],
             egress_modes=[],
         )

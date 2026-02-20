@@ -1,4 +1,7 @@
-- **1.1.0** (2027-01-21):
+- **1.1.1** (2026-02-20):
+    - fix transit access modes error
+
+- **1.1.0** (2026-01-21):
     - made compatible with latest geopandas
     - upgraded development dependencies
     - upgraded to R⁵-v7.5

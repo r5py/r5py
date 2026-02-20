@@ -530,7 +530,9 @@ class RegionalTask:
             if not direct_modes and not self.access_modes:
                 access_modes = direct_modes = [TransportMode.WALK]
             else:
-                access_modes = direct_modes = set(list(self.access_modes) + direct_modes)
+                access_modes = direct_modes = set(
+                    list(self.access_modes) + direct_modes
+                )
 
         else:  # no public transport
             egress_modes = []  # ignore egress (why?)

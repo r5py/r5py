@@ -4,7 +4,7 @@ channels:
     - conda-forge
 
 dependencies:
-    - python=3.13
+    - python=3.14
     - configargparse
     - filelock
     - geohexgrid
@@ -44,6 +44,7 @@ dependencies:
     - pytest-cov
     - r5py.sampledata.helsinki
     - r5py.sampledata.sao_paulo
+    - setuptools  # https://github.com/cproctor/pybtex-apa7-style/issues/5
     - sphinx
     - sphinx-book-theme
     - sphinx-design

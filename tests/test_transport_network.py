@@ -193,6 +193,17 @@ class Test_TransportNetwork:
                 allow_errors=True,
             )
 
+        # test that warnings are also raised when reading from cache:
+        with pytest.warns(
+            RuntimeWarning,
+            match=".*issues with GTFS file.*",
+        ):
+            _ = r5py.TransportNetwork(
+                sao_paulo_osm_pbf_file_path,
+                [broken_gtfs_file_path],
+                allow_errors=True,
+            )
+
     def test_transport_network_with_elevation_model_tobler(
         self,
         helsinki_osm_pbf_file_path,

@@ -6,6 +6,7 @@
 import functools
 import hashlib
 import pathlib
+import pickle
 import warnings
 
 import jpype
@@ -75,6 +76,7 @@ class TransportNetwork:
                 [FileDigest(osm_pbf)]
                 + [FileDigest(path) for path in gtfs]
                 + [FileDigest(elevation_model) if elevation_model is not None else ""]
+                + [f"{allow_errors}"]
             ).encode("utf-8")
         ).hexdigest()
 
@@ -104,6 +106,7 @@ class TransportNetwork:
                 transport_network.transitLayer,
                 com.conveyal.r5.analyst.cluster.TransportNetworkConfig.TransferConfig.OSM_ONLY,  # noqa: E501
             )
+            warnings_ = []
             for gtfs_file in gtfs:
                 gtfs_feed = com.conveyal.gtfs.GTFSFeed.writableTempFileFromGtfs(
                     f"{gtfs_file}"
@@ -114,15 +117,16 @@ class TransportNetwork:
                         for error in gtfs_feed.errors
                     ]
                     if allow_errors:
+                        warning = (
+                            "R5 reported the following issues with "
+                            f"GTFS file {gtfs_file.name}: \n" + ("\n- ".join(errors))
+                        )
                         warnings.warn(
-                            (
-                                "R5 reported the following issues with "
-                                f"GTFS file {gtfs_file.name}: \n"
-                                + ("\n- ".join(errors))
-                            ),
+                            warning,
                             RuntimeWarning,
                             stacklevel=1,
                         )
+                        warnings_.append(warning)
                     else:
                         raise GtfsFileError(
                             (
@@ -160,7 +164,9 @@ class TransportNetwork:
             osm_file.close()  # not needed after here?
 
             self._save_pickled_transport_network(
-                transport_network, Config().CACHE_DIR / f"{digest}.transport_network"
+                transport_network,
+                warnings_,
+                Config().CACHE_DIR / f"{digest}.transport_network",
             )
 
         self._transport_network = transport_network
@@ -237,13 +243,31 @@ class TransportNetwork:
     def _load_pickled_transport_network(self, path):
         try:
             input_file = java.io.File(f"{path}")
-            return com.conveyal.r5.kryo.KryoNetworkSerializer.read(input_file)
-        except java.io.FileNotFoundException as exception:
+            transport_network = com.conveyal.r5.kryo.KryoNetworkSerializer.read(
+                input_file
+            )
+            with path.with_suffix(".warnings").open("rb") as f:
+                warnings_ = pickle.load(f)
+            for warning in warnings_:
+                warnings.warn(
+                    warning,
+                    RuntimeWarning,
+                    stacklevel=1,
+                )
+        except (
+            FileNotFoundError,
+            java.io.FileNotFoundException,
+        ) as exception:
+            path.with_suffix(".warnings").unlink(missing_ok=True)
+            path.unlink(missing_ok=True)
             raise FileNotFoundError from exception
+        return transport_network
 
-    def _save_pickled_transport_network(self, transport_network, path):
+    def _save_pickled_transport_network(self, transport_network, warnings_, path):
         output_file = java.io.File(f"{path}")
         com.conveyal.r5.kryo.KryoNetworkSerializer.write(transport_network, output_file)
+        with path.with_suffix(".warnings").open("wb") as f:
+            pickle.dump(warnings_, f)
 
     def snap_to_network(
         self,

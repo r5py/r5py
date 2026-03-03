@@ -246,19 +246,20 @@ class TransportNetwork:
             transport_network = com.conveyal.r5.kryo.KryoNetworkSerializer.read(
                 input_file
             )
-            try:
-                with path.with_suffix(".warnings").open("rb") as f:
-                    warnings_ = pickle.load(f)
-                for warning in warnings_:
-                    warnings.warn(
-                        warning,
-                        RuntimeWarning,
-                        stacklevel=1,
-                    )
-            except FileNotFoundError:
-                pass
-        except java.io.FileNotFoundException as exception:
+            with path.with_suffix(".warnings").open("rb") as f:
+                warnings_ = pickle.load(f)
+            for warning in warnings_:
+                warnings.warn(
+                    warning,
+                    RuntimeWarning,
+                    stacklevel=1,
+                )
+        except (
+            FileNotFoundError,
+            java.io.FileNotFoundException,
+        ) as exception:
             path.with_suffix(".warnings").unlink(missing_ok=True)
+            path.unlink(missing_ok=True)
             raise FileNotFoundError from exception
         return transport_network
 

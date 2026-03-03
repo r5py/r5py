@@ -211,6 +211,16 @@ class Test_TransportNetwork:
         broken_gtfs_file_path,
         cache_directory,
     ):
+        with pytest.warns(
+            RuntimeWarning,
+            match=".*issues with GTFS file.*",
+        ):
+            _ = r5py.TransportNetwork(
+                sao_paulo_osm_pbf_file_path,
+                [broken_gtfs_file_path],
+                allow_errors=True,
+            )
+
         # see src/r5py/r5/transport_network.py
         digest = hashlib.sha256(
             "".join(
@@ -225,11 +235,15 @@ class Test_TransportNetwork:
 
         (cache_directory / f"{digest}.warnings").unlink()
 
-        _ = r5py.TransportNetwork(
-            sao_paulo_osm_pbf_file_path,
-            [broken_gtfs_file_path],
-            allow_errors=True,
-        )
+        with pytest.warns(
+            RuntimeWarning,
+            match=".*issues with GTFS file.*",
+        ):
+            _ = r5py.TransportNetwork(
+                sao_paulo_osm_pbf_file_path,
+                [broken_gtfs_file_path],
+                allow_errors=True,
+            )
 
     def test_transport_network_with_elevation_model_tobler(
         self,

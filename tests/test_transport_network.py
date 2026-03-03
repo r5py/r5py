@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import hashlib
 import pathlib
 import random
 import shutil
@@ -203,6 +204,32 @@ class Test_TransportNetwork:
                 [broken_gtfs_file_path],
                 allow_errors=True,
             )
+
+    def test_cached_network_broken_gtfs_warning_files_missing(
+        self,
+        sao_paulo_osm_pbf_file_path,
+        broken_gtfs_file_path,
+        cache_directory,
+    ):
+        # see src/r5py/r5/transport_network.py
+        digest = hashlib.sha256(
+            "".join(
+                [
+                    r5py.util.FileDigest(sao_paulo_osm_pbf_file_path),
+                    r5py.util.FileDigest(broken_gtfs_file_path),
+                    "",
+                    "True",
+                ]
+            ).encode("utf-8")
+        ).hexdigest()
+
+        (cache_directory / f"{digest}.warnings").unlink()
+
+        _ = r5py.TransportNetwork(
+            sao_paulo_osm_pbf_file_path,
+            [broken_gtfs_file_path],
+            allow_errors=True,
+        )
 
     def test_transport_network_with_elevation_model_tobler(
         self,

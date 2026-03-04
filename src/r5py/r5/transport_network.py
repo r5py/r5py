@@ -55,8 +55,8 @@ class TransportNetwork:
             file path of an OpenStreetMap extract in PBF format
         gtfs : str | pathlib.Path | list[str] | list[pathlib.Path]
             path(s) to public transport schedule information in GTFS format
-        elevation_model : str | pathlib.Path
-            file path to a digital elevation model in TIF format,
+        elevation_model : str | pathlib.Path | list[str, pathlib.Path]
+            file path(s) to one or more digital elevation models in TIF format,
             single-band, the value of which is the elevation in metres
         elevation_cost_function : r5py.ElevationCostFunction
             which algorithm to use to compute the added effort and travel time
@@ -70,12 +70,17 @@ class TransportNetwork:
             gtfs = [gtfs]
         gtfs = [WorkingCopy(path) for path in gtfs]
 
+        if elevation_model is None:
+            elevation_model = []
+        elif isinstance(elevation_model, (str, pathlib.Path)):
+            elevation_model = [elevation_model]
+
         # a hash representing all input files
         digest = hashlib.sha256(
             "".join(
                 [FileDigest(osm_pbf)]
                 + [FileDigest(path) for path in gtfs]
-                + [FileDigest(elevation_model) if elevation_model is not None else ""]
+                + [FileDigest(path) for path in elevation_model]
                 + [f"{allow_errors}"]
             ).encode("utf-8")
         ).hexdigest()

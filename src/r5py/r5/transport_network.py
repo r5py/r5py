@@ -161,7 +161,7 @@ class TransportNetwork:
 
             transport_network.transitLayer.buildDistanceTables(None)
 
-            if elevation_model is not None:
+            if elevation_model:
                 ElevationModel(
                     elevation_model,
                     elevation_cost_function,

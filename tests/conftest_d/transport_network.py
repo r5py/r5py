@@ -26,10 +26,18 @@ def broken_gtfs_file_path():
 
 @pytest.fixture
 def elevation_model_file_path():
-    """Return the file path of a GTFS sample data set."""
+    """Return the file path of an elevation model sample data set."""
     import r5py.sampledata.helsinki
 
     yield r5py.sampledata.helsinki.elevation_model
+
+
+@pytest.fixture
+def elevation_model_sample_file_path():
+    """Return the file path of a cropped elevation model sample data set."""
+    import r5py.sampledata.helsinki
+
+    yield r5py.sampledata.helsinki.elevation_model_lapinlahti
 
 
 @pytest.fixture

@@ -271,6 +271,23 @@ class Test_TransportNetwork:
             elevation_cost_function=r5py.ElevationCostFunction.MINETTI,
         )
 
+    def test_transport_network_with_two_elevation_models(
+        self,
+        helsinki_osm_pbf_file_path,
+        gtfs_file_path,
+        elevation_model_file_path,
+        elevation_model_sample_file_path,
+    ):
+        _ = r5py.TransportNetwork(
+            osm_pbf=helsinki_osm_pbf_file_path,
+            gtfs=[gtfs_file_path],
+            elevation_model=[
+                elevation_model_file_path,
+                elevation_model_sample_file_path,
+            ],
+            elevation_cost_function=r5py.ElevationCostFunction.TOBLER,
+        )
+
     def test_invalid_cache(
         self,
         transport_network_files_tuple,

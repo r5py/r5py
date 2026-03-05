@@ -1,6 +1,7 @@
 - **1.1.2** (XXXX-XX-XX):
     - raise warnings when loading cached transport_network that originally
       raised warnings
+    - accept multiple input elevation model files
 
 - **1.1.1** (2026-02-20):
     - fix transit access modes error

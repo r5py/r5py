@@ -3,11 +3,16 @@
 
 """Load a digital elevation model and apply it to an r5py.TransportNetwork."""
 
+import collections.abc
+import hashlib
+import pathlib
+
 import rasterio
+import rasterio.merge
 
 from .elevation_cost_function import ElevationCostFunction
 from .file_storage import FileStorage
-from ..util import WorkingCopy
+from ..util import FileDigest, WorkingCopy
 
 import com.conveyal.analysis
 import com.conveyal.r5
@@ -28,15 +33,21 @@ class ElevationModel:
 
         Arguments
         ---------
-        elevation_model : str | pathlib.Path
-            file path to a digital elevation model in TIF format,
-            single-band, the value of which is the elevation in metres
+        elevation_model : str | pathlib.Path | list[str, pathlib.Path]
+            file path(s) to one or more digital elevation model(s) in TIF
+            format, single-band, the value of which is the elevation in metres
         elevation_cost_function : r5py.ElevationCostFunction
             which algorithm to use to compute the added effort and travel time
             of slopes
         """
-        elevation_model = WorkingCopy(elevation_model)
-        elevation_model = self._convert_tiff_to_format_readable_by_r5(elevation_model)
+        if isinstance(elevation_model, collections.abc.Iterable):
+            elevation_model = self._merge_tiffs(
+                [WorkingCopy(e) for e in elevation_model]
+            )
+        else:
+            elevation_model = self._convert_tiff_to_format_readable_by_r5(
+                WorkingCopy(elevation_model)
+            )
 
         # instantiate an com.conveyal.file.FileStorage singleton
         com.conveyal.analysis.components.WorkerComponents.fileStorage = FileStorage()
@@ -85,5 +96,42 @@ class ElevationModel:
             with rasterio.open(output_tiff, "w", **metadata) as destination:
                 destination.write(source.read())
         input_tiff.unlink()
+
+        return output_tiff
+
+    @staticmethod
+    def _merge_tiffs(input_tiffs):
+        input_tiffs = [pathlib.Path(input_tiff) for input_tiff in input_tiffs]
+        # a hash representing all input files
+        digest = hashlib.sha256(
+            "".join([FileDigest(input_tiff) for input_tiff in input_tiffs]).encode(
+                "utf-8"
+            )
+        ).hexdigest()
+
+        output_tiff = pathlib.Path(input_tiffs[0].parent / f"{digest}.tif")
+
+        output_data, output_transform = rasterio.merge.merge(input_tiffs)
+
+        with rasterio.open(input_tiffs[0]) as source:
+            metadata = source.profile
+        metadata.update(
+            {
+                "compress": "LZW",
+                "predictor": "2",
+                "height": output_data.shape[1],
+                "width": output_data.shape[2],
+                "transform": output_transform,
+            }
+        )
+
+        # rasterio warns if these are in invalid combinations,
+        # let it choose itself
+        del metadata["blockxsize"]
+        del metadata["blockysize"]
+        del metadata["tiled"]
+
+        with rasterio.open(output_tiff, "w", **metadata) as destination:
+            destination.write(output_data)
 
         return output_tiff

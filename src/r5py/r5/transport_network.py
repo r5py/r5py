@@ -3,6 +3,7 @@
 
 """Wraps a com.conveyal.r5.transit.TransportNetwork."""
 
+import collections.abc
 import functools
 import hashlib
 import pathlib
@@ -72,7 +73,7 @@ class TransportNetwork:
 
         if elevation_model is None:
             elevation_model = []
-        elif isinstance(elevation_model, (str, pathlib.Path)):
+        elif not isinstance(elevation_model, collections.abc.Iterable):
             elevation_model = [elevation_model]
 
         # a hash representing all input files

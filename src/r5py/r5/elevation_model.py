@@ -40,14 +40,11 @@ class ElevationModel:
             which algorithm to use to compute the added effort and travel time
             of slopes
         """
-        print(type(elevation_model))
         if isinstance(elevation_model, collections.abc.Iterable):
-            print("treating as iterable")
             elevation_model = self._merge_tiffs(
                 [WorkingCopy(e) for e in elevation_model]
             )
         else:
-            print("treating as scalar")
             elevation_model = self._convert_tiff_to_format_readable_by_r5(
                 WorkingCopy(elevation_model)
             )

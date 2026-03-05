@@ -1,5 +1,5 @@
-- **1.1.2** (XXXX-XX-XX):
-    - raise warnings when loading cached transport_network that originally
+- **1.1.2** (2026-03-02):
+    - re-issue warnings when loading a cached TransportNetwork that originally
       raised warnings
     - accept multiple input elevation model files
 

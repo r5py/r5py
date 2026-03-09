@@ -1,3 +1,6 @@
+- **1.1.3** (XXXX-XX-XX):
+    - documentation: described workaround for GTFS trips > 24h
+
 - **1.1.2** (2026-03-02):
     - re-issue warnings when loading a cached TransportNetwork that originally
       raised warnings

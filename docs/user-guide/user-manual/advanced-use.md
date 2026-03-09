@@ -131,9 +131,9 @@ overview_map
 ```
 
 By default, snapping takes into consideration all network nodes that support
-{class}`TransportMode.WALK<r5py.TransportMode>`, and that are within search
+{class}`TransportMode.WALK<r5py.TransportMode>`, and that are within a search
 radius of 1600 metres. In other words, points are snapped to the closest path
-that is accessible on foot, within a maximum of 1.6 kilometres.
+that is accessible on foot, within a maximum distance of 1.6 kilometres.
 
 Both parameters can be adjusted. For example, to snap to network nodes
 that are drivable, within 500 m, use the following code:
@@ -166,6 +166,20 @@ travel_time_matrix = r5py.TravelTimeMatrix(
 ```
 
 :::
+
+
+## Route with GTFS data sets that have trips after 24:00:00
+
+The GTFS standard allows public transport operators to define *service days* to
+continue past midnight, it even supports overlapping days. However, R⁵ cannot
+handle departure or arrival times that have values greater than `24:00:00`.
+
+[@atanasov-zdr](https://github.com/atanasov-zdr) developed a
+[workaround](https://github.com/r5py/r5py/issues/508#issuecomment-3421796206) that
+resolves the issue by splitting such trips in a way that makes them fit into the
+`00:00:00-23:59:59` window. [Their script](https://pastebin.com/jrFXcn5e)
+pre-processes the GTFS data set, which then can be used in the usual patterns
+provided by *r5py*.
 
 
 ## Limit the maximum Java heap size (memory use)

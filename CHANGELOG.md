@@ -1,3 +1,6 @@
+- **1.1.4** (2026-05-08):
+    - upgrade R5 to v7.5.1
+
 - **1.1.3** (2026-03-19):
     - documentation: described workaround for GTFS trips > 24h
 

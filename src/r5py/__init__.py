@@ -2,7 +2,7 @@
 
 """Python wrapper for the R5 routing analysis engine."""
 
-__version__ = "1.1.3"
+__version__ = "1.1.4"
 
 
 from .r5 import (

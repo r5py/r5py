@@ -17,9 +17,9 @@ from .warnings import R5pyWarning
 
 # update these to use a newer R5 version if no R5 available locally
 R5_JAR_URL = (
-    "https://github.com/r5py/r5/releases/download/v7.5-r5py/r5-v7.5-r5py-all.jar"
+    "https://github.com/r5py/r5/releases/download/v7.5.1-r5py/r5-v7.5.1-r5py-all.jar"
 )
-R5_JAR_SHA256 = "70c89e57f9f98dd96c9d2be5fdc00d53a133893b2620e0d8d05e3e602f34e4d5"
+R5_JAR_SHA256 = "d50be106cadd7b636cfc0e209052767d7df570629f79fdf98ecd5cf5d2d89be7"
 # ---
 
 

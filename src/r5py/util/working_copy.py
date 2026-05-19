@@ -2,11 +2,14 @@
 
 """Create a copy or link of an input file in a cache directory."""
 
-import filelock
 import pathlib
 import shutil
+import urllib.parse
+
+import filelock
 
 from .config import Config
+from .remote_file import RemoteFile
 
 __all__ = ["WorkingCopy"]
 
@@ -26,8 +29,17 @@ class WorkingCopy(pathlib.Path):
         Arguments
         ---------
         path : str or pathlib.Path
-            The file to create a copy or link of in a cache directory
+            The file to create a copy or link of in a cache directory. Can be a
+            URL with a schema of `https://`, `http://`, or `file://`
         """
+        if isinstance(path, str):  # test whether URL
+            scheme, netloc, urlpath, *_ = urllib.parse.urlsplit(path)
+            if netloc != "":
+                if scheme == "file":
+                    path = urlpath
+                elif scheme in ("https", "http"):
+                    path = RemoteFile(path)
+
         # try to first create a symbolic link, if that fails (e.g., on Windows),
         # copy the file to a cache directory
         path = pathlib.Path(path).absolute()

@@ -78,7 +78,7 @@ def find_r5_classpath(arguments):
                 )
             with (
                 ValidatingRequestsSession() as session,
-                session.get(R5_JAR_URL, R5_JAR_SHA256) as response,
+                session.get(R5_JAR_URL, checksum=R5_JAR_SHA256) as response,
                 open(r5_classpath, "wb") as jar,
             ):
                 jar.write(response.content)

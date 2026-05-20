@@ -41,7 +41,6 @@ def start_jvm():
                 LIBJSIG = next(JVM_PATH.parent.glob("**/libjsig.dylib"))
                 os.environ["DYLD_INSERT_LIBRARIES"] = str(LIBJSIG)
             except StopIteration:  # pragma: no cover
-                print(f"No DYLD found in {JVM_PATH.parent}")
                 pass  # don’t fail completely if libjsig not found
 
         TEMP_DIR = Config().TEMP_DIR

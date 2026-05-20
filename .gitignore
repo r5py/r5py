@@ -33,6 +33,8 @@ docs/jupyter_execute/
 docs/user-guide/user-manual/travel_times_to_helsinki_railway_station.csv
 docs/user-guide/user-manual/detailed_itineraries.gpkg
 
+paper-case-studies
+
 .tox
 .coverage
 coverage.xml

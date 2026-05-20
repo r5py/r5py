@@ -1,3 +1,6 @@
+- **1.1.5** (2026-05-20):
+    - allow input data sets to be remote URLs
+
 - **1.1.4** (2026-05-08):
     - upgrade R5 to v7.5.1
 

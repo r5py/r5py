@@ -19,7 +19,7 @@ class TestValidatingRequestSession:
     def test_get(self, r5_jar_url, r5_jar_sha256):
         with (
             ValidatingRequestsSession() as session,
-            session.get(r5_jar_url, r5_jar_sha256) as response,
+            session.get(r5_jar_url, checksum=r5_jar_sha256) as response,
         ):
             assert response.content
 
@@ -27,7 +27,7 @@ class TestValidatingRequestSession:
         with pytest.raises(ChecksumFailed):
             with (
                 ValidatingRequestsSession() as session,
-                session.get(r5_jar_url, r5_jar_sha256_invalid) as response,
+                session.get(r5_jar_url, checksum=r5_jar_sha256_invalid) as response,
             ):
                 assert response.content
 
@@ -35,7 +35,7 @@ class TestValidatingRequestSession:
         with (
             ValidatingRequestsSession() as session,
             session.post(
-                r5_jar_url, r5_jar_sha256_github_error_message_when_posting
+                r5_jar_url, checksum=r5_jar_sha256_github_error_message_when_posting
             ) as response,
         ):
             assert response.content
@@ -44,6 +44,6 @@ class TestValidatingRequestSession:
         with pytest.raises(ChecksumFailed):
             with (
                 ValidatingRequestsSession() as session,
-                session.post(r5_jar_url, r5_jar_sha256_invalid) as response,
+                session.post(r5_jar_url, checksum=r5_jar_sha256_invalid) as response,
             ):
                 assert response.content

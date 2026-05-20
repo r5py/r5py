@@ -29,30 +29,30 @@ class ValidatingRequestsSession(requests.Session):
         super().__init__(*args, **kwargs)
         self._algorithm = checksum_algorithm
 
-    def get(self, url, checksum, **kwargs):
+    def get(self, *args, checksum=None, **kwargs):
         """Send a GET request, tests checksum."""
         kwargs.setdefault("allow_redirects", True)
-        return self.request("GET", url, checksum, **kwargs)
+        return self.request("GET", *args, checksum=checksum, **kwargs)
 
-    def post(self, url, checksum, **kwargs):
+    def post(self, *args, checksum=None, **kwargs):
         """Send a POST request, tests checksum."""
-        return self.request("POST", url, checksum, **kwargs)
+        return self.request("POST", *args, checksum=checksum, **kwargs)
 
     # delete, put, head don’t return data,
     # testing checksums does not apply
 
-    def request(self, method, url, checksum, **kwargs):
+    def request(self, *args, checksum=None, **kwargs):
         """
         Retrieve file from cache or proxy requests.request.
 
         Raise `ChecksumFailed` if the file’s digest and `checksum` differ.
         """
-        response = super().request(method, url, **kwargs)
+        response = super().request(*args, **kwargs)
         digest = self._algorithm(response.content).hexdigest()
 
         if digest != checksum:
             raise ChecksumFailed(
-                f"Checksum failed for {url}, expected {checksum}, got {digest}"
+                f"Checksum failed for {args[1]}, expected {checksum}, got {digest}"
             )
 
         return response

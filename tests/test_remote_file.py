@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 
+import datetime
+import os
 import pathlib
 import sys
 
@@ -106,3 +108,17 @@ class TestRemoteFile:
         data_set = RemoteFile(sample_data_set_url, sample_data_set_sha256)
         assert data_set.exists()
         data_set.unlink()
+
+    def test_expired_remote_file(self, sample_data_set_url):
+        remote_file = RemoteFile(sample_data_set_url)
+        EXPIRED = (
+            datetime.datetime.now()
+            - remote_file.max_cache_age
+            - datetime.timedelta(days=1)
+        ).timestamp()
+        os.utime(remote_file, (EXPIRED, EXPIRED))
+
+        del remote_file
+
+        remote_file = RemoteFile(sample_data_set_url)
+        assert remote_file.stat().st_mtime > EXPIRED

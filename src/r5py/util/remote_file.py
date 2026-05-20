@@ -3,6 +3,7 @@
 
 """A remote data set that is downloaded on demand."""
 
+import datetime
 import hashlib
 import pathlib
 import warnings
@@ -13,6 +14,8 @@ from .config import Config
 from .validating_requests_session import ValidatingRequestsSession
 
 config = Config()
+
+ONE_DAY = datetime.timedelta(days=1)
 
 
 class RemoteFile(pathlib.Path):
@@ -33,7 +36,7 @@ class RemoteFile(pathlib.Path):
         cached_path = cls._CACHE_DIR / pathlib.Path(remote_url).name
         return super().__new__(cls, cached_path)
 
-    def __init__(self, remote_url, sha256_checksum=None):
+    def __init__(self, remote_url, sha256_checksum=None, max_cache_age=ONE_DAY):
         """
         Define a data set that is downloaded and cached on demand.
 
@@ -54,6 +57,7 @@ class RemoteFile(pathlib.Path):
         self.remote_url = remote_url
         self.checksum = sha256_checksum
         self.cached_path = cached_path
+        self.max_cache_age = max_cache_age
         self._download_remote_file()
 
     def _download_remote_file(self):
@@ -80,6 +84,9 @@ class RemoteFile(pathlib.Path):
                         stacklevel=1,
                     )
                 raise exception
+            assert datetime.datetime.fromtimestamp(self.cached_path.stat().st_mtime) > (
+                datetime.datetime.now() - self.max_cache_age
+            )
         except (AssertionError, FileNotFoundError):
             self.cached_path.parent.mkdir(exist_ok=True)
             if self.checksum is not None:

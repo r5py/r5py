@@ -1,3 +1,6 @@
+- **1.1.6** (2026-05-27):
+    - snap_to_network() works with any CRS
+
 - **1.1.5** (2026-05-20):
     - allow input data sets to be remote URLs
 

@@ -21,7 +21,7 @@ from .transfer_leg import TransferLeg
 from .transit_leg import TransitLeg
 from .transport_mode import TransportMode
 from .trip import Trip
-from ..util import GoodEnoughEquidistantCrs, start_jvm
+from ..util import start_jvm
 
 import com.conveyal.r5
 import gnu.trove.map
@@ -61,10 +61,9 @@ class TripPlanner:
         self.request = request
         self._transfer_paths = {}
 
-        EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(self.transport_network.extent)
         self._crs_transformer_function = pyproj.Transformer.from_crs(
             R5_CRS,
-            EQUIDISTANT_CRS,
+            self.transport_network.EQUIDISTANT_CRS,
             always_xy=True,
         ).transform
 

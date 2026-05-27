@@ -16,7 +16,7 @@ import simplification.cutil
 from .base_travel_time_matrix import BaseTravelTimeMatrix
 from .transport_mode import TransportMode
 from .travel_time_matrix import TravelTimeMatrix
-from ..util import GoodEnoughEquidistantCrs, SpatiallyClusteredGeoDataFrame
+from ..util import SpatiallyClusteredGeoDataFrame
 
 __all__ = ["Isochrones"]
 
@@ -97,8 +97,6 @@ class Isochrones(BaseTravelTimeMatrix):
         """
         super().__init__(transport_network, **kwargs)
 
-        self.EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(self.transport_network.extent)
-
         if isinstance(origins, shapely.Geometry):
             origins = geopandas.GeoDataFrame(
                 {
@@ -172,7 +170,7 @@ class Isochrones(BaseTravelTimeMatrix):
             if not reached_nodes.empty:
                 reached_nodes = SpatiallyClusteredGeoDataFrame(
                     reached_nodes, eps=(2.0 * self.point_grid_resolution)
-                ).to_crs(self.EQUIDISTANT_CRS)
+                ).to_crs(self.transport_network.EQUIDISTANT_CRS)
                 isochrone_polygons = pandas.concat(
                     [
                         (
@@ -193,7 +191,7 @@ class Isochrones(BaseTravelTimeMatrix):
                 isochrones["geometry"].append(isochrone_polygons)
 
         isochrones = geopandas.GeoDataFrame(
-            isochrones, geometry="geometry", crs=self.EQUIDISTANT_CRS
+            isochrones, geometry="geometry", crs=self.transport_network.EQUIDISTANT_CRS
         )
 
         # clip smaller isochrones by larger isochrones
@@ -305,7 +303,7 @@ class Isochrones(BaseTravelTimeMatrix):
         extent = shapely.ops.transform(
             pyproj.Transformer.from_crs(
                 R5_CRS,
-                self.EQUIDISTANT_CRS,
+                self.transport_network.EQUIDISTANT_CRS,
                 always_xy=True,
             ).transform,
             self.transport_network.extent,
@@ -314,7 +312,7 @@ class Isochrones(BaseTravelTimeMatrix):
         grid = geohexgrid.make_grid_from_bounds(
             *extent.bounds,
             self.point_grid_resolution,
-            crs=self.EQUIDISTANT_CRS,
+            crs=self.transport_network.EQUIDISTANT_CRS,
         )
         grid["geometry"] = grid["geometry"].centroid
         grid["id"] = grid.index
@@ -336,7 +334,7 @@ class Isochrones(BaseTravelTimeMatrix):
                 (
                     pandas.concat([self.origins] * 2)  # workaround until
                     # https://github.com/pyproj4/pyproj/issues/1309 is fixed
-                    .to_crs(self.EQUIDISTANT_CRS)
+                    .to_crs(self.transport_network.EQUIDISTANT_CRS)
                     .buffer(speed * max(self.isochrones).total_seconds())
                     .to_crs(R5_CRS)
                 )

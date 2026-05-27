@@ -18,7 +18,14 @@ from .elevation_model import ElevationModel
 from .street_layer import StreetLayer
 from .transit_layer import TransitLayer
 from .transport_mode import TransportMode
-from ..util import Config, contains_gtfs_data, FileDigest, start_jvm, WorkingCopy
+from ..util import (
+    Config,
+    contains_gtfs_data,
+    FileDigest,
+    GoodEnoughEquidistantCrs,
+    start_jvm,
+    WorkingCopy,
+)
 from ..util.exceptions import GtfsFileError
 
 import com.conveyal.analysis
@@ -176,6 +183,7 @@ class TransportNetwork:
             )
 
         self._transport_network = transport_network
+        self.EQUIDISTANT_CRS = GoodEnoughEquidistantCrs(self.extent)
 
     @classmethod
     def from_directory(cls, path):
@@ -298,12 +306,17 @@ class TransportNetwork:
             point geometries that have been snapped to the network,
             using the same index and order as the input `points`
         """
-        return points.apply(
-            functools.partial(
-                self.street_layer.find_split,
-                radius=radius,
-                street_mode=street_mode,
+        original_crs = points.crs
+        return (
+            points.to_crs("EPSG:4326")
+            .apply(
+                functools.partial(
+                    self.street_layer.find_split,
+                    radius=radius,
+                    street_mode=street_mode,
+                )
             )
+            .to_crs(original_crs)
         )
 
     @functools.cached_property

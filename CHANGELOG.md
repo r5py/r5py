@@ -1,3 +1,7 @@
+- **1.1.7** (2026-06-29):
+    - Show matrix data when `print()`ing
+    - Address deprecation of datetime64(NaT) in Numpy 2.5
+
 - **1.1.6** (2026-05-27):
     - snap_to_network() works with any CRS
 

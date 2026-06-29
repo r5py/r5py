@@ -541,7 +541,7 @@ class TestTravelTimeMatrix:
             origins=origins_valid_ids,
             departure=departure_datetime,
         )
-        assert repr(travel_time_matrix) == "<TravelTimeMatrix>"
+        assert repr(travel_time_matrix) == pandas.DataFrame.__repr__(travel_time_matrix)
 
     def test_transit_with_bicycle_access(
         self,

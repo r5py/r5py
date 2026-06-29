@@ -35,7 +35,7 @@ class TripLeg:
     def __init__(
         self,
         transport_mode=None,
-        departure_time=numpy.datetime64("NaT"),  # noqa: B008
+        departure_time=numpy.datetime64("NaT", "s"),  # noqa: B008
         distance=None,
         travel_time=datetime.timedelta(seconds=0),  # noqa: B008
         wait_time=datetime.timedelta(seconds=0),  # noqa: B008
@@ -185,8 +185,8 @@ class TripLeg:
             or (self_column is None and other_column is None)
             or (self_column == numpy.nan and other_column == numpy.nan)
             or (
-                self_column == numpy.datetime64("NaT")
-                and other_column == numpy.datetime64("NaT")
+                self_column == numpy.datetime64("NaT", "s")
+                and other_column == numpy.datetime64("NaT", "s")
             )
         )
 

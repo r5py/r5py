@@ -1,3 +1,8 @@
+- **unreleased**:
+    - new `TravelTimeMatrixDecomposed` class: breaks transit travel times down
+      into in-vehicle, waiting, access, egress, and transfer components, one row
+      per origin/destination/path-template (reintroduces `BreakdownStat`)
+
 - **1.1.7** (2026-06-29):
     - Show matrix data when `print()`ing
     - Address deprecation of datetime64(NaT) in Numpy 2.5

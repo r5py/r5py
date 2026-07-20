@@ -6,6 +6,7 @@ __version__ = "1.1.7"
 
 
 from .r5 import (
+    BreakdownStat,
     DetailedItineraries,
     ElevationCostFunction,
     Isochrones,
@@ -13,9 +14,11 @@ from .r5 import (
     TransportMode,
     TransportNetwork,
     TravelTimeMatrix,
+    TravelTimeMatrixDecomposed,
 )
 
 __all__ = [
+    "BreakdownStat",
     "DetailedItineraries",
     "ElevationCostFunction",
     "Isochrones",
@@ -23,5 +26,6 @@ __all__ = [
     "TransportMode",
     "TransportNetwork",
     "TravelTimeMatrix",
+    "TravelTimeMatrixDecomposed",
     "__version__",
 ]

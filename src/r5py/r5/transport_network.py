@@ -102,9 +102,10 @@ class TransportNetwork:
             transport_network.scenarioId = PACKAGE
 
             osm_mapdb = Config().CACHE_DIR / f"{digest}.mapdb"
-            osm_file = com.conveyal.osmlib.OSM(f"{osm_mapdb}")
-            osm_file.intersectionDetection = True
-            osm_file.readFromFile(f"{osm_pbf}")
+            osm_file = com.conveyal.osmlib.OSM.openOrCreateFile(
+                osm_mapdb,
+                f"{osm_pbf}",
+            )
 
             transport_network.streetLayer = com.conveyal.r5.streets.StreetLayer()
             transport_network.streetLayer.parentNetwork = transport_network

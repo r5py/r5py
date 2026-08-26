@@ -302,7 +302,10 @@ class TravelTimeMatrixDecomposed(TravelTimeMatrix):
         )
 
         wait_time = [seconds / 60.0 for seconds in representative.waitTimes.toArray()]
-        transfer_time = stop_sequence.transferTime(representative) / 60.0
+        # R5 ≥ 7.6 precomputes transfer walking time on the path template
+        # (``StopSequence.transferTimesSeconds``); it no longer varies by
+        # iteration
+        transfer_time = stop_sequence.totalTransferTimeSeconds() / 60.0
         total_time = representative.totalTime / 60.0
 
         return [

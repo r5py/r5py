@@ -32,14 +32,15 @@ class TravelTimeMatrixDecomposed(TravelTimeMatrix):
     In addition to the total travel time (as reported by
     ``r5py.TravelTimeMatrix``), this reports how that time splits into
     in-vehicle, waiting, access (to the first stop), egress (from the last
-    stop), and transfer time, together with the routes and stops that make up
-    each path.
+    stop), and transfer time, together with the routes, their GTFS
+    ``route_type``s, and the stops that make up each path.
     """
 
     COLUMNS = [
         "from_id",
         "to_id",
         "routes",
+        "route_types",
         "board_stops",
         "alight_stops",
         "feed_ids",
@@ -222,6 +223,7 @@ class TravelTimeMatrixDecomposed(TravelTimeMatrix):
                 "from_id": str,
                 "to_id": str,
                 "routes": str,
+                "route_types": str,
                 "board_stops": str,
                 "alight_stops": str,
                 "feed_ids": str,
@@ -266,6 +268,14 @@ class TravelTimeMatrixDecomposed(TravelTimeMatrix):
             str(transit_layer.routeString(routes.get(i), id_only))
             for i in range(n_rides)
         )
+        # GTFS route_type per leg, aligned index-by-index with ``routes`` (and
+        # hence with the per-leg ``in_vehicle_time`` list): R5 keeps the parsed
+        # route table in ``TransitLayer.routes``, indexed by the same integer
+        # ``routeString()`` takes.
+        route_types_str = "|".join(
+            str(transit_layer.routes.get(routes.get(i)).route_type)
+            for i in range(n_rides)
+        )
         board_stops_str = "|".join(
             str(transit_layer.stopString(stop_sequence.boardStops.get(i), id_only))
             for i in range(n_rides)
@@ -299,6 +309,7 @@ class TravelTimeMatrixDecomposed(TravelTimeMatrix):
             from_id,
             to_id,
             routes_str,
+            route_types_str,
             board_stops_str,
             alight_stops_str,
             feed_ids_str,

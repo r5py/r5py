@@ -75,7 +75,14 @@ class TestTravelTimeMatrixDecomposed:
         assert len(decomposed) > 0
 
     def test_dtypes(self, decomposed):
-        for column in ("from_id", "to_id", "routes", "board_stops", "feed_ids"):
+        for column in (
+            "from_id",
+            "to_id",
+            "routes",
+            "route_types",
+            "board_stops",
+            "feed_ids",
+        ):
             assert pandas.api.types.is_string_dtype(decomposed[column])
         for column in (
             "access_time",
@@ -115,11 +122,27 @@ class TestTravelTimeMatrixDecomposed:
         assert (
             transit["board_stops"].str.split("|").map(len) == transit["n_rides"]
         ).all()
+        assert (
+            transit["route_types"].str.split("|").map(len) == transit["n_rides"]
+        ).all()
+
+    def test_route_types_are_gtfs_codes(self, decomposed):
+        transit = decomposed[decomposed["n_rides"] > 0]
+        assert len(transit) > 0
+        codes = {
+            int(code) for entry in transit["route_types"] for code in entry.split("|")
+        }
+        # every leg reports a parseable GTFS route_type, either a basic code
+        # (0–12) or an extended one (100–1799); the Helsinki fixture uses
+        # extended codes for its buses (700-series)
+        assert codes
+        assert all(0 <= code <= 12 or 100 <= code <= 1799 for code in codes)
 
     def test_walk_only_rows_have_no_transit(self, decomposed):
         walk_only = decomposed[decomposed["n_rides"] == 0]
         # walk-only (direct) templates carry no route identity and no rides
         assert (walk_only["routes"] == "").all()
+        assert (walk_only["route_types"] == "").all()
         assert walk_only["in_vehicle_time"].map(_total).eq(0.0).all()
 
     def test_n_iterations_positive(self, decomposed):

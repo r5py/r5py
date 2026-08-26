@@ -112,6 +112,7 @@ The columns are:
 | --- | --- |
 | `from_id`, `to_id` | origin and destination ids |
 | `routes` | `\|`-separated GTFS route ids, one per transit leg |
+| `route_types` | GTFS `route_type` of each leg (e.g. `3` for bus) |
 | `board_stops`, `alight_stops` | GTFS stop ids where each leg is boarded / alighted |
 | `feed_ids` | GTFS feed each leg belongs to |
 | `in_vehicle_time` | per-leg in-vehicle time (a list, in minutes) |

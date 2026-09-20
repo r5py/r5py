@@ -33,12 +33,11 @@ class WorkingCopy(pathlib.Path):
             URL with a schema of `https://`, `http://`, or `file://`
         """
         if isinstance(path, str):  # test whether URL
-            scheme, netloc, urlpath, *_ = urllib.parse.urlsplit(path)
-            if netloc != "":
-                if scheme == "file":
-                    path = urlpath
-                elif scheme in ("https", "http"):
-                    path = RemoteFile(path)
+            scheme, _, urlpath, *_ = urllib.parse.urlsplit(path)
+            if scheme == "file":
+                path = urlpath
+            elif scheme in ("https", "http"):
+                path = RemoteFile(path)
 
         # try to first create a symbolic link, if that fails (e.g., on Windows),
         # copy the file to a cache directory
@@ -46,9 +45,12 @@ class WorkingCopy(pathlib.Path):
         destination = pathlib.Path(Config().CACHE_DIR / path.name).absolute()
 
         with filelock.FileLock(destination.parent / f"{destination.name}.lock"):
-            if not destination.exists():
-                try:
-                    destination.symlink_to(path)
-                except OSError:
-                    shutil.copyfile(f"{path}", f"{destination}")
+            try:
+                destination.unlink()  # always re-create working copy
+            except FileNotFoundError:
+                pass
+            try:
+                destination.symlink_to(path)
+            except OSError:
+                shutil.copyfile(f"{path}", f"{destination}")
         return destination

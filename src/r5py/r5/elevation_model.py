@@ -6,6 +6,7 @@
 import collections.abc
 import hashlib
 import pathlib
+import warnings
 
 import rasterio
 import rasterio.merge
@@ -111,7 +112,13 @@ class ElevationModel:
 
         output_tiff = pathlib.Path(input_tiffs[0].parent / f"{digest}.tif")
 
-        output_data, output_transform = rasterio.merge.merge(input_tiffs)
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                "Use `@` matmul instead of `*` mul operator for matrix multiplication",
+                category=PendingDeprecationWarning,
+            )
+            output_data, output_transform = rasterio.merge.merge(input_tiffs)
 
         with rasterio.open(input_tiffs[0]) as source:
             metadata = source.profile

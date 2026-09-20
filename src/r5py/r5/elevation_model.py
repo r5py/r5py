@@ -115,7 +115,7 @@ class ElevationModel:
         with warnings.catch_warnings():
             warnings.filterwarnings(
                 "ignore",
-                "Use `@` matmul instead of `*` mul operator for matrix multiplication",
+                "Use.*matmul instead of.*mul operator for matrix multiplication",
                 category=PendingDeprecationWarning,
             )
             output_data, output_transform = rasterio.merge.merge(input_tiffs)

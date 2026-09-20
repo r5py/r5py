@@ -1,3 +1,8 @@
+- **unreleased**:
+    - new `TravelTimeMatrixDecomposed` class: breaks transit travel times down
+      into in-vehicle, waiting, access, egress, and transfer components, one row
+      per origin/destination/path-template (reintroduces `BreakdownStat`)
+
 - **1.1.8** (2026-?-?):
     - Ignore warnings raised by rasterio’s use of deprecated affine features (#550)
     - Fix inconsistent working copies of input files (#548)

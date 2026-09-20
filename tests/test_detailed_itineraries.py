@@ -13,8 +13,6 @@ import shapely
 import r5py
 import r5py.util.exceptions
 
-PANDAS_GT_2 = int(pandas.__version__.split(".")[0]) > 2
-
 
 class TestDetailedItinerariesInputValidation:
     @pytest.mark.parametrize(
@@ -528,19 +526,18 @@ class TestDetailedItineraries:
             "datetime64[ms]"
         )
 
-        if PANDAS_GT_2:  # pandas>=3.0.0: dtype(str)
-            for column in [
-                "agency_id",
-                "feed",
-                "route_id",
-                "start_stop_id",
-                "end_stop_id",
-            ]:
-                if travel_details[column].notnull().any():
-                    travel_details[column] = travel_details[column].fillna(
-                        numpy.nan
-                    )  # avoid mixed None, nan
-                    travel_details[column] = travel_details[column].astype("str")
+        for column in [
+            "agency_id",
+            "feed",
+            "route_id",
+            "start_stop_id",
+            "end_stop_id",
+        ]:
+            if travel_details[column].notnull().any():
+                travel_details[column] = travel_details[column].fillna(
+                    numpy.nan
+                )  # avoid mixed None, nan
+                travel_details[column] = travel_details[column].astype("str")
 
         travel_details = geopandas.GeoDataFrame(travel_details, crs="EPSG:4326")
 

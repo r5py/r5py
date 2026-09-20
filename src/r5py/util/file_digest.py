@@ -28,13 +28,7 @@ class FileDigest(str):
             returns a hash sum
         """
         input_file = pathlib.Path(input_file)
-        try:
-            with input_file.open("rb") as f:
-                hashdigest = hashlib.file_digest(f, digest)
-        except AttributeError:  # Python<=3.10
-            hashdigest = hashlib.new(digest)
-            with input_file.open("rb") as f:
-                while data := f.read(BUFFER_SIZE):
-                    hashdigest.update(data)
+        with input_file.open("rb") as f:
+            hashdigest = hashlib.file_digest(f, digest)
 
         return hashdigest.hexdigest()

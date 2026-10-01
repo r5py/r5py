@@ -111,11 +111,12 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
             if `int`, use `snap_to_network` meters as the search radius.
         breakdown_stat : r5py.BreakdownStat, default r5py.BreakdownStat.MEAN
             How to summarise the departure-minute iterations of a path template.
-            A template’s in-vehicle, access, and egress times are constant
-            across its iterations, but its waiting time (and, hence, its
-            transfer and total times) varies. The reported iteration is the one
-            whose total waiting time is closest to the ``MEAN`` or ``MINIMUM``
-            total waiting time across the template’s iterations.
+            A template’s ride, access, egress, and transfer times are constant
+            across its iterations, but its waiting time (and, hence, its total
+            time) varies. ``MEAN`` reports each leg’s waiting time and the total
+            time averaged over the template’s iterations, ``MINIMUM`` reports
+            the fastest iteration. This mirrors R5’s
+            ``PathResult.summarizeIterations()``.
         **kwargs : mixed
             Any arguments than can be passed to r5py.RegionalTask:
             ``departure``, ``departure_time_window``, ``percentiles``,
@@ -201,9 +202,19 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
         if paths is not None:
             destination_ids = list(self.destinations.id)
             templates_per_destination = paths.iterationsForPathTemplates
+            # street-only travel times (in whole minutes), constant across
+            # percentiles when no transit is ridden
+            direct_travel_times = results.travelTimes.getValues()[0]
             for d, to_id in enumerate(destination_ids):
                 iteration_map = templates_per_destination[d]
                 if iteration_map is None:
+                    # R5 records path details only in its transit search, which
+                    # it skips if no transit modes are requested or no stop can
+                    # be reached from the origin; report a direct path instead
+                    if direct_travel_times[d] < self.MAX_INT32:
+                        rows.append(
+                            self._direct_path(from_id, to_id, direct_travel_times[d])
+                        )
                     continue
                 for route_sequence in iteration_map.keySet():
                     iterations = list(iteration_map.get(route_sequence))
@@ -290,24 +301,35 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
             for i in range(n_rides)
         )
 
-        # pick the representative iteration (mirrors R5’s
-        # PathResult.summarizeIterations(): the iteration whose total waiting
-        # time is closest to the requested statistic of all iterations’)
-        total_waits = [iteration.waitTimes.sum() for iteration in iterations]
+        # summarise the iterations (mirrors R5’s
+        # PathResult.summarizeIterations()): MINIMUM reports the fastest
+        # iteration (ties broken by earliest departure), MEAN averages each
+        # leg’s waiting time and the total time over all iterations
         if self.breakdown_stat == BreakdownStat.MINIMUM:
-            target = min(total_waits)
+            fastest = min(
+                iterations,
+                key=lambda iteration: (iteration.totalTime, iteration.departureTime),
+            )
+            wait_time = [seconds / 60.0 for seconds in fastest.waitTimes.toArray()]
+            total_time = fastest.totalTime / 60.0
         else:
-            target = sum(total_waits) / len(total_waits)
-        representative = min(
-            iterations, key=lambda iteration: abs(target - iteration.waitTimes.sum())
-        )
+            n_iterations = len(iterations)
+            wait_time = [
+                sum(iteration.waitTimes.get(leg) for iteration in iterations)
+                / n_iterations
+                / 60.0
+                for leg in range(n_rides)
+            ]
+            total_time = (
+                sum(iteration.totalTime for iteration in iterations)
+                / n_iterations
+                / 60.0
+            )
 
-        wait_time = [seconds / 60.0 for seconds in representative.waitTimes.toArray()]
         # R5 ≥ 7.6 precomputes transfer walking time on the path template
         # (``StopSequence.transferTimesSeconds``); it no longer varies by
         # iteration
         transfer_time = stop_sequence.totalTransferTimeSeconds() / 60.0
-        total_time = representative.totalTime / 60.0
 
         return [
             from_id,
@@ -325,4 +347,27 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
             total_time,
             n_rides,
             len(iterations),
+        ]
+
+    def _direct_path(self, from_id, to_id, travel_time):
+        """Report a direct (street-only) path, with no transit, as a result row."""
+        n_departure_minutes = max(
+            1, int(self.request.departure_time_window.total_seconds() // 60)
+        )
+        return [
+            from_id,
+            to_id,
+            "",
+            "",
+            "",
+            "",
+            "",
+            [],
+            [],
+            numpy.nan,
+            numpy.nan,
+            0.0,
+            float(travel_time),
+            0,
+            n_departure_minutes,
         ]

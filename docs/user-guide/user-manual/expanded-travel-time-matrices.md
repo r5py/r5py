@@ -104,14 +104,15 @@ pair, an expanded travel time matrix has **one row per origin, destination, and
 path template** — a distinct sequence of routes and stops that R5 found between
 the pair. A pair can therefore appear in several rows (several ways of getting
 there) or in none (it is not reachable). Rows with `n_rides == 0` are direct
-(walk-only) paths.
+(walk-only) paths; they are reported even when R5 skips its transit search
+(e.g., when no stop is within reach of the origin).
 
 :::{note}
 The name and the `ride_time` column follow r5r’s
 [`expanded_travel_time_matrix()`](https://ipeagit.github.io/r5r/reference/expanded_travel_time_matrix.html)
 (with `breakdown = TRUE`). Note, however, that r5r reports one row per
 departure minute (and draw), whereas r5py reports one row per path template,
-represented by one of the departure minutes it serves (see below).
+summarised over the departure minutes it serves (see below).
 :::
 
 The columns are:
@@ -150,19 +151,20 @@ reconstructed = (
 ```
 
 
-## Which iteration is reported?
+## How are the departure minutes summarised?
 
 Over the `departure_time_window`, R5 computes a separate result for every
-departure minute (an *iteration*). A path template’s in-vehicle, access, and
-egress times are the same in every iteration it appears in, but its waiting time
-— and therefore its transfer and total times — varies with when the rider sets
-off. The `breakdown_stat` argument selects which iteration represents the
-template:
+departure minute (an *iteration*). A path template’s ride, access, egress, and
+transfer times are the same in every iteration it appears in, but its waiting
+time — and therefore its total time — varies with when the rider sets off. The
+`breakdown_stat` argument selects how to summarise the template’s iterations,
+in the same way as R5’s own path reports:
 
-- {attr}`r5py.BreakdownStat.MEAN` (default): the iteration whose total waiting
-  time is closest to the *mean* over the template’s iterations.
-- {attr}`r5py.BreakdownStat.MINIMUM`: the iteration whose total waiting time is
-  closest to the *minimum* (i.e. a best-case, just-caught-the-bus wait).
+- {attr}`r5py.BreakdownStat.MEAN` (default): each leg’s waiting time, and the
+  total time, *averaged* over the template’s iterations.
+- {attr}`r5py.BreakdownStat.MINIMUM`: the *fastest* iteration (i.e. a
+  best-case, just-caught-the-bus wait), an itinerary a rider could actually
+  follow.
 
 ```{code-cell} ipython3
 best_case = r5py.ExpandedTravelTimeMatrix(

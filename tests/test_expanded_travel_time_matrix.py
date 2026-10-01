@@ -148,25 +148,38 @@ class TestExpandedTravelTimeMatrix:
     def test_n_iterations_positive(self, expanded):
         assert (expanded["n_iterations"] > 0).all()
 
-    def test_no_rows_without_transit(
+    def test_direct_paths_without_transit(
         self,
         transit_network,
         population_grid_points,
         departure_datetime,
     ):
-        # R5 records path details only in its transit search: without transit
-        # modes, no destination has any path template
-        expanded = r5py.ExpandedTravelTimeMatrix(
-            transit_network,
+        # R5 records path details only in its transit search, which it skips
+        # without transit modes: direct paths are reported nevertheless
+        kwargs = dict(
             origins=population_grid_points[0:1],
             destinations=population_grid_points[0:10],
             departure=departure_datetime,
+            departure_time_window=datetime.timedelta(minutes=10),
             transport_modes=[r5py.TransportMode.WALK],
         )
-        assert expanded.empty
-        assert list(expanded.columns) == r5py.ExpandedTravelTimeMatrix.COLUMNS
+        expanded = r5py.ExpandedTravelTimeMatrix(transit_network, **kwargs)
+        travel_times = r5py.TravelTimeMatrix(transit_network, **kwargs)
 
-    def test_minimum_wait_not_above_mean_wait(
+        assert list(expanded.columns) == r5py.ExpandedTravelTimeMatrix.COLUMNS
+        assert len(expanded) == travel_times["travel_time"].notna().sum()
+        assert (expanded["n_rides"] == 0).all()
+        assert (expanded["routes"] == "").all()
+        assert (expanded["n_iterations"] == 10).all()
+
+        # TravelTimeMatrix reports 0 for an origin’s own location, R5 does not
+        travel_times = travel_times.astype({"from_id": str, "to_id": str})
+        merged = expanded.merge(travel_times, on=["from_id", "to_id"])
+        merged = merged[merged["from_id"] != merged["to_id"]]
+        assert len(merged) > 0
+        assert (merged["total_time"] == merged["travel_time"]).all()
+
+    def test_minimum_not_slower_than_mean(
         self,
         transit_network,
         population_grid_points,
@@ -185,9 +198,21 @@ class TestExpandedTravelTimeMatrix:
         minimum = r5py.ExpandedTravelTimeMatrix(
             transit_network, breakdown_stat=r5py.BreakdownStat.MINIMUM, **kwargs
         )
-        mean_wait = mean.loc[mean["n_rides"] > 0, "wait_time"].map(_total).mean()
-        min_wait = minimum.loc[minimum["n_rides"] > 0, "wait_time"].map(_total).mean()
-        assert min_wait <= mean_wait + 1e-6
+
+        # the same path templates are found, only their summaries differ
+        pair = ["from_id", "to_id"]
+        assert len(mean) == len(minimum)
+        assert (
+            mean.groupby(pair).size().sort_index()
+            == minimum.groupby(pair).size().sort_index()
+        ).all()
+
+        # each template’s fastest iteration is no slower than its average, and,
+        # hence, neither is the fastest template per pair
+        fastest_mean = mean.groupby(pair)["total_time"].min().sort_index()
+        fastest_minimum = minimum.groupby(pair)["total_time"].min().sort_index()
+        assert (fastest_minimum <= fastest_mean + 1e-6).all()
+        assert (fastest_minimum < fastest_mean - 1e-6).any()
 
 
 class TestBreakdownStat:

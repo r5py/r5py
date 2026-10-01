@@ -74,10 +74,11 @@ class TestExpandedTravelTimeMatrix:
     def test_not_empty(self, expanded):
         assert len(expanded) > 0
 
-    def test_dtypes(self, expanded):
+    def test_dtypes(self, expanded, population_grid_points):
+        # ids keep the type they have in the input data
+        assert expanded["from_id"].dtype == population_grid_points["id"].dtype
+        assert expanded["to_id"].dtype == population_grid_points["id"].dtype
         for column in (
-            "from_id",
-            "to_id",
             "routes",
             "route_types",
             "board_stops",
@@ -173,7 +174,6 @@ class TestExpandedTravelTimeMatrix:
         assert (expanded["n_iterations"] == 10).all()
 
         # TravelTimeMatrix reports 0 for an origin’s own location, R5 does not
-        travel_times = travel_times.astype({"from_id": str, "to_id": str})
         merged = expanded.merge(travel_times, on=["from_id", "to_id"])
         merged = merged[merged["from_id"] != merged["to_id"]]
         assert len(merged) > 0

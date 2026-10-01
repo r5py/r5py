@@ -232,8 +232,9 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
         breakdown = pandas.DataFrame(rows, columns=self.COLUMNS)
         breakdown = breakdown.astype(
             {
-                "from_id": str,
-                "to_id": str,
+                # keep the ids’ original types, as r5py.TravelTimeMatrix does
+                "from_id": self.origins.id.dtype,
+                "to_id": self.destinations.id.dtype,
                 "routes": str,
                 "route_types": str,
                 "board_stops": str,

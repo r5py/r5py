@@ -105,7 +105,10 @@ path template** — a distinct sequence of routes and stops that R5 found betwee
 the pair. A pair can therefore appear in several rows (several ways of getting
 there) or in none (it is not reachable). Rows with `n_rides == 0` are direct
 (walk-only) paths; they are reported even when R5 skips its transit search
-(e.g., when no stop is within reach of the origin).
+(e.g., when no stop is within reach of the origin). R5 routes from and to the
+nearest street segment, so a row from an origin to itself reports the (small,
+but non-zero) time this takes; a travel time matrix, by contrast, reports `0`
+for such pairs.
 
 :::{note}
 The name and the `ride_time` column follow r5r’s

@@ -85,6 +85,9 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
         template (see ``breakdown_stat``). The components of one row, however,
         reconcile exactly: ``total_time`` equals the sum of ``ride_time``,
         ``wait_time``, ``access_time``, ``egress_time``, and ``transfer_time``.
+        Moreover, where ``from_id`` equals ``to_id``, ``total_time`` is the
+        (non-zero) time R5 reports for routing from and to the nearest street
+        segment, whereas ``r5py.TravelTimeMatrix`` sets such pairs to 0.
 
         Arguments
         ---------

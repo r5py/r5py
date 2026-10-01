@@ -9,23 +9,23 @@ from .r5 import (
     BreakdownStat,
     DetailedItineraries,
     ElevationCostFunction,
+    ExpandedTravelTimeMatrix,
     Isochrones,
     RegionalTask,
     TransportMode,
     TransportNetwork,
     TravelTimeMatrix,
-    TravelTimeMatrixDecomposed,
 )
 
 __all__ = [
     "BreakdownStat",
     "DetailedItineraries",
     "ElevationCostFunction",
+    "ExpandedTravelTimeMatrix",
     "Isochrones",
     "RegionalTask",
     "TransportMode",
     "TransportNetwork",
     "TravelTimeMatrix",
-    "TravelTimeMatrixDecomposed",
     "__version__",
 ]

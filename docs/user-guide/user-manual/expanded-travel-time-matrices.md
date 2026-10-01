@@ -12,7 +12,7 @@ kernelspec:
   name: python3
 ---
 
-# Decomposed travel times
+# Expanded travel time matrices
 
 ```{code-cell} ipython3
 :tags: [remove-input, remove-output]
@@ -20,7 +20,7 @@ kernelspec:
 
 ```
 
-:::{dropdown} Why decompose a travel time?
+:::{dropdown} Why break down a travel time?
 :open:
 :color: light
 :margin: 1 5 0 0
@@ -31,7 +31,7 @@ is half spent waiting at a stop and walking to it: riders perceive time spent
 waiting, walking, and transferring differently from time spent moving on a
 vehicle, and many transport models weight these components separately.
 
-{class}`TravelTimeMatrixDecomposed<r5py.TravelTimeMatrixDecomposed>` reports, for
+{class}`ExpandedTravelTimeMatrix<r5py.ExpandedTravelTimeMatrix>` reports, for
 each origin and destination, how the travel time splits into its **in-vehicle**,
 **waiting**, **access** (to the first stop), **egress** (from the last stop), and
 **transfer** components, along with the routes and stops that make up each path.
@@ -78,7 +78,7 @@ destinations["geometry"] = destinations.geometry.centroid
 ```
 
 
-## Compute a decomposed travel time matrix
+## Compute an expanded travel time matrix
 
 The constructor mirrors {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>`. Because
 the breakdown only makes sense for public transport, we route with
@@ -88,7 +88,7 @@ and egress):
 ```{code-cell} ipython3
 import datetime
 
-decomposed = r5py.TravelTimeMatrixDecomposed(
+expanded = r5py.ExpandedTravelTimeMatrix(
     transport_network,
     origins=origins,
     destinations=destinations,
@@ -96,15 +96,23 @@ decomposed = r5py.TravelTimeMatrixDecomposed(
     departure=datetime.datetime(2019, 5, 13, 14, 0, 0),
     departure_time_window=datetime.timedelta(minutes=60),
 )
-decomposed.head()
+expanded.head()
 ```
 
 Unlike a travel time matrix, which has exactly one row per origin/destination
-pair, a decomposed matrix has **one row per origin, destination, and path
-template** — a distinct sequence of routes and stops that R5 found between the
-pair. A pair can therefore appear in several rows (several ways of getting there)
-or in none (it is not reachable). Rows with `n_rides == 0` are direct
+pair, an expanded travel time matrix has **one row per origin, destination, and
+path template** — a distinct sequence of routes and stops that R5 found between
+the pair. A pair can therefore appear in several rows (several ways of getting
+there) or in none (it is not reachable). Rows with `n_rides == 0` are direct
 (walk-only) paths.
+
+:::{note}
+The name and the `ride_time` column follow r5r’s
+[`expanded_travel_time_matrix()`](https://ipeagit.github.io/r5r/reference/expanded_travel_time_matrix.html)
+(with `breakdown = TRUE`). Note, however, that r5r reports one row per
+departure minute (and draw), whereas r5py reports one row per path template,
+represented by one of the departure minutes it serves (see below).
+:::
 
 The columns are:
 
@@ -115,7 +123,7 @@ The columns are:
 | `route_types` | GTFS `route_type` of each leg (e.g. `3` for bus) |
 | `board_stops`, `alight_stops` | GTFS stop ids where each leg is boarded / alighted |
 | `feed_ids` | GTFS feed each leg belongs to |
-| `in_vehicle_time` | per-leg in-vehicle time (a list, in minutes) |
+| `ride_time` | per-leg in-vehicle time (a list, in minutes) |
 | `wait_time` | per-leg waiting time (a list, in minutes) |
 | `access_time`, `egress_time` | walk time to the first / from the last stop (minutes) |
 | `transfer_time` | time transferring between stops (minutes) |
@@ -123,16 +131,16 @@ The columns are:
 | `n_rides` | number of transit legs |
 | `n_iterations` | number of departure minutes served by this template |
 
-The per-leg `in_vehicle_time` and `wait_time` are kept as lists rather than
+The per-leg `ride_time` and `wait_time` are kept as lists rather than
 pre-summed, so that, for example, the wait before the first boarding can be
 weighted differently from a mid-trip transfer wait. The scalar components of a
 single row always reconcile to its `total_time`:
 
 ```{code-cell} ipython3
-transit = decomposed[decomposed["n_rides"] > 0]
+transit = expanded[expanded["n_rides"] > 0]
 
 reconstructed = (
-    transit["in_vehicle_time"].map(sum)
+    transit["ride_time"].map(sum)
     + transit["wait_time"].map(sum)
     + transit["access_time"]
     + transit["egress_time"]
@@ -157,7 +165,7 @@ template:
   closest to the *minimum* (i.e. a best-case, just-caught-the-bus wait).
 
 ```{code-cell} ipython3
-best_case = r5py.TravelTimeMatrixDecomposed(
+best_case = r5py.ExpandedTravelTimeMatrix(
     transport_network,
     origins=origins,
     destinations=destinations,
@@ -174,7 +182,7 @@ best_case = r5py.TravelTimeMatrixDecomposed(
 
 A {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` reports a *percentile* (by
 default the median) of the total travel time over the departure time window,
-whereas the decomposition summarises the iterations of a *single path template*
+whereas the breakdown summarises the iterations of a *single path template*
 (see `breakdown_stat` above). These are different statistics, so the reported
 components will **not**, in general, add up to the `travel_time` a travel time
 matrix reports for the same origin/destination pair.

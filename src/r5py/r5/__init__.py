@@ -8,6 +8,7 @@ from .detailed_itineraries import DetailedItineraries
 from .direct_leg import DirectLeg
 from .egress_leg import EgressLeg
 from .elevation_cost_function import ElevationCostFunction
+from .expanded_travel_time_matrix import ExpandedTravelTimeMatrix
 from .isochrones import Isochrones
 from .regional_task import RegionalTask
 from .scenario import Scenario
@@ -17,7 +18,6 @@ from .transit_leg import TransitLeg
 from .transport_mode import TransportMode
 from .transport_network import TransportNetwork
 from .travel_time_matrix import TravelTimeMatrix
-from .travel_time_matrix_decomposed import TravelTimeMatrixDecomposed
 from .trip import Trip
 from .trip_planner import TripPlanner
 
@@ -28,6 +28,7 @@ __all__ = [
     "DirectLeg",
     "EgressLeg",
     "ElevationCostFunction",
+    "ExpandedTravelTimeMatrix",
     "Isochrones",
     "RegionalTask",
     "Scenario",
@@ -37,7 +38,6 @@ __all__ = [
     "TransportMode",
     "TransportNetwork",
     "TravelTimeMatrix",
-    "TravelTimeMatrixDecomposed",
     "Trip",
     "TripPlanner",
 ]

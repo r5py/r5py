@@ -8,7 +8,7 @@
 ```
 
 ```{eval-rst}
-.. autoclass:: r5py.TravelTimeMatrixDecomposed
+.. autoclass:: r5py.ExpandedTravelTimeMatrix
     :members:
 ```
 

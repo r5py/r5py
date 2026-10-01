@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Decompose transit travel times into their in- and out-of-vehicle components."""
+"""Break transit travel times down into their in- and out-of-vehicle components."""
 
 import copy
 
@@ -13,7 +13,7 @@ from ..util import start_jvm
 
 import com.conveyal.r5
 
-__all__ = ["TravelTimeMatrixDecomposed"]
+__all__ = ["ExpandedTravelTimeMatrix"]
 
 
 start_jvm()
@@ -25,7 +25,7 @@ start_jvm()
 MAX_PATH_DESTINATIONS = 5_000
 
 
-class TravelTimeMatrixDecomposed(TravelTimeMatrix):
+class ExpandedTravelTimeMatrix(TravelTimeMatrix):
     """
     Compute travel times broken down into their components.
 
@@ -44,7 +44,7 @@ class TravelTimeMatrixDecomposed(TravelTimeMatrix):
         "board_stops",
         "alight_stops",
         "feed_ids",
-        "in_vehicle_time",
+        "ride_time",
         "wait_time",
         "access_time",
         "egress_time",
@@ -68,21 +68,22 @@ class TravelTimeMatrixDecomposed(TravelTimeMatrix):
         """
         Compute travel times broken down into their components.
 
-        ``r5py.TravelTimeMatrixDecomposed`` is a child class of
+        ``r5py.ExpandedTravelTimeMatrix`` is a child class of
         ``pandas.DataFrame`` and supports all of its methods and properties, see
         https://pandas.pydata.org/docs/ . Unlike ``r5py.TravelTimeMatrix``,
         which reports one row per origin/destination pair, this reports one row
         per origin, destination, and *path template* — a distinct sequence of
         routes and stops that R5 found between the pair. An origin/destination
         pair can therefore appear in more than one row, or in none (if it is not
-        reachable).
+        reachable). (This differs from r5r’s ``expanded_travel_time_matrix()``,
+        which reports one row per departure minute and draw.)
 
         The reported component times do **not**, in general, add up to the
         ``travel_time`` of the corresponding ``r5py.TravelTimeMatrix``: the
         latter is a percentile (by default the median) over the departure time
         window, while the components summarise the iterations of a single path
         template (see ``breakdown_stat``). The components of one row, however,
-        reconcile exactly: ``total_time`` equals the sum of ``in_vehicle_time``,
+        reconcile exactly: ``total_time`` equals the sum of ``ride_time``,
         ``wait_time``, ``access_time``, ``egress_time``, and ``transfer_time``.
 
         Arguments
@@ -141,7 +142,7 @@ class TravelTimeMatrixDecomposed(TravelTimeMatrix):
         -------
         pandas.DataFrame
             One row per origin, destination, and path template, with the columns
-            listed in ``TravelTimeMatrixDecomposed.COLUMNS``.
+            listed in ``ExpandedTravelTimeMatrix.COLUMNS``.
         """
         self._prepare_origins_destinations()
         if len(self.destinations) > MAX_PATH_DESTINATIONS:
@@ -247,11 +248,11 @@ class TravelTimeMatrixDecomposed(TravelTimeMatrix):
 
         # per-template components: constant across the template’s iterations
         if stop_sequence.rideTimesSeconds is not None:
-            in_vehicle_time = [
+            ride_time = [
                 seconds / 60.0 for seconds in stop_sequence.rideTimesSeconds.toArray()
             ]
         else:
-            in_vehicle_time = []
+            ride_time = []
         access_time = (
             stop_sequence.access.time / 60.0
             if stop_sequence.access is not None
@@ -269,7 +270,7 @@ class TravelTimeMatrixDecomposed(TravelTimeMatrix):
             for i in range(n_rides)
         )
         # GTFS route_type per leg, aligned index-by-index with ``routes`` (and
-        # hence with the per-leg ``in_vehicle_time`` list): R5 keeps the parsed
+        # hence with the per-leg ``ride_time`` list): R5 keeps the parsed
         # route table in ``TransitLayer.routes``, indexed by the same integer
         # ``routeString()`` takes.
         route_types_str = "|".join(
@@ -316,7 +317,7 @@ class TravelTimeMatrixDecomposed(TravelTimeMatrix):
             board_stops_str,
             alight_stops_str,
             feed_ids_str,
-            in_vehicle_time,
+            ride_time,
             wait_time,
             access_time,
             egress_time,

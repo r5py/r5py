@@ -23,7 +23,7 @@ kernelspec:
 self
 data-requirements
 travel-time-matrices
-Decomposed travel times <travel-time-matrices-decomposed>
+Expanded travel time matrices <expanded-travel-time-matrices>
 Detailed itineraries <detailed-itineraries>
 Isochrones <isochrones>
 advanced-use

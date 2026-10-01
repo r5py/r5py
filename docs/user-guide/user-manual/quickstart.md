@@ -23,6 +23,7 @@ kernelspec:
 self
 data-requirements
 travel-time-matrices
+Expanded travel time matrices <expanded-travel-time-matrices>
 Detailed itineraries <detailed-itineraries>
 Isochrones <isochrones>
 advanced-use

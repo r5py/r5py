@@ -3,10 +3,12 @@
 """R5 classes."""
 
 from .access_leg import AccessLeg
+from .breakdown_stat import BreakdownStat
 from .detailed_itineraries import DetailedItineraries
 from .direct_leg import DirectLeg
 from .egress_leg import EgressLeg
 from .elevation_cost_function import ElevationCostFunction
+from .expanded_travel_time_matrix import ExpandedTravelTimeMatrix
 from .isochrones import Isochrones
 from .regional_task import RegionalTask
 from .scenario import Scenario
@@ -21,10 +23,12 @@ from .trip_planner import TripPlanner
 
 __all__ = [
     "AccessLeg",
+    "BreakdownStat",
     "DetailedItineraries",
     "DirectLeg",
     "EgressLeg",
     "ElevationCostFunction",
+    "ExpandedTravelTimeMatrix",
     "Isochrones",
     "RegionalTask",
     "Scenario",

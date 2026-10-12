@@ -197,8 +197,7 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
         pandas.DataFrame
             One row per (``from_id``, destination, path template).
         """
-        transit_layer = self.transport_network._transport_network.transitLayer
-        id_only = com.conveyal.r5.transit.TransitLayer.EntityRepresentation.ID_ONLY
+        gtfs_ids = _GtfsIds(self.transport_network._transport_network.transitLayer)
 
         rows = []
         paths = results.paths
@@ -220,15 +219,14 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
                         )
                     continue
                 for route_sequence in iteration_map.keySet():
-                    iterations = list(iteration_map.get(route_sequence))
+                    iterations = list(iteration_map.get(route_sequence).toArray())
                     rows.append(
                         self._summarise_template(
                             from_id,
                             to_id,
                             route_sequence,
                             iterations,
-                            transit_layer,
-                            id_only,
+                            gtfs_ids,
                         )
                     )
 
@@ -253,19 +251,23 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
         )
         return breakdown
 
-    def _summarise_template(
-        self, from_id, to_id, route_sequence, iterations, transit_layer, id_only
-    ):
+    def _summarise_template(self, from_id, to_id, route_sequence, iterations, gtfs_ids):
         """Summarise one path template into a single result row (times in minutes)."""
         stop_sequence = route_sequence.stopSequence
-        routes = route_sequence.routes
-        n_rides = routes.size()
+        # copy R5’s int lists to Python in one call each, rather than one
+        # Java call per element
+        routes = _to_list(route_sequence.routes)
+        n_rides = len(routes)
+        if n_rides > 0:
+            board_stops = _to_list(stop_sequence.boardStops)[:n_rides]
+            alight_stops = _to_list(stop_sequence.alightStops)[:n_rides]
+        else:
+            # without transit legs, R5 may leave the stop lists unset
+            board_stops = alight_stops = []
 
         # per-template components: constant across the template’s iterations
         if stop_sequence.rideTimesSeconds is not None:
-            ride_time = [
-                seconds / 60.0 for seconds in stop_sequence.rideTimesSeconds.toArray()
-            ]
+            ride_time = (_to_array(stop_sequence.rideTimesSeconds) / 60.0).tolist()
         else:
             ride_time = []
         access_time = (
@@ -279,31 +281,14 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
             else numpy.nan
         )
 
-        # path identity, as R5 reports it (GTFS ids, one entry per transit leg)
-        routes_str = "|".join(
-            str(transit_layer.routeString(routes.get(i), id_only))
-            for i in range(n_rides)
-        )
-        # GTFS route_type per leg, aligned index-by-index with ``routes`` (and
-        # hence with the per-leg ``ride_time`` list): R5 keeps the parsed
-        # route table in ``TransitLayer.routes``, indexed by the same integer
-        # ``routeString()`` takes.
-        route_types_str = "|".join(
-            str(transit_layer.routes.get(routes.get(i)).route_type)
-            for i in range(n_rides)
-        )
-        board_stops_str = "|".join(
-            str(transit_layer.stopString(stop_sequence.boardStops.get(i), id_only))
-            for i in range(n_rides)
-        )
-        alight_stops_str = "|".join(
-            str(transit_layer.stopString(stop_sequence.alightStops.get(i), id_only))
-            for i in range(n_rides)
-        )
-        feed_ids_str = "|".join(
-            str(transit_layer.feedFromStop(stop_sequence.boardStops.get(i)))
-            for i in range(n_rides)
-        )
+        # path identity, as R5 reports it (GTFS ids, one entry per transit
+        # leg); ``route_types`` is aligned index-by-index with ``routes`` (and
+        # hence with the per-leg ``ride_time`` list)
+        routes_str = "|".join(gtfs_ids.route(route) for route in routes)
+        route_types_str = "|".join(gtfs_ids.route_type(route) for route in routes)
+        board_stops_str = "|".join(gtfs_ids.stop(stop) for stop in board_stops)
+        alight_stops_str = "|".join(gtfs_ids.stop(stop) for stop in alight_stops)
+        feed_ids_str = "|".join(gtfs_ids.feed(stop) for stop in board_stops)
 
         # summarise the iterations (mirrors R5’s
         # PathResult.summarizeIterations()): MINIMUM reports the fastest
@@ -314,16 +299,17 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
                 iterations,
                 key=lambda iteration: (iteration.totalTime, iteration.departureTime),
             )
-            wait_time = [seconds / 60.0 for seconds in fastest.waitTimes.toArray()]
+            wait_time = (_to_array(fastest.waitTimes) / 60.0).tolist()
             total_time = fastest.totalTime / 60.0
         else:
             n_iterations = len(iterations)
-            wait_time = [
-                sum(iteration.waitTimes.get(leg) for iteration in iterations)
-                / n_iterations
-                / 60.0
-                for leg in range(n_rides)
-            ]
+            # one row per iteration, one column per leg; integer sums are
+            # exact, so this matches summing leg by leg
+            wait_times = numpy.array(
+                [_to_array(iteration.waitTimes)[:n_rides] for iteration in iterations],
+                dtype=numpy.int64,
+            ).reshape(n_iterations, n_rides)
+            wait_time = (wait_times.sum(axis=0) / n_iterations / 60.0).tolist()
             total_time = (
                 sum(iteration.totalTime for iteration in iterations)
                 / n_iterations
@@ -375,3 +361,70 @@ class ExpandedTravelTimeMatrix(TravelTimeMatrix):
             0,
             n_departure_minutes,
         ]
+
+
+def _to_array(trove_int_list):
+    """Copy a Java ``TIntList`` into a numpy array in a single call."""
+    return numpy.asarray(trove_int_list.toArray())
+
+
+def _to_list(trove_int_list):
+    """Copy a Java ``TIntList`` into a list of Python ints in a single call."""
+    return _to_array(trove_int_list).tolist()
+
+
+class _GtfsIds:
+    """
+    Look up the GTFS ids of a transit layer’s routes, stops, and feeds.
+
+    Path templates share most of their routes and stops, so each lookup is
+    memoised: every index crosses into Java at most once per instance.
+    """
+
+    def __init__(self, transit_layer):
+        self._transit_layer = transit_layer
+        self._id_only = (
+            com.conveyal.r5.transit.TransitLayer.EntityRepresentation.ID_ONLY
+        )
+        self._routes = {}
+        self._route_types = {}
+        self._stops = {}
+        self._feeds = {}
+
+    def route(self, route):
+        """Return the GTFS ``route_id`` of route index ``route``."""
+        try:
+            return self._routes[route]
+        except KeyError:
+            route_id = str(self._transit_layer.routeString(route, self._id_only))
+            self._routes[route] = route_id
+            return route_id
+
+    def route_type(self, route):
+        """Return the GTFS ``route_type`` of route index ``route``, as a str."""
+        # R5 keeps the parsed route table in ``TransitLayer.routes``, indexed
+        # by the same integer ``routeString()`` takes
+        try:
+            return self._route_types[route]
+        except KeyError:
+            route_type = str(self._transit_layer.routes.get(route).route_type)
+            self._route_types[route] = route_type
+            return route_type
+
+    def stop(self, stop):
+        """Return the GTFS ``stop_id`` of stop index ``stop``."""
+        try:
+            return self._stops[stop]
+        except KeyError:
+            stop_id = str(self._transit_layer.stopString(stop, self._id_only))
+            self._stops[stop] = stop_id
+            return stop_id
+
+    def feed(self, stop):
+        """Return the id of the GTFS feed that stop index ``stop`` belongs to."""
+        try:
+            return self._feeds[stop]
+        except KeyError:
+            feed_id = str(self._transit_layer.feedFromStop(stop))
+            self._feeds[stop] = feed_id
+            return feed_id

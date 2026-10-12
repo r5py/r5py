@@ -8,6 +8,16 @@
 ```
 
 ```{eval-rst}
+.. autoclass:: r5py.ExpandedTravelTimeMatrix
+    :members:
+```
+
+```{eval-rst}
+.. autoclass:: r5py.BreakdownStat
+    :members:
+```
+
+```{eval-rst}
 .. autoclass:: r5py.DetailedItineraries
     :members:
 ```

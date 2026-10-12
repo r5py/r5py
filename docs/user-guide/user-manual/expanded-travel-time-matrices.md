@@ -1,0 +1,210 @@
+---
+jupytext:
+  formats: md:myst
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.16.2
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+---
+
+# Expanded travel time matrices
+
+```{code-cell} ipython3
+:tags: [remove-input, remove-output]
+
+
+```
+
+:::{dropdown} Why break down a travel time?
+:open:
+:color: light
+:margin: 1 5 0 0
+
+A single transit travel time hides a lot of structure. Two trips of thirty
+minutes are not equivalent if one is spent entirely on a train while the other
+is half spent waiting at a stop and walking to it: riders perceive time spent
+waiting, walking, and transferring differently from time spent moving on a
+vehicle, and many transport models weight these components separately.
+
+{class}`ExpandedTravelTimeMatrix<r5py.ExpandedTravelTimeMatrix>` reports, for
+each origin and destination, how the travel time splits into its **in-vehicle**,
+**waiting**, **access** (to the first stop), **egress** (from the last stop), and
+**transfer** components, along with the routes and stops that make up each path.
+R5 computes this breakdown internally on every routing request; this class simply
+surfaces it.
+:::
+
+
+## Load a transport network
+
+As for a {doc}`travel time matrix <travel-time-matrices>`, we need a transport
+network and a set of origins and destinations. We reuse the São Paulo [sample
+data sets](../installation/installation.md#sample-data-sets):
+
+```{code-cell} ipython3
+:tags: [remove-output]
+
+import r5py
+import r5py.sampledata.sao_paulo
+
+transport_network = r5py.TransportNetwork(
+    r5py.sampledata.sao_paulo.osm_pbf,
+    [
+        r5py.sampledata.sao_paulo.gtfs,
+    ]
+)
+```
+
+```{code-cell} ipython3
+import geopandas
+
+hexagon_grid = geopandas.read_file(r5py.sampledata.sao_paulo.hexgrid_gpkg)
+
+origins = hexagon_grid.copy()
+origins["geometry"] = origins.geometry.centroid
+```
+
+To keep the example small, we route from a handful of origins to all grid cells:
+
+```{code-cell} ipython3
+origins = origins.iloc[:5]
+destinations = hexagon_grid.copy()
+destinations["geometry"] = destinations.geometry.centroid
+```
+
+
+## Compute an expanded travel time matrix
+
+The constructor mirrors {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>`. Because
+the breakdown only makes sense for public transport, we route with
+{attr}`r5py.TransportMode.TRANSIT` (and {attr}`r5py.TransportMode.WALK` for access
+and egress):
+
+```{code-cell} ipython3
+import datetime
+
+expanded = r5py.ExpandedTravelTimeMatrix(
+    transport_network,
+    origins=origins,
+    destinations=destinations,
+    transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+    departure=datetime.datetime(2019, 5, 13, 14, 0, 0),
+    departure_time_window=datetime.timedelta(minutes=60),
+)
+expanded.head()
+```
+
+Unlike a travel time matrix, which has exactly one row per origin/destination
+pair, an expanded travel time matrix has **one row per origin, destination, and
+path template** — a distinct sequence of routes and stops that R5 found between
+the pair. A pair can therefore appear in several rows (several ways of getting
+there) or in none (it is not reachable). Rows with `n_rides == 0` are direct
+(walk-only) paths; they are reported even when R5 skips its transit search
+(e.g., when no stop is within reach of the origin). R5 routes from and to the
+nearest street segment, so a row from an origin to itself reports the (small,
+but non-zero) time this takes; a travel time matrix, by contrast, reports `0`
+for such pairs.
+
+:::{note}
+The name and the `ride_time` column follow r5r’s
+[`expanded_travel_time_matrix()`](https://ipeagit.github.io/r5r/reference/expanded_travel_time_matrix.html)
+(with `breakdown = TRUE`). Note, however, that r5r reports one row per
+departure minute (and draw), whereas r5py reports one row per path template,
+summarised over the departure minutes it serves (see below).
+:::
+
+The columns are:
+
+| column | description |
+| --- | --- |
+| `from_id`, `to_id` | origin and destination ids |
+| `routes` | `\|`-separated GTFS route ids, one per transit leg |
+| `route_types` | GTFS `route_type` of each leg (e.g. `3` for bus) |
+| `board_stops`, `alight_stops` | GTFS stop ids where each leg is boarded / alighted |
+| `feed_ids` | GTFS feed each leg belongs to |
+| `ride_time` | per-leg in-vehicle time (a list, in minutes) |
+| `wait_time` | per-leg waiting time (a list, in minutes) |
+| `access_time`, `egress_time` | walk time to the first / from the last stop (minutes) |
+| `transfer_time` | time transferring between stops (minutes) |
+| `total_time` | total travel time of this path template (minutes) |
+| `n_rides` | number of transit legs |
+| `n_iterations` | number of departure minutes served by this template |
+
+The per-leg `ride_time` and `wait_time` are kept as lists rather than
+pre-summed, so that, for example, the wait before the first boarding can be
+weighted differently from a mid-trip transfer wait. The scalar components of a
+single row always reconcile to its `total_time`:
+
+```{code-cell} ipython3
+transit = expanded[expanded["n_rides"] > 0]
+
+reconstructed = (
+    transit["ride_time"].map(sum)
+    + transit["wait_time"].map(sum)
+    + transit["access_time"]
+    + transit["egress_time"]
+    + transit["transfer_time"]
+)
+(reconstructed - transit["total_time"]).abs().max()
+```
+
+
+## How are the departure minutes summarised?
+
+Over the `departure_time_window`, R5 computes a separate result for every
+departure minute (an *iteration*). A path template’s ride, access, egress, and
+transfer times are the same in every iteration it appears in, but its waiting
+time — and therefore its total time — varies with when the rider sets off. The
+`breakdown_stat` argument selects how to summarise the template’s iterations,
+in the same way as R5’s own path reports:
+
+- {attr}`r5py.BreakdownStat.MEAN` (default): each leg’s waiting time, and the
+  total time, *averaged* over the template’s iterations.
+- {attr}`r5py.BreakdownStat.MINIMUM`: the *fastest* iteration (i.e. a
+  best-case, just-caught-the-bus wait), an itinerary a rider could actually
+  follow.
+
+```{code-cell} ipython3
+best_case = r5py.ExpandedTravelTimeMatrix(
+    transport_network,
+    origins=origins,
+    destinations=destinations,
+    transport_modes=[r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK],
+    departure=datetime.datetime(2019, 5, 13, 14, 0, 0),
+    departure_time_window=datetime.timedelta(minutes=60),
+    breakdown_stat=r5py.BreakdownStat.MINIMUM,
+)
+```
+
+
+:::{admonition} The components do not sum to a travel time matrix’s `travel_time`
+:class: attention
+
+A {class}`TravelTimeMatrix<r5py.TravelTimeMatrix>` reports a *percentile* (by
+default the median) of the total travel time over the departure time window,
+whereas the breakdown summarises the iterations of a *single path template*
+(see `breakdown_stat` above). These are different statistics, so the reported
+components will **not**, in general, add up to the `travel_time` a travel time
+matrix reports for the same origin/destination pair.
+
+There is also a selection effect: if a pair is not reachable in every departure
+minute, its component means are conditional on it being reachable at all, which
+understates waiting time in particular. Use `n_iterations` (how many of the
+departure minutes each template serves) to weight or filter the templates for
+your analysis. The components of any *single* row are always internally
+consistent, as shown above.
+:::
+
+
+:::{admonition} At most 5000 destinations
+:class: note
+
+R5 records path details for at most 5000 destinations per request
+(`PathResult.MAX_PATH_DESTINATIONS`). Requesting more raises a `ValueError`;
+split the destinations into batches and concatenate the resulting frames.
+:::

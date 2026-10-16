@@ -300,13 +300,14 @@ class Isochrones(BaseTravelTimeMatrix):
 
     @property
     def _regular_point_grid(self):
-        extent = shapely.ops.transform(
+        extent = shapely.transform(
+            self.transport_network.extent,
             pyproj.Transformer.from_crs(
                 R5_CRS,
                 self.transport_network.EQUIDISTANT_CRS,
                 always_xy=True,
             ).transform,
-            self.transport_network.extent,
+            interleaved=False,
         )
 
         grid = geohexgrid.make_grid_from_bounds(

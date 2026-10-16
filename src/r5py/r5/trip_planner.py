@@ -371,9 +371,10 @@ class TripPlanner:
 
                                 # distance: based on the geometry, which might
                                 # be inaccurate.
-                                distance = shapely.ops.transform(
-                                    self._crs_transformer_function,
+                                distance = shapely.transform(
                                     geometry,
+                                    self._crs_transformer_function,
+                                    interleaved=False,
                                 ).length
 
                                 leg = TransitLeg(

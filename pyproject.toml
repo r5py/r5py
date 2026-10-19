@@ -29,7 +29,7 @@ dependencies = [
     "rasterio",
     "requests",
     "scikit-learn",
-    "shapely",
+    "shapely<2.2.0",
     "simplification",
     "typing_extensions; python_version < '3.13'"
 ]

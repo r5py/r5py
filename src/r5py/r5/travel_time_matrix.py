@@ -155,7 +155,7 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
 
             # R5 always routes from/to next street segment
             # (results in >0 travel time for from_id==to_id)
-            od_matrix = od_matrix.set_index(["from_index", "to_index"])
+            od_matrix = od_matrix.set_index(["from_id", "to_id"])
             od_matrix.loc[
                 od_matrix.index.intersection(self._od_identical),
                 f"travel_time_p{percentile:d}",

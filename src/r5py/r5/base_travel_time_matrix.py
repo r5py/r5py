@@ -238,6 +238,30 @@ class BaseTravelTimeMatrix(geopandas.GeoDataFrame):
 
                 setattr(self, f"_{which_end}", points.copy())
 
+        # prepare a list of origins and destinations with identical geometry
+        # later, this is used to short-circuit computation
+        self._od_identical = (
+            self.origins[["id", "geometry"]]
+            .rename(
+                columns={
+                    "id": "from_id",
+                }
+            )
+            .set_index("geometry")
+            .join(
+                self.destinations[["id", "geometry"]]
+                .rename(
+                    columns={
+                        "id": "to_id",
+                    }
+                )
+                .set_index("geometry"),
+                how="inner",
+            )
+            .reset_index()
+            .set_index(["from_id", "to_id"])
+        ).index
+
     @property
     def origins(self):
         """The origins of this travel time matrix (`geopandas.GeoDataFrame`)."""

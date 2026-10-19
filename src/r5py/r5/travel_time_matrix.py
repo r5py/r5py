@@ -155,10 +155,12 @@ class TravelTimeMatrix(BaseTravelTimeMatrix):
 
             # R5 always routes from/to next street segment
             # (results in >0 travel time for from_id==to_id)
+            od_matrix = od_matrix.set_index(["from_id", "to_id"])
             od_matrix.loc[
-                (od_matrix.from_id == od_matrix.to_id),
+                od_matrix.index.intersection(self._od_identical),
                 f"travel_time_p{percentile:d}",
             ] = 0
+            od_matrix.reset_index()
 
         # rename percentile column if only median requested (the default)
         if self.request.percentiles == [50]:

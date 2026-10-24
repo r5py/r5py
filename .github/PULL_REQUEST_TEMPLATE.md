@@ -25,7 +25,7 @@ Please delete options that are not relevant.
 Please check off the items you completed before requesting a review:
 
 - [ ] I have read the [CONTRIBUTING
-  guide](https://r5py.readthedocs.io/en/stable/contributing/CONTRIBUTING.html).
+  guide](https://r5py.readthedocs.io/stable/contributing/CONTRIBUTING.html).
 - [ ] I have added tests that prove my fix is effective or that my feature
   works.
 - [ ] I have added or updated documentation where necessary, and ensured it

@@ -70,7 +70,7 @@ you are aware of.
 
 - [pydriosm](https://pydriosm.readthedocs.io/en/latest/quick-start.html#download-data)
   is a Python package for downloading OSM extracts from GeoFabrik and BBBike.
-- [pyrosm](https://pyrosm.readthedocs.io/en/latest/basics.html#protobuf-file-what-is-it-and-how-to-get-one)
+- [pyrosm](https://pyrosm.readthedocs.io/en/latest/downloading_data.html)
   is a Python package for creating street networks from OSM extracts, and
   includes tools to download OSM extracts from GeoFabrik and BBBike
 - [GeoFabrik](http://download.geofabrik.de/) is a website offering OSM extracts

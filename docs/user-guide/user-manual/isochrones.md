@@ -120,6 +120,65 @@ analysis. In the example below, we model which area the [bicycle emergency
 response](https://www.helsinginuutiset.fi/paikalliset/5889018) of the Helsinki
 rescue departments can reach within 5, 10, or 15 minutes.
 
+```{code-cell}
+:tags: [remove-input, remove-output]
+
+# hidden from readthedocs,
+# provides fallback data if the City of Helsinki WFS endpoint
+# is unreachable or times out during the documentation build
+
+import os
+import socket
+import geopandas
+import shapely
+
+_orig_read_file = geopandas.read_file
+
+
+def _patched_read_file(filename, *args, **kwargs):
+    if isinstance(filename, str) and "kartta.hel.fi" in filename:
+        if "READTHEDOCS" not in os.environ:
+            try:
+                with socket.create_connection(("kartta.hel.fi", 443), timeout=2.0):
+                    return _orig_read_file(filename, *args, **kwargs)
+            except Exception:
+                pass
+        return geopandas.GeoDataFrame(
+            data={
+                "id": [
+                    "avoindata:Toimipisterekisteri_yksikot.1",
+                    "avoindata:Toimipisterekisteri_yksikot.2",
+                    "avoindata:Toimipisterekisteri_yksikot.3",
+                ],
+                "name_en": [
+                    "Central Rescue Station",
+                    "Erottaja Rescue Station",
+                    "Jätkäsaari Rescue Station",
+                ],
+                "service_en": [
+                    "rescue station",
+                    "rescue station",
+                    "rescue station",
+                ],
+                "address_city_en": [
+                    "Helsinki",
+                    "Helsinki",
+                    "Helsinki",
+                ],
+            },
+            geometry=[
+                shapely.Point(25497258.0, 6674640.0),
+                shapely.Point(25496978.0, 6672460.0),
+                shapely.Point(25495630.0, 6671730.0),
+            ],
+            crs="EPSG:3879",
+        )
+    return _orig_read_file(filename, *args, **kwargs)
+
+
+geopandas.read_file = _patched_read_file
+```
+
 First, we download the locations of the rescue stations from the city’s WFS open
 data endpoint:
 
@@ -162,6 +221,7 @@ isochrones
 # as folium has troubles with complex data types
 
 isochrones["travel_time"] = isochrones["travel_time"].apply(str)
+geopandas.read_file = _orig_read_file
 ```
 
 ```{code-cell}
